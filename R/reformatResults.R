@@ -1,0 +1,130 @@
+
+#' @export
+reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE, ...) {
+    UseMethod("reformatResults", x)
+}
+
+#' @export
+reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
+    ...) {
+    stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
+        paste(class(x), collapse = ",")))
+}
+
+#' @export
+reformatResults.ToplineCategoricalGeneral <- function(x, proportions = TRUE, digits = 0,
+    reformat = TRUE, ...) {
+    reformatResultsGen(x, proportions = proportions, digits = digits, reformat = reformat)
+}
+
+#' @export
+reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
+    ...) {
+    reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
+}
+
+reformatResultsGen <- function(summary_var, proportions = FALSE, digits = 0, reformat = TRUE,
+    ...) {
+    data <- getResults(summary_var, proportions = proportions)
+    if (digits > -1 && reformat) {
+        data[] <- round(data * if (proportions) 100 else 1, digits)
+    }
+    if (proportions && reformat) {
+        data[] <- paste0(data, "%")
+    }
+    data
+}
+
+
+#' @export
+reformatResults.CrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
+    digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
+
+    data <- getResults(x, proportions = proportions)
+    if (show_totals) {
+        data <- rbind(data, Totals = if (proportions)
+            x$totals_proportions else x$totals_counts)
+    }
+    n_data <- if (weighted_n)
+        x$totals_counts else x$unweighted_n
+    min_cell_mask <- NULL
+    if (!is.null(min_cell_size)) {
+      min_cell_mask <- n_data < min_cell_size
+    }
+    if (digits > -1) {
+        if (reformat) {
+            data[] <- format(round(data * if (proportions) 100 else 1, digits), nsmall=digits, big.mark=",")
+        }
+        n_data[] <- round(n_data, digits)
+        if (reformat) {
+          n_data[] <- format(n_data, nsmall=digits, big.mark=",")
+        }
+    }
+    if (proportions && reformat) {
+        data[] <- paste0(data, "%")
+    }
+    if (any(min_cell_mask)) {
+        data[, min_cell_mask] <- min_cell_label
+    }
+    if (add_parenthesis) {
+        n_data[] <- paste0("(", n_data, ")")
+    }
+    if (!is.null(latex_adjust)) {
+        n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
+    }
+    data <- rbind(data, n_data)
+    rownames(data)[length(rownames(data))] <- if (weighted_n)
+        "Weighted N" else "Unweighted N"
+    return(data)
+}
+
+#' @export
+reformatResults.CrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
+    digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
+    lapply(x, function(var) {
+        var$crosstabs <- lapply(names(var$crosstabs), function(banner_name) {
+            lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
+                banner_var <- banner[[banner_name]][[banner_var_ind]]
+                cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
+                reformatResults(cross_tab_banner_var, banner_var, proportions = proportions,
+                  digits = digits, add_parenthesis = add_parenthesis, show_totals = show_totals,
+                  weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
+                  min_cell_label = min_cell_label, reformat = reformat)
+            })
+        })
+        var
+    })
+}
+
+
+flattenBannerResults <- function(x) {
+    lapply(x, function(var) {
+        var$crosstabs <- flattenBanner(var$crosstabs)
+        var
+    })
+}
+
+flattenBanner <- function(x) {
+    unlist(lapply(seq_along(x), function(banner_id) {
+        if (banner_id == 1) {
+            x[[banner_id]]
+        } else {
+            x[[banner_id]][2:length(x[[banner_id]])]
+        }
+    }), recursive = FALSE)
+}
+
+bannerDataRecode <- function(b_table, b_recode, divade = FALSE) {
+    names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
+    b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
+        drop = FALSE]
+    colnames(b_table) <- b_recode$categories_out[names_mask]
+    b_table <- sapply(b_recode$categories, function(x) {
+        dup_ind <- grep(x, colnames(b_table), fixed = TRUE)
+        rowSums(b_table[, dup_ind, drop = FALSE])/if (divade)
+            length(dup_ind) else 1
+    })
+    b_table
+}

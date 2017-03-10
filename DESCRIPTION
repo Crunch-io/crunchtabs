@@ -1,0 +1,21 @@
+Package: crunchtabs
+Type: Package
+Title: Report (toplines and banners) generation for Crunch datasets
+Description: This package provides functions for report generation:
+  - toplines (one-way frequency tables)
+  - banners (cross tabulations)
+Version: 0.2.5
+Date: 2017-03-10
+Authors@R: person("Kamil", "Sedrowicz", role=c("aut", "cre"), email="kamil.sedrowicz@yougov.com")
+URL: https://github.com/Crunch-io/crunchtabs
+BugReports: https://github.com/Crunch-io/crunchtabs/issues
+License: GPL-3
+Depends:
+    R (>= 3.3.2)
+Imports:
+    crunch,
+    openxlsx,
+    digest
+Suggests:
+    testthat
+RoxygenNote: 6.0.0
