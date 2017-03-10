@@ -107,10 +107,3 @@ toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 writeLatex(toplines_summary, 'filename')
 }
 }
-\references{
-~~ Add references. ~~
-}
-\author{
-YouGov
-Maintainer: YouGov
-}

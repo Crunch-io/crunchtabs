@@ -38,10 +38,3 @@ banner(crunch_dataset, vars = list(banner1 = c('var1', 'var2'), banner2 = c('var
         var2 = ''cat2a' = 'new cat2a'; else = NA'))
 }
 }
-\references{
-~~ Add references. ~~
-}
-\author{
-YouGov
-Maintainer: YouGov
-}

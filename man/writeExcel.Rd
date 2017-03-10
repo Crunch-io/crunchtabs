@@ -77,10 +77,3 @@ toplines_summary <- tables(ds, weight = 'weight')
 writeExcel(toplines_summary, 'filename')
 }
 }
-\references{
-~~ Add references. ~~
-}
-\author{
-YouGov
-Maintainer: YouGov
-}
