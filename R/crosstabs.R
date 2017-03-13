@@ -15,8 +15,8 @@
 #' @param date An optional date. Defaults to the current date.
 #' @return A toplines (when no banner is provided) or crosstabs (when a banner is provided)
 #' summary of the input dataset.
-
-
+#' @author YouGov
+#' Maintainer: YouGov
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
@@ -51,7 +51,8 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         results <- filter_unsupported_toplines(results, dataset, vars)
         res_class <- c("Toplines", "CrunchTabs")
     } else {
-        results <- tabBooks(data = dataset[vars], banner = banner, weight = dataset[[weight]])
+        mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
+        results <- tabBooks(data = dataset[names(dataset)[names(dataset) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = dataset[[weight]])
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }

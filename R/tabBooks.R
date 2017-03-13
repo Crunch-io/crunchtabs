@@ -1,10 +1,9 @@
 
 #' @export
-tabBooks <- function(dataset, banner = NULL, weight = NULL) {
+tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NULL) {
   tabs_data <- list()
 
-  mtvars <- sapply(flattenBanner(banner), getAlias)
-  mtvars <- mtvars[mtvars != "___total___"]
+  mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
   mt_name <- digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
   if (is.null(m)) {
@@ -12,7 +11,7 @@ tabBooks <- function(dataset, banner = NULL, weight = NULL) {
   }
   book <- tabBook(m, data=dataset, weight = weight, format="json")
 
-  banner_map <- sapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
+  banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
   var_names <- names(variables(dataset))
   var_aliases <- aliases(variables(dataset))
@@ -21,7 +20,7 @@ tabBooks <- function(dataset, banner = NULL, weight = NULL) {
 
   for (vi in seq_along(book)) {
     crunch_cube <- book[[vi]][[1]]
-    # if (!(getAlias(crunch_cube)) %in% vars) next
+    if (!(getAlias(crunch_cube)) %in% vars) next
 
     array_type <- type(dataset[[getAlias(crunch_cube)]]) == 'categorical_array'
     if (getAlias(crunch_cube) != var_aliases[vi]) {
