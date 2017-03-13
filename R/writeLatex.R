@@ -55,9 +55,9 @@
 #' Defaults to \code{FALSE}.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
-
-
-
+#' @author YouGov
+#' Maintainer: YouGov
+#' @references ~~ Add references. ~~
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
@@ -151,7 +151,7 @@ ltranspose <- function(l) {
 getFilterText <- function(var_summary) {
     filtertext <- getNotes(var_summary)
     if (filtertext != "") {
-        filtertext <- paste("{\\scriptsize \\\\", escM(filtertext), "}")
+        filtertext <- paste(" \\\\ \\scriptsize { \\itshape ", escM(filtertext), "}")
     }
     filtertext
 }

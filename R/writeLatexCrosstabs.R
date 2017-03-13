@@ -228,3 +228,4 @@ getTableHeader <- function (ds_var) {
 tableFootLT <- function() "\n \\end{longtable}\n\n"
 
 latexFootLT <- function() "}\\end{document}\n"
+
