@@ -52,7 +52,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         res_class <- c("Toplines", "CrunchTabs")
     } else {
         mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-        results <- tabBooks(data = dataset[names(dataset)[names(dataset) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = dataset[[weight]])
+        results <- tabBooks(data = dataset[aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = dataset[[weight]])
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }

@@ -13,9 +13,9 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
-  var_names <- names(variables(dataset))
-  var_aliases <- aliases(variables(dataset))
-  var_types <- types(variables(dataset))
+  var_names <- names(allVariables(dataset))
+  var_aliases <- aliases(allVariables(dataset))
+  var_types <- types(allVariables(dataset))
   banner_var_aliases <- c("___total___", mtvars)
 
   for (vi in seq_along(book)) {
