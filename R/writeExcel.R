@@ -35,9 +35,6 @@
 #' the report is returned.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
-
-
-
 #' @examples
 #' \dontrun{
 #' ds <- loadDataset('dataset_name')
@@ -50,9 +47,6 @@ writeExcel <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, append_text = "", min_cell_size = NULL,
     min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20, ...) {
-
-    try(suppressWarnings(file.copy(from = system.file("YouGov.pdf", package = "crunchtabsreport"),
-        to = getwd(), overwrite = FALSE)))
 
     UseMethod("writeExcel", x)
 }

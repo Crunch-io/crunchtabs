@@ -74,7 +74,7 @@ latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.
         '\\usepackage[pdftex=true,
         pdftoolbar=true,
         pdfmenubar=true,
-        pdfauthor = {YouGov},
+        pdfauthor = {},
         pdfcreator = {PDFLaTeX},
         pdftitle = {},
         colorlinks=true,

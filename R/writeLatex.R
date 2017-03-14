@@ -53,11 +53,12 @@
 #' Defaults to \code{TRUE}.
 #' @param weighted_n logical. Should the total number of responses be weighted?
 #' Defaults to \code{FALSE}.
+#' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
+#' Defaults to \code{NULL} - LaTeX output directory.
+#' @param logo character. Name of the logo file.
+#' Defaults to \code{NULL} - no logo is used.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
-#' @author YouGov
-#' Maintainer: YouGov
-#' @references ~~ Add references. ~~
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
@@ -77,9 +78,6 @@ writeLatex <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
-
-    # try(suppressWarnings(file.copy(from = system.file("YouGov.pdf", package = "crunchtabs"),
-    #     to = getwd(), overwrite = FALSE)))
 
     UseMethod("writeLatex", x)
 }
