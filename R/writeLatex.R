@@ -78,8 +78,8 @@ writeLatex <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
         stop("Please provide a file name to generate PDF output.")
     }
 
-    try(suppressWarnings(file.copy(from = system.file("YouGov.pdf", package = "crunchtabs"),
-        to = getwd(), overwrite = FALSE)))
+    # try(suppressWarnings(file.copy(from = system.file("YouGov.pdf", package = "crunchtabs"),
+    #     to = getwd(), overwrite = FALSE)))
 
     UseMethod("writeLatex", x)
 }

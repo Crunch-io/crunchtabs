@@ -169,7 +169,7 @@ latexHeadT <- function(surveyhead, font_size, margin, font, landscape=FALSE, sub
         "\\fancyhead[L]{{\\Large {\\bf ",
         ifelse(is.null(surveyhead),"",escM(surveyhead)), "}}",
         ifelse(is.null(subhead), "", paste(" \\\\", escM(subhead))), "}\n",
-        "\\fancyhead[R]{\\includegraphics[scale=.5]{YouGov}}\n",
+        # "\\fancyhead[R]{\\includegraphics[scale=.5]{YouGov}}\n",
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
         "\\setlength{\\parindent}{0pt}",
