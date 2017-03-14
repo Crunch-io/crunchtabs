@@ -1,6 +1,6 @@
-#' Functions for reports (toplines and cross tabulations) generation.
+#' Functions for reports (toplines and banners) generation.
 #'
-#' crunchtabs provides tools for generating reports (toplines and cross tabulations)
+#' crunchtabs provides tools for generating reports (toplines and banners)
 #'
 #' @docType package
 #' @name crunchtabs-package
