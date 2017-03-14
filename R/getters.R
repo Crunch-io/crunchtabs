@@ -1,12 +1,11 @@
 
-#' @export
 getResults <- function(x, proportions = FALSE) {
     UseMethod("getResults", x)
 }
 
 #' @export
 getResults.default <- function(x, proportions) {
-    stop(paste("The getResults generic function doesn't support objects of class", 
+    stop(paste("The getResults generic function doesn't support objects of class",
         class(x)))
 }
 
@@ -43,7 +42,6 @@ getResults.CrossTabBannerVar <- function(x, proportions = FALSE) {
 }
 
 
-#' @export
 getNames <- function(x) {
     UseMethod("getNames", x)
 }
@@ -84,8 +82,6 @@ getNames.BannerVar <- function(x) {
 # print.ToplineNumeric <- function(x, proportions) {
 # cat(paste(print.ToplineBase(x), '\nSummary:\n')) print(getResults(x)) }
 
-
-#' @export
 getType <- function(x, ...) UseMethod("getType", x)
 
 #' @export
@@ -93,11 +89,9 @@ getType.ToplineBase <- function(x) {
     x$type
 }
 
-
 # getType.CrunchCube <- function(out_crtabs) {
 # out_crtabs$result$dimensions[[1]]$type$class }
 
-#' @export
 getAlias <- function(x, ...) UseMethod("getAlias", x)
 
 #' @export
@@ -120,8 +114,6 @@ getAlias.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$alias
 }
 
-
-#' @export
 getName <- function(x, ...) UseMethod("getName", x)
 
 #' @export
@@ -149,8 +141,6 @@ getName.CrunchTabs <- function(x) {
     x$title
 }
 
-
-#' @export
 getDescription <- function(x, ...) UseMethod("getDescription", x)
 
 #' @export
@@ -173,8 +163,6 @@ getDescription.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$description
 }
 
-
-#' @export
 getNotes <- function(x, ...) UseMethod("getNotes", x)
 
 #' @export
@@ -196,7 +184,6 @@ getNotes.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$notes
 }
 
-#' @export
 getTotal <- function(x, ...) UseMethod("getTotal", x)
 
 #' @export
@@ -209,7 +196,6 @@ getTotal.ToplineBase <- function(x) {
     x$total
 }
 
-#' @export
 getMissing <- function(x, ...) UseMethod("getMissing", x)
 
 #' @export

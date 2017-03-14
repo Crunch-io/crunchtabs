@@ -41,8 +41,6 @@ writeLatex.Toplines <- function(toplines_summary, filename = NULL, proportions =
   }
 }
 
-
-#' @export
 toplineHeader <- function(x, table_width = 6.5, num = NULL, first_col_width = 1.5, padding = 1, use_heuristic = TRUE) {
   UseMethod("toplineHeader", x)
 }
@@ -97,10 +95,8 @@ toplineTableDef <- function(var_summary, table_width, num, tab_definition, heade
         table_width, "in}{", ifelse(is.null(num), "", paste0(num, ". ")), escM(getDescription(var_summary)), filtertext, "}}
         \\begin{center}", tab_definition,
         "\n", header_row, "\n", sep = "")
-        }
+}
 
-
-#' @export
 toplineFooter <- function(x) {
   UseMethod("toplineFooter", x)
 }

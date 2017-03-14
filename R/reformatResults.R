@@ -1,5 +1,4 @@
 
-#' @export
 reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE, ...) {
     UseMethod("reformatResults", x)
 }

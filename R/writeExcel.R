@@ -172,7 +172,6 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
 }
 
 
-#' @export
 writeExcelVarTopline <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
     proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1, ...) {
     UseMethod("writeExcelVarTopline", x)
