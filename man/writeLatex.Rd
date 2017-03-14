@@ -13,7 +13,7 @@ writeLatex(x, filename = NULL, proportions = FALSE, digits = 0,
   0.6, left = 1, right = 1), append_text = "", longtablewrap = FALSE,
   tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape, 9,
   6.5), min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-  weighted_n = FALSE, ...)
+  weighted_n = FALSE, graphicspath = NULL, logo = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -91,6 +91,12 @@ Defaults to \code{TRUE}.}
 
 \item{weighted_n}{logical. Should the total number of responses be weighted?
 Defaults to \code{FALSE}.}
+
+\item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
+Defaults to \code{NULL} - LaTeX output directory.}
+
+\item{logo}{character. Name of the logo file.
+Defaults to \code{NULL} - no logo is used.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
@@ -107,3 +113,4 @@ toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 writeLatex(toplines_summary, 'filename')
 }
 }
+

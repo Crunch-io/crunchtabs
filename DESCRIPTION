@@ -2,8 +2,8 @@ Package: crunchtabs
 Type: Package
 Title: Report (toplines and banners) generation for Crunch datasets
 Description: This package provides functions for report generation:
-  - toplines (one-way frequency tables)
-  - banners (cross tabulations)
+    - toplines (one-way frequency tables)
+    - banners (cross tabulations)
 Version: 0.2.5
 Date: 2017-03-10
 Authors@R: person("Kamil", "Sedrowicz", role=c("aut", "cre"), email="kamil.sedrowicz@yougov.com")

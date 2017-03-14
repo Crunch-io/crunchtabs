@@ -16,3 +16,4 @@ An object containing basic information about the variable.
 \code{toplineBase} returns basic information about a Crunch variable, e.g.
 alias, name, type, description.
 }
+

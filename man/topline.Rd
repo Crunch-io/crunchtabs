@@ -11,7 +11,7 @@ topline(var, dataset, weight)
 
 \item{dataset}{A Crunch dataset.}
 
-\item{weight}{A (numeric)Cruch variable that should be used for data weighting.
+\item{weight}{A (numeric) Cruch variable that should be used for data weighting.
 Defaults to NULL - data is not weighted.}
 }
 \value{
@@ -25,3 +25,4 @@ A toplines summary of a Crunch variable.
 topline(variable, dataset, weight)
 }
 }
+

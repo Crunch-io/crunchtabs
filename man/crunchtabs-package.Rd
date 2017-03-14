@@ -2,9 +2,10 @@
 % Please edit documentation in R/crunchtabs.R
 \docType{package}
 \name{crunchtabs-package}
-\alias{crunchtabs-package}
 \alias{crunchtabs}
-\title{Functions for reports (toplines and cross tabulations) generation.}
+\alias{crunchtabs-package}
+\title{Functions for reports (toplines and banners) generation.}
 \description{
-crunchtabs provides tools for generating reports (toplines and cross tabulations)
+crunchtabs provides tools for generating reports (toplines and banners)
 }
+
