@@ -11,11 +11,11 @@ URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: GPL-3
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.3.0)
 Imports:
     crunch,
     openxlsx,
     digest
 Suggests:
     testthat
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
