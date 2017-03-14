@@ -72,7 +72,7 @@ writeLatex <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1), append_text = "",
     longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape,
         9, 6.5), min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-    weighted_n = FALSE, ...) {
+    weighted_n = FALSE, graphicspath = NULL, logo = NULL, ...) {
 
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")

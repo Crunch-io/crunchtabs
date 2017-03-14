@@ -3,7 +3,7 @@
 writeLatex.Toplines <- function(toplines_summary, filename = NULL, proportions = FALSE, digits = 0, title = getName(toplines_summary), subtitle = NULL, date = Sys.Date(),
                                 pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = TRUE, returndata = FALSE, table_of_contents = FALSE, moe = NULL, headtext = "",
                                 foottext = "", sample_desc = "", field_period = "", font = "helvet", font_size = 12, margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
-                                append_text = "", longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape, 9, 6.5), ...) {
+                                append_text = "", longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape, 9, 6.5), graphicspath = NULL, logo = NULL, ...) {
 
   toplines_summary$results <- lapply(toplines_summary$results, function(x) {
     x$data <- reformatResults(x, proportions = proportions, digits = digits)
@@ -22,7 +22,7 @@ writeLatex.Toplines <- function(toplines_summary, filename = NULL, proportions =
   out <- c(tables, append_text)
 
   if (!tableonly) {
-    latexHeadData <- latexHeadT(surveyhead = title, font_size = font_size, margin = margin, font = font, subhead = subtitle, landscape = landscape)
+    latexHeadData <- latexHeadT(surveyhead = title, font_size = font_size, margin = margin, font = font, subhead = subtitle, landscape = landscape, graphicspath = graphicspath, logo = logo)
     latexStartData <- latexStartT(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe)
     latexFootData <- latexFootT()
     out <- c(latexHeadData, latexStartData, out, latexFootData)
@@ -126,10 +126,11 @@ toplineFooterDef <- function(is_grid) {
 latexFootT <- function() "\\end{hyphenrules} \n \\end{document}\n"
 
 
-latexHeadT <- function(surveyhead, font_size, margin, font, landscape=FALSE, subhead=NULL){
+latexHeadT <- function(surveyhead, font_size, margin, font, landscape=FALSE, subhead=NULL, graphicspath = NULL, logo = NULL){
   paste("\\documentclass[", font_size, "pt", ifelse(landscape, ', landscape', ''), "]",
         "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
+        if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }"),
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
         "\\usepackage{sfmath}\n",
@@ -169,7 +170,7 @@ latexHeadT <- function(surveyhead, font_size, margin, font, landscape=FALSE, sub
         "\\fancyhead[L]{{\\Large {\\bf ",
         ifelse(is.null(surveyhead),"",escM(surveyhead)), "}}",
         ifelse(is.null(subhead), "", paste(" \\\\", escM(subhead))), "}\n",
-        # "\\fancyhead[R]{\\includegraphics[scale=.5]{YouGov}}\n",
+        if (!is.null(logo)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n"),
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
         "\\setlength{\\parindent}{0pt}",

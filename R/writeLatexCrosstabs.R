@@ -9,7 +9,8 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
                                  append_text = "", longtablewrap = TRUE, tableonly = FALSE, landscape = TRUE,
                                  pagewidth = ifelse(landscape, 9, 6.5), min_cell_size = NULL,
                                  min_cell_label = NULL, show_totals = TRUE, weighted_n = FALSE, multirowheaderlines=FALSE,
-                                 latex_adjust = 'c', add_parenthesis = TRUE, clearpage=TRUE, table=TRUE, ...
+                                 latex_adjust = 'c', add_parenthesis = TRUE, clearpage=TRUE, table=TRUE,
+                                 graphicspath = NULL, logo = NULL, ...
                                  ) {
 
   # reformat results for LaTeX output
@@ -37,7 +38,7 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
 
   if (!tableonly) {
     out <- c(
-      latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font),
+      latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font, graphicspath = graphicspath, logo = logo),
       sapply(seq_along(banner), function (j) {
        longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, pmar = pmar, coltype=ifelse(digits==0, "g", "d"),
                           multirow=multirowheaderlines, pagewidth=pagewidth)
@@ -60,11 +61,12 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
   }
 }
 
-latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.0"), subtitle=NULL, font="helvet") {
+latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.0"), subtitle=NULL, font="helvet", graphicspath = NULL, logo = NULL) {
   dc <- rep(dc, length=2)
   paste("\\documentclass[", ifelse(landscape, "landscape", ""),"]",
         "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
+        if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }"),
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
         "\\usepackage{sfmath}\n",
@@ -102,7 +104,7 @@ latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.
         ifelse(is.null(title), "", escM(title)), "}}",
         ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))),
         "}\n",
-        "\\fancyhead[R]{\\includegraphics[scale=.4]{YouGov}}\n",
+        if (!is.null(logo)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n"),
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n\n",
         "\\newcolumntype{d}{D{.}{.}{", dc[1],"}}\n\n",
