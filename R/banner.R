@@ -140,5 +140,5 @@ squeezeBlanks <- function(text) {
 lstranspose <- function(l) {
     if (length(unique(sapply(l, length))) > 1)
         stop("All nested lists must be of equal length")
-    return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]])))
+    return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
 }
