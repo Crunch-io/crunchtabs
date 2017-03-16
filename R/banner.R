@@ -12,9 +12,6 @@
 #' Use \code{else} to change all not listed categories. See examples for details.
 #' Defaults to NULL - categories are not modified.
 #' @return An object of class \code{Banner}.
-
-
-
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
@@ -24,6 +21,7 @@
 #'         var1 = ''cat1a' = 'new cat1a'; 'cat1b' = NA',
 #'         var2 = ''cat2a' = 'new cat2a'; else = NA'))
 #' }
+#' @importFrom crunch alias allVariables types categories
 #' @export
 banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     checkCrunchDatasetClass(dataset)

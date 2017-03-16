@@ -22,9 +22,9 @@ reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, re
     reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
 }
 
-reformatResultsGen <- function(summary_var, proportions = FALSE, digits = 0, reformat = TRUE,
+reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
     ...) {
-    data <- getResults(summary_var, proportions = proportions)
+    data <- getResults(x, proportions = proportions)
     if (digits > -1 && reformat) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
     }
@@ -35,8 +35,8 @@ reformatResultsGen <- function(summary_var, proportions = FALSE, digits = 0, ref
 }
 
 
-#' @export
-reformatResults.CrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
+
+reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
 
@@ -78,8 +78,7 @@ reformatResults.CrossTabBannerVar <- function(x, banner_var = NULL, proportions 
     return(data)
 }
 
-#' @export
-reformatResults.CrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
+reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
     lapply(x, function(var) {
@@ -87,7 +86,7 @@ reformatResults.CrosstabsResults <- function(x, banner = NULL, proportions = TRU
             lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
                 banner_var <- banner[[banner_name]][[banner_var_ind]]
                 cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
-                reformatResults(cross_tab_banner_var, banner_var, proportions = proportions,
+                reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
                   digits = digits, add_parenthesis = add_parenthesis, show_totals = show_totals,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
                   min_cell_label = min_cell_label, reformat = reformat)

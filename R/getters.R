@@ -82,7 +82,7 @@ getNames.BannerVar <- function(x) {
 # print.ToplineNumeric <- function(x, proportions) {
 # cat(paste(print.ToplineBase(x), '\nSummary:\n')) print(getResults(x)) }
 
-getType <- function(x, ...) UseMethod("getType", x)
+getType <- function(x) UseMethod("getType", x)
 
 #' @export
 getType.ToplineBase <- function(x) {
@@ -92,7 +92,7 @@ getType.ToplineBase <- function(x) {
 # getType.CrunchCube <- function(out_crtabs) {
 # out_crtabs$result$dimensions[[1]]$type$class }
 
-getAlias <- function(x, ...) UseMethod("getAlias", x)
+getAlias <- function(x) UseMethod("getAlias", x)
 
 #' @export
 getAlias.ToplineBase <- function(x) {
@@ -114,7 +114,7 @@ getAlias.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$alias
 }
 
-getName <- function(x, ...) UseMethod("getName", x)
+getName <- function(x) UseMethod("getName", x)
 
 #' @export
 getName.ToplineBase <- function(x) {
@@ -141,7 +141,7 @@ getName.CrunchTabs <- function(x) {
     x$title
 }
 
-getDescription <- function(x, ...) UseMethod("getDescription", x)
+getDescription <- function(x) UseMethod("getDescription", x)
 
 #' @export
 getDescription.ToplineBase <- function(x) {
@@ -163,7 +163,7 @@ getDescription.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$description
 }
 
-getNotes <- function(x, ...) UseMethod("getNotes", x)
+getNotes <- function(x) UseMethod("getNotes", x)
 
 #' @export
 getNotes.ToplineBase <- function(x) {
@@ -184,7 +184,7 @@ getNotes.CrunchCube <- function(x) {
     x@.Data[[1]]$dimensions[[1]]$references$notes
 }
 
-getTotal <- function(x, ...) UseMethod("getTotal", x)
+getTotal <- function(x) UseMethod("getTotal", x)
 
 #' @export
 getTotal.CrunchCube <- function(out_crtabs) {
@@ -196,7 +196,7 @@ getTotal.ToplineBase <- function(x) {
     x$total
 }
 
-getMissing <- function(x, ...) UseMethod("getMissing", x)
+getMissing <- function(x) UseMethod("getMissing", x)
 
 #' @export
 getMissing.CrunchCube <- function(out_crtabs) {

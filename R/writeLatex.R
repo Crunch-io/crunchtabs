@@ -53,12 +53,17 @@
 #' Defaults to \code{TRUE}.
 #' @param weighted_n logical. Should the total number of responses be weighted?
 #' Defaults to \code{FALSE}.
+#' @param pagewidth Page width. Defaults to \code{FALSE}.
+#' Defaults to 9in for banners and 6.5in for toplines.
+#' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
+#' Defaults to \code{TRUE}.
 #' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
 #' Defaults to \code{NULL} - LaTeX output directory.
 #' @param logo character. Name of the logo file.
 #' Defaults to \code{NULL} - no logo is used.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
+#' @param ... other options.
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
@@ -67,13 +72,13 @@
 #' }
 #' @export
 writeLatex <- function(x, filename = NULL, proportions = FALSE, digits = 0, title = getName(x),
-    subtitle = NULL, date = Sys.Date(), pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"),
+    subtitle = NULL, pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"),
     open = TRUE, returndata = TRUE, table_of_contents = FALSE, moe = NULL, headtext = "",
     foottext = "", sample_desc = "", field_period = "", font = "helvet", font_size = NULL,
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1), append_text = "",
     longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape,
         9, 6.5), min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-    weighted_n = FALSE, graphicspath = NULL, logo = NULL, ...) {
+    weighted_n = FALSE, graphicspath = NULL, logo = NULL, add_parenthesis = FALSE) {
 
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")

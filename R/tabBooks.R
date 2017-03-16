@@ -1,10 +1,10 @@
 
-#' @export
+#' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs
 tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NULL) {
   tabs_data <- list()
 
   mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-  mt_name <- digest(sort(mtvars), "md5")
+  mt_name <- digest::digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
   if (is.null(m)) {
     m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)

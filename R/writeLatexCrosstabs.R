@@ -1,7 +1,7 @@
 
 #' @export
 writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions = TRUE, digits = 0,
-                                 title = getName(crosstabs_summary), subtitle = NULL, date = Sys.Date(),
+                                 title = getName(crosstabs_summary), subtitle = NULL,
                                  pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = TRUE, returndata = FALSE,
                                  table_of_contents = FALSE, moe = NULL, headtext = "",
                                  foottext = "", sample_desc = "", field_period = "", font = "helvet", pmar = 1,
@@ -10,12 +10,12 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
                                  pagewidth = ifelse(landscape, 9, 6.5), min_cell_size = NULL,
                                  min_cell_label = NULL, show_totals = TRUE, weighted_n = FALSE, multirowheaderlines=FALSE,
                                  latex_adjust = 'c', add_parenthesis = TRUE, clearpage=TRUE, table=TRUE,
-                                 graphicspath = NULL, logo = NULL, ...
+                                 graphicspath = NULL, logo = NULL
                                  ) {
 
   # reformat results for LaTeX output
   banner <- crosstabs_summary$banner
-  crosstabs_summary$results <- reformatResults(crosstabs_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
+  crosstabs_summary$results <- reformatCrosstabsResults(crosstabs_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
                                                show_totals = show_totals, weighted_n = weighted_n, latex_adjust = latex_adjust,
                                                min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = TRUE)
 
