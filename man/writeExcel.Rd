@@ -5,12 +5,12 @@
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
 writeExcel(x, filename = NULL, proportions = FALSE, digits = 0,
-  title = getName(x), subtitle = NULL, date = Sys.Date(),
-  returndata = TRUE, table_of_contents = FALSE, moe = NULL,
-  sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
-  show_totals = TRUE, weighted_n = FALSE, append_text = "",
-  min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE,
-  first_col_width = 20, ...)
+  title = getName(x), subtitle = NULL, returndata = TRUE,
+  table_of_contents = FALSE, moe = NULL, sample_desc = "",
+  field_period = "", font = "Calibri", font_size = 12,
+  show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
+  append_text = "", min_cell_size = NULL, min_cell_label = NULL,
+  one_per_sheet = TRUE, first_col_width = 20)
 }
 \arguments{
 \item{x}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -47,6 +47,9 @@ Defaults to \code{TRUE}.}
 \item{weighted_n}{logical. Should the total number of responses be weighted?
 Defaults to \code{FALSE}.}
 
+\item{add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
+Defaults \code{FALSE}.}
+
 \item{append_text}{Character string that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information.}
 
@@ -61,6 +64,8 @@ used to mask the results.}
 Defaults to \code{TRUE}.}
 
 \item{first_col_width}{width of the first column. Defaults to 20pt.}
+
+\item{...}{other options.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
@@ -77,4 +82,3 @@ toplines_summary <- tables(ds, weight = 'weight')
 writeExcel(toplines_summary, 'filename')
 }
 }
-

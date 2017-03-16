@@ -25,4 +25,3 @@ A toplines summary of a Crunch variable.
 topline(variable, dataset, weight)
 }
 }
-

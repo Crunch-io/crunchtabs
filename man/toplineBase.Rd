@@ -4,10 +4,10 @@
 \alias{toplineBase}
 \title{Basic information about a Crunch variable}
 \usage{
-toplineBase(x)
+toplineBase(var)
 }
 \arguments{
-\item{x}{A Crunch variable.}
+\item{var}{A Crunch variable.}
 }
 \value{
 An object containing basic information about the variable.
@@ -16,4 +16,3 @@ An object containing basic information about the variable.
 \code{toplineBase} returns basic information about a Crunch variable, e.g.
 alias, name, type, description.
 }
-
