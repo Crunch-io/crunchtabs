@@ -21,6 +21,7 @@
 #' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 #' crosstabs_summary <- crosstabs(crunch_dataset, weight = 'weight', banner = banner_object)
 #' }
+#' @importFrom crunch name aliases allVariables is.Numeric
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL,
     title = name(dataset), date = Sys.Date()) {
@@ -44,7 +45,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
 
     if (is.null(banner)) {
-        results <- lapply(dataset[vars], topline, data = dataset, weight = dataset[[weight]])
+        results <- lapply(dataset[vars], topline, data = dataset, weight = if (!is.null(weight)) dataset[[weight]])
         names(results) <- vars
         results <- filter_unsupported_toplines(results, dataset, vars)
         res_class <- c("Toplines", "CrunchTabs")
@@ -61,12 +62,14 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     return(summary_data)
 }
 
+#' @importFrom crunch is.dataset
 checkCrunchDatasetClass <- function(dataset) {
     if (!is.dataset(dataset)) {
         stop("The dataset parameter must be an object of class 'CrunchDataset'")
     }
 }
 
+#' @importFrom crunch types variables
 filter_unsupported_toplines <- function(results, dataset, vars) {
     vars_filtered <- sapply(results, is.null)
     if (any(vars_filtered)) {
