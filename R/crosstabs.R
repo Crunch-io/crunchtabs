@@ -44,14 +44,16 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         stop("The banner parameter, if provided, must be an object of class 'Banner'")
     }
 
+    weight_var <- if (!is.null(weight)) dataset[[weight]]
+
     if (is.null(banner)) {
-        results <- lapply(dataset[vars], topline, data = dataset, weight = if (!is.null(weight)) dataset[[weight]])
+        results <- lapply(dataset[vars], topline, data = dataset, weight = weight_var)
         names(results) <- vars
         results <- filter_unsupported_toplines(results, dataset, vars)
         res_class <- c("Toplines", "CrunchTabs")
     } else {
         mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-        results <- tabBooks(data = dataset[aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = dataset[[weight]])
+        results <- tabBooks(data = dataset[aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }
