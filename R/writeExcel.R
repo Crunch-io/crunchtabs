@@ -72,7 +72,7 @@ writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits 
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals, add_parenthesis = add_parenthesis,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
-        one_per_sheet = one_per_sheet, first_col_width = first_col_width, ...)
+        one_per_sheet = one_per_sheet, first_col_width = first_col_width)
 
 }
 
@@ -95,12 +95,12 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals, add_parenthesis = add_parenthesis,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
-        one_per_sheet = one_per_sheet, first_col_width = first_col_width, ...)
+        one_per_sheet = one_per_sheet, first_col_width = first_col_width)
 
 }
 
 create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_period,
-    moe, ...) {
+    moe) {
     toc_sheet <- "Table of Contents"
     openxlsx::addWorksheet(wb, toc_sheet)
     toc_row <- 1
@@ -136,9 +136,9 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
 
 writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, first_col_width = 20, toc_sheet = NULL,
-    toc_row = 1, ...) {
+    toc_row = 1) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
-        toc_sheet = toc_sheet, toc_row = toc_row, ...)
+        toc_sheet = toc_sheet, toc_row = toc_row)
     ccol <- start_col
     multicols <- sapply(banner, getNames)
     multicols_csum <- cumsum(c(2, sapply(multicols, length)))
@@ -175,19 +175,19 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
 
 
 writeExcelVarTopline <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
-    proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1, ...) {
+    proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1) {
     UseMethod("writeExcelVarTopline", x)
 }
 
 #' @export
-writeExcelVarTopline.default <- function(wb, ws, x, ...) {
+writeExcelVarTopline.default <- function(wb, ws, x) {
     stop(paste("The 'writeExcelVarTopline' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
 
 #' @export
 writeExcelVarTopline.ToplineCategoricalArray <- function(wb, ws, x, start_col = 1,
-    start_row = 1, digits = 0, proportions = TRUE, ...) {
+    start_row = 1, digits = 0, proportions = TRUE) {
     df <- as.matrix(x$data)
     openxlsx::writeData(wb, ws, df, startCol = start_col, startRow = start_row, rowNames = TRUE,
         colNames = TRUE)
@@ -204,7 +204,7 @@ writeExcelVarTopline.ToplineCategoricalArray <- function(wb, ws, x, start_col = 
 
 #' @export
 writeExcelVarTopline.ToplineNumeric <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, ...) {
+    digits = 0) {
     df <- as.matrix(x$data)
     openxlsx::writeData(wb, ws, df, startCol = start_col, startRow = start_row, rowNames = TRUE,
         colNames = FALSE)
@@ -219,21 +219,21 @@ writeExcelVarTopline.ToplineNumeric <- function(wb, ws, x, start_col = 1, start_
 
 #' @export
 writeExcelVarTopline.ToplineCategorical <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, ...) {
+    digits = 0, proportions = TRUE) {
     drows <- writeExcelVarToplineCategorical(wb, ws, x, start_col = start_col, start_row = start_row,
-        digits = digits, proportions = proportions, ...)
+        digits = digits, proportions = proportions)
     return(drows)
 }
 #' @export
 writeExcelVarTopline.ToplineMultipleResponse <- function(wb, ws, x, start_col = 1,
-    start_row = 1, digits = 0, proportions = TRUE, ...) {
+    start_row = 1, digits = 0, proportions = TRUE) {
     drows <- writeExcelVarToplineCategorical(wb, ws, x, start_col = start_col, start_row = start_row,
-        digits = digits, proportions = proportions, ...)
+        digits = digits, proportions = proportions)
     return(drows)
 }
 
 writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, ...) {
+    digits = 0, proportions = TRUE) {
     df <- as.matrix(x$data)
     openxlsx::writeData(wb, ws, df, startCol = start_col, startRow = start_row, rowNames = TRUE,
         colNames = FALSE)
@@ -251,17 +251,17 @@ writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1,
     ...) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
-        toc_sheet = toc_sheet, toc_row = toc_row, first_col_width, ...)
+        toc_sheet = toc_sheet, toc_row = toc_row, first_col_width)
     crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
-        digits = digits, proportions = proportions, ...)
+        digits = digits, proportions = proportions)
     openxlsx::setColWidths(wb, ws, 1, first_col_width)
     return(crow + drows)
 }
 
 
 writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = NULL,
-    toc_row = 1, ...) {
+    toc_row = 1) {
     crow <- start_row
     ccol <- start_col
     openxlsx::writeData(wb, ws, getName(x), startCol = ccol, startRow = crow)
@@ -288,14 +288,14 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
     digits = 0, title = "", subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, add_parenthesis = FALSE, append_text = "", min_cell_size = NULL,
-    min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20, ...) {
+    min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
     wb <- createWorkbook()
 
     openxlsx::modifyBaseFont(wb, fontSize = font_size, fontColour = "black", fontName = font)
 
     toc_res <- if (table_of_contents)
         create_table_of_contents(wb, title, subtitle, sample_desc, field_period,
-            moe, ...) else NULL
+            moe) else NULL
     toc_sheet <- if (is.null(toc_res))
         NULL else toc_res$toc_sheet
     toc_row <- if (is.null(toc_res))
@@ -329,7 +329,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
             writeExcelVarBanner(wb, worksheet_name, x$results[[vidx]], banner, start_col = start_col,
                 start_row = start_row, digits = digits, proportions = proportions,
                 show_totals = show_totals, first_col_width = first_col_width, toc_sheet = toc_sheet,
-                toc_row = toc_row, ...)
+                toc_row = toc_row)
         }
         toc_row <- toc_row + 1
     }
@@ -349,9 +349,9 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
 
 # writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row =
 # 1, digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL,
-# toc_row = 1, ...) { crow <- writeVarHeader(wb, ws, x, start_col = start_col,
+# toc_row = 1) { crow <- writeVarHeader(wb, ws, x, start_col = start_col,
 # start_row = start_row, toc_sheet = toc_sheet, toc_row = toc_row,
-# first_col_width, ...)  ccol <- start_col crow <- crow + 1 drows <- nrow(x$data)
+# first_col_width)  ccol <- start_col crow <- crow + 1 drows <- nrow(x$data)
 # dcols <- ncol(x$data) is_grid <- !is.na(dcols) df <- as.matrix(x$data)
 # openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE,
 # colNames = is_grid) numFmt <- paste0('0', if (digits > 1) paste0('.', rep(0,
