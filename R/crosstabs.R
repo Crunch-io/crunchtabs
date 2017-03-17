@@ -34,7 +34,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
     if (!is.null(weight)) {
         if (!weight %in% aliases(allVariables(dataset))) {
-            stop(paste("No variable with alias", weight, "found in", name(dataset)))
+            stop(paste("No 'weight' variable with alias", weight, "found in", sQuote(name(dataset))))
         }
         if (!is.Numeric(dataset[[weight]])) {
             stop("The weight variable has to be numeric")
