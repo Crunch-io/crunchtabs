@@ -15,7 +15,8 @@ Depends:
 Imports:
     crunch,
     openxlsx,
-    digest
+    digest,
+    methods
 Suggests:
     testthat
 RoxygenNote: 6.0.1

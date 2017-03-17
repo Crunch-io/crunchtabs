@@ -1,22 +1,28 @@
 
 #' @export
-writeLatex.Toplines <- function(toplines_summary, filename = NULL, proportions = FALSE, digits = 0, title = getName(toplines_summary), subtitle = NULL,
-                                pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = TRUE, returndata = FALSE, table_of_contents = FALSE, moe = NULL, headtext = "",
-                                foottext = "", sample_desc = "", field_period = "", font = "helvet", font_size = 12, margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
-                                append_text = "", longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape, 9, 6.5), graphicspath = NULL, logo = NULL,
-                                add_parenthesis = FALSE) {
+writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
+    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
+    table_of_contents = FALSE, returndata = FALSE, append_text = "",
+    pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
+    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
+    tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
+    pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+    min_cell_size = NULL, min_cell_label = NULL,
+    show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
+    page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+    latex_adjust = 'c', clearpage = TRUE) {
 
-  toplines_summary$results <- lapply(toplines_summary$results, function(x) {
+  data_summary$results <- lapply(data_summary$results, function(x) {
     x$data <- reformatResults(x, proportions = proportions, digits = digits)
     x
   })
 
-  headers <- lapply(seq_along(toplines_summary$results), function(i) {
-    toplineHeader(toplines_summary$results[[i]], page_width = pagewidth, num = i)
+  headers <- lapply(seq_along(data_summary$results), function(i) {
+    toplineHeader(data_summary$results[[i]], page_width = pagewidth, num = i)
   })
 
-  footers <- lapply(toplines_summary$results, toplineFooter)
-  bodies <- lapply(toplines_summary$results, function(x) latexTable.body(x$data, dotfill = TRUE, autorownames = TRUE))
+  footers <- lapply(data_summary$results, toplineFooter)
+  bodies <- lapply(data_summary$results, function(x) latexTable.body(x$data, dotfill = TRUE, autorownames = TRUE))
 
   tables <- sapply(ltranspose(list(headers, bodies, footers)), function(x) paste(x, collapse = "\n"))
 

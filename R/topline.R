@@ -9,7 +9,7 @@
 #' @return A toplines summary of a Crunch variable.
 #' @examples
 #' \dontrun{
-#' topline(variable, dataset, weight)
+#' topline(dataset[[variable_name]], dataset, weight)
 #' }
 #' @export
 topline <- function(var, dataset, weight) {
@@ -22,10 +22,10 @@ topline.default <- function(var, dataset, weight = NULL) {
     NULL
 }
 
+#' @importFrom stats sd
 #' @export
 topline.NumericVariable <- function(var, dataset, weight = NULL) {
     topline_base <- toplineBase(var)
-    # data <- as.vector(var) * if (is.null(weight)) 1 else as.vector(weight)
     data <- as.vector(var)
     valid <- length(data[!is.null(data)])
     missing <- length(data) - valid
@@ -49,7 +49,7 @@ topline.MultipleResponseVariable <- function(var, dataset, weight = NULL) {
     #### Persephone: it's not always 'not selected'. if it didn't come in from the
     #### exporter, it won't be.  so maybe make 'not selected' a default? and let people
     #### change it if necessary
-    ret <- toplineGen(var, data = dataset, weight = weight)
+    ret <- toplineGen(var, dataset = dataset, weight = weight)
     ret$counts <- cbind(selected = ret$counts, `not selected` = ret$total - ret$counts -
         ret$missing, missing = ret$missing)
     ret

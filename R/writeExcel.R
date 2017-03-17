@@ -55,8 +55,8 @@ writeExcel <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
 }
 
 #' @export
-writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits = 0,
-    title = getName(x), subtitle = NULL, date = Sys.Date(), returndata = TRUE, table_of_contents = FALSE,
+writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits = 0, title = getName(x),
+    subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE, append_text = "",
     min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
@@ -77,8 +77,8 @@ writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits 
 }
 
 #' @export
-writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits = 0,
-    title = getName(x), subtitle = NULL, date = Sys.Date(), returndata = TRUE, table_of_contents = FALSE,
+writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits = 0, title = getName(x),
+    subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE, append_text = "",
     min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
@@ -248,10 +248,9 @@ writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row 
 }
 
 writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1,
-    ...) {
+    digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
-        toc_sheet = toc_sheet, toc_row = toc_row, first_col_width)
+        toc_sheet = toc_sheet, toc_row = toc_row)
     crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
         digits = digits, proportions = proportions)
@@ -268,7 +267,7 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
     openxlsx::addStyle(wb, ws, openxlsx::createStyle(textDecoration = "bold"), rows = crow, cols = ccol)
     crow <- crow + 1
     if (!is.null(toc_sheet)) {
-        openxlsx::writeFormula(wb, toc_sheet, startRow = toc_row, x = makeHyperlinkString(sheet = ws,
+        openxlsx::writeFormula(wb, toc_sheet, startRow = toc_row, x = openxlsx::makeHyperlinkString(sheet = ws,
             row = start_row, col = start_col, text = getName(x)))
         openxlsx::addStyle(wb, toc_sheet, openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
             rows = toc_row, cols = 1, stack = FALSE)
@@ -289,7 +288,8 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, add_parenthesis = FALSE, append_text = "", min_cell_size = NULL,
     min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
-    wb <- createWorkbook()
+
+    wb <- openxlsx::createWorkbook()
 
     openxlsx::modifyBaseFont(wb, fontSize = font_size, fontColour = "black", fontName = font)
 
@@ -323,8 +323,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
         last_row_used <- if (is.null(banner)) {
             writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
                 start_row = start_row, digits = digits, proportions = proportions,
-                first_col_width = first_col_width, toc_sheet = toc_sheet, toc_row = toc_row,
-                ...)
+                first_col_width = first_col_width, toc_sheet = toc_sheet, toc_row = toc_row)
         } else {
             writeExcelVarBanner(wb, worksheet_name, x$results[[vidx]], banner, start_col = start_col,
                 start_row = start_row, digits = digits, proportions = proportions,

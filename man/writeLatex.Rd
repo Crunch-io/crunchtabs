@@ -4,20 +4,22 @@
 \alias{writeLatex}
 \title{Generate LaTeX Reports: Toplines and Banners}
 \usage{
-writeLatex(x, filename = NULL, proportions = FALSE, digits = 0,
-  title = getName(x), subtitle = NULL, pdf = FALSE,
-  path.to.pdflatex = Sys.which("pdflatex"), open = TRUE,
-  returndata = TRUE, table_of_contents = FALSE, moe = NULL,
-  headtext = "", foottext = "", sample_desc = "", field_period = "",
-  font = "helvet", font_size = NULL, margin = list(top = 0.6, bottom =
-  0.6, left = 1, right = 1), append_text = "", longtablewrap = FALSE,
-  tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape, 9,
-  6.5), min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-  weighted_n = FALSE, graphicspath = NULL, logo = NULL,
-  add_parenthesis = FALSE)
+writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
+  title = getName(data_summary), subtitle = NULL, sample_desc = "",
+  field_period = "", moe = NULL, table_of_contents = FALSE,
+  returndata = FALSE, append_text = "", pdf = FALSE,
+  path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
+  foottext = "", graphicspath = NULL, logo = NULL,
+  longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE,
+  font = "helvet", font_size = NULL, pagewidth = ifelse(landscape, 9,
+  6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+  min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
+  weighted_n = FALSE, add_parenthesis = FALSE, page_margin = 1,
+  dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
+  clearpage = TRUE)
 }
 \arguments{
-\item{x}{An object of class \code{Toplines} or \code{Crosstabs}.}
+\item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
 \item{filename}{character. Name of the output file (without extension).}
 
@@ -30,20 +32,27 @@ Defaults to 0.}
 
 \item{subtitle}{An optional character subtitle. Defaults to an empty string.}
 
+\item{sample_desc}{A character string describing the sample.}
+
+\item{field_period}{A character string describing the field period.}
+
+\item{moe}{An optional numeric margin of error.}
+
+\item{table_of_contents}{logical. Should a list of tables be included at the start
+of the file. Defaults to \code{FALSE}.}
+
+\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
+the report is returned.}
+
+\item{append_text}{An optional character string that, if supplied, will be appended after
+the final table. Useful for adding in disclosure information. Defaults to an empty string.}
+
 \item{pdf}{logical. Compile LaTeX using pdflatex? Currently implemented only on Mac/Linux.}
 
 \item{path.to.pdflatex}{Character path to pdflatex.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Currently only implemented for Mac OS X.}
-
-\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
-
-\item{table_of_contents}{logical. Should a list of tables be included at the start
-of the file. Defaults to \code{FALSE}.}
-
-\item{moe}{An optional numeric margin of error.}
 
 \item{headtext}{An optional character string indicating what text should be
 placed at the top of continuation tables. 'tbc' is a shortcut for 'To be
@@ -53,22 +62,11 @@ continued.'}
 placed at the bottom of continuation tables. 'tbc' is a shortcut for
 'continued from previous page.'}
 
-\item{sample_desc}{A character string describing the sample.}
+\item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
+Defaults to \code{NULL} - LaTeX output directory.}
 
-\item{field_period}{A character string describing the field period.}
-
-\item{font}{A character string specifying the font package to use in LaTeX.}
-
-\item{font_size}{Font size points for toplines and fontsize name for banners.
-Defaults to 12 pt font for toplines and "small" for banners}
-
-\item{margin}{An optional argument to pass to the LaTeX package
-\code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
-includeheadfoot' for banners and 'top=.6in, bottom=.6in, left=1in,
-right=1in, includeheadfoot' for toplines.}
-
-\item{append_text}{An optional character string that, if supplied, will be appended after
-the final table. Useful for adding in disclosure information. Defaults to an empty string.}
+\item{logo}{character. Name of the logo file.
+Defaults to \code{NULL} - no logo is used.}
 
 \item{longtablewrap}{logical. Should LaTeX longtables be allowed to wrap to
 a new page? If \code{TRUE}, inserts the 'continued on the next page' breaks.
@@ -80,8 +78,18 @@ content within the \code{table} environments.}
 \item{landscape}{logical. If \code{TRUE}, output pages are in landscape
 mode. Defaults to \code{TRUE} for banners and \code{FALSE} for toplines.}
 
+\item{font}{A character string specifying the font package to use in LaTeX.}
+
+\item{font_size}{Font size points for toplines and fontsize name for banners.
+Defaults to 12 pt font for toplines and "small" for banners}
+
 \item{pagewidth}{Page width. Defaults to \code{FALSE}.
 Defaults to 9in for banners and 6.5in for toplines.}
+
+\item{margin}{An optional argument to pass to the LaTeX package
+\code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
+includeheadfoot' for banners and 'top=.6in, bottom=.6in, left=1in,
+right=1in, includeheadfoot' for toplines.}
 
 \item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
@@ -96,14 +104,18 @@ Defaults to \code{TRUE}.}
 \item{weighted_n}{logical. Should the total number of responses be weighted?
 Defaults to \code{FALSE}.}
 
-\item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
-Defaults to \code{NULL} - LaTeX output directory.}
-
-\item{logo}{character. Name of the logo file.
-Defaults to \code{NULL} - no logo is used.}
-
 \item{add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 Defaults to \code{TRUE}.}
+
+\item{page_margin}{Page margin for banners.}
+
+\item{dc}{Width of new column types for banners.}
+
+\item{multirowheaderlines}{logical. Should banners allow multi-row headlines?}
+
+\item{latex_adjust}{LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.}
+
+\item{clearpage}{logical. Should every banner be on a separete page?}
 
 \item{...}{other options.}
 }

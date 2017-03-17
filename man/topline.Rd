@@ -22,6 +22,6 @@ A toplines summary of a Crunch variable.
 }
 \examples{
 \dontrun{
-topline(variable, dataset, weight)
+topline(dataset[[variable_name]], dataset, weight)
 }
 }

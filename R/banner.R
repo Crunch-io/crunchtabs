@@ -15,11 +15,11 @@
 #' @examples
 #' \dontrun{
 #' crunch_dataset <- loadDataset('dataset_name')
-#' banner(crunch_dataset, vars = list(banner1 = c('var1', 'var2'), banner2 = c('var3')),
+#' banner_data <- banner(crunch_dataset, vars = list(banner1 = c('var1', 'var2'), banner2 = c('var3')),
 #'     labels = c(var1 = 'var1 label', var2 = 'var2 label'),
 #'     recodes = list(
-#'         var1 = ''cat1a' = 'new cat1a'; 'cat1b' = NA',
-#'         var2 = ''cat2a' = 'new cat2a'; else = NA'))
+#'         var1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA'",
+#'         var2 = "'cat2a' = 'new cat2a'; else = NA"))
 #' }
 #' @importFrom crunch alias allVariables types categories
 #' @export

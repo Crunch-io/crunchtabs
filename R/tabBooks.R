@@ -9,7 +9,7 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
   if (is.null(m)) {
     m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
   }
-  book <- tabBook(m, data=dataset, weight = weight, format="json")
+  book <- tabBook(m, dataset=dataset, weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)

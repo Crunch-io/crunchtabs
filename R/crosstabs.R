@@ -22,6 +22,7 @@
 #' crosstabs_summary <- crosstabs(crunch_dataset, weight = 'weight', banner = banner_object)
 #' }
 #' @importFrom crunch name aliases allVariables is.Numeric
+#' @importFrom methods is
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL,
     title = name(dataset), date = Sys.Date()) {
@@ -53,7 +54,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         res_class <- c("Toplines", "CrunchTabs")
     } else {
         mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-        results <- tabBooks(data = dataset[aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = weight_var)
+        results <- tabBooks(dataset = dataset[aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% c(vars, mtvars)]], vars = vars, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }
@@ -81,11 +82,12 @@ filter_unsupported_toplines <- function(results, dataset, vars) {
     results[!vars_filtered]  # filter out NULLs caused by unsupported variable types
 }
 
+#' @importFrom stats sd qt
 computeMoe <- function(n = length(weight), weight = NULL) {
     if (is.null(weight)) {
         warning("\n No weight provided. All cases will be assigned weight equal to 1")
         weight <- rep(1, n)
     }
-    moe <- qt(0.975, n - 1) * sqrt((1 + sd(weight)^2)) * sqrt(1/(4 * N))
+    moe <- qt(0.975, n - 1) * sqrt((1 + sd(weight)^2)) * sqrt(1/(4 * n))
     moe
 }

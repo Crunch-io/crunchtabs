@@ -1,35 +1,34 @@
 
 #' @export
-writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions = TRUE, digits = 0,
-                                 title = getName(crosstabs_summary), subtitle = NULL,
-                                 pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = TRUE, returndata = FALSE,
-                                 table_of_contents = FALSE, moe = NULL, headtext = "",
-                                 foottext = "", sample_desc = "", field_period = "", font = "helvet", pmar = 1,
-                                 font_size = "small", dc = c(3.2, 4.1), margin = list(top = .6, bottom = .6, left = .5, right = .5),
-                                 append_text = "", longtablewrap = TRUE, tableonly = FALSE, landscape = TRUE,
-                                 pagewidth = ifelse(landscape, 9, 6.5), min_cell_size = NULL,
-                                 min_cell_label = NULL, show_totals = TRUE, weighted_n = FALSE, multirowheaderlines=FALSE,
-                                 latex_adjust = 'c', add_parenthesis = TRUE, clearpage=TRUE, table=TRUE,
-                                 graphicspath = NULL, logo = NULL
-                                 ) {
+writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
+     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
+     table_of_contents = FALSE, returndata = FALSE, append_text = "",
+     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
+     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
+     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
+     pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = .6, bottom = .6, left = .5, right = .5),
+     min_cell_size = NULL, min_cell_label = NULL,
+     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
+     page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+     latex_adjust = 'c', clearpage = TRUE) {
 
   # reformat results for LaTeX output
-  banner <- crosstabs_summary$banner
-  crosstabs_summary$results <- reformatCrosstabsResults(crosstabs_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
+  banner <- data_summary$banner
+  data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
                                                show_totals = show_totals, weighted_n = weighted_n, latex_adjust = latex_adjust,
                                                min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = TRUE)
 
   parbox_width <- ifelse(landscape,"8.5in","6in")
-  hinfo <- lapply(crosstabs_summary$results, function (x) lapply(getTableHeader(x), escM))
+  hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
   headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width, i))
 
-  bodies <- lapply(crosstabs_summary$results, function (x) {
+  bodies <- lapply(data_summary$results, function (x) {
     sapply(x$crosstabs, function (y) {
       latexTable.body(y,longtablewrap=longtablewrap, autorownames=TRUE, summary.midrule=TRUE, show_totals=show_totals)
     })
   })
 
-  out <- sapply(seq_along(crosstabs_summary$results), function(i) {
+  out <- sapply(seq_along(data_summary$results), function(i) {
              c(paste(headers[[i]], bodies[[i]], tableFootLT(),
                    sep="\n", collapse="\n"),
              ifelse(clearpage, "\\clearpage", ""))
@@ -40,7 +39,7 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
     out <- c(
       latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font, graphicspath = graphicspath, logo = logo),
       sapply(seq_along(banner), function (j) {
-       longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, pmar = pmar, coltype=ifelse(digits==0, "g", "d"),
+       longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, page_margin = page_margin, coltype=ifelse(digits==0, "g", "d"),
                           multirow=multirowheaderlines, pagewidth=pagewidth)
       }),
       latexStartLT(table_of_contents = table_of_contents, font_size = font_size),
@@ -57,7 +56,7 @@ writeLatex.Crosstabs <- function(crosstabs_summary, filename = NULL, proportions
     }
   }
   if (returndata) {
-    return(crosstabs_summary)
+    return(data_summary)
   }
 }
 
@@ -122,7 +121,7 @@ latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.
 # \bannera{} that takes one argument (first column label)
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
-longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, pmar=1.5, coltype="d", multirow=FALSE, pagewidth=9) {
+longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, page_margin=1.5, coltype="d", multirow=FALSE, pagewidth=9) {
   if (headtext == "tbc") headtext="continued from previous page"
   if (foottext == "tbc") foottext="continued on the next page \\dots"
 
@@ -131,7 +130,7 @@ longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, p
 
   banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
 
-  banner_def_body <- rep(makeLatexBanner(binfo, multirow, width=round((pagewidth-pmar)/col_num_sum-.1,2)), 2)
+  banner_def_body <- rep(makeLatexBanner(binfo, multirow, width=round((pagewidth-page_margin)/col_num_sum-.1,2)), 2)
   banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", headtext, "} \\\\ ", banner_def_body[2])
   banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", collapse="\n\\endfirsthead \n\n")
 
@@ -139,7 +138,7 @@ longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, p
                             "\\bottomrule \n \\endfoot \n\n \\bottomrule \n \\endlastfoot \n }\n")
 
   table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
-                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\PBS \\raggedright\\hspace{0pt}}b{", pmar, "in}*{", col_num_sum,
+                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\PBS \\raggedright\\hspace{0pt}}b{", page_margin, "in}*{", col_num_sum,
                       "}{", coltype, "}}}\n")
 
   return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))

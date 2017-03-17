@@ -4,7 +4,7 @@
 #' \code{writeLatex} produces publication-quality LaTeX reports:
 #' toplines (one-way frequency tables) or banners (cross tabulations).
 #'
-#' @param x An object of class \code{Toplines} or \code{Crosstabs}.
+#' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
 #' @param filename character. Name of the output file (without extension).
 #' @param title An optional title. Defaults to the summary title.
 #' @param subtitle An optional character subtitle. Defaults to an empty string.
@@ -61,6 +61,11 @@
 #' Defaults to \code{NULL} - LaTeX output directory.
 #' @param logo character. Name of the logo file.
 #' Defaults to \code{NULL} - no logo is used.
+#' @param page_margin Page margin for banners.
+#' @param dc Width of new column types for banners.
+#' @param multirowheaderlines logical. Should banners allow multi-row headlines?
+#' @param latex_adjust LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
+#' @param clearpage logical. Should every banner be on a separete page?
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @param ... other options.
@@ -71,20 +76,23 @@
 #' writeLatex(toplines_summary, 'filename')
 #' }
 #' @export
-writeLatex <- function(x, filename = NULL, proportions = FALSE, digits = 0, title = getName(x),
-    subtitle = NULL, pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"),
-    open = TRUE, returndata = TRUE, table_of_contents = FALSE, moe = NULL, headtext = "",
-    foottext = "", sample_desc = "", field_period = "", font = "helvet", font_size = NULL,
-    margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1), append_text = "",
-    longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE, pagewidth = ifelse(landscape,
-        9, 6.5), min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-    weighted_n = FALSE, graphicspath = NULL, logo = NULL, add_parenthesis = FALSE) {
+writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
+    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
+    table_of_contents = FALSE, returndata = FALSE, append_text = "",
+    pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
+    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = FALSE,
+    tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
+    pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+    min_cell_size = NULL, min_cell_label = NULL,
+    show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
+    page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+    latex_adjust = 'c', clearpage = TRUE) {
 
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
 
-    UseMethod("writeLatex", x)
+    UseMethod("writeLatex", data_summary)
 }
 
 

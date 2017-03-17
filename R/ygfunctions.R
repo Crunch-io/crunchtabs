@@ -1,5 +1,6 @@
 directory <- function() ifelse(grepl("unix", .Platform$OS.type), "/", "\\")
 
+#' @importFrom utils tail
 splitFilePath <- function(filename) {
     dirchar <- directory()
     filename <- unlist(strsplit(filename, dirchar, fixed = TRUE))
@@ -69,21 +70,6 @@ file.open <- function(x) {
         for (i in x) system(paste("open", shQuote(i)))
     }
 }
-
-tapply.ttest <- function(X, INDEX, alpha = 0.05) {
-    ## X and INDEX work like tapply. If alpha is not null, the function will evaluate
-    ## whether the p values are less than alpha. If alpha=NULL, returns the p values.
-
-    out <- lapply(sapply(sort(unique(INDEX)), function(x) t.test(X[INDEX == x], X[INDEX !=
-        x]), simplify = FALSE), function(y) list(mean = y$estimate[[1]], p = y$p.value))
-    out <- lapply(sapply(names(out[[1]]), function(x) lapply(out, function(y) y[[x]]),
-        simplify = FALSE), unlist)
-    for (i in 1:length(out)) names(out[[i]]) <- sort(unique(INDEX))
-    if (!is.null(alpha))
-        out$p <- out$p < alpha
-    return(out)
-}
-
 
 sgrep <- function(strs, ..., simplify = TRUE) {
     out <- sapply(strs, function(x) grep(x, ...), simplify = FALSE)
