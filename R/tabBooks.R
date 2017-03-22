@@ -7,8 +7,9 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
   # NPR: how do I supply a multitable definition that I've already made?
   # KS: you can create an object of the Banner class and pass it as a parameter (banner);
   #   the code below "digest" varialbes' names and generates a new multitable
-  #   (if the name of the multitable that you created is the samae as the "digest" output
+  #   (if the name of the multitable that you created is the same as the "digest" output
   #   than that multitable is used)
+  ## NPR: what does Banner do that Multitable does not?
   mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
   mt_name <- digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
@@ -27,15 +28,31 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
   ## or the book (tabBook output). I found the second solution more flexible, but that way
   ## I relay on implementation details (structure of the tabBook output).
 
+  ## NPR: oh, it's all implementation details :)
+  ## TabBookResult, the return from tabBook, is an object with methods, including "names",
+  ## and it can grow more methods, so you're not merely relying on internal data structures.
+  ## Likewise, CrunchCube can grow more methods so you don't have to do evil things like
+  ## x@.Data[[1]]$dimensions[[1]]$references$name.
+  ## Feel free to make an issue for whatever methods you need at https://github.com/Crunch-io/rcrunch/issues.
+  ## Can also help you make a pull request to implement them.
+
   # NPR: can you add some inline comments so that I can follow along what you're doing?
   # for every variable in the book
   for (vi in seq_along(book)) {
+    ## NPR: you can do `for (alias in names(book))` and save the lookup later
     crunch_cube <- book[[vi]][[1]]
     # if it's not a "main" variable (so it's a "banner" variable) than skip it
+    ## NPR: subset `dataset` when you pass it to tabBook so you only compute what you want
+    ## Or, IMO even better, have the caller subset dataset, so that this function doesn't
+    ## have to care about that.
     if (!(getAlias(crunch_cube)) %in% vars) next
 
     # get type of the variable
     array_type <- type(dataset[[getAlias(crunch_cube)]]) == 'categorical_array'
+    ## NPR: seems like most logic below switches on `array_type` so I'd recommend
+    ## factoring that out into functions. More readable IMO, more testable, etc.
+    ## And, once you slice the array crosstabs into the various subtables, the
+    ## following logic should be the same.
     # generate new names and aliases for categorical_array variables by combining variable names/aliases
     # with subvariables' names/aliases
     vnames <- if(array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
@@ -60,6 +77,8 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
       banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
       banner_counts_unweighted <- if (!is.null(weight)) bases(crunch_cube, margin = 0) else banner_counts
 
+      ## NPR: this is evil, let's stop @.Data-ing. There is a CubeDims class in 'crunch'
+      ## that probably just needs a few more getter methods.
       banner_var_alias <- if (vbi == 1) "___total___" else crunch_cube@.Data[[1]]$dimensions[[length(crunch_cube@.Data[[1]]$dimensions)]]$references$alias
 
       for (ri in seq_along(valiases)) {

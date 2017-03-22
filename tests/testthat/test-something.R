@@ -14,3 +14,11 @@ test_that("Basic method dispatch error handling", {
         "getNames doesn't support objects of class NULL")
     # NPR: why are these different messages?
 })
+
+with_mock_tabs("tabbook-array-result.json", {
+    test_that("We can get a tab book", {
+        b <- tabBook()
+        expect_is(b, "TabBookResult")
+        expect_identical(names(b), c("quarter", "categorical_array", "mymrset"))
+    })
+})
