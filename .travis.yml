@@ -4,6 +4,7 @@ r:
   - release
   - devel
 r_github_packages:
+  - nealrichardson/httptest
   - jimhester/covr
 after_success:
   - Rscript -e 'library(covr);codecov()'
