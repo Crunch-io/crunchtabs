@@ -108,6 +108,8 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
           unweighted_n = unweighted_n_out
         ), class = c("CrossTabBannerVar", "list"))
 
+        # this could be probably implemented in a more readable and efficient way
+        # there may be a few subbanners and each of them should have a 'total' column
         for (bi in seq_along(banner_map)) {
           if (banner_var_alias %in% banner_map[[bi]]) {
             tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[if (banner_var_alias == "___total___") "Total" else banner_var_alias]] <- banner_var_cross
