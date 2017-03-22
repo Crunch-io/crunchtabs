@@ -27,8 +27,11 @@ topline.default <- function(var, dataset, weight = NULL) {
 topline.NumericVariable <- function(var, dataset, weight = NULL) {
     topline_base <- toplineBase(var)
     data <- as.vector(var)
+    # NPR: you can get all of this information without as.vector
     valid <- length(data[!is.null(data)])
     missing <- length(data) - valid
+    # NPR: you can get this with `summary(var)`, and it will apply the weight
+    # for you (appears that you're not using it currently)
     summary_data <- c(`Minimum value` = min(data, na.rm = TRUE), `Maximum value` = max(data,
         na.rm = TRUE), `Mean value` = mean(data, na.rm = TRUE), `Standard deviation` = sd(data,
         na.rm = TRUE))
@@ -40,8 +43,7 @@ topline.NumericVariable <- function(var, dataset, weight = NULL) {
 
 #' @export
 topline.CategoricalVariable <- function(var, dataset, weight = NULL) {
-    ret <- toplineGen(var, dataset, weight = weight)
-    ret
+    toplineGen(var, dataset, weight = weight)
 }
 
 #' @export
@@ -64,6 +66,7 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
     dimnames(ret$proportions) <- dimnames(ret$counts)
     ret
 }
+
 toplineGen <- function(var, dataset, weight = NULL, sumFun = sum, margin = NULL) {
     topline_base <- toplineBase(var)
     out_crtabs <- crtabs(formula = paste("~", alias(var)), data = dataset, weight = weight)

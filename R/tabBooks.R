@@ -1,10 +1,12 @@
 
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs
+#' @importFrom digest digest
 tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NULL) {
   tabs_data <- list()
 
+  # NPR: how do I supply a multitable definition that I've already made?
   mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-  mt_name <- digest::digest(sort(mtvars), "md5")
+  mt_name <- digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
   if (is.null(m)) {
     m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
@@ -18,6 +20,7 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
   var_types <- types(allVariables(dataset))
   banner_var_aliases <- c("___total___", mtvars)
 
+  # NPR: can you add some inline comments so that I can follow along what you're doing?
   for (vi in seq_along(book)) {
     crunch_cube <- book[[vi]][[1]]
     if (!(getAlias(crunch_cube)) %in% vars) next
