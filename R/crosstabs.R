@@ -53,8 +53,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         results <- filter_unsupported_toplines(results, dataset, vars)
         res_class <- c("Toplines", "CrunchTabs")
     } else {
-        mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
-        results <- tabBooks(dataset = dataset[vars], vars = vars, banner = banner, weight = weight_var)
+        results <- tabBooks(dataset = dataset, vars = vars, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }

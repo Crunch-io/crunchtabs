@@ -1,26 +1,16 @@
 
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs
 #' @importFrom digest digest
-tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NULL) {
+tabBooks <- function(dataset, vars, banner, weight = NULL) {
   tabs_data <- list()
 
-  # NPR: how do I supply a multitable definition that I've already made?
-  # KS: you can create an object of the Banner class and pass it as a parameter (banner);
-  #   the code below "digest" varialbes' names and generates a new multitable
-  #   (if the name of the multitable that you created is the same as the "digest" output
-  #   than that multitable is used)
-  ## NPR: what does Banner do that Multitable does not?
-  ## KS: it's a slightly different concept. A banner can contain 'subbanners' that are displayed
-  # one above another in the PDF (only one multitable is used in such case).
-  # It also enables changing labels and hiding/renaming
-  # columns of "banner" variables (without modyfing the dataset).
   mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
   mt_name <- digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
   if (is.null(m)) {
     m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
   }
-  book <- tabBook(m, dataset=dataset, weight = weight, format="json")
+  book <- tabBook(m, dataset=dataset[vars], weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
@@ -41,7 +31,6 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
   ## Can also help you make a pull request to implement them.
   ## KS: OK, that's a good idea.
 
-  # NPR: can you add some inline comments so that I can follow along what you're doing?
   # for every variable in the book
   for (vi in seq_along(book)) {
     ## NPR: you can do `for (alias in names(book))` and save the lookup later
@@ -49,14 +38,7 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
     ## - the last time I tried that, names(book) and book[[alias]] gave me NULL
     ## - in the loop later, I'm iterating not over names(book) but I'm combining that with subvariables' names/aliases
     crunch_cube <- book[[vi]][[1]]
-    # if it's not a "main" variable (so it's a "banner" variable) than skip it
-    ## NPR: subset `dataset` when you pass it to tabBook so you only compute what you want
-    ## Or, IMO even better, have the caller subset dataset, so that this function doesn't
-    ## have to care about that.
-    ## KS: I tried that before but got some errors, it seems to work now
-    # if (!(getAlias(crunch_cube)) %in% vars) next
 
-    # get type of the variable
     array_type <- type(dataset[[getAlias(crunch_cube)]]) == 'categorical_array'
     ## NPR: seems like most logic below switches on `array_type` so I'd recommend
     ## factoring that out into functions. More readable IMO, more testable, etc.
@@ -103,10 +85,6 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
             banner_counts_unweighted_out = banner_counts_unweighted
         }
 
-        # KS: the initial idea was that the banner function should enable merging columns of "banner" variables
-        # using "recode" syntax. the code below is responsible for doing that, but it incorectly computes
-        # proportions for multiple_array variables now. we may abandon this idea as this can be done
-        # using the "combine" function
         if (banner_var_alias != "___total___") {
           banner_var <- banner_flatten[[banner_var_alias]]
           counts_out <- bannerDataRecode(counts_out, banner_var)
@@ -138,8 +116,6 @@ tabBooks <- function(dataset, vars = names(dataset), banner = NULL, weight = NUL
           unweighted_n = unweighted_n_out
         ), class = c("CrossTabBannerVar", "list"))
 
-        # this could be probably implemented in a more readable and efficient way
-        # there may be a few subbanners and each of them should have a 'total' column
         for (bi in seq_along(banner_map)) {
           if (banner_var_alias %in% banner_map[[bi]]) {
             tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[if (banner_var_alias == "___total___") "Total" else banner_var_alias]] <- banner_var_cross
