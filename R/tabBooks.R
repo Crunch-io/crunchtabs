@@ -10,7 +10,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
   if (is.null(m)) {
     m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
   }
-  book <- tabBook(m, dataset=dataset[vars], weight = weight, format="json")
+  book <- tabBook(m, dataset = dataset[vars], weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
@@ -58,6 +58,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                                                    , name = vnames[vai]
                                                    , description = getDescription(crunch_cube)
                                                    , notes = getNotes(crunch_cube)
+                                                   , options = list(no_totals = if (is_mr_type) TRUE else FALSE)
                                                    , crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
                                                    ), class = "CrossTabVar")
     }

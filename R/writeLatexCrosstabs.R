@@ -24,7 +24,8 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
 
   bodies <- lapply(data_summary$results, function (x) {
     sapply(x$crosstabs, function (y) {
-      latexTable.body(y,longtablewrap=longtablewrap, autorownames=TRUE, summary.midrule=TRUE, show_totals=show_totals)
+      latexTable.body(y, longtablewrap = longtablewrap, autorownames = TRUE, summary.midrule = TRUE,
+                      show_totals = !x$options$no_totals & show_totals)
     })
   })
 

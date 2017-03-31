@@ -137,6 +137,7 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
 writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, first_col_width = 20, toc_sheet = NULL,
     toc_row = 1) {
+
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row)
     ccol <- start_col
@@ -162,11 +163,11 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
         1), stack = TRUE)
     openxlsx::addStyle(wb, ws, openxlsx::createStyle(border = "Bottom"), rows = crow, cols = 1:(multicols_csum[[length(multicols_csum)]] -
         1), stack = TRUE)
-    openxlsx::addStyle(wb, ws, openxlsx::createStyle(border = "Top"), rows = crow + nrow(df) - ifelse(show_totals,
+    openxlsx::addStyle(wb, ws, openxlsx::createStyle(border = "Top"), rows = crow + nrow(df) - ifelse(!x$options$no_totals & show_totals,
         1, 0), cols = 1:(multicols_csum[[length(multicols_csum)]] - 1), stack = TRUE)
     openxlsx::addStyle(wb, ws, openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
         paste0(".", paste0(rep(0, digits), collapse = "")), if (proportions)
-        "%")), rows = (crow + 1):(crow + nrow(df) - ifelse(show_totals, 1, 0)), cols = 2:(multicols_csum[[length(multicols_csum)]] -
+        "%")), rows = (crow + 1):(crow + nrow(df) - 1), cols = 2:(multicols_csum[[length(multicols_csum)]] -
         1), gridExpand = TRUE, stack = TRUE)
     openxlsx::setColWidths(wb, ws, 1, first_col_width)
 

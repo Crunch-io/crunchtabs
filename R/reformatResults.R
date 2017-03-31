@@ -87,7 +87,7 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
                 banner_var <- banner[[banner_name]][[banner_var_ind]]
                 cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
                 reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
-                  digits = digits, add_parenthesis = add_parenthesis, show_totals = show_totals,
+                  digits = digits, add_parenthesis = add_parenthesis, show_totals = !var$options$no_totals & show_totals,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
                   min_cell_label = min_cell_label, reformat = reformat)
             })
