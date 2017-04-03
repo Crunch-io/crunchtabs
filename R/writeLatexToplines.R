@@ -6,7 +6,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
-    page_width = ifelse(landscape, 9, 6.5), first_col_width = 1.5,
+    page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
@@ -19,7 +19,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
   })
 
   headers <- lapply(seq_along(data_summary$results), function(i) {
-    toplineHeader(data_summary$results[[i]], page_width = page_width, num = i, first_col_width = first_col_width)
+    toplineHeader(data_summary$results[[i]], page_width = page_width, num = i, row_label_width = row_label_width)
   })
 
   footers <- lapply(data_summary$results, toplineFooter)
@@ -49,18 +49,18 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
   }
 }
 
-toplineHeader <- function(x, page_width = 6.5, num = NULL, first_col_width = 1.5, padding = 1, use_heuristic = TRUE) {
+toplineHeader <- function(x, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE) {
   UseMethod("toplineHeader", x)
 }
 
 #' @export
-toplineHeader.default <- function(var_summary, page_width = 6.5, num = NULL, first_col_width = 1.5, padding = 1, use_heuristic = TRUE) {
+toplineHeader.default <- function(var_summary, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE) {
   tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
   toplineTableDef(var_summary, page_width, num, tab_definition)
 }
 
 #' @export
-toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5, num = NULL, first_col_width = 1.5, padding = 0.25, use_heuristic = TRUE) {
+toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE) {
   header_row <- "\n"
   col_names <- getNames(var_summary)[[2]]
   col_names_len <- length(col_names)
@@ -82,13 +82,13 @@ toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5,
       thisrow <- paste(scalestart, labs[1], scalemid, labs[2], scaleend, "\\\\")
       header_row <- paste(header_row, thisrow, "\n")
       col_names <- sub("^([0-9]+) - .*$", "\\1", col_names)
-      col_width <- paste(round((page_width - padding - 0.75 - first_col_width)/col_names_len - 0.11, 3), "in", sep = "")
+      col_width <- paste(round((page_width - padding - 0.75 - row_label_width)/col_names_len - 0.11, 3), "in", sep = "")
     }
   }
   header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
   col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
   col.header <- paste(rep(col.header, col_names_len), collapse = "")
-  tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", first_col_width,
+  tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
                            "in}", col.header, "}")
 
   toplineTableDef(var_summary, page_width, num, tab_definition, header_row)

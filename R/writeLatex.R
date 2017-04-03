@@ -55,7 +55,7 @@
 #' Defaults to \code{FALSE}.
 #' @param page_width Page width.
 #' Defaults to 9in for banners and 6.5in for toplines.
-#' @param first_col_width First column width. Defaults to 1.5in
+#' @param row_label_width First column width. Defaults to 1.5in
 #' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 #' Defaults to \code{TRUE}.
 #' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
@@ -82,7 +82,7 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = FALSE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
-    page_width = ifelse(landscape, 9, 6.5), first_col_width = 1.5,
+    page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,

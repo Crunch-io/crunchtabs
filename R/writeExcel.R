@@ -28,7 +28,7 @@
 #' Defaults to \code{TRUE}.
 #' @param weighted_n logical. Should the total number of responses be weighted?
 #' Defaults to \code{FALSE}.
-#' @param first_col_width width of the first column. Defaults to 20pt.
+#' @param row_label_width width of the first column. Defaults to 20pt.
 #' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 #' Defaults \code{FALSE}.
 #' @param one_per_sheet logical. Should every variable be written on a separate sheet?
@@ -49,7 +49,7 @@ writeExcel <- function(x, filename = NULL, proportions = FALSE, digits = 0, titl
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE, append_text = "",
-    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
+    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
     UseMethod("writeExcel", x)
 }
@@ -59,7 +59,7 @@ writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits 
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE, append_text = "",
-    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
+    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
     x$results <- lapply(x$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -72,7 +72,7 @@ writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits 
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals, add_parenthesis = add_parenthesis,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
-        one_per_sheet = one_per_sheet, first_col_width = first_col_width)
+        one_per_sheet = one_per_sheet, row_label_width = row_label_width)
 
 }
 
@@ -81,7 +81,7 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE, append_text = "",
-    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
+    min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
     banner <- x$banner
     x$results <- reformatCrosstabsResults(x$results, banner, proportions = proportions, digits = digits,
@@ -95,7 +95,7 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals, add_parenthesis = add_parenthesis,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
-        one_per_sheet = one_per_sheet, first_col_width = first_col_width)
+        one_per_sheet = one_per_sheet, row_label_width = row_label_width)
 
 }
 
@@ -135,7 +135,7 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
 }
 
 writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, show_totals = TRUE, first_col_width = 20, toc_sheet = NULL,
+    digits = 0, proportions = TRUE, show_totals = TRUE, row_label_width = 20, toc_sheet = NULL,
     toc_row = 1) {
 
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
@@ -169,14 +169,14 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
         paste0(".", paste0(rep(0, digits), collapse = "")), if (proportions)
         "%")), rows = (crow + 1):(crow + nrow(df) - 1), cols = 2:(multicols_csum[[length(multicols_csum)]] -
         1), gridExpand = TRUE, stack = TRUE)
-    openxlsx::setColWidths(wb, ws, 1, first_col_width)
+    openxlsx::setColWidths(wb, ws, 1, row_label_width)
 
     return(crow + nrow(df))
 }
 
 
 writeExcelVarTopline <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
-    proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1) {
+    proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1) {
     UseMethod("writeExcelVarTopline", x)
 }
 
@@ -249,13 +249,13 @@ writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row 
 }
 
 writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL, toc_row = 1) {
+    digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row)
     crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
         digits = digits, proportions = proportions)
-    openxlsx::setColWidths(wb, ws, 1, first_col_width)
+    openxlsx::setColWidths(wb, ws, 1, row_label_width)
     return(crow + drows)
 }
 
@@ -288,7 +288,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
     digits = 0, title = "", subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, add_parenthesis = FALSE, append_text = "", min_cell_size = NULL,
-    min_cell_label = NULL, one_per_sheet = TRUE, first_col_width = 20) {
+    min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
     wb <- openxlsx::createWorkbook()
 
@@ -324,11 +324,11 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
         last_row_used <- if (is.null(banner)) {
             writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
                 start_row = start_row, digits = digits, proportions = proportions,
-                first_col_width = first_col_width, toc_sheet = toc_sheet, toc_row = toc_row)
+                row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row)
         } else {
             writeExcelVarBanner(wb, worksheet_name, x$results[[vidx]], banner, start_col = start_col,
                 start_row = start_row, digits = digits, proportions = proportions,
-                show_totals = show_totals, first_col_width = first_col_width, toc_sheet = toc_sheet,
+                show_totals = show_totals, row_label_width = row_label_width, toc_sheet = toc_sheet,
                 toc_row = toc_row)
         }
         toc_row <- toc_row + 1
@@ -348,15 +348,15 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
 
 
 # writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row =
-# 1, digits = 0, proportions = TRUE, first_col_width = 20, toc_sheet = NULL,
+# 1, digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL,
 # toc_row = 1) { crow <- writeVarHeader(wb, ws, x, start_col = start_col,
 # start_row = start_row, toc_sheet = toc_sheet, toc_row = toc_row,
-# first_col_width)  ccol <- start_col crow <- crow + 1 drows <- nrow(x$data)
+# row_label_width)  ccol <- start_col crow <- crow + 1 drows <- nrow(x$data)
 # dcols <- ncol(x$data) is_grid <- !is.na(dcols) df <- as.matrix(x$data)
 # openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE,
 # colNames = is_grid) numFmt <- paste0('0', if (digits > 1) paste0('.', rep(0,
 # digits)), if (proportions) '%') rows <- (crow + if (is_grid) 1 else 0) : (crow
 # + (if (is_grid) 1 else 0) + drows - 1) cols <- 2 : (if (is_grid) dcols + 1 else
 # 2) openxlsx::addStyle(wb, ws, openxlsx::createStyle(numFmt = numFmt), rows = rows, cols = cols,
-# gridExpand = is_grid, stack = TRUE) openxlsx::setColWidths(wb, ws, 1, first_col_width)
+# gridExpand = is_grid, stack = TRUE) openxlsx::setColWidths(wb, ws, 1, row_label_width)
 # return(crow + drows) }
