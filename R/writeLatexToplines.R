@@ -6,10 +6,11 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
-    pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+    page_width = ifelse(landscape, 9, 6.5), first_col_width = 1.5,
+    margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-    page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+    dc = c(3.2, 4.1), multirowheaderlines = FALSE,
     latex_adjust = 'c', clearpage = TRUE) {
 
   data_summary$results <- lapply(data_summary$results, function(x) {
@@ -18,7 +19,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
   })
 
   headers <- lapply(seq_along(data_summary$results), function(i) {
-    toplineHeader(data_summary$results[[i]], page_width = pagewidth, num = i)
+    toplineHeader(data_summary$results[[i]], page_width = page_width, num = i, first_col_width = first_col_width)
   })
 
   footers <- lapply(data_summary$results, toplineFooter)

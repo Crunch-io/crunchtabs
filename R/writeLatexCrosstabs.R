@@ -6,10 +6,11 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
      headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
      tableonly = FALSE, landscape = TRUE, font = "helvet", font_size = NULL,
-     pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = .6, bottom = .6, left = .5, right = .5),
+     page_width = ifelse(landscape, 9, 6.5), first_col_width = 1.5,
+     margin = list(top = .6, bottom = .6, left = .5, right = .5),
      min_cell_size = NULL, min_cell_label = NULL,
      show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
-     page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
      latex_adjust = 'c', clearpage = TRUE) {
 
   # reformat results for LaTeX output
@@ -40,8 +41,8 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     out <- c(
       latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font, graphicspath = graphicspath, logo = logo),
       sapply(seq_along(banner), function (j) {
-       longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, page_margin = page_margin, coltype=ifelse(digits==0, "g", "d"),
-                          multirow=multirowheaderlines, pagewidth=pagewidth)
+       longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, coltype=ifelse(digits==0, "g", "d"),
+                          multirow = multirowheaderlines, page_width = page_width, first_col_width = first_col_width)
       }),
       latexStartLT(table_of_contents = table_of_contents, font_size = font_size),
       out,
@@ -66,7 +67,7 @@ latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.
   paste("\\documentclass[", ifelse(landscape, "landscape", ""),"]",
         "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
-        if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }"),
+        if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }\n"),
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
         "\\usepackage{sfmath}\n",
@@ -122,7 +123,8 @@ latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.
 # \bannera{} that takes one argument (first column label)
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
-longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, page_margin=1.5, coltype="d", multirow=FALSE, pagewidth=9) {
+longtableHeadFootB <- function (banner, headtext = "tbc", foottext = "tbc", num = 1, coltype = "d",
+                                multirow = FALSE, page_width = 9, first_col_width = 2) {
   if (headtext == "tbc") headtext="continued from previous page"
   if (foottext == "tbc") foottext="continued on the next page \\dots"
 
@@ -131,15 +133,15 @@ longtableHeadFootB <- function (banner, headtext="tbc", foottext="tbc", num=1, p
 
   banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
 
-  banner_def_body <- rep(makeLatexBanner(binfo, multirow, width=round((pagewidth-page_margin)/col_num_sum-.1,2)), 2)
+  banner_def_body <- rep(makeLatexBanner(binfo, multirow, width=round((page_width - first_col_width)/col_num_sum-.1,2)), 2)
   banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", headtext, "} \\\\ ", banner_def_body[2])
-  banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", collapse="\n\\endfirsthead \n\n")
+  banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", collapse="\\endfirsthead \n")
 
-  banner_def_foot <- paste0("\\endhead \n\n \\midrule \n & \\multicolumn{", col_num_sum, "}{c}{", foottext, "} \\\\ \n",
-                            "\\bottomrule \n \\endfoot \n\n \\bottomrule \n \\endlastfoot \n }\n")
+  banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{", col_num_sum, "}{c}{", foottext, "} \\\\ \n",
+                            "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
 
   table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
-                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\PBS \\raggedright\\hspace{0pt}}b{", page_margin, "in}*{", col_num_sum,
+                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\PBS \\raggedright\\hspace{0pt}}b{", first_col_width, "in}*{", col_num_sum,
                       "}{", coltype, "}}}\n")
 
   return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
@@ -181,9 +183,8 @@ longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
 }
 
 latexTableHeadTitle <- function (hinfo, table_num, parbox_width) {
-  paste("
-        \\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}
-        \\parbox{", parbox_width, "}{{\\bf", table_num, ". ", hinfo$label, "} \\\\ ",
+  paste("\\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}\n",
+        "\\parbox{", parbox_width, "}{{\\bf", table_num, ". ", hinfo$label, "} \\\\ \n",
         hinfo$wording, "} \\\\", sep="")
 }
 

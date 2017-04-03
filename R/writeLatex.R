@@ -53,15 +53,15 @@
 #' Defaults to \code{TRUE}.
 #' @param weighted_n logical. Should the total number of responses be weighted?
 #' Defaults to \code{FALSE}.
-#' @param pagewidth Page width. Defaults to \code{FALSE}.
+#' @param page_width Page width.
 #' Defaults to 9in for banners and 6.5in for toplines.
+#' @param first_col_width First column width. Defaults to 1.5in
 #' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 #' Defaults to \code{TRUE}.
 #' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
 #' Defaults to \code{NULL} - LaTeX output directory.
 #' @param logo character. Name of the logo file.
 #' Defaults to \code{NULL} - no logo is used.
-#' @param page_margin Page margin for banners.
 #' @param dc Width of new column types for banners.
 #' @param multirowheaderlines logical. Should banners allow multi-row headlines?
 #' @param latex_adjust LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
@@ -82,10 +82,11 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = FALSE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
-    pagewidth = ifelse(landscape, 9, 6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+    page_width = ifelse(landscape, 9, 6.5), first_col_width = 1.5,
+    margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-    page_margin = 1, dc = c(3.2, 4.1), multirowheaderlines = FALSE,
+    dc = c(3.2, 4.1), multirowheaderlines = FALSE,
     latex_adjust = 'c', clearpage = TRUE) {
 
     if (pdf && is.null(filename)) {
@@ -162,7 +163,7 @@ ltranspose <- function(l) {
 getFilterText <- function(var_summary) {
     filtertext <- getNotes(var_summary)
     if (filtertext != "") {
-        filtertext <- paste(" \\\\ \\scriptsize { \\itshape ", escM(filtertext), "}")
+        filtertext <- paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}")
     }
     filtertext
 }
