@@ -69,7 +69,7 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
 
 toplineGen <- function(var, dataset, weight = NULL, sumFun = sum, margin = NULL) {
     topline_base <- toplineBase(var)
-    out_crtabs <- crtabs(formula = paste("~", alias(var)), data = dataset, weight = weight)
+    out_crtabs <- crtabs(formula = paste0("~", "`", alias(var), "`"), data = dataset, weight = weight)
     total <- getTotal.CrunchCube(out_crtabs)
     missing <- getMissing.CrunchCube(out_crtabs)
     ret <- c(topline_base, list(counts = as.array(out_crtabs), proportions = crunch::prop.table(out_crtabs,
