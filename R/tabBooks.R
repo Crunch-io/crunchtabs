@@ -81,17 +81,17 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         if (is_array_type) {
             counts_out = as.matrix(banner_counts[,,ri])
             proportions_out = as.matrix(banner_proportions[,,ri])
-            banner_counts_unweighted_out = as.matrix(banner_counts_unweighted[,,ri])
+            counts_unweighted_out = as.matrix(banner_counts_unweighted[,,ri])
         } else {
             counts_out = banner_counts
             proportions_out = banner_proportions
-            banner_counts_unweighted_out = banner_counts_unweighted
+            counts_unweighted_out = banner_counts_unweighted
         }
 
         if (banner_var_alias != "___total___") {
           banner_var <- banner_flatten[[banner_var_alias]]
           counts_out <- bannerDataRecode(counts_out, banner_var)
-          banner_counts_unweighted_out <- bannerDataRecode(banner_counts_unweighted_out, banner_var)
+          counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
           proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
             bannerDataRecode(proportions_out, banner_var)
           } else {
@@ -101,7 +101,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
         totals_counts_out = colSums(counts_out)
         totals_proportions_out = colSums(proportions_out)
-        unweighted_n_out = colSums(banner_counts_unweighted_out)
+        unweighted_n_out = colSums(counts_unweighted_out)
 
         if (vbi == 1) {
           colnames(counts_out) <- "Total"
