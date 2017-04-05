@@ -14,45 +14,30 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
-  ## KS: I can get types/names/aliases using:
   # var_names <- names(allVariables(dataset))
   # var_aliases <- aliases(allVariables(dataset))
   # var_types <- types(allVariables(dataset))
   # banner_var_aliases <- c("___total___", mtvars)
-  ## or the book (tabBook output). I found the second solution more flexible, but that way
-  ## I relay on implementation details (structure of the tabBook output).
-
-  ## NPR: oh, it's all implementation details :)
-  ## TabBookResult, the return from tabBook, is an object with methods, including "names",
-  ## and it can grow more methods, so you're not merely relying on internal data structures.
-  ## Likewise, CrunchCube can grow more methods so you don't have to do evil things like
-  ## x@.Data[[1]]$dimensions[[1]]$references$name.
-  ## Feel free to make an issue for whatever methods you need at https://github.com/Crunch-io/rcrunch/issues.
-  ## Can also help you make a pull request to implement them.
-  ## KS: OK, that's a good idea.
 
   # for every variable in the book
   for (vi in seq_along(book)) {
-    ## NPR: you can do `for (alias in names(book))` and save the lookup later
-    ## KS:
-    ## - the last time I tried that, names(book) and book[[alias]] gave me NULL
-    ## - in the loop later, I'm iterating not over names(book) but I'm combining that with subvariables' names/aliases
     crunch_cube <- book[[vi]][[1]]
 
     var_type <- type(dataset[[getAlias(crunch_cube)]])
     is_array_type <- var_type == 'categorical_array'
     is_mr_type <- var_type == 'multiple_response'
+
     ## NPR: seems like most logic below switches on `is_array_type` so I'd recommend
     ## factoring that out into functions. More readable IMO, more testable, etc.
     ## And, once you slice the array crosstabs into the various subtables, the
     ## following logic should be the same.
-    # generate new names and aliases for categorical_array variables by combining variable names/aliases
+
+    # generate new names and aliases for categorical_array variables by combining variable's names/aliases
     # with subvariables' names/aliases
-    # KS: that might be a good idea
     vnames <- if(is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
     valiases <- if(is_array_type) paste(getAlias(crunch_cube), getSubAliases(crunch_cube), sep = ".") else getAlias(crunch_cube)
 
-    # for every 2d variable (categorical_array variables are sliced) prepare a data structure that will contain data
+    # prepare a data structure for every variable (categorical_array variables are sliced)
     for (vai in seq_along(valiases)) {
       tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai]
                                                    , name = vnames[vai]
@@ -63,7 +48,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                                                    ), class = "CrossTabVar")
     }
 
-    # for every "banner" variable
+    # for every "banner"/"column" variable
     for (vbi in seq_along(book[[vi]])) {
       crunch_cube <- book[[vi]][[vbi]]
       margin <- if (is_array_type) c(2, 3) else 2
@@ -75,7 +60,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
       banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
 
-      banner_var_alias <- if (vbi == 1) "___total___" else crunch_cube@.Data[[1]]$dimensions[[length(crunch_cube@.Data[[1]]$dimensions)]]$references$alias
+      banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
 
       for (ri in seq_along(valiases)) {
         counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
