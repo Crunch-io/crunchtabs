@@ -66,7 +66,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     # for every "banner" variable
     for (vbi in seq_along(book[[vi]])) {
       crunch_cube <- book[[vi]][[vbi]]
-      margin <- if (is_array_type) c(1, 3) else 2
+      margin <- if (is_array_type) c(2, 3) else 2
 
       banner_counts <- as.array(crunch_cube)
       banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
@@ -79,9 +79,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
       for (ri in seq_along(valiases)) {
         if (is_array_type) {
-            counts_out = as.matrix(banner_counts[ri, ,])
-            proportions_out = as.matrix(banner_proportions[ri, ,])
-            banner_counts_unweighted_out = as.matrix(banner_counts_unweighted[ri, ,])
+            counts_out = as.matrix(banner_counts[,,ri])
+            proportions_out = as.matrix(banner_proportions[,,ri])
+            banner_counts_unweighted_out = as.matrix(banner_counts_unweighted[,,ri])
         } else {
             counts_out = banner_counts
             proportions_out = banner_proportions
