@@ -4,7 +4,7 @@
 tabBooks <- function(dataset, vars, banner, weight = NULL) {
   tabs_data <- list()
 
-  mtvars <- setdiff(sapply(flattenBanner(banner), getAlias), "___total___")
+  mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
   mt_name <- digest(sort(mtvars), "md5")
   m <- multitables(dataset)[[mt_name]]
   if (is.null(m)) {
