@@ -1,5 +1,5 @@
 
-#' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs
+#' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL) {
   tabs_data <- list()
@@ -70,45 +70,44 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
       banner_counts <- as.array(crunch_cube)
       banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
-      banner_counts_unweighted <- if (!is.null(weight)) bases(crunch_cube, margin = 0) else banner_counts
+      banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
+      banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
+      banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
+      banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
 
-      ## NPR: this is evil, let's stop @.Data-ing. There is a CubeDims class in 'crunch'
-      ## that probably just needs a few more getter methods.
-      # KS: right
       banner_var_alias <- if (vbi == 1) "___total___" else crunch_cube@.Data[[1]]$dimensions[[length(crunch_cube@.Data[[1]]$dimensions)]]$references$alias
 
       for (ri in seq_along(valiases)) {
-        if (is_array_type) {
-            counts_out = as.matrix(banner_counts[,,ri])
-            proportions_out = as.matrix(banner_proportions[,,ri])
-            counts_unweighted_out = as.matrix(banner_counts_unweighted[,,ri])
-        } else {
-            counts_out = banner_counts
-            proportions_out = banner_proportions
-            counts_unweighted_out = banner_counts_unweighted
-        }
-
-        if (banner_var_alias != "___total___") {
-          banner_var <- banner_flatten[[banner_var_alias]]
-          counts_out <- bannerDataRecode(counts_out, banner_var)
-          counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
-          proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
-            bannerDataRecode(proportions_out, banner_var)
-          } else {
-            prop.table(counts_out, 2)
-          }
-        }
-
-        totals_counts_out = colSums(counts_out)
-        totals_proportions_out = colSums(proportions_out)
-        unweighted_n_out = colSums(counts_unweighted_out)
+        counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
+        proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
+        counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
+        totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+        totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
+        unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
 
         if (vbi == 1) {
           colnames(counts_out) <- "Total"
           colnames(proportions_out) <- "Total"
-          names(totals_counts_out) <- "Total"
-          names(totals_proportions_out) <- "Total"
-          names(unweighted_n_out) <- "Total"
+          colnames(totals_counts_out) <- "Total"
+          colnames(totals_proportions_out) <- "Total"
+          colnames(unweighted_n_out) <- "Total"
+        }
+
+        if (banner_var_alias != "___total___") {
+          banner_var <- banner_flatten[[banner_var_alias]]
+          proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
+            bannerDataRecode(proportions_out, banner_var)
+          } else {
+            if (is_mr_type) {
+              stop("Combining categories of multiple_response variables is not supported")
+            }
+            crunch::prop.table(counts_out, 2)
+          }
+          counts_out <- bannerDataRecode(counts_out, banner_var)
+          counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
+          totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
+          totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
+          unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
         }
 
         banner_var_cross <- structure(list(

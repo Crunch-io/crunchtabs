@@ -114,15 +114,14 @@ flattenBanner <- function(x) {
     }), recursive = FALSE)
 }
 
-bannerDataRecode <- function(b_table, b_recode, divade = FALSE) {
+bannerDataRecode <- function(b_table, b_recode) {
     names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
     b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
         drop = FALSE]
     colnames(b_table) <- b_recode$categories_out[names_mask]
     b_table <- sapply(b_recode$categories, function(x) {
-        dup_ind <- grep(x, colnames(b_table), fixed = TRUE)
-        rowSums(b_table[, dup_ind, drop = FALSE])/if (divade)
-            length(dup_ind) else 1
+      dup_ind <- grep(x, colnames(b_table), fixed = TRUE)
+      rowSums(b_table[, dup_ind, drop = FALSE])
     })
     b_table
 }
