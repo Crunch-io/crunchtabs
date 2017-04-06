@@ -29,6 +29,7 @@ reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TR
         data[] <- round(data * if (proportions) 100 else 1, digits)
     }
     if (proportions && reformat) {
+        data[is.nan(data)] <- 0
         data[] <- paste0(data, "%")
     }
     data
@@ -61,6 +62,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         }
     }
     if (proportions && reformat) {
+        data[is.nan(data)] <- 0
         data[] <- paste0(data, "%")
     }
     if (any(min_cell_mask)) {
