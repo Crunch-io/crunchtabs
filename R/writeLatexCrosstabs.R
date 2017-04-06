@@ -184,7 +184,7 @@ longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
 
 latexTableHeadTitle <- function (hinfo, table_num, parbox_width) {
   paste("\\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}\n",
-        "\\parbox{", parbox_width, "}{{\\bf", table_num, ". ", hinfo$label, "} \\\\ \n",
+        "\\hangindent=0em \\parbox{", parbox_width, "}{{\\bf", table_num, ". ", hinfo$label, "} \\\\ \n",
         hinfo$wording, "} \\\\", sep="")
 }
 
