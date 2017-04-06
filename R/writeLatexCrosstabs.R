@@ -141,7 +141,7 @@ longtableHeadFootB <- function (banner, headtext = "tbc", foottext = "tbc", num 
                             "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
 
   table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
-                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\PBS \\raggedright\\hspace{0pt}}b{", row_label_width, "in}*{", col_num_sum,
+                      "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}b{", row_label_width, "in}*{", col_num_sum,
                       "}{", coltype, "}}}\n")
 
   return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
