@@ -1,11 +1,11 @@
 
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
-tabBooks <- function(dataset, banner, weight = NULL) {
+tabBooks <- function(dataset, vars, banner, weight = NULL) {
   tabs_data <- list()
 
   m <- getMultitable(banner, dataset)
-  book <- tabBook(m, dataset = dataset, weight = weight, format="json")
+  book <- tabBook(m, dataset = dataset[vars], weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
