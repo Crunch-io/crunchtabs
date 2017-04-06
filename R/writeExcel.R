@@ -174,14 +174,14 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
     return(crow + nrow(df))
 }
 
-
 writeExcelVarTopline <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
-    proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1) {
+    proportions = TRUE) {
     UseMethod("writeExcelVarTopline", x)
 }
 
 #' @export
-writeExcelVarTopline.default <- function(wb, ws, x) {
+writeExcelVarTopline.default <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
+                                         proportions = TRUE) {
     stop(paste("The 'writeExcelVarTopline' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
@@ -205,7 +205,7 @@ writeExcelVarTopline.ToplineCategoricalArray <- function(wb, ws, x, start_col = 
 
 #' @export
 writeExcelVarTopline.ToplineNumeric <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0) {
+    digits = 0, proportions = NULL) {
     df <- as.matrix(x$data)
     openxlsx::writeData(wb, ws, df, startCol = start_col, startRow = start_row, rowNames = TRUE,
         colNames = FALSE)
