@@ -7,6 +7,7 @@ with_mock_tabs <- function (file, expr) {
         `crunch::tabBook`=function (...) {
             crunch:::TabBookResult(jsonlite::fromJSON(file, simplifyVector=FALSE))
         },
+        `crunchtabs:::getMultitable`=function (...) NULL,
         eval.parent(expr)
     )
 }

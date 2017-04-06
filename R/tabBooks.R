@@ -1,16 +1,11 @@
 
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
-tabBooks <- function(dataset, vars, banner, weight = NULL) {
+tabBooks <- function(dataset, banner, weight = NULL) {
   tabs_data <- list()
 
-  mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
-  mt_name <- digest(sort(mtvars), "md5")
-  m <- multitables(dataset)[[mt_name]]
-  if (is.null(m)) {
-    m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
-  }
-  book <- tabBook(m, dataset = dataset[vars], weight = weight, format="json")
+  m <- getMultitable(banner, dataset)
+  book <- tabBook(m, dataset = dataset, weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
@@ -112,4 +107,15 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     }
   }
   return(tabs_data)
+}
+
+getMultitable <- function (banner, dataset) {
+    ## Given a Banner object and a dataset, find/create the Crunch multitable that corresponds
+    mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
+    mt_name <- digest(sort(mtvars), "md5")
+    m <- multitables(dataset)[[mt_name]]
+    if (is.null(m)) {
+      m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
+    }
+    return(m)
 }

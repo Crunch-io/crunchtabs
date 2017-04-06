@@ -19,6 +19,9 @@ with_mock_tabs("tabbook-array-result.json", {
     test_that("We can get a tab book", {
         b <- tabBook()
         expect_is(b, "TabBookResult")
-        expect_identical(names(b), c("quarter", "categorical_array", "mymrset"))
+    })
+    test_that("We can get tabs_data", {
+        b <- tabBooks(banner="not a banner!", dataset="not a dataset!")
+        expect_is(b, "list")
     })
 })
