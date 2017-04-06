@@ -42,8 +42,8 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
 
     data <- getResults(x, proportions = proportions)
     if (show_totals) {
-        data <- rbind(data, Totals = if (proportions)
-            x$totals_proportions else x$totals_counts)
+        data <- rbind(data, if (proportions) x$totals_proportions else x$totals_counts)
+        rownames(data)[length(rownames(data))] <- "Totals"
     }
     n_data <- if (weighted_n)
         x$totals_counts else x$unweighted_n
