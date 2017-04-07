@@ -15,7 +15,7 @@ test_that("Basic method dispatch error handling", {
     # NPR: why are these different messages?
 })
 
-with_mock_tabs("tabbook-array-result.json", {
+with_mock_tabs("apidocs-tabbook.json", {
     test_that("We can get a tab book", {
         b <- tabBook()
         expect_is(b, "TabBookResult")
