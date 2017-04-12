@@ -2,12 +2,22 @@ Sys.setlocale("LC_COLLATE", "C") ## What CRAN does; affects sort order
 set.seed(999) ## To ensure that tests that involve randomness are reproducible
 options(warn=1)
 
-with_mock_tabs <- function (file, expr) {
+fromJSON <- jsonlite::fromJSON
+fixtures_dir <- "fixtures"
+
+with_mock_tabs <- function(book_file, mt_file, expr) {
     with_mock(
         `crunch::tabBook`=function (...) {
-            crunch:::TabBookResult(jsonlite::fromJSON(file, simplifyVector=FALSE))
+            crunch:::TabBookResult(jsonlite::fromJSON(file.path(fixtures_dir, book_file), simplifyVector=FALSE))
         },
-        `crunchtabs:::getMultitable`=function (...) NULL,
+        `crunchtabs:::getMultitable`=function (...) {
+          crunch:::Multitable(jsonlite::fromJSON(file.path(fixtures_dir, mt_file), simplifyVector=FALSE))
+        },
         eval.parent(expr)
     )
+}
+
+newDatasetFromFixture <- function (filename) {
+  m <- fromJSON(file.path(fixtures_dir, paste0(filename, ".json")), simplifyVector=FALSE)
+  return(suppressMessages(createWithMetadataAndFile(m, file.path(fixtures_dir, paste0(filename, ".csv")))))
 }

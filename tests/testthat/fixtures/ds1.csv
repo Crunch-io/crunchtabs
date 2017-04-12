@@ -1,0 +1,21 @@
+allpets_1,allpets_2,allpets_3,q1,petloc_home,petloc_work,ndogs,ndogs_a,ndogs_b,q3,country,wave,Weight,age,age2,age3,age5,gender
+selected,skipped,skipped,Skipped,Skipped,Not Asked,1.0,1.0,0.0,Jasmine,Argentina,2014-12-01,0.0,26.0,16 to 34,16 to 34,25 to 34,Male
+not asked,selected,not selected,Cat,Dog,Bird,not asked,1.0,2.0,Clyde,Australia,2014-12-01,0.64999999999999991,76.0,35+,55+,55+,Female
+selected,not asked,skipped,Not Asked,Not Asked,Bird,2.0,1.0,2.0,Geoffrey,Austria,2014-12-01,0.0,71.0,35+,55+,55+,Female
+selected,not asked,skipped,Dog,Not Asked,Dog,3.0,0.0,No Data,Spike,Belgium,2014-12-01,1.625,52.0,35+,35 to 54,45 to 54,Male
+not asked,not asked,skipped,Dog,Cat,Dog,1.0,4.0,No Data,Zeus,Brazil,2014-12-01,1.625,44.0,35+,35 to 54,35 to 44,Male
+not asked,not asked,not selected,Skipped,Bird,Cat,2.0,0.0,3.0,Teddy,Argentina,2014-12-01,0.0,39.0,35+,35 to 54,35 to 44,Male
+not selected,not selected,not asked,Not Asked,Cat,Bird,2.0,3.0,1.0,Ali,Australia,2014-12-01,0.0,62.0,35+,55+,55+,Male
+skipped,not asked,skipped,Bird,Not Asked,Skipped,3.0,3.0,No Data,Hugo,Austria,2014-12-01,0.8666666666666667,36.0,35+,35 to 54,35 to 44,Female
+not asked,not selected,selected,Cat,Cat,Skipped,2.0,1.0,1.0,Snoopy,Belgium,2014-12-01,0.64999999999999991,27.0,16 to 34,16 to 34,25 to 34,Female
+not selected,not asked,not asked,Dog,Skipped,Cat,2.0,5.0,No Data,Lady,Brazil,2014-12-01,1.625,22.0,16 to 34,16 to 34,16 to 24,Male
+not selected,not asked,not selected,Skipped,Not Asked,Bird,2.0,0.0,0.0,Biscuit,Argentina,2015-01-01,0.0,71.0,35+,55+,55+,Female
+not asked,selected,selected,Cat,Cat,Cat,No Data,1.0,No Data,Not asked,Australia,2015-01-01,0.64999999999999991,65.0,35+,55+,55+,Male
+skipped,skipped,not selected,Cat,Skipped,Cat,3.0,2.0,No Data,Daisy,Austria,2015-01-01,0.64999999999999991,28.0,16 to 34,16 to 34,25 to 34,Male
+not asked,not asked,skipped,Cat,Cat,Cat,0.0,3.0,No Data,Doug,Belgium,2015-01-01,0.64999999999999991,81.0,35+,55+,55+,Female
+skipped,selected,selected,Dog,Dog,Bird,6.0,3.0,2.0,Not asked,Brazil,2015-01-01,1.625,32.0,16 to 34,16 to 34,25 to 34,Female
+not selected,selected,selected,Not Asked,Bird,Dog,1.0,2.0,1.0,Fluffy,Argentina,2015-01-01,0.0,61.0,35+,55+,55+,Male
+skipped,not selected,not selected,Cat,Bird,Dog,not asked,2.0,3.0,Not asked,Australia,2015-01-01,0.64999999999999991,22.0,16 to 34,16 to 34,16 to 24,Female
+not asked,skipped,not selected,Not Asked,Not Asked,Bird,0.0,1.0,No Data,Not asked,Austria,2015-01-01,0.0,72.0,35+,55+,55+,Female
+selected,skipped,selected,Bird,Skipped,Cat,skipped,4.0,2.0,Felix,Belgium,2015-01-01,0.8666666666666667,50.0,35+,35 to 54,45 to 54,Male
+not asked,selected,not asked,Bird,Dog,Skipped,2.0,2.0,2.0,Rocky,Brazil,2015-01-01,0.8666666666666667,78.0,35+,55+,55+,Female

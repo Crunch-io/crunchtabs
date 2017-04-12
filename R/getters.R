@@ -5,7 +5,7 @@ getResults <- function(x, proportions = FALSE) {
 
 #' @export
 getResults.default <- function(x, proportions) {
-    stop(paste("The getResults generic function doesn't support objects of class",
+    stop(paste("getResults doesn't support objects of class",
         class(x)))
 }
 
