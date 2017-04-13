@@ -42,9 +42,9 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     ds_vars <- allVariables(dataset[vars_vec])
 
     var_types <- types(ds_vars)
-    if (!all(var_types == "categorical")) {
-        not_categorical <- aliases(ds_vars)[!(var_types == "categorical")]
-        stop(paste("All banner variables must be categorical. This is not true for:",
+    if (!all(var_types %in% c("categorical", "multiple_response"))) {
+        not_categorical <- aliases(ds_vars)[!(var_types %in% c("categorical", "multiple_response"))]
+        stop(paste("All banner variables must be categorical or multiple_response. This is not true for:",
             paste(not_categorical, collapse = ", ")))
     }
 
@@ -63,7 +63,12 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     }
 
     ret_data <- list(alias = aliases(ds_vars), name = replace(names(ds_vars), match(names(labels),
-        (aliases(ds_vars))), labels), old_categories = lapply(vars_vec, function(x) names(categories(dataset[[x]])[!is.na(categories(dataset[[x]]))])))
+        (aliases(ds_vars))), labels), old_categories = lapply(vars_vec, function(x) {
+          cat_fun <- if (type(dataset[[x]]) == "multiple_response") {
+            names(subvariables(dataset[[x]]))
+          } else {
+            names(categories(dataset[[x]])[!is.na(categories(dataset[[x]]))])
+          }}))
     ret_data$categories_out <- ret_data$old_categories
 
     ret_data <- lstranspose(ret_data)
