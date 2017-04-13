@@ -99,8 +99,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         ), class = c("CrossTabBannerVar", "list"))
 
         for (bi in seq_along(banner_map)) {
-          if (banner_var_alias %in% banner_map[[bi]]) {
-            tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[if (banner_var_alias == "___total___") "Total" else banner_var_alias]] <- banner_var_cross
+          for (bij in seq_along(banner_map[[bi]])) {
+            if (banner_var_alias == banner_map[[bi]][bij]) {
+              tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[bij]] <- banner_var_cross
+              names(tabs_data[[valiases[ri]]][['crosstabs']][[bi]])[bij] <- if (banner_var_alias == "___total___") "Total" else banner_var_alias
+            }
           }
         }
       }
