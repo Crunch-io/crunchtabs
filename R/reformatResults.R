@@ -84,7 +84,7 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
     lapply(x, function(var) {
-        var$crosstabs <- lapply(names(var$crosstabs), function(banner_name) {
+        var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
             lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
                 banner_var <- banner[[banner_name]][[banner_var_ind]]
                 cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
@@ -93,7 +93,7 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
                   min_cell_label = min_cell_label, reformat = reformat)
             })
-        })
+        }, simplify = FALSE)
         var
     })
 }
@@ -115,6 +115,28 @@ flattenBanner <- function(x) {
         }
     }), recursive = FALSE)
 }
+
+mergeBannerResults <- function(x, banner_name = NULL) {
+  lapply(x, function(var) {
+    var$crosstabs <- mergeBanner(var$crosstabs, banner_name = banner_name)
+    var
+  })
+}
+
+mergeBanner <- function(x, banner_name = NULL) {
+  res <- list(unlist(lapply(seq_along(x), function(banner_id) {
+    if (banner_id == 1) {
+      x[[banner_id]]
+    } else {
+      x[[banner_id]][2:length(x[[banner_id]])]
+    }
+  }), recursive = FALSE))
+  if (!is.null(banner_name)) {
+    names(res) <- banner_name
+  }
+  res
+}
+
 
 bannerDataRecode <- function(b_table, b_recode) {
     names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)

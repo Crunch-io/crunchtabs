@@ -87,8 +87,11 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
     x$results <- reformatCrosstabsResults(x$results, banner, proportions = proportions, digits = digits,
         add_parenthesis = add_parenthesis, show_totals = show_totals, weighted_n = weighted_n,
         min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = FALSE)
-    x$results <- flattenBannerResults(x$results)
-    banner <- flattenBanner(banner)
+    if (one_per_sheet && length(banner) > 1) {
+      banner_name <- "Results"
+      x$results <- mergeBannerResults(x$results, banner_name = banner_name)
+      banner <- mergeBanner(banner, banner_name = banner_name)
+    }
 
     writeVarGeneral(x, banner, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, returndata = returndata, table_of_contents = table_of_contents,
@@ -134,17 +137,17 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
     list(toc_sheet = toc_sheet, toc_row = toc_row)
 }
 
-writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
+writeExcelVarBanner <- function(wb, ws, banner_name, x, banner, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, row_label_width = 20, toc_sheet = NULL,
     toc_row = 1) {
 
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row)
     ccol <- start_col
-    multicols <- sapply(banner, getNames)
+    multicols <- sapply(banner[[banner_name]], getNames)
     multicols_csum <- cumsum(c(2, sapply(multicols, length)))
-    lapply(seq_along(banner), function(bidx) {
-        openxlsx::writeData(wb, ws, getName(banner[[bidx]]), startCol = multicols_csum[bidx],
+    lapply(seq_along(banner[[banner_name]]), function(bidx) {
+        openxlsx::writeData(wb, ws, getName(banner[[banner_name]][[bidx]]), startCol = multicols_csum[bidx],
             startRow = crow)
         openxlsx::mergeCells(wb, ws, cols = multicols_csum[bidx]:(multicols_csum[bidx + 1] -
             1), rows = crow)
@@ -154,7 +157,7 @@ writeExcelVarBanner <- function(wb, ws, x, banner, start_col = 1, start_row = 1,
     })
 
     crow <- crow + 1
-    df <- as.data.frame(x$crosstabs, optional = TRUE)
+    df <- as.data.frame(x$crosstabs[[banner_name]], optional = TRUE)
     openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE)
     openxlsx::addStyle(wb, ws, openxlsx::createStyle(halign = "center"), rows = crow, cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
         1), stack = TRUE)
@@ -302,36 +305,41 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
     toc_row <- if (is.null(toc_res))
         1 else toc_res$toc_row
 
-    worksheet_name <- "Results"
+    banner_names <- if (is.null(banner)) "Results" else names(banner)
     if (!one_per_sheet) {
+      for (worksheet_name in banner_names) {
         openxlsx::addWorksheet(wb, worksheet_name)
+      }
     }
-    start_col <- 1
-    start_row <- 1
-    last_row_used <- 0
-    for (vidx in seq_along(x$results)) {
-        if (one_per_sheet) {
-            worksheet_name <- getAlias(x$results[[vidx]])
-            # worksheet names must be unique and have less then 32 characters
-            if (nchar(worksheet_name) > 25) {
-                worksheet_name <- paste0(strtrim(worksheet_name, 25), vidx)
-            }
-            openxlsx::addWorksheet(wb, worksheet_name)
-        } else {
-            start_row <- last_row_used + if (vidx > 1)
-                5 else 1
-        }
-        last_row_used <- if (is.null(banner)) {
-            writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
-                start_row = start_row, digits = digits, proportions = proportions,
-                row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row)
-        } else {
-            writeExcelVarBanner(wb, worksheet_name, x$results[[vidx]], banner, start_col = start_col,
-                start_row = start_row, digits = digits, proportions = proportions,
-                show_totals = show_totals, row_label_width = row_label_width, toc_sheet = toc_sheet,
-                toc_row = toc_row)
-        }
-        toc_row <- toc_row + 1
+    for (banner_name in banner_names) {
+      start_col <- 1
+      start_row <- 1
+      last_row_used <- 0
+      for (vidx in seq_along(x$results)) {
+          if (one_per_sheet) {
+              worksheet_name <- getAlias(x$results[[vidx]])
+              # worksheet names must be unique and have less then 32 characters
+              if (nchar(worksheet_name) > 25) {
+                  worksheet_name <- paste0(strtrim(worksheet_name, 25), vidx)
+              }
+              openxlsx::addWorksheet(wb, worksheet_name)
+          } else {
+              worksheet_name <- banner_name
+              start_row <- last_row_used + if (vidx > 1)
+                  5 else 1
+          }
+          last_row_used <- if (is.null(banner)) {
+              writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
+                  start_row = start_row, digits = digits, proportions = proportions,
+                  row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row)
+          } else {
+              writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner, start_col = start_col,
+                  start_row = start_row, digits = digits, proportions = proportions,
+                  show_totals = show_totals, row_label_width = row_label_width, toc_sheet = toc_sheet,
+                  toc_row = toc_row)
+          }
+          toc_row <- toc_row + 1
+      }
     }
     if (append_text != "") {
         worksheet_name <- "Notes"
