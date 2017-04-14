@@ -9,7 +9,7 @@ Date: 2017-03-10
 Authors@R: person("Kamil", "Sedrowicz", role=c("aut", "cre"), email="kamil.sedrowicz@yougov.com")
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
-License: GPL-3
+License: LGPL (>= 3)
 Depends:
     R (>= 3.3.0),
     crunch
