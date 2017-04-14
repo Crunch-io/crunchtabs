@@ -10,7 +10,7 @@ writeExcel(x, filename = NULL, proportions = FALSE, digits = 0,
   field_period = "", font = "Calibri", font_size = 12,
   show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
   append_text = "", min_cell_size = NULL, min_cell_label = NULL,
-  one_per_sheet = TRUE, first_col_width = 20)
+  one_per_sheet = TRUE, row_label_width = 20)
 }
 \arguments{
 \item{x}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -63,7 +63,7 @@ used to mask the results.}
 \item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
 Defaults to \code{TRUE}.}
 
-\item{first_col_width}{width of the first column. Defaults to 20pt.}
+\item{row_label_width}{width of the first column. Defaults to 20pt.}
 
 \item{...}{other options.}
 }

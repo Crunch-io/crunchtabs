@@ -11,10 +11,10 @@ writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
   path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
   foottext = "", graphicspath = NULL, logo = NULL,
   longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE,
-  font = "helvet", font_size = NULL, pagewidth = ifelse(landscape, 9,
-  6.5), margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
-  min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
-  weighted_n = FALSE, add_parenthesis = FALSE, page_margin = 1,
+  font = "helvet", font_size = NULL, page_width = ifelse(landscape, 9,
+  6.5), row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left =
+  1, right = 1), min_cell_size = NULL, min_cell_label = NULL,
+  show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
   dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
   clearpage = TRUE)
 }
@@ -83,8 +83,10 @@ mode. Defaults to \code{TRUE} for banners and \code{FALSE} for toplines.}
 \item{font_size}{Font size points for toplines and fontsize name for banners.
 Defaults to 12 pt font for toplines and "small" for banners}
 
-\item{pagewidth}{Page width. Defaults to \code{FALSE}.
+\item{page_width}{Page width.
 Defaults to 9in for banners and 6.5in for toplines.}
+
+\item{row_label_width}{First column width. Defaults to 1.5in}
 
 \item{margin}{An optional argument to pass to the LaTeX package
 \code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
@@ -106,8 +108,6 @@ Defaults to \code{FALSE}.}
 
 \item{add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 Defaults to \code{TRUE}.}
-
-\item{page_margin}{Page margin for banners.}
 
 \item{dc}{Width of new column types for banners.}
 
