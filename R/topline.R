@@ -26,17 +26,13 @@ topline.default <- function(var, dataset, weight = NULL) {
 #' @export
 topline.NumericVariable <- function(var, dataset, weight = NULL) {
     topline_base <- toplineBase(var)
-    data <- as.vector(var)
-    # NPR: you can get all of this information without as.vector
-    valid <- length(data[!is.null(data)])
-    missing <- length(data) - valid
-    # NPR: you can get this with `summary(var)`, and it will apply the weight
-    # for you (appears that you're not using it currently)
-    summary_data <- c(`Minimum value` = min(data, na.rm = TRUE), `Maximum value` = max(data,
-        na.rm = TRUE), `Mean value` = mean(data, na.rm = TRUE), `Standard deviation` = sd(data,
-        na.rm = TRUE))
-    ret <- c(topline_base, list(summary = array(summary_data, dimnames = list(names(summary_data))),
-        valid = valid, missing = missing))
+    var_alias <- getAlias(topline_base)
+    out_crtabs <- crtabs(paste0("list(min(", var_alias, "), max(", var_alias, "), mean(", var_alias, "), sd(", var_alias, ")) ~ 1"), data = dataset, weight = weight)
+    total <- getTotal.CrunchCube(out_crtabs)
+    missing <- getMissing.CrunchCube(out_crtabs)
+    summary_data <- c(Minimum = out_crtabs@arrays$min, Maximum = out_crtabs@arrays$max, Mean = out_crtabs@arrays$mean, `Standard deviation` = out_crtabs@arrays$stddev)
+    ret <- c(topline_base, list(summary = array(summary_data, dimnames = list(names(summary_data)))
+                                , total = total, missing = missing, valid = total - missing))
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }
