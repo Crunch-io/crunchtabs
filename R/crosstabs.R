@@ -47,13 +47,22 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 
     weight_var <- if (!is.null(weight)) dataset[[weight]]
 
+    supported_types <- c("categorical", "multiple_response", "categorical_array", "numeric")
+    vars_out <- aliases(variables(dataset))[aliases(variables(dataset)) %in% vars & types(variables(dataset)) %in% supported_types]
+
+    filtered_vars <- setdiff(vars, vars_out)
+    if (length(filtered_vars) > 0) {
+      warning(paste("Variables of types:", paste(unique(types(variables(dataset[filtered_vars]))),
+                                                 collapse = ", "), "are not supported and have been skipped"))
+    }
+
     if (is.null(banner)) {
-        results <- lapply(dataset[vars], topline, data = dataset, weight = weight_var)
-        names(results) <- vars
-        results <- filter_unsupported_toplines(results, dataset, vars)
+        results <- lapply(dataset[vars_out], topline, data = dataset, weight = weight_var)
+        names(results) <- vars_out
+        # results <- filter_unsupported_toplines(results, dataset, vars_out)
         res_class <- c("Toplines", "CrunchTabs")
     } else {
-        results <- tabBooks(dataset = dataset, vars = vars, banner = banner, weight = weight_var)
+        results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
     }
