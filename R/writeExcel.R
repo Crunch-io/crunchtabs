@@ -115,7 +115,8 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
       border_bottom = openxlsx::createStyle(border = "Bottom"),
       border_top = openxlsx::createStyle(border = "Top"),
       toc_title = openxlsx::createStyle(textDecoration = "bold"),
-      toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline")
+      toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
+      toc_banner = openxlsx::createStyle(textDecoration = "bold")
     )
 
     writeVarGeneral(x, banner, filename = filename, proportions = proportions, digits = digits,
@@ -164,10 +165,10 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
 
 writeExcelVarBanner <- function(wb, ws, banner_name, x, banner, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, row_label_width = 20, toc_sheet = NULL,
-    toc_row = 1, styles = NULL) {
+    toc_row = 1, toc_col = 1, styles = NULL) {
 
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
-        toc_sheet = toc_sheet, toc_row = toc_row, styles = styles)
+        toc_sheet = toc_sheet, toc_row = toc_row, toc_col = toc_col, styles = styles)
     ccol <- start_col
     multicols <- sapply(banner[[banner_name]], getNames)
     multicols_csum <- cumsum(c(2, sapply(multicols, length)))
@@ -281,17 +282,17 @@ writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
 
 
 writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = NULL,
-    toc_row = 1, styles = NULL) {
+    toc_row = 1, toc_col = 1, styles = NULL) {
     crow <- start_row
     ccol <- start_col
     openxlsx::writeData(wb, ws, getName(x), startCol = ccol, startRow = crow)
     openxlsx::addStyle(wb, ws, styles$name, rows = crow, cols = ccol)
     crow <- crow + 1
     if (!is.null(toc_sheet)) {
-        openxlsx::writeFormula(wb, toc_sheet, startRow = toc_row, x = openxlsx::makeHyperlinkString(sheet = ws,
+        openxlsx::writeFormula(wb, toc_sheet, startCol = toc_col, startRow = toc_row, x = openxlsx::makeHyperlinkString(sheet = ws,
             row = start_row, col = start_col, text = getName(x)))
         openxlsx::addStyle(wb, toc_sheet, styles$toc_slot,
-            rows = toc_row, cols = 1, stack = FALSE)
+            rows = toc_row, cols = toc_col, stack = FALSE)
     }
     openxlsx::writeData(wb, ws, getDescription(x), startCol = ccol, startRow = crow)
     crow <- crow + 1
@@ -321,17 +322,28 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
         NULL else toc_res$toc_sheet
     toc_row <- if (is.null(toc_res))
         1 else toc_res$toc_row
+    toc_col <- 1
 
     banner_names <- if (is.null(banner)) "Results" else names(banner)
     if (!one_per_sheet) {
       for (worksheet_name in banner_names) {
         openxlsx::addWorksheet(wb, worksheet_name)
       }
+      toc_col <- 2
     }
     for (banner_name in banner_names) {
       start_col <- 1
       start_row <- 1
       last_row_used <- 0
+      if (!one_per_sheet) {
+        worksheet_name <- banner_name
+        if (!is.null(toc_sheet)) {
+          openxlsx::writeData(wb, toc_sheet, worksheet_name, startRow = toc_row, startCol = 1)
+          openxlsx::addStyle(wb, toc_sheet, styles$toc_banner, rows = toc_row, cols = 1, stack = FALSE)
+          toc_row <- toc_row + 1
+        }
+      }
+
       for (vidx in seq_along(x$results)) {
           if (one_per_sheet) {
               worksheet_name <- getAlias(x$results[[vidx]])
@@ -341,9 +353,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
               }
               openxlsx::addWorksheet(wb, worksheet_name)
           } else {
-              worksheet_name <- banner_name
-              start_row <- last_row_used + if (vidx > 1)
-                  5 else 1
+              start_row <- last_row_used + if (vidx > 1) 5 else 1
           }
           last_row_used <- if (is.null(banner)) {
               writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
@@ -353,7 +363,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
               writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner, start_col = start_col,
                   start_row = start_row, digits = digits, proportions = proportions,
                   show_totals = show_totals, row_label_width = row_label_width, toc_sheet = toc_sheet,
-                  toc_row = toc_row, styles = styles)
+                  toc_row = toc_row, toc_col = toc_col, styles = styles)
           }
           toc_row <- toc_row + 1
       }
