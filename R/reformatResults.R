@@ -46,20 +46,18 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         data <- rbind(data, if (proportions) x$totals_proportions else x$totals_counts)
         rownames(data)[length(rownames(data))] <- "Totals"
     }
-    n_data <- if (weighted_n)
-        x$totals_counts else x$unweighted_n
+    if (!reformat) {
+      data <- as.data.frame(data)
+    }
+    n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
     min_cell_mask <- NULL
     if (!is.null(min_cell_size)) {
       min_cell_mask <- n_data < min_cell_size
     }
-    if (digits > -1) {
-        if (reformat) {
-            data[] <- format(round(data * if (proportions) 100 else 1, digits), nsmall=digits, big.mark=",")
-        }
+    if (digits > -1 && reformat) {
+        data[] <- format(round(data * if (proportions) 100 else 1, digits), nsmall=digits, big.mark=",")
         n_data[] <- round(n_data, digits)
-        if (reformat) {
-          n_data[] <- format(n_data, nsmall=digits, big.mark=",")
-        }
+        n_data[] <- format(n_data, nsmall=digits, big.mark=",")
     }
     if (proportions && reformat) {
         data[is.nan(data)] <- 0
@@ -68,12 +66,13 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     if (any(min_cell_mask)) {
         data[, min_cell_mask] <- min_cell_label
     }
-    if (add_parenthesis) {
+    if (add_parenthesis && reformat) {
         n_data[] <- paste0("(", n_data, ")")
     }
     if (!is.null(latex_adjust)) {
         n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
     }
+
     data <- rbind(data, n_data)
     rownames(data)[length(rownames(data))] <- if (weighted_n)
         "Weighted N" else "Unweighted N"
@@ -81,7 +80,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
 }
 
 reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
-    digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
+    digits = 0, add_parenthesis = FALSE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
     lapply(x, function(var) {
         var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
