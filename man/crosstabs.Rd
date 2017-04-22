@@ -10,31 +10,31 @@ crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
 \arguments{
 \item{dataset}{A Crunch dataset.}
 
-\item{vars}{An optional vector of names of the (non-hidden) variables that shoulds be used.
+\item{vars}{An optional vector of aliases of the non-hidden variables that shoulds be used.
 Defaults to all non-hidden variables.}
 
-\item{weight}{The name of a numeric variable that should be used for data weighting.
+\item{weight}{The alias of a numeric variable that should be used for data weighting.
 Defaults to NULL - data is not weighted.}
 
 \item{banner}{An optional object of class \code{Banner} that should be used to generate
-a cross tabulations summary. Defaults to NULL - a toplines summary is produced and returned.}
+a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and returned.}
 
 \item{title}{An optional title. Defaults to the name of the dataset.}
 
 \item{date}{An optional date. Defaults to the current date.}
 }
 \value{
-A toplines (when no banner is provided) or crosstabs (when a banner is provided)
+A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
 summary of the input dataset.
 }
 \description{
-\code{crosstabs} produces toplines (one-way frequency tables) or crosstabs (cross tabulations)
+\code{crosstabs} produces Toplines (one-way frequency tables) or Crosstabs (cross tabulations)
 summaries of a Cruch dataset.
 }
 \examples{
 \dontrun{
-crunch_dataset <- loadDataset('dataset_name')
 toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-crosstabs_summary <- crosstabs(crunch_dataset, weight = 'weight', banner = banner_object)
+crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
+                               weight = 'weight', banner = banner_object)
 }
 }

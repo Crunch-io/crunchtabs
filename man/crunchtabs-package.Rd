@@ -6,5 +6,5 @@
 \alias{crunchtabs}
 \title{Functions for reports (toplines and banners) generation.}
 \description{
-crunchtabs provides tools for generating reports (toplines and banners)
+crunchtabs provides tools for generating reports (Toplines and Banners)
 }

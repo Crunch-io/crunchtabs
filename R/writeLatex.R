@@ -69,12 +69,14 @@
 #' @param clearpage logical. Should every banner be on a separete page?
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
-#' @param ... other options.
 #' @examples
 #' \dontrun{
-#' crunch_dataset <- loadDataset('dataset_name')
+#' # toplines report
 #' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 #' writeLatex(toplines_summary, 'filename')
+#' # crosstabs report
+#' crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
+#' writeLatex(crosstabs_summary, 'filename')
 #' }
 #' @export
 writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,

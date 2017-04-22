@@ -38,9 +38,12 @@
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
 #' \dontrun{
-#' ds <- loadDataset('dataset_name')
-#' toplines_summary <- tables(ds, weight = 'weight')
+#' # toplines report
+#' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 #' writeExcel(toplines_summary, 'filename')
+#' # crosstabs report
+#' crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
+#' writeExcel(crosstabs_summary, 'filename')
 #' }
 #' @export
 writeExcel <- function(data_summary, filename = NULL, proportions = FALSE, digits = 0, title = getName(data_summary),

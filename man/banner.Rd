@@ -9,17 +9,17 @@ banner(dataset, vars, labels = NULL, recodes = NULL)
 \arguments{
 \item{dataset}{A Crunch dataset.}
 
-\item{vars}{A list of vectors of names of the variables that shoulds constitute the banner object.
-These should be categorical (and typically hidden) variables present in the dataset.}
+\item{vars}{A named list of vectors of aliases of the variables that shoulds constitute the banner object.
+These should be categorical (and typically hidden) variables present in the \code{dataset}.}
 
-\item{labels}{An optional named list of labels, where names are variable aliases
-(present in the vars parameter) and values are labels that should be used in the report.
-for those variables. Defaults to NULL - variables names are used.}
+\item{labels}{An optional named list of labels, where names are variables' aliases
+(present in the \code{vars} parameter) and values are the labels that should be used in the report.
+Defaults to NULL - variables names are used.}
 
 \item{recodes}{An optional named list of categories recodes (the syntax is similar
 to the one used in the \code{recode} function in the R \code{car} library). Use \code{NA} to
 exclude categories. Not listed categories will be left unchanged.
-Use \code{else} to change all not listed categories. See examples for details.
+Use \code{else} to replace all not listed categories. See examples for details.
 Defaults to NULL - categories are not modified.}
 }
 \value{
@@ -30,11 +30,11 @@ Create an object of class \code{Banner}
 }
 \examples{
 \dontrun{
-crunch_dataset <- loadDataset('dataset_name')
-banner_data <- banner(crunch_dataset, vars = list(banner1 = c('var1', 'var2'), banner2 = c('var3')),
-    labels = c(var1 = 'var1 label', var2 = 'var2 label'),
+banner_data <- banner(crunch_dataset,
+    vars = list(subBanner1 = c('alias1', 'alias2'), subBanner2 = c('alias3')),
+    labels = c(alias1 = 'var1 label', alias2 = 'var2 label'),
     recodes = list(
-        var1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
-        var2 = "'cat2a' = 'new cat2a'; else = NA"))
+        alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
+        alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
 }
 }

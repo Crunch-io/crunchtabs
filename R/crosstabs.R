@@ -17,9 +17,9 @@
 #' summary of the input dataset.
 #' @examples
 #' \dontrun{
-#' crunch_dataset <- loadDataset('dataset_name')
 #' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-#' crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'), weight = 'weight', banner = banner_object)
+#' crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
+#'                                weight = 'weight', banner = banner_object)
 #' }
 #' @importFrom crunch name aliases allVariables is.Numeric
 #' @importFrom methods is

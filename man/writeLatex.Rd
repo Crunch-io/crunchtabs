@@ -9,11 +9,11 @@ writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
   field_period = "", moe = NULL, table_of_contents = FALSE,
   returndata = FALSE, append_text = "", pdf = FALSE,
   path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
-  foottext = "", graphicspath = NULL, logo = NULL,
-  longtablewrap = FALSE, tableonly = FALSE, landscape = FALSE,
-  font = "helvet", font_size = NULL, page_width = ifelse(landscape, 9,
-  6.5), row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left =
-  1, right = 1), min_cell_size = NULL, min_cell_label = NULL,
+  foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
+  tableonly = FALSE, landscape = FALSE, font = "helvet",
+  font_size = NULL, page_width = ifelse(landscape, 9, 6.5),
+  row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left = 1,
+  right = 1), min_cell_size = NULL, min_cell_label = NULL,
   show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
   dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
   clearpage = TRUE)
@@ -21,14 +21,15 @@ writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
-\item{filename}{character. Name of the output file (without extension).}
+\item{filename}{character. The name of the output file (without extension).}
 
-\item{proportions}{logical. \code{TRUE} returns percentages, \code{FALSE} returns counts.}
+\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
+if \code{FALSE} the report shows counts.}
 
 \item{digits}{integer. Number of decimal digits to use for rounding.
 Defaults to 0.}
 
-\item{title}{An optional title. Defaults to the summary title.}
+\item{title}{An optional title. Defaults to the data summary title.}
 
 \item{subtitle}{An optional character subtitle. Defaults to an empty string.}
 
@@ -39,7 +40,7 @@ Defaults to 0.}
 \item{moe}{An optional numeric margin of error.}
 
 \item{table_of_contents}{logical. Should a list of tables be included at the start
-of the file. Defaults to \code{FALSE}.}
+of the report Defaults to \code{FALSE}.}
 
 \item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
 the report is returned.}
@@ -47,15 +48,15 @@ the report is returned.}
 \item{append_text}{An optional character string that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information. Defaults to an empty string.}
 
-\item{pdf}{logical. Compile LaTeX using pdflatex? Currently implemented only on Mac/Linux.}
+\item{pdf}{logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.}
 
 \item{path.to.pdflatex}{Character path to pdflatex.}
 
 \item{open}{logical. If PDF document was produced, open it with
-the default application? Currently only implemented for Mac OS X.}
+the default application? Only implemented for MacOS.}
 
 \item{headtext}{An optional character string indicating what text should be
-placed at the top of continuation tables. 'tbc' is a shortcut for 'To be
+placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
 continued.'}
 
 \item{foottext}{An optional character string indicating what text should be
@@ -63,42 +64,42 @@ placed at the bottom of continuation tables. 'tbc' is a shortcut for
 'continued from previous page.'}
 
 \item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
-Defaults to \code{NULL} - LaTeX output directory.}
+Defaults to \code{NULL} - LaTeX output directory is used.}
 
-\item{logo}{character. Name of the logo file.
+\item{logo}{character. The name of the logo file.
 Defaults to \code{NULL} - no logo is used.}
 
 \item{longtablewrap}{logical. Should LaTeX longtables be allowed to wrap to
 a new page? If \code{TRUE}, inserts the 'continued on the next page' breaks.
-Defaults to \code{FALSE}.}
+Defaults to \code{TRUE}.}
 
 \item{tableonly}{logical. If \code{TRUE}, function writes out only the LaTeX
 content within the \code{table} environments.}
 
-\item{landscape}{logical. If \code{TRUE}, output pages are in landscape
-mode. Defaults to \code{TRUE} for banners and \code{FALSE} for toplines.}
+\item{landscape}{logical. If \code{TRUE}, generate pages in the landscape
+mode. Defaults to \code{TRUE} for Banners and \code{FALSE} for Toplines.}
 
 \item{font}{A character string specifying the font package to use in LaTeX.}
 
 \item{font_size}{Font size points for toplines and fontsize name for banners.
-Defaults to 12 pt font for toplines and "small" for banners}
+Defaults to '12' pt font for toplines and 'small' for banners}
 
 \item{page_width}{Page width.
 Defaults to 9in for banners and 6.5in for toplines.}
 
-\item{row_label_width}{First column width. Defaults to 1.5in}
+\item{row_label_width}{Width of the row label comuln. Defaults to 1.5in.}
 
 \item{margin}{An optional argument to pass to the LaTeX package
 \code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
-includeheadfoot' for banners and 'top=.6in, bottom=.6in, left=1in,
-right=1in, includeheadfoot' for toplines.}
+includeheadfoot' for Banners and 'top=.6in, bottom=.6in, left=1in,
+right=1in, includeheadfoot' for Toplines.}
 
 \item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
 \item{min_cell_label}{character. If a number of responses for a
-cross tabulated category is less than min_cell_size then this string is
-used to mask the results.}
+cross tabulated category is less than \code{min_cell_size} then this string is
+used to mask out the results.}
 
 \item{show_totals}{logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
 Defaults to \code{TRUE}.}
@@ -113,11 +114,9 @@ Defaults to \code{TRUE}.}
 
 \item{multirowheaderlines}{logical. Should banners allow multi-row headlines?}
 
-\item{latex_adjust}{LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.}
+\item{latex_adjust}{A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.}
 
 \item{clearpage}{logical. Should every banner be on a separete page?}
-
-\item{...}{other options.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
@@ -125,12 +124,15 @@ the report is returned. Otherwise \code{NULL} is returned.
 }
 \description{
 \code{writeLatex} produces publication-quality LaTeX reports:
-toplines (one-way frequency tables) or banners (cross tabulations).
+Toplines (one-way frequency tables) or Banners (cross tabulations).
 }
 \examples{
 \dontrun{
-crunch_dataset <- loadDataset('dataset_name')
+# toplines report
 toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 writeLatex(toplines_summary, 'filename')
+# crosstabs report
+crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
+writeLatex(crosstabs_summary, 'filename')
 }
 }

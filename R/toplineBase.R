@@ -1,7 +1,7 @@
 #' Basic information about a Crunch variable
 #'
 #' \code{toplineBase} returns basic information about a Crunch variable, e.g.
-#' alias, name, type, description.
+#' alias, name, type, description, notes.
 #'
 #' @param var A Crunch variable.
 #' @return An object containing basic information about the variable.

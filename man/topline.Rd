@@ -2,7 +2,7 @@
 % Please edit documentation in R/topline.R
 \name{topline}
 \alias{topline}
-\title{Crunch variable summary for toplines reports}
+\title{Topline summary of a Crunch variable}
 \usage{
 topline(var, dataset, weight)
 }
@@ -11,17 +11,17 @@ topline(var, dataset, weight)
 
 \item{dataset}{A Crunch dataset.}
 
-\item{weight}{A (numeric) Cruch variable that should be used for data weighting.
+\item{weight}{A numeric Cruch variable that should be used for data weighting.
 Defaults to NULL - data is not weighted.}
 }
 \value{
-A toplines summary of a Crunch variable.
+A Toplines summary of a Crunch variable.
 }
 \description{
-\code{topline} returns a toplines summary of a Crunch variable.
+\code{topline} returns a Topline summary of a Crunch variable.
 }
 \examples{
 \dontrun{
-topline(dataset[[variable_name]], dataset, weight)
+topline_summary <- topline(crunch_variable, crunch_dataset, crunch_weight_variable)
 }
 }

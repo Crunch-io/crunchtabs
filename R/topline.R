@@ -1,15 +1,15 @@
-#' Crunch variable summary for toplines reports
+#' Topline summary of a Crunch variable
 #'
-#' \code{topline} returns a toplines summary of a Crunch variable.
+#' \code{topline} returns a Topline summary of a Crunch variable.
 #'
 #' @param var A Cruch variable.
 #' @param dataset A Crunch dataset.
-#' @param weight A (numeric) Cruch variable that should be used for data weighting.
+#' @param weight A numeric Cruch variable that should be used for data weighting.
 #' Defaults to NULL - data is not weighted.
-#' @return A toplines summary of a Crunch variable.
+#' @return A Toplines summary of a Crunch variable.
 #' @examples
 #' \dontrun{
-#' topline(dataset[[variable_name]], dataset, weight)
+#' topline_summary <- topline(crunch_variable, crunch_dataset, crunch_weight_variable)
 #' }
 #' @export
 topline <- function(var, dataset, weight) {

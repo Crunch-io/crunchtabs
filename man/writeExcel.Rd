@@ -4,20 +4,21 @@
 \alias{writeExcel}
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
-writeExcel(x, filename = NULL, proportions = FALSE, digits = 0,
-  title = getName(x), subtitle = NULL, returndata = TRUE,
+writeExcel(data_summary, filename = NULL, proportions = FALSE, digits = 0,
+  title = getName(data_summary), subtitle = NULL, returndata = TRUE,
   table_of_contents = FALSE, moe = NULL, sample_desc = "",
   field_period = "", font = "Calibri", font_size = 12,
-  show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-  append_text = "", min_cell_size = NULL, min_cell_label = NULL,
-  one_per_sheet = TRUE, row_label_width = 20)
+  show_totals = TRUE, weighted_n = FALSE, append_text = "",
+  min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE,
+  row_label_width = 20)
 }
 \arguments{
-\item{x}{An object of class \code{Toplines} or \code{Crosstabs}.}
+\item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
 \item{filename}{The name of the output file (without an extension).}
 
-\item{proportions}{logical. \code{TRUE} returns proportions, \code{FALSE} returns counts.}
+\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
+if \code{FALSE} the report shows counts.}
 
 \item{digits}{integer. Number of decimal digits to use for rounding.}
 
@@ -29,17 +30,17 @@ writeExcel(x, filename = NULL, proportions = FALSE, digits = 0,
 the report is returned.}
 
 \item{table_of_contents}{logical. Should a list of tables be included at the start
-of the file. Defaults to \code{FALSE}.}
+of the report. Defaults to \code{FALSE}.}
 
 \item{moe}{An optional numeric margin of error.}
 
-\item{sample_desc}{A string describing the sample.}
+\item{sample_desc}{A text describing the sample.}
 
-\item{field_period}{A string describing the field period.}
+\item{field_period}{A text describing the field period.}
 
-\item{font}{A string specifying the font to use. Defaults to 'Calibri'.}
+\item{font}{A text specifying the font to use. Defaults to 'Calibri'.}
 
-\item{font_size}{Numeric font size points. Defaults to 12pt font.}
+\item{font_size}{Numeric font size points. Defaults to 12 pt font.}
 
 \item{show_totals}{logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
 Defaults to \code{TRUE}.}
@@ -47,25 +48,20 @@ Defaults to \code{TRUE}.}
 \item{weighted_n}{logical. Should the total number of responses be weighted?
 Defaults to \code{FALSE}.}
 
-\item{add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
-Defaults \code{FALSE}.}
-
-\item{append_text}{Character string that, if supplied, will be appended after
+\item{append_text}{A text that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information.}
 
 \item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
 \item{min_cell_label}{character. If a number of responses for a
-cross tabulated category is less than min_cell_size then this string is
+cross tabulated category is less than min_cell_size then this text is
 used to mask the results.}
 
 \item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
 Defaults to \code{TRUE}.}
 
 \item{row_label_width}{width of the first column. Defaults to 20pt.}
-
-\item{...}{other options.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
@@ -73,12 +69,15 @@ the report is returned. Otherwise \code{NULL} is returned.
 }
 \description{
 \code{writeExcel} produces publication-quality Excel reports:
-toplines (one-way frequency tables) or banners (cross tabulations)
+Toplines (one-way frequency tables) or Banners (cross tabulations)
 }
 \examples{
 \dontrun{
-ds <- loadDataset('dataset_name')
-toplines_summary <- tables(ds, weight = 'weight')
+# toplines report
+toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 writeExcel(toplines_summary, 'filename')
+# crosstabs report
+crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
+writeExcel(crosstabs_summary, 'filename')
 }
 }
