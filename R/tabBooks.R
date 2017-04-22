@@ -1,4 +1,3 @@
-
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL) {

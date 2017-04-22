@@ -2,36 +2,37 @@
 #' Generate LaTeX Reports: Toplines and Banners
 #'
 #' \code{writeLatex} produces publication-quality LaTeX reports:
-#' toplines (one-way frequency tables) or banners (cross tabulations).
+#' Toplines (one-way frequency tables) or Banners (cross tabulations).
 #'
 #' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
-#' @param filename character. Name of the output file (without extension).
-#' @param title An optional title. Defaults to the summary title.
+#' @param filename character. The name of the output file (without extension).
+#' @param title An optional title. Defaults to the data summary title.
 #' @param subtitle An optional character subtitle. Defaults to an empty string.
-#' @param proportions logical. \code{TRUE} returns percentages, \code{FALSE} returns counts.
+#' @param proportions logical. If \code{TRUE} the output report shows proportions,
+#' if \code{FALSE} the report shows counts.
 #' @param headtext An optional character string indicating what text should be
-#' placed at the top of continuation tables. 'tbc' is a shortcut for 'To be
+#' placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
 #' continued.'
 #' @param foottext An optional character string indicating what text should be
 #' placed at the bottom of continuation tables. 'tbc' is a shortcut for
 #' 'continued from previous page.'
-#' @param landscape logical. If \code{TRUE}, output pages are in landscape
-#' mode. Defaults to \code{TRUE} for banners and \code{FALSE} for toplines.
+#' @param landscape logical. If \code{TRUE}, generate pages in the landscape
+#' mode. Defaults to \code{TRUE} for Banners and \code{FALSE} for Toplines.
 #' @param margin An optional argument to pass to the LaTeX package
 #' \code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
-#' includeheadfoot' for banners and 'top=.6in, bottom=.6in, left=1in,
-#' right=1in, includeheadfoot' for toplines.
+#' includeheadfoot' for Banners and 'top=.6in, bottom=.6in, left=1in,
+#' right=1in, includeheadfoot' for Toplines.
 #' @param table_of_contents logical. Should a list of tables be included at the start
-#' of the file. Defaults to \code{FALSE}.
+#' of the report Defaults to \code{FALSE}.
 #' @param font A character string specifying the font package to use in LaTeX.
 #' @param font_size Font size points for toplines and fontsize name for banners.
-#' Defaults to 12 pt font for toplines and "small" for banners
+#' Defaults to '12' pt font for toplines and 'small' for banners
 #' @param sample_desc A character string describing the sample.
 #' @param field_period A character string describing the field period.
 #' @param moe An optional numeric margin of error.
-#' @param pdf logical. Compile LaTeX using pdflatex? Currently implemented only on Mac/Linux.
+#' @param pdf logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.
 #' @param open logical. If PDF document was produced, open it with
-#' the default application? Currently only implemented for Mac OS X.
+#' the default application? Only implemented for MacOS.
 #' @param returndata logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
 #' @param digits integer. Number of decimal digits to use for rounding.
@@ -42,29 +43,29 @@
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
 #' @param longtablewrap logical. Should LaTeX longtables be allowed to wrap to
 #' a new page? If \code{TRUE}, inserts the 'continued on the next page' breaks.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{TRUE}.
 #' @param path.to.pdflatex Character path to pdflatex.
 #' @param min_cell_size integer. Minimum number of responses for a cross tabulated
 #' category to be displayed in details in a banner report.
 #' @param min_cell_label character. If a number of responses for a
-#' cross tabulated category is less than min_cell_size then this string is
-#' used to mask the results.
+#' cross tabulated category is less than \code{min_cell_size} then this string is
+#' used to mask out the results.
 #' @param show_totals logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
 #' Defaults to \code{TRUE}.
 #' @param weighted_n logical. Should the total number of responses be weighted?
 #' Defaults to \code{FALSE}.
 #' @param page_width Page width.
 #' Defaults to 9in for banners and 6.5in for toplines.
-#' @param row_label_width First column width. Defaults to 1.5in
+#' @param row_label_width Width of the row label comuln. Defaults to 1.5in.
 #' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 #' Defaults to \code{TRUE}.
 #' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
-#' Defaults to \code{NULL} - LaTeX output directory.
-#' @param logo character. Name of the logo file.
+#' Defaults to \code{NULL} - LaTeX output directory is used.
+#' @param logo character. The name of the logo file.
 #' Defaults to \code{NULL} - no logo is used.
 #' @param dc Width of new column types for banners.
 #' @param multirowheaderlines logical. Should banners allow multi-row headlines?
-#' @param latex_adjust LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
+#' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
 #' @param clearpage logical. Should every banner be on a separete page?
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
@@ -80,7 +81,7 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
     table_of_contents = FALSE, returndata = FALSE, append_text = "",
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
-    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = FALSE,
+    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
     page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),

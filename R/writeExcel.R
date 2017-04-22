@@ -2,27 +2,28 @@
 #' Generate Excel Reports: Toplines and Banners
 #'
 #' \code{writeExcel} produces publication-quality Excel reports:
-#' toplines (one-way frequency tables) or banners (cross tabulations)
+#' Toplines (one-way frequency tables) or Banners (cross tabulations)
 #'
-#' @param x An object of class \code{Toplines} or \code{Crosstabs}.
+#' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
 #' @param filename The name of the output file (without an extension).
 #' @param title An optional title. Defaults to the title provided in the summary.
 #' @param subtitle An optional subtitle. Defaults to an empty string.
-#' @param proportions logical. \code{TRUE} returns proportions, \code{FALSE} returns counts.
+#' @param proportions logical. If \code{TRUE} the output report shows proportions,
+#' if \code{FALSE} the report shows counts.
 #' @param table_of_contents logical. Should a list of tables be included at the start
-#' of the file. Defaults to \code{FALSE}.
-#' @param font_size Numeric font size points. Defaults to 12pt font.
-#' @param font A string specifying the font to use. Defaults to 'Calibri'.
-#' @param sample_desc A string describing the sample.
-#' @param field_period A string describing the field period.
+#' of the report. Defaults to \code{FALSE}.
+#' @param font_size Numeric font size points. Defaults to 12 pt font.
+#' @param font A text specifying the font to use. Defaults to 'Calibri'.
+#' @param sample_desc A text describing the sample.
+#' @param field_period A text describing the field period.
 #' @param moe An optional numeric margin of error.
 #' @param digits integer. Number of decimal digits to use for rounding.
-#' @param append_text Character string that, if supplied, will be appended after
+#' @param append_text A text that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information.
 #' @param min_cell_size integer. Minimum number of responses for a cross tabulated
 #' category to be displayed in details in a banner report.
 #' @param min_cell_label character. If a number of responses for a
-#' cross tabulated category is less than min_cell_size then this string is
+#' cross tabulated category is less than min_cell_size then this text is
 #' used to mask the results.
 #' @param show_totals logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
 #' Defaults to \code{TRUE}.
@@ -33,7 +34,6 @@
 #' Defaults to \code{TRUE}.
 #' @param returndata logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
-#' @param ... other options.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -43,23 +43,23 @@
 #' writeExcel(toplines_summary, 'filename')
 #' }
 #' @export
-writeExcel <- function(x, filename = NULL, proportions = FALSE, digits = 0, title = getName(x),
+writeExcel <- function(data_summary, filename = NULL, proportions = FALSE, digits = 0, title = getName(data_summary),
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, append_text = "",
     min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
-    UseMethod("writeExcel", x)
+    UseMethod("writeExcel", data_summary)
 }
 
 #' @export
-writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits = 0, title = getName(x),
+writeExcel.Toplines <- function(data_summary, filename = NULL, proportions = FALSE, digits = 0, title = getName(data_summary),
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, append_text = "",
     min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
-    x$results <- lapply(x$results, function(var_data) {
+  data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
             reformat = FALSE)
         var_data
@@ -68,38 +68,38 @@ writeExcel.Toplines <- function(x, filename = NULL, proportions = FALSE, digits 
     styles = list(
       name = openxlsx::createStyle(textDecoration = "bold"),
       filtertext = openxlsx::createStyle(textDecoration = "italic"),
-      numeric <- openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
+      numeric = openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
         paste0(".", paste0(rep(0, digits), collapse = "")))),
-      categorical <- openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
+      categorical = openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
         paste0(".", paste0(rep(0, digits), collapse = "")), if (proportions)
           "%")),
       toc_title = openxlsx::createStyle(textDecoration = "bold"),
       toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline")
     )
 
-    writeVarGeneral(x, filename = filename, proportions = proportions, digits = digits,
+    writeVarGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, returndata = returndata, table_of_contents = table_of_contents,
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
-        one_per_sheet = one_per_sheet, row_label_width = row_label_width)
+        one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles)
 
 }
 
 #' @export
-writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits = 0, title = getName(x),
+writeExcel.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0, title = getName(data_summary),
     subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, weighted_n = FALSE, append_text = "",
     min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20) {
 
-    banner <- x$banner
-    x$results <- reformatCrosstabsResults(x$results, banner, proportions = proportions, digits = digits,
+    banner <- data_summary$banner
+    data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
         add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
         min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = FALSE)
     if (one_per_sheet && length(banner) > 1) {
       banner_name <- "Results"
-      x$results <- mergeBannerResults(x$results, banner_name = banner_name)
+      data_summary$results <- mergeBannerResults(data_summary$results, banner_name = banner_name)
       banner <- mergeBanner(banner, banner_name = banner_name)
     }
 
@@ -119,7 +119,7 @@ writeExcel.Crosstabs <- function(x, filename = NULL, proportions = TRUE, digits 
       toc_banner = openxlsx::createStyle(textDecoration = "bold")
     )
 
-    writeVarGeneral(x, banner, filename = filename, proportions = proportions, digits = digits,
+    writeVarGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, returndata = returndata, table_of_contents = table_of_contents,
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals,
@@ -270,12 +270,13 @@ writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row 
 }
 
 writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1) {
+    digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1
+    , styles = NULL) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
-        toc_sheet = toc_sheet, toc_row = toc_row)
+        toc_sheet = toc_sheet, toc_row = toc_row, styles = styles)
     crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
-        digits = digits, proportions = proportions)
+        digits = digits, proportions = proportions, styles = styles)
     openxlsx::setColWidths(wb, ws, 1, row_label_width)
     return(crow + drows)
 }
@@ -337,7 +338,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
       last_row_used <- 0
       if (!one_per_sheet) {
         worksheet_name <- banner_name
-        if (!is.null(toc_sheet)) {
+        if (!is.null(toc_sheet) && !is.null(banner)) {
           openxlsx::writeData(wb, toc_sheet, worksheet_name, startRow = toc_row, startCol = 1)
           openxlsx::addStyle(wb, toc_sheet, styles$toc_banner, rows = toc_row, cols = 1, stack = FALSE)
           toc_row <- toc_row + 1
@@ -358,7 +359,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
           last_row_used <- if (is.null(banner)) {
               writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
                   start_row = start_row, digits = digits, proportions = proportions,
-                  row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row)
+                  row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row, styles = styles)
           } else {
               writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner, start_col = start_col,
                   start_row = start_row, digits = digits, proportions = proportions,

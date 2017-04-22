@@ -14,12 +14,11 @@
 #' @return An object of class \code{Banner}.
 #' @examples
 #' \dontrun{
-#' crunch_dataset <- loadDataset('dataset_name')
 #' banner_data <- banner(crunch_dataset, vars = list(subBanner1 = c('alias1', 'alias2'), subBanner2 = c('alias3')),
 #'     labels = c(alias1 = 'var1 label', alias2 = 'var2 label'),
 #'     recodes = list(
 #'         alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
-#'         alias2 = "'cat2a' = 'new cat2a'; else = NA"))
+#'         alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
 #' }
 #' @importFrom crunch alias allVariables types categories
 #' @export
