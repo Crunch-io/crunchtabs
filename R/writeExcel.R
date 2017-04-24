@@ -80,7 +80,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, proportions = FAL
       toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline")
     )
 
-    writeVarGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
+    writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, returndata = returndata, table_of_contents = table_of_contents,
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals,
@@ -122,7 +122,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
       toc_banner = openxlsx::createStyle(textDecoration = "bold")
     )
 
-    writeVarGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
+    writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, returndata = returndata, table_of_contents = table_of_contents,
         moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
         font_size = font_size, show_totals = show_totals,
@@ -277,7 +277,6 @@ writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
     , styles = NULL) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row, styles = styles)
-    crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
         digits = digits, proportions = proportions, styles = styles)
     openxlsx::setColWidths(wb, ws, 1, row_label_width)
@@ -298,10 +297,13 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
         openxlsx::addStyle(wb, toc_sheet, styles$toc_slot,
             rows = toc_row, cols = toc_col, stack = FALSE)
     }
-    openxlsx::writeData(wb, ws, getDescription(x), startCol = ccol, startRow = crow)
-    crow <- crow + 1
+    var_description <- getDescription(x)
+    if (!is.null(var_description) && var_description != "") {
+      openxlsx::writeData(wb, ws, var_description, startCol = ccol, startRow = crow)
+      crow <- crow + 1
+    }
     filtertext <- getNotes(x)
-    if (filtertext != "") {
+    if (!is.null(filtertext) && filtertext != "") {
         openxlsx::writeData(wb, ws, filtertext, startCol = ccol, startRow = crow)
         openxlsx::addStyle(wb, ws, styles$filtertext, rows = crow, cols = ccol)
         crow <- crow + 1
@@ -309,24 +311,24 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
     crow + 1
 }
 
-writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRUE,
+writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRUE,
     digits = 0, title = "", subtitle = NULL, returndata = TRUE, table_of_contents = FALSE,
     moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
     show_totals = TRUE, append_text = "", min_cell_size = NULL,
     min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL) {
 
     wb <- openxlsx::createWorkbook()
-
     openxlsx::modifyBaseFont(wb, fontSize = font_size, fontColour = "black", fontName = font)
 
-    toc_res <- if (table_of_contents)
-        create_table_of_contents(wb, title, subtitle, sample_desc, field_period,
-            moe, styles = styles) else NULL
-    toc_sheet <- if (is.null(toc_res))
-        NULL else toc_res$toc_sheet
-    toc_row <- if (is.null(toc_res))
-        1 else toc_res$toc_row
+    toc_sheet <- NULL
+    toc_row <- 1
     toc_col <- 1
+    if (table_of_contents) {
+      toc_res <- create_table_of_contents(wb, title, subtitle, sample_desc, field_period,
+                                 moe, styles = styles)
+      toc_sheet <- toc_res$toc_sheet
+      toc_row <- toc_res$toc_row
+    }
 
     banner_names <- if (is.null(banner)) "Results" else names(banner)
     if (!one_per_sheet) {
@@ -341,7 +343,7 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
       last_row_used <- 0
       if (!one_per_sheet) {
         worksheet_name <- banner_name
-        if (!is.null(toc_sheet) && !is.null(banner)) {
+        if (table_of_contents && !is.null(banner)) {
           openxlsx::writeData(wb, toc_sheet, worksheet_name, startRow = toc_row, startCol = 1)
           openxlsx::addStyle(wb, toc_sheet, styles$toc_banner, rows = toc_row, cols = 1, stack = FALSE)
           toc_row <- toc_row + 1
@@ -384,18 +386,3 @@ writeVarGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRU
         return(x)
     }
 }
-
-
-# writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row =
-# 1, digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL,
-# toc_row = 1) { crow <- writeVarHeader(wb, ws, x, start_col = start_col,
-# start_row = start_row, toc_sheet = toc_sheet, toc_row = toc_row,
-# row_label_width)  ccol <- start_col crow <- crow + 1 drows <- nrow(x$data)
-# dcols <- ncol(x$data) is_grid <- !is.na(dcols) df <- as.matrix(x$data)
-# openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE,
-# colNames = is_grid) numFmt <- paste0('0', if (digits > 1) paste0('.', rep(0,
-# digits)), if (proportions) '%') rows <- (crow + if (is_grid) 1 else 0) : (crow
-# + (if (is_grid) 1 else 0) + drows - 1) cols <- 2 : (if (is_grid) dcols + 1 else
-# 2) openxlsx::addStyle(wb, ws, openxlsx::createStyle(numFmt = numFmt), rows = rows, cols = cols,
-# gridExpand = is_grid, stack = TRUE) openxlsx::setColWidths(wb, ws, 1, row_label_width)
-# return(crow + drows) }
