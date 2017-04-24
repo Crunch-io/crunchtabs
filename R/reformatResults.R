@@ -143,8 +143,7 @@ bannerDataRecode <- function(b_table, b_recode) {
         drop = FALSE]
     colnames(b_table) <- b_recode$categories_out[names_mask]
     b_table <- sapply(b_recode$categories, function(x) {
-      dup_ind <- grep(x, colnames(b_table), fixed = TRUE)
-      rowSums(b_table[, dup_ind, drop = FALSE])
+      rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
     })
     b_table
 }
