@@ -25,11 +25,11 @@ reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, re
 reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
     ...) {
     data <- getResults(x, proportions = proportions)
+    data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
     }
     if (proportions && reformat) {
-        data[is.nan(data)] <- 0
         data[] <- paste0(data, "%")
     }
     data
@@ -46,6 +46,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         data <- rbind(data, if (proportions) x$totals_proportions else x$totals_counts)
         rownames(data)[length(rownames(data))] <- "Totals"
     }
+    data[is.nan(data)] <- 0
     if (!reformat) {
       data <- as.data.frame(data)
     }
@@ -60,7 +61,6 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         n_data[] <- format(n_data, nsmall=digits, big.mark=",")
     }
     if (proportions && reformat) {
-        data[is.nan(data)] <- 0
         data[] <- paste0(data, "%")
     }
     if (any(min_cell_mask)) {
