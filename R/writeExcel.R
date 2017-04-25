@@ -113,9 +113,10 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
       body = openxlsx::createStyle(numFmt = paste0(numFmt, if (proportions)
           "%")),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center"),
-      categories = openxlsx::createStyle(halign = "center"),
+      # categories = openxlsx::createStyle(halign = "center"),
+      categories_border = openxlsx::createStyle(halign = "center", border = "Bottom"),
       n = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center"),
-      border_bottom = openxlsx::createStyle(border = "Bottom"),
+      # border_bottom = openxlsx::createStyle(border = "Bottom"),
       border_top = openxlsx::createStyle(border = "Top"),
       toc_title = openxlsx::createStyle(textDecoration = "bold"),
       toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
@@ -182,24 +183,25 @@ writeExcelVarBanner <- function(wb, ws, banner_name, x, banner, start_col = 1, s
             1), rows = crow)
         openxlsx::addStyle(wb, ws, styles$labels,
             rows = crow, cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
-                1), stack = TRUE)
+                1), stack = FALSE)
     })
 
     crow <- crow + 1
     df <- as.data.frame(x$crosstabs[[banner_name]], optional = TRUE)
-    openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE)
-    openxlsx::writeData(wb, ws, t(as.numeric(df[nrow(df),])), startCol = ccol + 1, startRow = crow + nrow(df), rowNames = FALSE, colNames = FALSE)
-    openxlsx::addStyle(wb, ws, styles$categories, rows = crow, cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
-        1), stack = TRUE)
-    openxlsx::addStyle(wb, ws, styles$n, rows = crow +
-        nrow(df), cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
-        1), stack = TRUE)
-    openxlsx::addStyle(wb, ws, styles$border_bottom, rows = crow, cols = 1:(multicols_csum[[length(multicols_csum)]] -
-        1), stack = TRUE)
-    openxlsx::addStyle(wb, ws, styles$border_top, rows = crow + nrow(df) - ifelse(!x$options$no_totals & show_totals,
-        1, 0), cols = 1:(multicols_csum[[length(multicols_csum)]] - 1), stack = TRUE)
+    openxlsx::writeData(wb, ws, df, startCol = ccol, startRow = crow, rowNames = TRUE, headerStyle = styles$categories_border)
+    df1 <- df[nrow(df),]
+    df1[] <- as.numeric(df1)
+    openxlsx::writeData(wb, ws, df1, startCol = ccol, startRow = crow + nrow(df), rowNames = TRUE, colNames = FALSE)
+    # openxlsx::writeData(wb, ws, t(as.numeric(df[nrow(df),])), startCol = ccol + 1, startRow = crow + nrow(df), rowNames = FALSE, colNames = FALSE)
+    openxlsx::addStyle(wb, ws, styles$n, rows = crow + nrow(df), cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1), stack = FALSE)
     openxlsx::addStyle(wb, ws, styles$body, rows = (crow + 1):(crow + nrow(df) - 1), cols = 2:(multicols_csum[[length(multicols_csum)]] -
-        1), gridExpand = TRUE, stack = TRUE)
+                                                                                                 1), gridExpand = TRUE, stack = FALSE)
+    # openxlsx::addStyle(wb, ws, styles$categories, rows = crow, cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
+                                                                                             # 1), stack = FALSE)
+    openxlsx::addStyle(wb, ws, styles$border_top, rows = crow + nrow(df) - ifelse(!x$options$no_totals & show_totals,
+    1, 0), cols = 1:(multicols_csum[[length(multicols_csum)]] - 1), stack = TRUE)
+    # openxlsx::addStyle(wb, ws, styles$border_bottom, rows = crow, cols = 1:(multicols_csum[[length(multicols_csum)]] -
+                                                                              # 1), stack = TRUE)
     openxlsx::setColWidths(wb, ws, 1, row_label_width)
 
     return(crow + nrow(df))
@@ -227,7 +229,7 @@ writeExcelVarTopline.ToplineCategoricalArray <- function(wb, ws, x, start_col = 
     rows <- (start_row + 1):(start_row + drows)
     cols <- 2:(ncol(x$data) + 1)
     openxlsx::addStyle(wb, ws, styles$categorical, rows = rows, cols = cols, gridExpand = TRUE,
-        stack = TRUE)
+        stack = FALSE)
     return(drows)
 }
 
@@ -268,7 +270,7 @@ writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row 
     drows <- nrow(df)
     rows <- (start_row):(start_row + drows - 1)
     openxlsx::addStyle(wb, ws, styles$categorical, rows = rows, cols = 2, gridExpand = FALSE,
-        stack = TRUE)
+        stack = FALSE)
     return(drows)
 }
 
