@@ -12,11 +12,9 @@
 #' if \code{FALSE} the report shows counts.
 #' @param table_of_contents logical. Should a list of tables be included at the start
 #' of the report. Defaults to \code{FALSE}.
-#' @param font_size Numeric font size points. Defaults to 12 pt font.
 #' @param font A text specifying the font to use. Defaults to 'Calibri'.
-#' @param sample_desc A text describing the sample.
-#' @param field_period A text describing the field period.
-#' @param moe An optional numeric margin of error.
+#' @param font_size Numeric font size points. Defaults to 12 pt font.
+#' @param report_desc An optional named list of report descriptions.
 #' @param digits integer. Number of decimal digits to use for rounding.
 #' @param append_text A text that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information.
@@ -37,8 +35,10 @@
 #' @param logo A list of parameters describing the logo:
 #' \itemize{
 #'  \item file - The path to the logo file. Valid file types are: jpeg, png, bmp.
-#'  \item width - The width of the figure.
-#'  \item height - The height of the figure.
+#'  \item startRow - Row coordinate of upper left corner of the image.
+#'  \item startCol - Column coordinate of upper left corner of the image.
+#'  \item width - Width of figure.
+#'  \item height - Height of figure.
 #'  \item units - Units of width and height. Can be "in", "cm" or "px".
 #'  \item dpi - Image resolution used for conversion between units.
 #' }
@@ -61,7 +61,7 @@
 #' @export
 writeExcel <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                        proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                       moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
+                       report_desc = NULL, font = "Calibri", font_size = 12,
                        show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
                        min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
                        open = FALSE, return_data = TRUE) {
@@ -72,7 +72,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
 #' @export
 writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                 proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
+                                report_desc = NULL, font = "Calibri", font_size = 12,
                                 show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
                                 min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
                                 open = FALSE, return_data = TRUE) {
@@ -97,7 +97,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 
     writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, return_data = return_data, table_of_contents = table_of_contents,
-        moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
+        report_desc = report_desc, font = font,
         font_size = font_size, show_totals = show_totals,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo)
@@ -107,7 +107,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 #' @export
 writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                  proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                 moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
+                                 report_desc = NULL, font = "Calibri", font_size = 12,
                                  show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
                                  min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
                                  open = FALSE, return_data = TRUE) {
@@ -130,7 +130,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
           "%")),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center"),
       # categories = openxlsx::createStyle(halign = "center"),
-      categories_border = openxlsx::createStyle(halign = "center", border = "Bottom"),
+      categories_border = openxlsx::createStyle(halign = "center", border = "Bottom", wrapText = TRUE),
       n = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center"),
       # border_bottom = openxlsx::createStyle(border = "Bottom"),
       border_top = openxlsx::createStyle(border = "Top"),
@@ -141,15 +141,14 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
 
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, return_data = return_data, table_of_contents = table_of_contents,
-        moe = moe, sample_desc = sample_desc, field_period = field_period, font = font,
+        report_desc = report_desc, font = font,
         font_size = font_size, show_totals = show_totals,
         append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo)
 
 }
 
-create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_period,
-    moe, styles = NULL, logo = NULL) {
+create_table_of_contents <- function(wb, title, subtitle, report_desc = NULL, styles = NULL, logo = NULL) {
     toc_sheet <- "Table of Contents"
     openxlsx::addWorksheet(wb, toc_sheet)
     toc_row <- 1
@@ -161,23 +160,18 @@ create_table_of_contents <- function(wb, title, subtitle, sample_desc, field_per
         openxlsx::writeData(wb, toc_sheet, subtitle, startCol = 1, startRow = toc_row)
         toc_row <- toc_row + 1
     }
-    if (sample_desc != "") {
-        openxlsx::writeData(wb, toc_sheet, "Sample", startCol = 1, startRow = toc_row)
-        openxlsx::writeData(wb, toc_sheet, sample_desc, startCol = 2, startRow = toc_row)
-        toc_row <- toc_row + 1
+
+    desc_names <- names(report_desc)
+    for (desc_num in seq_along(report_desc)) {
+      openxlsx::writeData(wb, toc_sheet, desc_names[desc_num], startCol = 1, startRow = toc_row)
+      openxlsx::writeData(wb, toc_sheet, report_desc[[desc_num]], startCol = 2, startRow = toc_row)
+      toc_row <- toc_row + 1
     }
-    if (field_period != "") {
-        openxlsx::writeData(wb, toc_sheet, "Conducted", startCol = 1, startRow = toc_row)
-        openxlsx::writeData(wb, toc_sheet, field_period, startCol = 2, startRow = toc_row)
-        toc_row <- toc_row + 1
-    }
-    if (!is.null(moe)) {
-        openxlsx::writeData(wb, toc_sheet, "Margin of Error", startCol = 1, startRow = toc_row)
-        openxlsx::writeData(wb, toc_sheet, moe, startCol = 2, startRow = toc_row)
-        toc_row <- toc_row + 1
-    }
+
     if (!is.null(logo)) {
-      openxlsx::insertImage(wb, toc_sheet, file = logo$file, startRow = 1, startCol = 4,
+      openxlsx::insertImage(wb, toc_sheet, file = logo$file,
+                            startRow = if (is.null(logo$startRow)) 1 else logo$startRow,
+                            startCol = if (is.null(logo$startCol)) 4 else logo$startCol,
                             width = if (is.null(logo$width)) 4 else logo$width,
                             height = if (is.null(logo$height)) 2 else logo$height,
                             units = if (is.null(logo$units)) "in" else logo$units,
@@ -338,7 +332,7 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
 
 writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRUE,
     digits = 0, title = "", subtitle = NULL, return_data = TRUE, table_of_contents = FALSE,
-    moe = NULL, sample_desc = "", field_period = "", font = "Calibri", font_size = 12,
+    report_desc = NULL, font = "Calibri", font_size = 12,
     show_totals = TRUE, append_text = "", min_cell_size = NULL,
     min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
     logo = NULL) {
@@ -350,8 +344,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     toc_row <- 1
     toc_col <- 1
     if (table_of_contents) {
-      toc_res <- create_table_of_contents(wb, title, subtitle, sample_desc, field_period,
-                                 moe, styles = styles, logo = logo)
+      toc_res <- create_table_of_contents(wb, title, subtitle, report_desc = report_desc, styles = styles, logo = logo)
       toc_sheet <- toc_res$toc_sheet
       toc_row <- toc_res$toc_row
     }
