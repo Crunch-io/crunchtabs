@@ -4,33 +4,41 @@
 \alias{writeExcel}
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
-writeExcel(data_summary, filename = NULL, proportions = FALSE, digits = 0,
-  title = getName(data_summary), subtitle = NULL, returndata = TRUE,
-  table_of_contents = FALSE, moe = NULL, sample_desc = "",
+writeExcel(data_summary, filename = NULL, title = getName(data_summary),
+  subtitle = NULL, proportions = FALSE, digits = 0,
+  table_of_contents = FALSE, logo = NULL, moe = NULL, sample_desc = "",
   field_period = "", font = "Calibri", font_size = 12,
   show_totals = TRUE, weighted_n = FALSE, append_text = "",
-  min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE,
-  row_label_width = 20)
+  wrap_categories = FALSE, min_cell_size = NULL, min_cell_label = NULL,
+  one_per_sheet = TRUE, row_label_width = 20, open = FALSE,
+  return_data = TRUE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
 \item{filename}{The name of the output file (without an extension).}
 
+\item{title}{An optional title. Defaults to the title provided in the summary.}
+
+\item{subtitle}{An optional subtitle. Defaults to an empty string.}
+
 \item{proportions}{logical. If \code{TRUE} the output report shows proportions,
 if \code{FALSE} the report shows counts.}
 
 \item{digits}{integer. Number of decimal digits to use for rounding.}
 
-\item{title}{An optional title. Defaults to the title provided in the summary.}
-
-\item{subtitle}{An optional subtitle. Defaults to an empty string.}
-
-\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
-
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report. Defaults to \code{FALSE}.}
+
+\item{logo}{A list of parameters describing the logo:
+\itemize{
+ \item file - The path to the logo file. Valid file types are: jpeg, png, bmp.
+ \item width - The width of the figure.
+ \item height - The height of the figure.
+ \item units - Units of width and height. Can be "in", "cm" or "px".
+ \item dpi - Image resolution used for conversion between units.
+}
+Defaults to \code{NULL} - no logo is used.}
 
 \item{moe}{An optional numeric margin of error.}
 
@@ -51,20 +59,29 @@ Defaults to \code{FALSE}.}
 \item{append_text}{A text that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information.}
 
+\item{wrap_categories}{logical. Should the categories' names be wrapped?
+Defaults to \code{FALSE}.}
+
 \item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
 \item{min_cell_label}{character. If a number of responses for a
 cross tabulated category is less than min_cell_size then this text is
-used to mask the results.}
+used to mask the results. Defaults to \code{NULL} - the values are greyed out.}
 
 \item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
 Defaults to \code{TRUE}.}
 
 \item{row_label_width}{width of the first column. Defaults to 20pt.}
+
+\item{open}{logical. Should the report, if successfully generated, be opened with
+the default application? Defaults to \code{FALSE}.}
+
+\item{return_data}{logical. If \code{TRUE}, a processed data that was used to produce
+the report is returned.}
 }
 \value{
-If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
+If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
 the report is returned. Otherwise \code{NULL} is returned.
 }
 \description{
