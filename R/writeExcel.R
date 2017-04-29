@@ -18,15 +18,29 @@
 #' @param digits integer. Number of decimal digits to use for rounding.
 #' @param append_text A text that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information.
-#' @param min_cell_size integer. Minimum number of responses for a cross tabulated
+#' @param min_base_size integer. Minimum number of responses for a cross tabulated
 #' category to be displayed in details in a banner report.
-#' @param min_cell_label character. If a number of responses for a
-#' cross tabulated category is less than min_cell_size then this text is
+#' @param min_base_label character. If a number of responses for a
+#' cross tabulated category is less than min_base_size then this text is
 #' used to mask the results. Defaults to \code{NULL} - the values are greyed out.
 #' @param show_totals logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
 #' Defaults to \code{TRUE}.
-#' @param weighted_n logical. Should the total number of responses be weighted?
-#' Defaults to \code{FALSE}.
+#' @param unweighted_n A list of parameters describing the row containing the weighted bases:
+#' \itemize{
+#'  \item name  - The name of the row.
+#'  \item position - The position of the row. Valid values are: "top", "bottom", "both".
+#' }
+#' Defaults to \code{list(name = "Unweighted N", position = "bottom")}.
+#' @param weighted_n A list of parameters describing the row containing the weighted bases:
+#' \itemize{
+#'  \item name  - The name of the row.
+#'  \item position - The position of the row. Valid values are: "top", "bottom", "both".
+#' }
+#' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
+#' @param show_grid_lines - logical. Should the grid lines be shown?
+#' @param banner_vars_split - The method of splitting banner variables.
+#' Valid values are: NULL, "line", "empty_col".
+#' Defaults to \code{NULL} - no split.
 #' @param row_label_width width of the first column. Defaults to 20pt.
 #' @param one_per_sheet logical. Should every variable be written on a separate sheet?
 #' Defaults to \code{TRUE}.
@@ -61,10 +75,12 @@
 #' @export
 writeExcel <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                        proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                       report_desc = NULL, font = "Calibri", font_size = 12,
-                       show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
-                       min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
-                       open = FALSE, return_data = TRUE) {
+                       weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                       show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
+                       one_per_sheet = TRUE, append_text = "", wrap_categories = FALSE,
+                       banner_vars_split = NULL, row_label_width = 20,
+                       min_base_size = NULL, min_base_label = NULL,
+                       show_grid_lines = FALSE, open = FALSE, return_data = TRUE) {
 
     UseMethod("writeExcel", data_summary)
 }
@@ -72,10 +88,12 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
 #' @export
 writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                 proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                report_desc = NULL, font = "Calibri", font_size = 12,
-                                show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
-                                min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
-                                open = FALSE, return_data = TRUE) {
+                                weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                                show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
+                                one_per_sheet = TRUE, append_text = "", wrap_categories = FALSE,
+                                banner_vars_split = NULL, row_label_width = 20,
+                                min_base_size = NULL, min_base_label = NULL,
+                                show_grid_lines = FALSE, open = FALSE, return_data = TRUE) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -97,9 +115,9 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 
     writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, return_data = return_data, table_of_contents = table_of_contents,
-        report_desc = report_desc, font = font,
+        report_desc = report_desc, font = font, show_grid_lines = show_grid_lines,
         font_size = font_size, show_totals = show_totals,
-        append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
+        append_text = append_text, min_base_size = min_base_size, min_base_label = min_base_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo)
 
 }
@@ -107,15 +125,17 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 #' @export
 writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                  proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                 report_desc = NULL, font = "Calibri", font_size = 12,
-                                 show_totals = TRUE, weighted_n = FALSE, append_text = "", wrap_categories = FALSE,
-                                 min_cell_size = NULL, min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20,
-                                 open = FALSE, return_data = TRUE) {
+                                 weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                                 show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
+                                 one_per_sheet = TRUE, append_text = "", wrap_categories = FALSE,
+                                 banner_vars_split = NULL, row_label_width = 20,
+                                 min_base_size = NULL, min_base_label = NULL,
+                                 show_grid_lines = FALSE, open = FALSE, return_data = TRUE) {
 
     banner <- data_summary$banner
     data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
-        add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
-        min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = FALSE)
+    add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
+    min_base_size = min_base_size, min_base_label = min_base_label, reformat = FALSE)
     if (one_per_sheet && length(banner) > 1) {
       banner_name <- "Results"
       data_summary$results <- mergeBannerResults(data_summary$results, banner_name = banner_name)
@@ -141,16 +161,18 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
 
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, return_data = return_data, table_of_contents = table_of_contents,
-        report_desc = report_desc, font = font,
-        font_size = font_size, show_totals = show_totals,
-        append_text = append_text, min_cell_size = min_cell_size, min_cell_label = min_cell_label,
+        report_desc = report_desc, font = font, show_grid_lines = show_grid_lines,
+        unweighted_n = unweighted_n, weighted_n = weighted_n,
+        font_size = font_size, show_totals = show_totals, banner_vars_split = banner_vars_split,
+        append_text = append_text, min_base_size = min_base_size, min_base_label = min_base_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo)
 
 }
 
-create_table_of_contents <- function(wb, title, subtitle, report_desc = NULL, styles = NULL, logo = NULL) {
+create_table_of_contents <- function(wb, title, subtitle, report_desc = NULL, styles = NULL,
+                                     show_grid_lines = FALSE, logo = NULL) {
     toc_sheet <- "Table of Contents"
-    openxlsx::addWorksheet(wb, toc_sheet)
+    openxlsx::addWorksheet(wb, toc_sheet, gridLines = show_grid_lines)
     toc_row <- 1
     openxlsx::writeData(wb, toc_sheet, title, startCol = 1, startRow = toc_row)
     openxlsx::addStyle(wb, toc_sheet, styles$toc_title, rows = toc_row,
@@ -185,8 +207,9 @@ create_table_of_contents <- function(wb, title, subtitle, report_desc = NULL, st
 }
 
 writeExcelVarBanner <- function(wb, ws, banner_name, x, banner, start_col = 1, start_row = 1,
-    digits = 0, proportions = TRUE, show_totals = TRUE, row_label_width = 20, toc_sheet = NULL,
-    toc_row = 1, toc_col = 1, styles = NULL) {
+    digits = 0, proportions = TRUE, show_totals = TRUE, unweighted_n = NULL, weighted_n = NULL,
+    row_label_width = 20, toc_sheet = NULL, toc_row = 1, toc_col = 1, styles = NULL,
+    banner_vars_split = NULL) {
 
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row, toc_col = toc_col, styles = styles)
@@ -332,9 +355,10 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
 
 writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRUE,
     digits = 0, title = "", subtitle = NULL, return_data = TRUE, table_of_contents = FALSE,
-    report_desc = NULL, font = "Calibri", font_size = 12,
-    show_totals = TRUE, append_text = "", min_cell_size = NULL,
-    min_cell_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
+    report_desc = NULL, font = "Calibri", font_size = 12, show_grid_lines = FALSE,
+    unweighted_n = NULL, weighted_n = NULL, banner_vars_split = NULL,
+    show_totals = TRUE, append_text = "", min_base_size = NULL,
+    min_base_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
     logo = NULL) {
 
     wb <- openxlsx::createWorkbook()
@@ -344,7 +368,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     toc_row <- 1
     toc_col <- 1
     if (table_of_contents) {
-      toc_res <- create_table_of_contents(wb, title, subtitle, report_desc = report_desc, styles = styles, logo = logo)
+      toc_res <- create_table_of_contents(wb, title, subtitle, report_desc = report_desc,
+                                          show_grid_lines = show_grid_lines, styles = styles, logo = logo)
       toc_sheet <- toc_res$toc_sheet
       toc_row <- toc_res$toc_row
     }
@@ -352,7 +377,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     banner_names <- if (is.null(banner)) "Results" else names(banner)
     if (!one_per_sheet) {
       for (worksheet_name in banner_names) {
-        openxlsx::addWorksheet(wb, worksheet_name)
+        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines)
       }
       toc_col <- 2
     }
@@ -376,7 +401,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
               if (nchar(worksheet_name) > 25) {
                   worksheet_name <- paste0(strtrim(worksheet_name, 25), vidx)
               }
-              openxlsx::addWorksheet(wb, worksheet_name)
+              openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines)
           } else {
               start_row <- last_row_used + if (vidx > 1) 5 else 1
           }
@@ -385,9 +410,10 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                   start_row = start_row, digits = digits, proportions = proportions,
                   row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row, styles = styles)
           } else {
-              writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner, start_col = start_col,
-                  start_row = start_row, digits = digits, proportions = proportions,
-                  show_totals = show_totals, row_label_width = row_label_width, toc_sheet = toc_sheet,
+              writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner,
+                  start_col = start_col, start_row = start_row, digits = digits, proportions = proportions,
+                  unweighted_n = unweighted_n, weighted_n = weighted_n, show_totals = show_totals,
+                  row_label_width = row_label_width, toc_sheet = toc_sheet, banner_vars_split = banner_vars_split,
                   toc_row = toc_row, toc_col = toc_col, styles = styles)
           }
           toc_row <- toc_row + 1
@@ -395,7 +421,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     }
     if (append_text != "") {
         worksheet_name <- "Notes"
-        openxlsx::addWorksheet(wb, worksheet_name)
+        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines)
         openxlsx::writeData(wb, worksheet_name, append_text, startCol = 1, startRow = 1)
     }
     if (!is.null(filename)) {
