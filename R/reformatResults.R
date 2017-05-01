@@ -44,37 +44,37 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     data <- getResults(x, proportions = proportions)
     if (show_totals) {
         data <- rbind(data, if (proportions) x$totals_proportions else x$totals_counts)
-        rownames(data)[nrow(data)] <- "Totals"
+        rownames(data)[length(rownames(data))] <- "Totals"
     }
     data[is.nan(data)] <- 0
     if (!reformat) {
       data <- as.data.frame(data)
     }
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
-    if (reformat) {
-      if (digits > -1) {
+    min_cell_mask <- NULL
+    if (!is.null(min_cell_size)) {
+      min_cell_mask <- n_data < min_cell_size
+    }
+    if (digits > -1 && reformat) {
         data[] <- format(round(data * if (proportions) 100 else 1, digits), nsmall=digits, big.mark=",")
-        n_data <- round(n_data, digits)
-        n_data <- format(n_data, nsmall=digits, big.mark=",")
-      }
-      if (proportions) {
+        n_data[] <- round(n_data, digits)
+        n_data[] <- format(n_data, nsmall=digits, big.mark=",")
+    }
+    if (proportions && reformat) {
         data[] <- paste0(data, "%")
-      }
-      if (add_parenthesis) {
-        n_data <- paste0("(", n_data, ")")
-      }
-      if (!is.null(latex_adjust)) {
-        n_data <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
-      }
     }
-    if (!is.null(min_cell_size) && !is.null(min_cell_label)) {
-      min_cell_mask <- x$unweighted_n < min_cell_size
-      if (any(min_cell_mask)) {
+    if (any(min_cell_mask)) {
         data[, min_cell_mask] <- min_cell_label
-      }
     }
+    if (add_parenthesis && reformat) {
+        n_data[] <- paste0("(", n_data, ")")
+    }
+    if (!is.null(latex_adjust)) {
+        n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
+    }
+
     data <- rbind(data, n_data)
-    rownames(data)[nrow(data)] <- if (weighted_n)
+    rownames(data)[length(rownames(data))] <- if (weighted_n)
         "Weighted N" else "Unweighted N"
     return(data)
 }
