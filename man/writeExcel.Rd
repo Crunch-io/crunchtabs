@@ -6,12 +6,16 @@
 \usage{
 writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   subtitle = NULL, proportions = FALSE, digits = 0,
-  table_of_contents = FALSE, logo = NULL, moe = NULL, sample_desc = "",
-  field_period = "", font = "Calibri", font_size = 12,
-  show_totals = TRUE, weighted_n = FALSE, append_text = "",
-  wrap_categories = FALSE, min_cell_size = NULL, min_cell_label = NULL,
-  one_per_sheet = TRUE, row_label_width = 20, open = FALSE,
-  return_data = TRUE)
+  table_of_contents = FALSE, logo = NULL, weighted_n = NULL,
+  unweighted_n = list(name = "Unweighted N", position = "bottom"),
+  show_totals = TRUE, report_desc = NULL, font = "Calibri",
+  font_size = 12, one_per_sheet = TRUE, append_text = "",
+  banner_vars_split = NULL, row_label_width = 30, min_base_size = NULL,
+  min_base_label = NULL, show_description = FALSE,
+  show_grid_lines = FALSE, open = FALSE, return_data = TRUE,
+  logging = FALSE, labels_wrap = list(name = FALSE, description = FALSE,
+  row_labels = FALSE, banner_labels = FALSE, column_categories = FALSE),
+  first_active_col = 2)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -32,53 +36,84 @@ of the report. Defaults to \code{FALSE}.}
 
 \item{logo}{A list of parameters describing the logo:
 \itemize{
- \item file - The path to the logo file. Valid file types are: jpeg, png, bmp.
- \item width - The width of the figure.
- \item height - The height of the figure.
- \item units - Units of width and height. Can be "in", "cm" or "px".
- \item dpi - Image resolution used for conversion between units.
+ \item file - the path to the logo file. Valid file types are: jpeg, png, bmp.
+ \item startRow - row coordinate of upper left corner of the image.
+ \item startCol - column coordinate of upper left corner of the image.
+ \item width - width of figure.
+ \item height - height of figure.
+ \item units - units of width and height. Can be "in", "cm" or "px".
+ \item dpi - image resolution used for conversion between units.
 }
 Defaults to \code{NULL} - no logo is used.}
 
-\item{moe}{An optional numeric margin of error.}
+\item{weighted_n}{A list of parameters describing the row containing the weighted bases:
+\itemize{
+ \item name  - row label.
+ \item position - row position. Valid values are: "top", "bottom", "both".
+}
+Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 
-\item{sample_desc}{A text describing the sample.}
+\item{unweighted_n}{A list of parameters describing the row containing the weighted bases:
+\itemize{
+ \item name  - row label.
+ \item position - row position. Valid values are: "top", "bottom", "both".
+}
+Defaults to \code{list(name = "Unweighted N", position = "bottom")}.}
 
-\item{field_period}{A text describing the field period.}
+\item{show_totals}{logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
+Defaults to \code{TRUE}.}
+
+\item{report_desc}{An optional named list of report descriptions.}
 
 \item{font}{A text specifying the font to use. Defaults to 'Calibri'.}
 
 \item{font_size}{Numeric font size points. Defaults to 12 pt font.}
 
-\item{show_totals}{logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
+\item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
 Defaults to \code{TRUE}.}
-
-\item{weighted_n}{logical. Should the total number of responses be weighted?
-Defaults to \code{FALSE}.}
 
 \item{append_text}{A text that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information.}
 
-\item{wrap_categories}{logical. Should the categories' names be wrapped?
-Defaults to \code{FALSE}.}
+\item{banner_vars_split}{the method of splitting banner variables.
+Valid values are: NULL, "empty_col".
+Defaults to \code{NULL} - no split.}
 
-\item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
+\item{row_label_width}{width of the first column. Defaults to 30pt.}
+
+\item{min_base_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
-\item{min_cell_label}{character. If a number of responses for a
-cross tabulated category is less than min_cell_size then this text is
+\item{min_base_label}{character. If a number of responses for a
+cross tabulated category is less than min_base_size then this text is
 used to mask the results. Defaults to \code{NULL} - the values are greyed out.}
 
-\item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
-Defaults to \code{TRUE}.}
+\item{show_description}{logical. If \code{TRUE} variables' descriptions are displayed.
+Defaults to \code{FALSE}.}
 
-\item{row_label_width}{width of the first column. Defaults to 20pt.}
+\item{show_grid_lines}{logical. Should the grid lines be shown?}
 
 \item{open}{logical. Should the report, if successfully generated, be opened with
 the default application? Defaults to \code{FALSE}.}
 
 \item{return_data}{logical. If \code{TRUE}, a processed data that was used to produce
 the report is returned.}
+
+\item{logging}{logical. Should basic information related to the function execution
+be printed? Defaults to \code{FALSE}.}
+
+\item{labels_wrap}{list. Specifies which labels should be wrapped:
+\itemize{
+ \item name  - variable's name.
+ \item description - variable's description.
+ \item row_labels - row labels.
+ \item banner_labels - banner labels
+ \item column_categories - banner categories.
+}
+Defaults to \code{list(name = FALSE, description = FALSE, row_labels = FALSE,
+banner_labels = FALSE, column_categories = FALSE)}.}
+
+\item{first_active_col}{number. First active coulumn. Defaults to \code{2}.}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
