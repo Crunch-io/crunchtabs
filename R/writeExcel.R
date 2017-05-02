@@ -351,7 +351,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
 
   data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
       d <- getResults(x, proportions = proportions)
-      if (nrow(d) == 1) d <- t(d)
+      if (is.vector(d)) d <- t(d)
       d <- as.data.frame(d)
       if (show_totals) {
         d <- rbind(d, setNames(as.data.frame(t(if (proportions) x$totals_proportions else x$totals_counts)), colnames(d)))

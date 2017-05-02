@@ -62,8 +62,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         proportions_out[is.nan(proportions_out)] <- 0
         counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
         totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+        totals_counts_out[is.null(totals_counts_out) || is.nan(totals_counts_out)] <- 0
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-        totals_proportions_out[is.nan(totals_proportions_out)] <- 0
+        totals_proportions_out[is.null(totals_proportions_out) || is.nan(totals_proportions_out)] <- 0
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
 
         if (vbi == 1) {
