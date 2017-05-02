@@ -8,49 +8,54 @@
 #' @param filename The name of the output file (without an extension).
 #' @param title An optional title. Defaults to the title provided in the summary.
 #' @param subtitle An optional subtitle. Defaults to an empty string.
-#' @param proportions logical. If \code{TRUE} the output report shows proportions,
-#' if \code{FALSE} the report shows counts.
+#' @param proportions logical. If \code{TRUE}, the output report shows proportions,
+#' if \code{FALSE}, the report shows counts.
 #' @param table_of_contents logical. Should a list of tables be included at the start
 #' of the report. Defaults to \code{FALSE}.
-#' @param font A text specifying the font to use. Defaults to 'Calibri'.
-#' @param font_size Numeric font size points. Defaults to 12 pt font.
-#' @param report_desc An optional named list of report descriptions.
-#' @param digits integer. Number of decimal digits to use for rounding.
+#' @param font A text specifying the font to use. Defaults to \code{'Calibri'}.
+#' @param font_size Numeric font size points. Defaults to 12pt font.
+#' @param report_desc An optional named list of report descriptions that should be
+#' displayed on the front page / table of contents, e.g.
+#' \code{list(`Fieldwork date` = "2017-01-01", `Sample description` = "description")}.
+#' Defaults to \code{NULL}
+#' @param digits integer. The number of decimal places that should be used for
+#' rounding numbers. Defaults to \code{0}.
 #' @param append_text A text that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information.
-#' @param min_base_size integer. Minimum number of responses for a cross tabulated
+#' @param min_base_size integer. The minimum number of responses for a cross tabulated
 #' category to be displayed in details in a banner report.
 #' @param min_base_label character. If a number of responses for a
-#' cross tabulated category is less than min_base_size then this text is
+#' cross tabulated category is less than \code{min_base_size} then this text is
 #' used to mask the results. Defaults to \code{NULL} - the values are greyed out.
-#' @param show_totals logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
+#' @param show_totals logical. If \code{TRUE}, the row containing column sums is displayed.
 #' Defaults to \code{TRUE}.
-#' @param show_description logical. If \code{TRUE} variables' descriptions are displayed.
+#' @param show_description logical. If \code{TRUE}, variables' descriptions are displayed.
 #' Defaults to \code{FALSE}.
-#' @param unweighted_n A list of parameters describing the row containing the weighted bases:
+#' @param unweighted_n A list of parameters describing the row containing the unweighted bases:
 #' \itemize{
-#'  \item name  - row label.
+#'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
 #' }
 #' Defaults to \code{list(name = "Unweighted N", position = "bottom")}.
 #' @param weighted_n A list of parameters describing the row containing the weighted bases:
 #' \itemize{
-#'  \item name  - row label.
+#'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
 #' }
 #' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
-#' @param show_grid_lines logical. Should the grid lines be shown?
+#' @param show_grid_lines logical. Should grid lines be shown?
+#' Defaults to \code{FALSE}.
 #' @param banner_vars_split the method of splitting banner variables.
-#' Valid values are: NULL, "empty_col".
+#' Valid values are: {NULL, "empty_col"}.
 #' Defaults to \code{NULL} - no split.
 #' @param row_label_width width of the first column. Defaults to 30pt.
 #' @param labels_wrap list. Specifies which labels should be wrapped:
 #' \itemize{
-#'  \item name  - variable's name.
+#'  \item name - variable's name.
 #'  \item description - variable's description.
 #'  \item row_labels - row labels.
 #'  \item banner_labels - banner labels
-#'  \item column_categories - banner categories.
+#'  \item column_categories - column categories.
 #' }
 #' Defaults to \code{labels_wrap = list(name = TRUE, description = TRUE,
 #' row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE)}.
@@ -70,9 +75,8 @@
 #'  \item dpi - image resolution used for conversion between units.
 #' }
 #' Defaults to \code{NULL} - no logo is used.
-#' @param open logical. Should the report, if successfully generated, be opened with
-#' the default application? Defaults to \code{FALSE}.
-#' @param reduce_format logical. Should the format be reduced?
+#' @param reduce_format logical. Should the number of operations that apply styles
+#' to tables be minimized? Results in slightly faster execution and slightly different table styles.
 #' Defaults to \code{FALSE}.
 #' @param return_data logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
@@ -95,7 +99,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        one_per_sheet = TRUE, append_text = "",
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                        min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
-                       show_grid_lines = FALSE, open = FALSE, return_data = TRUE, logging = FALSE,
+                       show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                        first_active_col = 2) {
@@ -114,7 +118,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 one_per_sheet = TRUE, append_text = "",
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                 min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
-                                show_grid_lines = FALSE, open = FALSE, return_data = TRUE, logging = FALSE,
+                                show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                 first_active_col = 2) {
@@ -156,7 +160,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  one_per_sheet = TRUE, append_text = "",
                                  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                  min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
-                                 show_grid_lines = FALSE, open = FALSE, return_data = TRUE, logging = FALSE,
+                                 show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                       row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                  first_active_col = 2) {
@@ -665,4 +669,4 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     if (return_data) {
         return(x)
     }
-}
+ }
