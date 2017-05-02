@@ -10,11 +10,11 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   unweighted_n = list(name = "Unweighted N", position = "bottom"),
   show_totals = TRUE, report_desc = NULL, font = "Calibri",
   font_size = 12, one_per_sheet = TRUE, append_text = "",
-  banner_vars_split = NULL, row_label_width = 30, min_base_size = NULL,
-  min_base_label = NULL, show_description = FALSE,
+  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
+  min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
   show_grid_lines = FALSE, open = FALSE, return_data = TRUE,
-  logging = FALSE, labels_wrap = list(name = FALSE, description = FALSE,
-  row_labels = FALSE, banner_labels = FALSE, column_categories = FALSE),
+  logging = FALSE, labels_wrap = list(name = TRUE, description = TRUE,
+  row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
   first_active_col = 2)
 }
 \arguments{
@@ -81,6 +81,9 @@ Defaults to \code{NULL} - no split.}
 
 \item{row_label_width}{width of the first column. Defaults to 30pt.}
 
+\item{reduce_format}{logical. Should the format be reduced?
+Defaults to \code{FALSE}.}
+
 \item{min_base_size}{integer. Minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
@@ -110,8 +113,8 @@ be printed? Defaults to \code{FALSE}.}
  \item banner_labels - banner labels
  \item column_categories - banner categories.
 }
-Defaults to \code{list(name = FALSE, description = FALSE, row_labels = FALSE,
-banner_labels = FALSE, column_categories = FALSE)}.}
+Defaults to \code{labels_wrap = list(name = TRUE, description = TRUE,
+row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE)}.}
 
 \item{first_active_col}{number. First active coulumn. Defaults to \code{2}.}
 }
