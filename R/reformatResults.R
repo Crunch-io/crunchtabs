@@ -142,8 +142,8 @@ bannerDataRecode <- function(b_table, b_recode) {
     b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
         drop = FALSE]
     colnames(b_table) <- b_recode$categories_out[names_mask]
-    b_table <- sapply(b_recode$categories, function(x) {
-      rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
-    })
+    # b_table <- sapply(b_recode$categories, function(x) {
+    #   rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
+    # })
     b_table
 }

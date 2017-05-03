@@ -115,6 +115,9 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     ret <- lapply(vars, function(ban) sapply(ban, function(v) {
         ret_val <- ret_data[[v]]
         categories <- unique(ret_val$categories_out[!is.na(ret_val$categories_out)])
+        if (length(categories) != length(ret_val$categories_out[!is.na(ret_val$categories_out)])) {
+          stop("Combining categories is not supported")
+        }
         ret_val$categories <- if (length(categories) == length(categories_ordered[[v]]))
             categories_ordered[[v]] else categories
         class(ret_val) <- c("BannerVar", class(ret_val))

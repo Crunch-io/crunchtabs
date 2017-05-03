@@ -54,17 +54,18 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
       banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
 
+      banner_totals_counts[is.null(banner_totals_counts) || is.nan(banner_totals_counts)] <- 0
+      banner_totals_proportions[is.null(banner_totals_proportions) || is.nan(banner_totals_proportions)] <- 0
+      banner_proportions[is.null(banner_proportions) || is.nan(banner_proportions)] <- 0
+
       banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
 
       for (ri in seq_along(valiases)) {
         counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
         proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-        proportions_out[is.nan(proportions_out)] <- 0
         counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
         totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
-        totals_counts_out[is.null(totals_counts_out) || is.nan(totals_counts_out)] <- 0
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-        totals_proportions_out[is.null(totals_proportions_out) || is.nan(totals_proportions_out)] <- 0
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
 
         if (vbi == 1) {
@@ -77,15 +78,15 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
         if (banner_var_alias != "___total___") {
           banner_var <- banner_flatten[[banner_var_alias]]
+          counts_out <- bannerDataRecode(counts_out, banner_var)
           proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
             bannerDataRecode(proportions_out, banner_var)
           } else {
-            if (is_mr_type) {
-              stop("Combining categories of multiple_response variables is not supported")
-            }
-            crunch::prop.table(counts_out, 2)
+            # if (is_mr_type) {
+              stop("Combining categories is not supported")
+            # }
+            # crunch::prop.table(counts_out, 2)
           }
-          counts_out <- bannerDataRecode(counts_out, banner_var)
           counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
           totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
           totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)

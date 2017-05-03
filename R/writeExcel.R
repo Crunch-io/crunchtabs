@@ -311,7 +311,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
   start_col <- start_col + 1
 
   unweighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-    d <- as.data.frame(t(x$unweighted_n))
+    d <- as.data.frame(x$unweighted_n)
     if (empty_col) cbind(d,  "") else d
     }))
 
@@ -319,7 +319,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
 
   if (!is.null(weighted_n)) {
     weighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-      d <- as.data.frame(t(if (reduce_format) round(x$totals_counts, digits) else x$totals_counts))
+      d <- as.data.frame(if (reduce_format) round(x$totals_counts, digits) else x$totals_counts)
       if (empty_col) cbind(d,  "") else d
       }))
   }
@@ -351,10 +351,10 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
 
   data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
       d <- getResults(x, proportions = proportions)
-      if (is.vector(d)) d <- t(d)
+      # if (is.vector(d)) d <- t(d)
       d <- as.data.frame(d)
       if (show_totals) {
-        d <- rbind(d, setNames(as.data.frame(t(if (proportions) x$totals_proportions else x$totals_counts)), colnames(d)))
+        d <- rbind(d, setNames(as.data.frame(if (proportions) x$totals_proportions else x$totals_counts), colnames(d)))
       }
       if (empty_col) cbind(d, "" ) else d
     }))
