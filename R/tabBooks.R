@@ -49,21 +49,21 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
       banner_counts <- as.array(crunch_cube)
       banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
-      banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
       banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
       banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
 
-      banner_totals_counts[is.null(banner_totals_counts) || is.nan(banner_totals_counts)] <- 0
-      banner_totals_proportions[is.null(banner_totals_proportions) || is.nan(banner_totals_proportions)] <- 0
-      banner_proportions[is.null(banner_proportions) || is.nan(banner_proportions)] <- 0
+      banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
+      banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
+      banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
+      banner_proportions[banner_proportions %in% c(NULL, NaN)] <- 0
+      banner_counts[banner_counts %in% c(NULL, NaN)] <- 0
 
       banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
 
       for (ri in seq_along(valiases)) {
         counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
         proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-        counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
         totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
@@ -87,7 +87,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             # }
             # crunch::prop.table(counts_out, 2)
           }
-          counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
           totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
           totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
           unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)

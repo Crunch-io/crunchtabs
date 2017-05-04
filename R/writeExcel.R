@@ -538,6 +538,7 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
       var_description <- getDescription(x)
       if (!is.null(var_description) && var_description != "") {
         openxlsx::writeData(wb, ws, var_description, startCol = ccol, startRow = crow)
+        openxlsx::addStyle(wb, ws, styles$description, rows = crow, cols = ccol)
         crow <- crow + 1
       }
       filtertext <- getNotes(x)
