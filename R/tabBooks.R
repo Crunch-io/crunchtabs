@@ -79,14 +79,15 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         if (banner_var_alias != "___total___") {
           banner_var <- banner_flatten[[banner_var_alias]]
           counts_out <- bannerDataRecode(counts_out, banner_var)
-          proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
-            bannerDataRecode(proportions_out, banner_var)
-          } else {
-            # if (is_mr_type) {
-              stop("Combining categories is not supported")
-            # }
-            # crunch::prop.table(counts_out, 2)
-          }
+          proportions_out <- bannerDataRecode(proportions_out, banner_var)
+          # proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
+          #   bannerDataRecode(proportions_out, banner_var)
+          # } else {
+          #   # if (is_mr_type) {
+          #   stop("Combining categories is not supported")
+          #   # }
+          #   # crunch::prop.table(counts_out, 2)
+          # }
           totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
           totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
           unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
