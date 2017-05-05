@@ -182,8 +182,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       filtertext = openxlsx::createStyle(textDecoration = "italic", wrapText = labels_wrap$description),
       description = openxlsx::createStyle(wrapText = labels_wrap$description),
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
-      body_grey = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center", fontColour = "lightgrey"),
-      body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
+      body_grey = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", fontColour = if (is.null(min_base_label)) "lightgrey"),
+      # body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories),
@@ -372,14 +372,14 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
   openxlsx::addStyle(wb, ws, styles$body, rows = start_row:(start_row + nrow(data) - 1),
                      cols = start_col:last_col_num, gridExpand = TRUE, stack = FALSE)
   if (any(min_cell_mask)) {
-      if (is.null(min_base_label)) {
+      # if (is.null(min_base_label)) {
         openxlsx::addStyle(wb, ws, styles$body_grey, rows = start_row:(start_row + nrow(data) - 1),
                            cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = FALSE)
-      }
-      if (reduce_format) {
-        openxlsx::addStyle(wb, ws, styles$body_text, rows = start_row:(start_row + nrow(data) - 1),
-                           cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = FALSE)
-      }
+      # }
+    # else if (reduce_format) {
+    #     openxlsx::addStyle(wb, ws, styles$body_text, rows = start_row:(start_row + nrow(data) - 1),
+    #                        cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = FALSE)
+    #   }
   }
   start_row <-start_row + nrow(data)
 

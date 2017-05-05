@@ -67,6 +67,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+        if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
+          col_names <- dimnames(banner_counts)[[2]]
+          colnames(counts_out) <- colnames(proportions_out) <- col_names
+          colnames(totals_counts_out) <- colnames(totals_proportions_out) <- colnames(unweighted_n_out) <- col_names
+        }
 
         if (vbi == 1) {
           colnames(counts_out) <- "Total"
