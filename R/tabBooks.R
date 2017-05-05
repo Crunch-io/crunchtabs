@@ -29,7 +29,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     # generate new names and aliases for categorical_array variables by combining variable's names/aliases
     # with subvariables' names/aliases
     vnames <- if(is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
-    valiases <- if(is_array_type) paste(getAlias(crunch_cube), getSubAliases(crunch_cube), sep = ".") else getAlias(crunch_cube)
+    valiases <- if(is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
 
     # prepare a data structure for every variable (categorical_array variables are sliced)
     for (vai in seq_along(valiases)) {

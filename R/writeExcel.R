@@ -64,6 +64,8 @@
 #' be printed? Defaults to \code{FALSE}.
 #' @param one_per_sheet logical. Should every variable be written on a separate sheet?
 #' Defaults to \code{TRUE}.
+#' @param include_aliases logical. Should the variable's alias be concatenated with
+#'  the variable's name? Defaults to \code{FALSE}.
 #' @param logo A list of parameters describing the logo:
 #' \itemize{
 #'  \item file - the path to the logo file. Valid file types are: jpeg, png, bmp.
@@ -102,7 +104,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                       first_active_col = 2) {
+                       first_active_col = 2, include_aliases = FALSE) {
 
   if (is.null(filename)) {
     stop("No valid filename provided.")
@@ -121,7 +123,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                                first_active_col = 2) {
+                                first_active_col = 2, include_aliases = FALSE) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -149,7 +151,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
         font_size = font_size, show_totals = show_totals, logging = logging,
         append_text = append_text, min_base_size = min_base_size, min_base_label = min_base_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
-        show_description = show_description)
+        show_description = show_description, include_aliases = include_aliases)
 }
 
 #' @export
@@ -163,7 +165,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                       row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                                 first_active_col = 2) {
+                                 first_active_col = 2, include_aliases = FALSE) {
 
     banner <- data_summary$banner
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
@@ -207,7 +209,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
         append_text = append_text, min_base_size = min_base_size, min_base_label = min_base_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
         show_description = show_description, logging = logging, first_active_col = first_active_col,
-        reduce_format = reduce_format)
+        reduce_format = reduce_format, include_aliases = include_aliases)
 
 }
 
@@ -282,11 +284,12 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner, star
     digits = 0, proportions = TRUE, show_totals = TRUE, unweighted_n = NULL, weighted_n = NULL,
     row_label_width = 20, toc_sheet = NULL, toc_row = 1, toc_col = 1, styles = NULL,
     banner_vars_split = NULL, show_description = FALSE, min_base_size = NULL, min_base_label = NULL,
-    reduce_format = FALSE) {
+    reduce_format = FALSE, include_aliases = FALSE) {
 
   show_totals <- !cross_tab_var$options$no_totals & show_totals
   start_row <- writeVarHeader(wb, ws, cross_tab_var, start_col = start_col, start_row = start_row, toc_sheet = toc_sheet,
-                             toc_row = toc_row, toc_col = toc_col, styles = styles, show_description = show_description)
+                             toc_row = toc_row, toc_col = toc_col, styles = styles, show_description = show_description,
+                             include_aliases = include_aliases)
 
   weighted_n_top <- !is.null(weighted_n) && (weighted_n$position == "top" || weighted_n$position == "both")
   unweighted_n_top <- !is.null(unweighted_n) && (unweighted_n$position == "top" || unweighted_n$position == "both")
@@ -509,10 +512,10 @@ writeExcelVarToplineCategorical <- function(wb, ws, x, start_col = 1, start_row 
 
 writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, row_label_width = 20, toc_sheet = NULL, toc_row = 1,
-    toc_col = 1, styles = NULL, show_description = TRUE) {
+    toc_col = 1, styles = NULL, show_description = TRUE, include_aliases = FALSE) {
     crow <- writeVarHeader(wb, ws, x, start_col = start_col, start_row = start_row,
         toc_sheet = toc_sheet, toc_row = toc_row, toc_col = toc_col, styles = styles,
-        show_description = show_description)
+        show_description = show_description, include_aliases = include_aliases)
     crow <- crow + 1
     drows <- writeExcelVarTopline(wb, ws, x, start_col = start_col, start_row = crow,
         digits = digits, proportions = proportions, styles = styles)
@@ -522,15 +525,16 @@ writeExcelVarToplineGeneral <- function(wb, ws, x, start_col = 1, start_row = 1,
 
 
 writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = NULL,
-    toc_row = 1, toc_col = 1, styles = NULL, show_description = FALSE) {
+    toc_row = 1, toc_col = 1, styles = NULL, show_description = FALSE, include_aliases = FALSE) {
     crow <- start_row
     ccol <- start_col
-    openxlsx::writeData(wb, ws, getName(x), startCol = ccol, startRow = crow)
+    header_name <- if (include_aliases) paste0(getAlias(x), " - ", getName(x)) else getName(x)
+    openxlsx::writeData(wb, ws, header_name, startCol = ccol, startRow = crow)
     openxlsx::addStyle(wb, ws, styles$name, rows = crow, cols = ccol)
     crow <- crow + 1
     if (!is.null(toc_sheet)) {
         openxlsx::writeFormula(wb, toc_sheet, startCol = toc_col, startRow = toc_row, x = openxlsx::makeHyperlinkString(sheet = ws,
-            row = start_row, col = start_col, text = getName(x)))
+            row = start_row, col = start_col, text = header_name))
         openxlsx::addStyle(wb, toc_sheet, styles$toc_slot,
             rows = toc_row, cols = toc_col, stack = FALSE)
     }
@@ -558,7 +562,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     show_totals = TRUE, append_text = "", min_base_size = NULL,
     min_base_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
     logo = NULL, show_description = FALSE, logging = FALSE, first_active_col = 2,
-    reduce_format = FALSE) {
+    reduce_format = FALSE, include_aliases = FALSE) {
 
     if (logging) {
       start.time.wb <- Sys.time()
@@ -630,7 +634,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                   writeExcelVarToplineGeneral(wb, worksheet_name, x$results[[vidx]], start_col = start_col,
                       start_row = last_row_used, digits = digits, proportions = proportions,
                       row_label_width = row_label_width, toc_sheet = toc_sheet, toc_row = toc_row,
-                      toc_col = toc_col, styles = styles, show_description = show_description)
+                      toc_col = toc_col, styles = styles, show_description = show_description, include_aliases = include_aliases)
               } else {
                   writeExcelVarBanner(wb, worksheet_name, banner_name, x$results[[vidx]], banner,
                       start_col = start_col, start_row = last_row_used, digits = digits, proportions = proportions,
@@ -638,7 +642,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                       row_label_width = row_label_width, toc_sheet = toc_sheet, banner_vars_split = banner_vars_split,
                       toc_row = toc_row, toc_col = toc_col, styles = styles,
                       min_base_size = min_base_size, min_base_label = min_base_label,
-                      show_description = show_description, reduce_format = reduce_format)
+                      show_description = show_description, reduce_format = reduce_format, include_aliases = include_aliases)
               }
           toc_row <- toc_row + 1
       }

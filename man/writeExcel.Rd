@@ -14,7 +14,8 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
   show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
   labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
-  banner_labels = TRUE, column_categories = TRUE), first_active_col = 2)
+  banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
+  include_aliases = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -119,6 +120,9 @@ Defaults to \code{labels_wrap = list(name = TRUE, description = TRUE,
 row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE)}.}
 
 \item{first_active_col}{number. First active coulumn. Defaults to \code{2}.}
+
+\item{include_aliases}{logical. Should the variable's alias be concatenated with
+the variable's name? Defaults to \code{FALSE}.}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
