@@ -80,6 +80,10 @@
 #' @param reduce_format logical. Should the number of operations that apply styles
 #' to tables be minimized? Results in slightly faster execution and slightly different table styles.
 #' Defaults to \code{FALSE}.
+#' @param banner_border_lines logical. Should black border lines be shown around the banner?
+#' Defaults to \code{FALSE}.
+#' @param banner_vars_bold logical. Should column categories be bolded?
+#' Defaults to \code{FALSE}.
 #' @param return_data logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
 #' @return If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
@@ -104,7 +108,8 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                       first_active_col = 2, include_aliases = FALSE) {
+                       first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
+                       banner_vars_bold = FALSE) {
 
   if (is.null(filename)) {
     stop("No valid filename provided.")
@@ -123,7 +128,8 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                                first_active_col = 2, include_aliases = FALSE) {
+                                first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
+                                banner_vars_bold = FALSE) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -165,7 +171,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                       row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
-                                 first_active_col = 2, include_aliases = FALSE) {
+                                 first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
+                                 banner_vars_bold = FALSE) {
 
     banner <- data_summary$banner
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
@@ -188,10 +195,9 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
       body_grey = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", fontColour = if (is.null(min_base_label)) "lightgrey"),
       # body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
-      labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels),
+      labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
-      categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories),
-      categories_border = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", border = "Bottom", wrapText = labels_wrap$column_categories),
+      categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = if (banner_vars_bold) "bold"),
       n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center"),
       n_unweighted = openxlsx::createStyle(textDecoration = "italic", halign = "center"),
       n_border = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center", border = "Bottom"),
@@ -314,7 +320,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   )
 
   openxlsx::writeData(wb, ws, row_names, startCol = start_col, startRow = crow,
-                      colNames = FALSE, headerStyle = styles$categories_border)
+                      colNames = FALSE)
   openxlsx::addStyle(wb, ws, styles$row_labels, rows = crow:(crow + length(row_names)),
                      cols = start_col, stack = FALSE)
 
