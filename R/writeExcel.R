@@ -86,6 +86,9 @@
 #' Defaults to \code{FALSE}.
 #' @param title_on_results_page logical. Should title and subtitle be printed on the results page?
 #' Defaults to \code{FALSE}.
+#' @param percent_format_data logical. Should data when \code{proportions = TRUE}
+#' be formatted as "Percentage"? If not, a row with percent signs is added to the banner.
+#' Defaults to \code{TRUE}.
 #' @param return_data logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
 #' @return If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
@@ -111,7 +114,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                        first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                       banner_vars_bold = FALSE, title_on_results_page = FALSE) {
+                       banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
 
   if (is.null(filename)) {
     stop("No valid filename provided.")
@@ -131,7 +134,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                 first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                                banner_vars_bold = FALSE, title_on_results_page = FALSE) {
+                                banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -174,7 +177,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                       row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                  first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                                 banner_vars_bold = FALSE, title_on_results_page = FALSE) {
+                                 banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
 
     banner <- data_summary$banner
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
@@ -189,14 +192,14 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
     # banner_vars_split_line <- banner_vars_split == "line"
 
     numFmt <- paste0("0", if (digits > 0) paste0(".", paste0(rep(0, digits), collapse = "")))
-    numFmtProp <- paste0(numFmt, if (proportions) "%")
+    numFmtProp <- paste0(numFmt, if (proportions && percent_format_data) "%")
     styles = list(
       name = openxlsx::createStyle(textDecoration = "bold", wrapText = labels_wrap$name),
       filtertext = openxlsx::createStyle(textDecoration = "italic", wrapText = labels_wrap$description),
       description = openxlsx::createStyle(wrapText = labels_wrap$description),
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
       body_grey = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", fontColour = if (is.null(min_base_label)) "lightgrey"),
-      # body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
+      body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = if (banner_vars_bold) "bold"),
@@ -221,7 +224,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
         append_text = append_text, min_base_size = min_base_size, min_base_label = min_base_label,
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
         show_description = show_description, logging = logging, first_active_col = first_active_col,
-        reduce_format = reduce_format, include_aliases = include_aliases, title_on_results_page = title_on_results_page)
+        reduce_format = reduce_format, include_aliases = include_aliases, title_on_results_page = title_on_results_page,
+        percent_format_data = percent_format_data)
 
 }
 
@@ -277,7 +281,8 @@ create_table_of_contents <- function(wb, title, subtitle, toc_row = 2, toc_col =
 
 
 create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL, start_row = 1, banner_cols_pos = NULL,
-                               title_on_results_page = FALSE, title = NULL, subtitle = NULL, report_desc = NULL) {
+                               title_on_results_page = FALSE, title = NULL, subtitle = NULL, report_desc = NULL,
+                               percent_format_data = TRUE) {
 
   if (title_on_results_page) {
     start_row <- write_report_desc(wb, ws, title = title, subtitle = subtitle, start_row = start_row,
@@ -292,7 +297,7 @@ create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL,
       c(multicols[[bv]], if (empty_col == 1) ""))
   }))
   openxlsx::writeData(wb, ws, data, startCol = 2, startRow = start_row, colNames = FALSE)
-  multicols_csum <- cumsum(c(2, sapply(multicols, function(x) {length(x) + empty_col})))
+  multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
   lapply(seq_along(multicols), function(bv) {
     openxlsx::mergeCells(wb, ws, cols = multicols_csum[bv]:(multicols_csum[bv + 1] -
                                                               1 - empty_col), rows = start_row)})
@@ -306,6 +311,16 @@ create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL,
     openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:(start_row + 1),
                        cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
   }
+  if (!percent_format_data) {
+    start_row <- start_row + 1
+    data <- as.data.frame(lapply(seq_along(banner), function(bv) {
+        t(c(rep("%", times = length(multicols[[bv]])), if (empty_col == 1) ""))
+    }))
+    openxlsx::writeData(wb, ws, data, startCol = banner_cols_pos[1], startRow = start_row + 1, colNames = FALSE)
+    openxlsx::addStyle(wb, ws, styles$body_text, rows = start_row + 1,
+                       cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
+                                                     1 - empty_col), stack = FALSE)
+  }
   return(start_row + 1)
 }
 
@@ -315,7 +330,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     digits = 0, proportions = TRUE, show_totals = TRUE, unweighted_n = NULL, weighted_n = NULL,
     row_label_width = 20, toc_sheet = NULL, toc_row = 1, toc_col = 1, styles = NULL,
     banner_vars_split = NULL, show_description = FALSE, min_base_size = NULL, min_base_label = NULL,
-    reduce_format = FALSE, include_aliases = FALSE) {
+    reduce_format = FALSE, include_aliases = FALSE, percent_format_data = TRUE) {
 
   show_totals <- !cross_tab_var$options$no_totals & show_totals
   start_row <- writeVarHeader(wb, ws, cross_tab_var, start_col = start_col, start_row = start_row, toc_sheet = toc_sheet,
@@ -389,6 +404,9 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
       d <- as.data.frame(d)
       if (show_totals) {
         d <- rbind(d, setNames(as.data.frame(if (proportions) x$totals_proportions else x$totals_counts), colnames(d)))
+      }
+      if (proportions && !percent_format_data) {
+        d[] <- d * 100
       }
       if (empty_col) cbind(d, "" ) else d
     }))
@@ -598,7 +616,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     show_totals = TRUE, append_text = "", min_base_size = NULL,
     min_base_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
     logo = NULL, show_description = FALSE, logging = FALSE, first_active_col = 2,
-    reduce_format = FALSE, include_aliases = FALSE, title_on_results_page = FALSE) {
+    reduce_format = FALSE, include_aliases = FALSE, title_on_results_page = FALSE,
+    percent_format_data = TRUE) {
 
     if (logging) {
       start.time.wb <- Sys.time()
@@ -637,7 +656,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
              create_banner_pane(wb, banner_name, banner = banner[[banner_name]],
                              styles = styles, banner_vars_split = banner_vars_split, start_row = last_row_used,
                              banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
-                             title = title, subtitle = subtitle, report_desc = report_desc)
+                             title = title, subtitle = subtitle, report_desc = report_desc,
+                             percent_format_data = percent_format_data)
           openxlsx::freezePane(wb, banner_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
           if (table_of_contents) {
             toc_col <- toc_res$toc_col
@@ -663,7 +683,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                 last_row_used <- create_banner_pane(wb, worksheet_name, banner = banner[[banner_name]],
                                    styles = styles, banner_vars_split = banner_vars_split, start_row = 1,
                                    banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
-                                   title = title, subtitle = subtitle, report_desc = report_desc)
+                                   title = title, subtitle = subtitle, report_desc = report_desc,
+                                   percent_format_data = percent_format_data)
                 last_row_used <- last_row_used + 1
                 openxlsx::freezePane(wb, worksheet_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
                 last_row_used <- last_row_used + 1
@@ -683,7 +704,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                       row_label_width = row_label_width, toc_sheet = toc_sheet, banner_vars_split = banner_vars_split,
                       toc_row = toc_row, toc_col = toc_col, styles = styles,
                       min_base_size = min_base_size, min_base_label = min_base_label,
-                      show_description = show_description, reduce_format = reduce_format, include_aliases = include_aliases)
+                      show_description = show_description, reduce_format = reduce_format, include_aliases = include_aliases,
+                      percent_format_data = percent_format_data)
               }
           toc_row <- toc_row + 1
       }
