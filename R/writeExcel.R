@@ -49,9 +49,10 @@
 #'  \item underline2 - double underline cell contents
 #'  \item NULL - no decoration
 #' }
-#' Defaults to \code{list(name=list(decoration="bold", size=12),
-#' description=list(decoration=NULL, size=12),
-#' filtertext=list(decoration="italic", size=12))}.
+#' Infomration will be printed in the order they're listed.
+#' Defaults to \code{list(name=list(decoration="bold", size=font_size),
+#' description=list(decoration=NULL, size=font_size),
+#' filtertext=list(decoration="italic", size=font_size))}.
 #' @param unweighted_n A list of parameters describing the row containing the unweighted bases:
 #' \itemize{
 #'  \item name - row label.
@@ -72,6 +73,14 @@
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
+#' @param total_col A list of parameters describing the Total" column:
+#' \itemize{
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+#'  \item size - font size.
+#'  \item color - font color.
+#' }
+#' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
+#' Defaults to \code{NULL} - default text style used.
 #' @param show_grid_lines logical. Should grid lines be shown?
 #' Defaults to \code{FALSE}.
 #' @param banner_vars_split the method of splitting banner variables.
@@ -147,7 +156,8 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                        first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                       banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
+                       banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE,
+                       total_col = NULL) {
 
   if (is.null(filename)) {
     stop("No valid filename provided.")
@@ -171,7 +181,8 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                 first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                                banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
+                                banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE,
+                                total_col = NULL) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -218,7 +229,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                       row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                  first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
-                                 banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE) {
+                                 banner_vars_bold = FALSE, title_on_results_page = FALSE, percent_format_data = TRUE,
+                                 total_col = NULL) {
 
     banner <- data_summary$banner
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
@@ -235,7 +247,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
     get_show_info_data <- function(info_name, elem) {
       if (!is.null(show_information) && info_name %in% names(show_information)) show_information[[info_name]][[elem]]
     }
-    ger_bases_data <- function(data_info, elem) {
+    get_decoration_data <- function(data_info, elem) {
       if (!is.null(data_info)) data_info[[elem]]
     }
     numFmt <- paste0("0", if (digits > 0) paste0(".", paste0(rep(0, digits), collapse = "")))
@@ -250,8 +262,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = if (banner_vars_bold) "bold"),
-      n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = ger_bases_data(weighted_n, "decoration"), fontSize = ger_bases_data(weighted_n, "size"), fontColour = ger_bases_data(weighted_n, "color"), halign = "center"),
-      n_unweighted = openxlsx::createStyle(textDecoration = ger_bases_data(unweighted_n, "decoration"), fontSize = ger_bases_data(unweighted_n, "size"), fontColour = ger_bases_data(unweighted_n, "color"), halign = "center"),
+      n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color"), halign = "center"),
+      n_unweighted = openxlsx::createStyle(textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color"), halign = "center"),
       border_bottom = openxlsx::createStyle(border = "Bottom"),
       border_top = openxlsx::createStyle(border = "Top"),
       border_right = openxlsx::createStyle(border = "Right"),
@@ -259,7 +271,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       toc_subtitle = openxlsx::createStyle(textDecoration = "bold"),
       toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
       # toc_lot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
-      toc_banner = openxlsx::createStyle(textDecoration = "bold")
+      toc_banner = openxlsx::createStyle(textDecoration = "bold"),
+      total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"))
     )
 
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
@@ -479,6 +492,10 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     #     openxlsx::addStyle(wb, ws, styles$body_text, rows = start_row:(start_row + nrow(data) - 1),
     #                        cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = FALSE)
     #   }
+  }
+  if (!is.null(styles$total_col) && !reduce_format) {
+    openxlsx::addStyle(wb, ws, styles$total_col, rows = crow:(crow + nrow(data) - 1),
+                       cols = start_col, stack = TRUE)
   }
   crow <- crow + nrow(data)
 
