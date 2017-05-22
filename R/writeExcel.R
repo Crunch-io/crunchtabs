@@ -392,8 +392,8 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   start_col <- start_col + 1
 
   unweighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-    d <- as.data.frame(x$unweighted_n)
-    if (empty_col) cbind(d,  "") else d
+      d <- as.data.frame(x$unweighted_n)
+      if (empty_col) cbind(d,  "") else d
     }))
 
   last_col_num <- start_col + ncol(unweighted_n_data) - 1 - empty_col
@@ -445,7 +445,8 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
 
   min_cell_mask <- NULL
   if (!is.null(min_base_size)) {
-    min_cell_mask <- unweighted_n_data != "" & unweighted_n_data < min_base_size
+    unweighted_n_data_num <- sapply(unweighted_n_data, function(x) as.numeric(as.character(x)))
+    min_cell_mask <- !is.na(unweighted_n_data_num) & unweighted_n_data_num < min_base_size
   }
   if (any(min_cell_mask) && !is.null(min_base_label)) {
     data[, min_cell_mask] <- min_base_label
