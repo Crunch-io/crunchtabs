@@ -40,13 +40,14 @@
 #'  \item description,
 #'  \item filtertext.
 #' }
-#' Valid "decorations" are:
+#' Valid text decorations are:
 #' \itemize{
 #'  \item bold - bold cell contents
 #'  \item strikeout - strikeout cell contents
 #'  \item italic - italicise cell contents
 #'  \item underline - underline cell contents
 #'  \item underline2 - double underline cell contents
+#'  \item NULL - no decoration
 #' }
 #' Defaults to \code{list(name=list(decoration="bold", size=12),
 #' description=list(decoration=NULL, size=12),
@@ -55,13 +56,21 @@
 #' \itemize{
 #'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+#'  \item size - font size.
+#'  \item color - font color.
 #' }
-#' Defaults to \code{list(name = "Unweighted N", position = "bottom")}.
+#' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
+#' Defaults to \code{list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black")}.
 #' @param weighted_n A list of parameters describing the row containing the weighted bases:
 #' \itemize{
 #'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+#'  \item size - font size.
+#'  \item color - font color.
 #' }
+#' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
 #' @param show_grid_lines logical. Should grid lines be shown?
 #' Defaults to \code{FALSE}.
@@ -125,7 +134,8 @@
 #' @export
 writeExcel <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                        proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                       weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                       weighted_n = NULL,
+                       unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
                        show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                        one_per_sheet = TRUE, append_text = "",
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
@@ -148,7 +158,8 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
 #' @export
 writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                 proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                                weighted_n = NULL,
+                                unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
                                 show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                                 one_per_sheet = TRUE, append_text = "",
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
@@ -194,7 +205,8 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 #' @export
 writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                  proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
-                                 weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+                                 weighted_n = NULL,
+                                 unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
                                  show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                                  one_per_sheet = TRUE, append_text = "",
                                  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
@@ -223,6 +235,9 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
     get_show_info_data <- function(info_name, elem) {
       if (!is.null(show_information) && info_name %in% names(show_information)) show_information[[info_name]][[elem]]
     }
+    ger_bases_data <- function(data_info, elem) {
+      if (!is.null(data_info)) data_info[[elem]]
+    }
     numFmt <- paste0("0", if (digits > 0) paste0(".", paste0(rep(0, digits), collapse = "")))
     numFmtProp <- paste0(numFmt, if (proportions && percent_format_data) "%")
     styles = list(
@@ -235,9 +250,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = if (banner_vars_bold) "bold"),
-      n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center"),
-      n_unweighted = openxlsx::createStyle(textDecoration = "italic", halign = "center"),
-      n_border = openxlsx::createStyle(numFmt = numFmt, textDecoration = "italic", halign = "center", border = "Bottom"),
+      n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = ger_bases_data(weighted_n, "decoration"), fontSize = ger_bases_data(weighted_n, "size"), fontColour = ger_bases_data(weighted_n, "color"), halign = "center"),
+      n_unweighted = openxlsx::createStyle(textDecoration = ger_bases_data(unweighted_n, "decoration"), fontSize = ger_bases_data(unweighted_n, "size"), fontColour = ger_bases_data(unweighted_n, "color"), halign = "center"),
       border_bottom = openxlsx::createStyle(border = "Bottom"),
       border_top = openxlsx::createStyle(border = "Top"),
       border_right = openxlsx::createStyle(border = "Right"),
