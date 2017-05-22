@@ -16,8 +16,8 @@
 #' @param font_size Numeric font size points. Defaults to 12pt font.
 #' @param report_desc An optional named list of report descriptions that should be
 #' displayed on the front page / table of contents, e.g.
-#' \code{list(`Fieldwork date` = "2017-01-01", `Sample description` = "description")}.
-#' Defaults to \code{NULL}
+#' list(`Fieldwork date` = "2017-01-01", `Sample description` = "description").
+#' Defaults to \code{NULL}.
 #' @param digits integer. The number of decimal places that should be used for
 #' rounding numbers. Defaults to \code{0}.
 #' @param append_text A text that, if supplied, will be appended after
@@ -50,9 +50,9 @@
 #'  \item NULL - no decoration
 #' }
 #' Infomration will be printed in the order they're listed.
-#' Defaults to \code{list(name=list(decoration="bold", size=font_size),
+#' Defaults to list(name=list(decoration="bold", size=font_size),
 #' description=list(decoration=NULL, size=font_size),
-#' filtertext=list(decoration="italic", size=font_size))}.
+#' filtertext=list(decoration="italic", size=font_size)).
 #' @param unweighted_n A list of parameters describing the row containing the unweighted bases:
 #' \itemize{
 #'  \item name - row label.
@@ -62,7 +62,8 @@
 #'  \item color - font color.
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
-#' Defaults to \code{list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black")}.
+#' Defaults to list(name = "Unweighted N", position = "bottom",
+#' decoration = NULL, size = font_size, color = "black").
 #' @param weighted_n A list of parameters describing the row containing the weighted bases:
 #' \itemize{
 #'  \item name - row label.
@@ -95,8 +96,8 @@
 #'  \item banner_labels - banner labels
 #'  \item column_categories - column categories.
 #' }
-#' Defaults to \code{labels_wrap = list(name = TRUE, description = TRUE,
-#' row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE)}.
+#' Defaults to list(name = TRUE, description = TRUE,
+#' row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE).
 #' @param first_active_col number. First active coulumn. Defaults to \code{2}.
 #' @param logging logical. Should basic information related to the function execution
 #' be printed? Defaults to \code{FALSE}.
@@ -149,9 +150,9 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        one_per_sheet = TRUE, append_text = "",
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                        min_base_size = NULL, min_base_label = NULL,
-                       show_information = list(name = list(decoration="bold", size=12),
-                                               description=list(decoration=NULL, size=12),
-                                               filtertext=list(decoration="italic", size=12)),
+                       show_information = list(name = list(decoration="bold", size=font_size),
+                                               description=list(decoration=NULL, size=font_size),
+                                               filtertext=list(decoration="italic", size=font_size)),
                        show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                        labels_wrap = list(name = TRUE, description = TRUE,
                             row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
@@ -174,9 +175,9 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 one_per_sheet = TRUE, append_text = "",
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                 min_base_size = NULL, min_base_label = NULL,
-                                show_information = list(name = list(decoration="bold", size=12),
-                                                        description=list(decoration=NULL, size=12),
-                                                        filtertext=list(decoration="italic", size=12)),
+                                show_information = list(name = list(decoration="bold", size=font_size),
+                                                        description=list(decoration=NULL, size=font_size),
+                                                        filtertext=list(decoration="italic", size=font_size)),
                                 show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),

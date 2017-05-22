@@ -7,15 +7,20 @@
 writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   subtitle = NULL, proportions = FALSE, digits = 0,
   table_of_contents = FALSE, logo = NULL, weighted_n = NULL,
-  unweighted_n = list(name = "Unweighted N", position = "bottom"),
-  show_totals = TRUE, report_desc = NULL, font = "Calibri",
-  font_size = 12, one_per_sheet = TRUE, append_text = "",
-  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
-  min_base_size = NULL, min_base_label = NULL, show_description = FALSE,
+  unweighted_n = list(name = "Unweighted N", position = "bottom", decoration =
+  NULL, size = font_size, color = "black"), show_totals = TRUE,
+  report_desc = NULL, font = "Calibri", font_size = 12,
+  one_per_sheet = TRUE, append_text = "", banner_vars_split = NULL,
+  row_label_width = 30, reduce_format = FALSE, min_base_size = NULL,
+  min_base_label = NULL, show_information = list(name = list(decoration =
+  "bold", size = font_size), description = list(decoration = NULL, size =
+  font_size), filtertext = list(decoration = "italic", size = font_size)),
   show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
   labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
   banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
-  include_aliases = FALSE)
+  include_aliases = FALSE, banner_border_lines = FALSE,
+  banner_vars_bold = FALSE, title_on_results_page = FALSE,
+  percent_format_data = TRUE, total_col = NULL)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -51,23 +56,32 @@ Defaults to \code{NULL} - no logo is used.}
 \itemize{
  \item name - row label.
  \item position - row position. Valid values are: "top", "bottom", "both".
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+ \item size - font size.
+ \item color - font color.
 }
+Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 
 \item{unweighted_n}{A list of parameters describing the row containing the unweighted bases:
 \itemize{
  \item name - row label.
  \item position - row position. Valid values are: "top", "bottom", "both".
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+ \item size - font size.
+ \item color - font color.
 }
-Defaults to \code{list(name = "Unweighted N", position = "bottom")}.}
+Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
+Defaults to list(name = "Unweighted N", position = "bottom",
+decoration = NULL, size = font_size, color = "black").}
 
 \item{show_totals}{logical. If \code{TRUE}, the row containing column sums is displayed.
 Defaults to \code{TRUE}.}
 
 \item{report_desc}{An optional named list of report descriptions that should be
 displayed on the front page / table of contents, e.g.
-\code{list(`Fieldwork date` = "2017-01-01", `Sample description` = "description")}.
-Defaults to \code{NULL}}
+list(`Fieldwork date` = "2017-01-01", `Sample description` = "description").
+Defaults to \code{NULL}.}
 
 \item{font}{A text specifying the font to use. Defaults to \code{'Calibri'}.}
 
@@ -80,7 +94,7 @@ Defaults to \code{TRUE}.}
 the final table. Useful for adding in disclosure information.}
 
 \item{banner_vars_split}{the method of splitting banner variables.
-Valid values are: {NULL, "empty_col"}.
+Valid values are: {NULL, "empty_col", "line"}.
 Defaults to \code{NULL} - no split.}
 
 \item{row_label_width}{width of the first column. Defaults to 30pt.}
@@ -96,8 +110,30 @@ category to be displayed in details in a banner report.}
 cross tabulated category is less than \code{min_base_size} then this text is
 used to mask the results. Defaults to \code{NULL} - the values are greyed out.}
 
-\item{show_description}{logical. If \code{TRUE}, variables' descriptions are displayed.
-Defaults to \code{FALSE}.}
+\item{show_information}{list. Specify format details:
+\itemize{
+ \item decoration - text styling,
+ \item size - font size
+}
+related to cross-tabulated variable's:
+\itemize{
+ \item name,
+ \item description,
+ \item filtertext.
+}
+Valid text decorations are:
+\itemize{
+ \item bold - bold cell contents
+ \item strikeout - strikeout cell contents
+ \item italic - italicise cell contents
+ \item underline - underline cell contents
+ \item underline2 - double underline cell contents
+ \item NULL - no decoration
+}
+Infomration will be printed in the order they're listed.
+Defaults to list(name=list(decoration="bold", size=font_size),
+description=list(decoration=NULL, size=font_size),
+filtertext=list(decoration="italic", size=font_size)).}
 
 \item{show_grid_lines}{logical. Should grid lines be shown?
 Defaults to \code{FALSE}.}
@@ -116,13 +152,35 @@ be printed? Defaults to \code{FALSE}.}
  \item banner_labels - banner labels
  \item column_categories - column categories.
 }
-Defaults to \code{labels_wrap = list(name = TRUE, description = TRUE,
-row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE)}.}
+Defaults to list(name = TRUE, description = TRUE,
+row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE).}
 
 \item{first_active_col}{number. First active coulumn. Defaults to \code{2}.}
 
 \item{include_aliases}{logical. Should the variable's alias be concatenated with
 the variable's name? Defaults to \code{FALSE}.}
+
+\item{banner_border_lines}{logical. Should black border lines be shown around the banner?
+Defaults to \code{FALSE}.}
+
+\item{banner_vars_bold}{logical. Should banner (column) categories be bolded?
+Defaults to \code{FALSE}.}
+
+\item{title_on_results_page}{logical. Should title and subtitle be printed on the results page?
+Defaults to \code{FALSE}.}
+
+\item{percent_format_data}{logical. Should data when \code{proportions = TRUE}
+be formatted as "Percentage"? If not, a row with percent signs is added to the banner.
+Defaults to \code{TRUE}.}
+
+\item{total_col}{A list of parameters describing the Total" column:
+\itemize{
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+ \item size - font size.
+ \item color - font color.
+}
+Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
+Defaults to \code{NULL} - default text style used.}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
