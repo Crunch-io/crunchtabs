@@ -367,7 +367,7 @@ create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL,
   openxlsx::addStyle(wb, ws, styles$categories, rows = start_row + 1,
                      cols = multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] -
                                                    1 - empty_col), stack = FALSE)
-  if (banner_vars_split == "line") {
+  if (!is.null(banner_vars_split) && banner_vars_split == "line") {
     openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:(start_row + 1),
                        cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
   }
@@ -547,7 +547,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     }
   }
 
-  if (banner_vars_split == "line") {
+  if (!is.null(banner_vars_split) && banner_vars_split == "line") {
     # banner_cols_pos <- cumsum(sapply(banner[[banner_name]], function(x) length(x$categories))) + start_col - 1
     openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:crow,
                        cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
