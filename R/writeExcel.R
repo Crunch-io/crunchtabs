@@ -24,9 +24,14 @@
 #' the final table. Useful for adding in disclosure information.
 #' @param min_base_size integer. The minimum number of responses for a cross tabulated
 #' category to be displayed in details in a banner report.
-#' @param min_base_label character. If a number of responses for a
-#' cross tabulated category is less than \code{min_base_size} then this text is
-#' used to mask the results. Defaults to \code{NULL} - the values are greyed out.
+#' @param min_base_label list. Specifies how cross-tabulated results that are
+#' less than \code{min_base_size} should be formatted. Valid fields are:
+#' \itemize{
+#'  \item mask - a string that should be used to mask the results or \code{NULL} if the numbers should be printed.
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
+#'  \item color - a string specifying the font color or NULL (a default color is used).
+#' }
+#' Defaults to \code{list(mask = "*", decoration = NULL, color = NULL)}.
 #' @param show_totals logical. If \code{TRUE}, the row containing column sums is displayed.
 #' Defaults to \code{TRUE}.
 #' @param show_information list. Specify format details:
@@ -57,20 +62,20 @@
 #' \itemize{
 #'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
-#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
 #'  \item size - font size.
-#'  \item color - font color.
+#'  \item color - a string specifying the font color or NULL (a default color is used).
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to list(name = "Unweighted N", position = "bottom",
-#' decoration = NULL, size = font_size, color = "black").
+#' decoration = NULL, size = font_size, color = NULL).
 #' @param weighted_n A list of parameters describing the row containing the weighted bases:
 #' \itemize{
 #'  \item name - row label.
 #'  \item position - row position. Valid values are: "top", "bottom", "both".
 #'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
 #'  \item size - font size.
-#'  \item color - font color.
+#'  \item color - a string specifying the font color or NULL (a default color is used).
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
@@ -145,11 +150,11 @@
 writeExcel <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                        proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
                        weighted_n = NULL,
-                       unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
+                       unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                        show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                        one_per_sheet = TRUE, append_text = "",
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
-                       min_base_size = NULL, min_base_label = NULL,
+                       min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                        show_information = list(name = list(decoration="bold", size=font_size),
                                                description=list(decoration=NULL, size=font_size),
                                                filtertext=list(decoration="italic", size=font_size)),
@@ -170,11 +175,11 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
 writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                 proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
                                 weighted_n = NULL,
-                                unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
+                                unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                                 show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                                 one_per_sheet = TRUE, append_text = "",
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
-                                min_base_size = NULL, min_base_label = NULL,
+                                min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                                 show_information = list(name = list(decoration="bold", size=font_size),
                                                         description=list(decoration=NULL, size=font_size),
                                                         filtertext=list(decoration="italic", size=font_size)),
@@ -218,11 +223,11 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                  proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
                                  weighted_n = NULL,
-                                 unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = "black"),
+                                 unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                                  show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
                                  one_per_sheet = TRUE, append_text = "",
                                  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
-                                 min_base_size = NULL, min_base_label = NULL,
+                                 min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                                  show_information = list(name = list(decoration="bold", size=font_size),
                                                          description=list(decoration=NULL, size=font_size),
                                                          filtertext=list(decoration="italic", size=font_size)),
@@ -258,7 +263,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       filtertext = openxlsx::createStyle(textDecoration = get_show_info_data("filtertext", "decoration"), fontSize = get_show_info_data("filtertext", "size"), wrapText = labels_wrap$description),
       description = openxlsx::createStyle(textDecoration = get_show_info_data("description", "decoration"), fontSize = get_show_info_data("description", "size"), wrapText = labels_wrap$description),
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
-      body_grey = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", fontColour = if (is.null(min_base_label)) "lightgrey"),
+      body_min_base = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", textDecoration = get_decoration_data(min_base_label, "decoration"), fontColour = get_decoration_data(min_base_label, "color")),
       body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
@@ -476,8 +481,8 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     unweighted_n_data_num <- sapply(unweighted_n_data, function(x) as.numeric(as.character(x)))
     min_cell_mask <- !is.na(unweighted_n_data_num) & unweighted_n_data_num < min_base_size
   }
-  if (any(min_cell_mask) && !is.null(min_base_label)) {
-    data[, min_cell_mask] <- min_base_label
+  if (any(min_cell_mask) && !is.null(min_base_label) && !is.null(min_base_label[["mask"]])) {
+    data[, min_cell_mask] <- min_base_label[["mask"]]
   }
 
   openxlsx::writeData(wb, ws, data, startCol = start_col, startRow = crow,
@@ -486,7 +491,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
                      cols = start_col:last_col_num, gridExpand = TRUE, stack = FALSE)
   if (any(min_cell_mask)) {
       # if (is.null(min_base_label)) {
-        openxlsx::addStyle(wb, ws, styles$body_grey, rows = crow:(crow + nrow(data) - 1),
+        openxlsx::addStyle(wb, ws, styles$body_min_base, rows = crow:(crow + nrow(data) - 1),
                            cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = FALSE)
       # }
     # else if (reduce_format) {
@@ -517,7 +522,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   #                        cols = start_col:last_col_num, stack = FALSE)
   #   if (any(min_cell_mask)) {
   #     if (is.null(min_base_label)) {
-  #       openxlsx::addStyle(wb, ws, styles$body_grey, rows = start_row,
+  #       openxlsx::addStyle(wb, ws, styles$body_min_base, rows = start_row,
   #                          cols = start_col + which(min_cell_mask) - 1, gridExpand = FALSE, stack = FALSE)
   #     }
   #     if (reduce_format) {
