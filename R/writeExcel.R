@@ -550,12 +550,13 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
       openxlsx::addStyle(wb, ws, styles$n_unweighted, rows = crow,
                          cols = start_col:last_col_num, stack = FALSE)
     }
+    crow <-crow + 1
   }
 
   if (!is.null(banner_vars_split) && banner_vars_split == "line") {
     # banner_cols_pos <- cumsum(sapply(banner[[banner_name]], function(x) length(x$categories))) + start_col - 1
-    openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:crow,
-                       cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
+    openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:(crow-1),
+                       cols = banner_cols_pos[-length(banner_cols_pos)], gridExpand = TRUE, stack = TRUE)
   }
   return(crow + 1)
 
