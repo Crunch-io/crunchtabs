@@ -267,6 +267,8 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
       labels = openxlsx::createStyle(textDecoration = "bold", halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
       row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
+      row_n_weighted = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color")),
+      row_n_unweighted = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color")),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = if (banner_vars_bold) "bold"),
       n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color"), halign = "center"),
       n_unweighted = openxlsx::createStyle(textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color"), halign = "center"),
@@ -389,7 +391,17 @@ create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL
   return(start_row + 1)
 }
 
-
+write_bases_data <- function(wb, ws, data, col, row, last_col_num, reduce_format, style_data, style_label) {
+  openxlsx::writeData(wb, ws, data, startCol = col, startRow = row,
+                      colNames = FALSE)
+  if (!reduce_format) {
+    openxlsx::addStyle(wb, ws, style_data, rows = row,
+                       cols = col:last_col_num, stack = FALSE)
+    openxlsx::addStyle(wb, ws, style_label, rows = row,
+                       cols = col - 1, stack = FALSE)
+  }
+  row + 1
+}
 #' @importFrom stats setNames
 writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_pos, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, unweighted_n = NULL, weighted_n = NULL,
@@ -439,23 +451,15 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   }
 
   if (weighted_n_top) {
-    openxlsx::writeData(wb, ws, weighted_n_data, startCol = start_col, startRow = crow,
-                                        colNames = FALSE)
-    if (!reduce_format) {
-      openxlsx::addStyle(wb, ws, styles$n_weighted, rows = crow,
-                         cols = start_col:last_col_num, stack = FALSE)
-    }
-    crow <- crow + 1
+    crow <- write_bases_data(wb, ws, data=weighted_n_data, col=start_col, row=crow,
+                             last_col_num=last_col_num, reduce_format=reduce_format,
+                             style_data=styles$n_weighted, style_label=styles$row_n_weighted)
   }
 
   if (unweighted_n_top) {
-    openxlsx::writeData(wb, ws, unweighted_n_data, startCol = start_col, startRow = crow,
-                        colNames = FALSE)
-    if (!reduce_format) {
-      openxlsx::addStyle(wb, ws, styles$n_unweighted, rows = crow,
-                         cols = start_col:last_col_num, stack = FALSE)
-    }
-    crow <-crow + 1
+    crow <- write_bases_data(wb, ws, data=unweighted_n_data, col=start_col, row=crow,
+                             last_col_num=last_col_num, reduce_format=reduce_format,
+                             style_data=styles$n_unweighted, style_label=styles$row_n_unweighted)
   }
 
   if (weighted_n_top || unweighted_n_top) {
@@ -534,23 +538,15 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   # }
 
   if (weighted_n_bottom) {
-    openxlsx::writeData(wb, ws, weighted_n_data, startCol = start_col, startRow = crow,
-                        colNames = FALSE)
-    if (!reduce_format) {
-      openxlsx::addStyle(wb, ws, styles$n_weighted, rows = crow,
-                         cols = start_col:last_col_num, stack = FALSE)
-    }
-    crow <-crow + 1
+    crow <- write_bases_data(wb, ws, data=weighted_n_data, col=start_col, row=crow,
+                             last_col_num=last_col_num, reduce_format=reduce_format,
+                             style_data=styles$n_weighted, style_label=styles$row_n_weighted)
   }
 
   if (unweighted_n_bottom) {
-    openxlsx::writeData(wb, ws, unweighted_n_data, startCol = start_col, startRow = crow,
-                        colNames = FALSE)
-    if (!reduce_format) {
-      openxlsx::addStyle(wb, ws, styles$n_unweighted, rows = crow,
-                         cols = start_col:last_col_num, stack = FALSE)
-    }
-    crow <-crow + 1
+    crow <- write_bases_data(wb, ws, data=unweighted_n_data, col=start_col, row=crow,
+                             last_col_num=last_col_num, reduce_format=reduce_format,
+                             style_data=styles$n_unweighted, style_label=styles$row_n_unweighted)
   }
 
   if (!is.null(banner_vars_split) && banner_vars_split == "line") {
