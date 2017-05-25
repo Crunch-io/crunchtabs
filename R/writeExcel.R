@@ -106,6 +106,9 @@
 #' Valid values are: {NULL, "empty_col", "line"}.
 #' Defaults to \code{NULL} - no split.
 #' @param row_label_width width of the first column. Defaults to 30pt.
+#' @param row_label_alignment alignment of the first column.
+#' Valid values are: "left", "right", "center", NULL (a default alignemt).
+#' Defaults to NULL.
 #' @param labels_wrap list. Specifies which labels should be wrapped:
 #' \itemize{
 #'  \item name - variable's name.
@@ -163,7 +166,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        weighted_n = NULL,
                        unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                        show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
-                       one_per_sheet = TRUE, append_text = "",
+                       one_per_sheet = TRUE, append_text = "", row_label_alignment = NULL,
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                        min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                        show_information = list(name = list(decoration="bold", size=font_size),
@@ -188,7 +191,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 weighted_n = NULL,
                                 unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                                 show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
-                                one_per_sheet = TRUE, append_text = "",
+                                one_per_sheet = TRUE, append_text = "", row_label_alignment = NULL,
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                 min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                                 show_information = list(name = list(decoration="bold", size=font_size),
@@ -236,7 +239,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  weighted_n = NULL,
                                  unweighted_n = list(name = "Unweighted N", position = "bottom", decoration = NULL, size = font_size, color = NULL),
                                  show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
-                                 one_per_sheet = TRUE, append_text = "",
+                                 one_per_sheet = TRUE, append_text = "", row_label_alignment = NULL,
                                  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                  min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL, color = NULL),
                                  show_information = list(name = list(decoration="bold", size=font_size),
@@ -270,16 +273,16 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
     numFmt <- paste0("0", if (digits > 0) paste0(".", paste0(rep(0, digits), collapse = "")))
     numFmtProp <- paste0(numFmt, if (proportions && percent_format_data) "%")
     styles = list(
-      name = openxlsx::createStyle(textDecoration = get_format_info(show_information, "name", "decoration"), fontSize = get_format_info(show_information, "name", "size"), wrapText = labels_wrap$name),
-      filtertext = openxlsx::createStyle(textDecoration = get_format_info(show_information, "filtertext", "decoration"), fontSize = get_format_info(show_information, "filtertext", "size"), wrapText = labels_wrap$description),
-      description = openxlsx::createStyle(textDecoration = get_format_info(show_information, "description", "decoration"), fontSize = get_format_info(show_information, "description", "size"), wrapText = labels_wrap$description),
+      name = openxlsx::createStyle(textDecoration = get_format_info(show_information, "name", "decoration"), fontSize = get_format_info(show_information, "name", "size"), wrapText = labels_wrap$name, halign = row_label_alignment),
+      filtertext = openxlsx::createStyle(textDecoration = get_format_info(show_information, "filtertext", "decoration"), fontSize = get_format_info(show_information, "filtertext", "size"), wrapText = labels_wrap$description, halign = row_label_alignment),
+      description = openxlsx::createStyle(textDecoration = get_format_info(show_information, "description", "decoration"), fontSize = get_format_info(show_information, "description", "size"), wrapText = labels_wrap$description, halign = row_label_alignment),
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
       body_min_base = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", textDecoration = get_decoration_data(min_base_label, "decoration"), fontColour = get_decoration_data(min_base_label, "color")),
       body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center"),
       labels = openxlsx::createStyle(textDecoration = get_format_info(banner_format, "labels", "decoration"), fontSize = get_format_info(banner_format, "labels", "size"), fontColour = get_format_info(banner_format, "labels", "color"), halign = "center", wrapText = labels_wrap$banner_labels, border = if (banner_border_lines) "TopBottomLeftRight"),
-      row_labels = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels),
-      row_n_weighted = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color")),
-      row_n_unweighted = openxlsx::createStyle(halign = "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color")),
+      row_labels = openxlsx::createStyle(halign = if (!is.null(row_label_alignment)) row_label_alignment else "right", wrapText = labels_wrap$row_labels),
+      row_n_weighted = openxlsx::createStyle(halign = if (!is.null(row_label_alignment)) row_label_alignment else "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color")),
+      row_n_unweighted = openxlsx::createStyle(halign = if (!is.null(row_label_alignment)) row_label_alignment else "right", wrapText = labels_wrap$row_labels, textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color")),
       categories = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", wrapText = labels_wrap$column_categories, border = if (banner_border_lines) "TopBottomLeftRight", textDecoration = get_format_info(banner_format, "categories", "decoration"), fontSize = get_format_info(banner_format, "categories", "size"), fontColour = get_format_info(banner_format, "categories", "color")),
       n_weighted = openxlsx::createStyle(numFmt = numFmt, textDecoration = get_decoration_data(weighted_n, "decoration"), fontSize = get_decoration_data(weighted_n, "size"), fontColour = get_decoration_data(weighted_n, "color"), halign = "center"),
       n_unweighted = openxlsx::createStyle(textDecoration = get_decoration_data(unweighted_n, "decoration"), fontSize = get_decoration_data(unweighted_n, "size"), fontColour = get_decoration_data(unweighted_n, "color"), halign = "center"),
@@ -289,6 +292,9 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       toc_title = openxlsx::createStyle(fontSize = 14, textDecoration = "bold"),
       toc_subtitle = openxlsx::createStyle(textDecoration = "bold"),
       toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
+      title = openxlsx::createStyle(fontSize = 14, textDecoration = "bold", halign = row_label_alignment),
+      subtitle = openxlsx::createStyle(textDecoration = "bold", halign = row_label_alignment),
+      desc = openxlsx::createStyle(halign = row_label_alignment),
       # toc_lot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
       toc_banner = openxlsx::createStyle(textDecoration = "bold"),
       total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"))
@@ -307,14 +313,14 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
 
 }
 
-write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col = 2, report_desc = NULL, styles = NULL) {
+write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col = 2, report_desc = NULL, styles = NULL, toc_page = TRUE) {
 
   openxlsx::writeData(wb, ws, title, startCol = start_col, startRow = start_row)
-  openxlsx::addStyle(wb, ws, styles$toc_title, rows = start_row, cols = start_col)
+  openxlsx::addStyle(wb, ws, if (toc_page) styles$toc_title else styles$title, rows = start_row, cols = start_col)
   start_row <- start_row + 1
   if (!is.null(subtitle)) {
     openxlsx::writeData(wb, ws, subtitle, startCol = start_col, startRow = start_row)
-    openxlsx::addStyle(wb, ws, styles$toc_subtitle, rows = start_row, cols = start_col)
+    openxlsx::addStyle(wb, ws, if (toc_page) styles$toc_subtitle else styles$subtitle, rows = start_row, cols = start_col)
     start_row <- start_row + 1
   }
 
@@ -322,6 +328,9 @@ write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col 
   desc_names <- names(report_desc)
   for (desc_num in seq_along(report_desc)) {
     openxlsx::writeData(wb, ws, paste0(desc_names[desc_num], ": ", report_desc[[desc_num]]), startCol = start_col, startRow = start_row)
+    if (!toc_page) {
+      openxlsx::addStyle(wb, ws, styles$desc, rows = start_row, cols = start_col)
+    }
     # openxlsx::writeData(wb, ws, report_desc[[desc_num]], startCol = start_col + 1, startRow = start_row)
     start_row <- start_row + 1
   }
@@ -364,7 +373,7 @@ create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL
 
   if (title_on_results_page) {
     start_row <- write_report_desc(wb, ws, title = title, subtitle = subtitle, start_row = start_row,
-                                   start_col = 1, report_desc = report_desc, styles = styles)
+                                   start_col = 1, report_desc = report_desc, styles = styles, toc_page = FALSE)
   }
 
   empty_col <- if (!is.null(banner_vars_split) && banner_vars_split == "empty_col") 1 else 0
