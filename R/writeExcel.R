@@ -212,6 +212,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
 
     styles = list(
       name = openxlsx::createStyle(textDecoration = "bold", wrapText = labels_wrap$name),
+      description = openxlsx::createStyle(),
       filtertext = openxlsx::createStyle(textDecoration = "italic", wrapText = labels_wrap$description),
       numeric = openxlsx::createStyle(numFmt = paste0("0", if (digits > 0)
         paste0(".", paste0(rep(0, digits), collapse = "")))),
@@ -221,7 +222,11 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
       categories = openxlsx::createStyle(halign = "center", wrapText = labels_wrap$column_categories),
       row_labels = openxlsx::createStyle(wrapText = labels_wrap$row_labels),
       toc_title = openxlsx::createStyle(fontSize = 14, textDecoration = "bold"),
-      toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline")
+      toc_subtitle = openxlsx::createStyle(fontSize = 12, textDecoration = "bold"),
+      toc_slot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline"),
+      title = openxlsx::createStyle(fontSize = 14, textDecoration = "bold"),
+      subtitle = openxlsx::createStyle(textDecoration = "bold"),
+      desc = openxlsx::createStyle()
     )
 
     writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
