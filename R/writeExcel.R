@@ -766,7 +766,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                                    styles = styles, banner_vars_split = banner_vars_split, start_row = 1,
                                    banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
                                    title = title, subtitle = subtitle, report_desc = report_desc,
-                                   percent_format_data = !percent_format_data & proportions)
+                                   percent_row = !percent_format_data & proportions)
                 last_row_used <- last_row_used + 1
                 openxlsx::freezePane(wb, worksheet_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
                 last_row_used <- last_row_used + 1

@@ -8,19 +8,21 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   subtitle = NULL, proportions = FALSE, digits = 0,
   table_of_contents = FALSE, logo = NULL, weighted_n = NULL,
   unweighted_n = list(name = "Unweighted N", position = "bottom", decoration =
-  NULL, size = font_size, color = "black"), show_totals = TRUE,
+  NULL, size = font_size, color = NULL), show_totals = TRUE,
   report_desc = NULL, font = "Calibri", font_size = 12,
-  one_per_sheet = TRUE, append_text = "", banner_vars_split = NULL,
-  row_label_width = 30, reduce_format = FALSE, min_base_size = NULL,
-  min_base_label = NULL, show_information = list(name = list(decoration =
-  "bold", size = font_size), description = list(decoration = NULL, size =
-  font_size), filtertext = list(decoration = "italic", size = font_size)),
+  one_per_sheet = TRUE, append_text = "", row_label_alignment = NULL,
+  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
+  min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL,
+  color = NULL), show_information = list(name = list(decoration = "bold", size
+  = font_size), description = list(decoration = NULL, size = font_size),
+  filtertext = list(decoration = "italic", size = font_size)),
   show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
   labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
   banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
   include_aliases = FALSE, banner_border_lines = FALSE,
-  banner_vars_bold = FALSE, title_on_results_page = FALSE,
-  percent_format_data = TRUE, total_col = NULL)
+  title_on_results_page = FALSE, percent_format_data = TRUE,
+  total_col = NULL, banner_format = list(labels = list(decoration = "bold",
+  size = font_size), categories = list(decoration = "bold", size = font_size)))
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -58,7 +60,7 @@ Defaults to \code{NULL} - no logo is used.}
  \item position - row position. Valid values are: "top", "bottom", "both".
  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
  \item size - font size.
- \item color - font color.
+ \item color - a string specifying the font color or NULL (a default color is used).
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
@@ -67,13 +69,13 @@ Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 \itemize{
  \item name - row label.
  \item position - row position. Valid values are: "top", "bottom", "both".
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
  \item size - font size.
- \item color - font color.
+ \item color - a string specifying the font color or NULL (a default color is used).
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to list(name = "Unweighted N", position = "bottom",
-decoration = NULL, size = font_size, color = "black").}
+decoration = NULL, size = font_size, color = NULL).}
 
 \item{show_totals}{logical. If \code{TRUE}, the row containing column sums is displayed.
 Defaults to \code{TRUE}.}
@@ -93,6 +95,10 @@ Defaults to \code{TRUE}.}
 \item{append_text}{A text that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information.}
 
+\item{row_label_alignment}{alignment of the first column.
+Valid values are: "left", "right", "center", NULL (a default alignemt).
+Defaults to NULL.}
+
 \item{banner_vars_split}{the method of splitting banner variables.
 Valid values are: {NULL, "empty_col", "line"}.
 Defaults to \code{NULL} - no split.}
@@ -106,9 +112,14 @@ Defaults to \code{FALSE}.}
 \item{min_base_size}{integer. The minimum number of responses for a cross tabulated
 category to be displayed in details in a banner report.}
 
-\item{min_base_label}{character. If a number of responses for a
-cross tabulated category is less than \code{min_base_size} then this text is
-used to mask the results. Defaults to \code{NULL} - the values are greyed out.}
+\item{min_base_label}{list. Specifies how cross-tabulated results that are
+less than \code{min_base_size} should be formatted. Valid fields are:
+\itemize{
+ \item mask - a string that should be used to mask the results or \code{NULL} if the numbers should be printed.
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
+ \item color - a string specifying the font color or NULL (a default color is used).
+}
+Defaults to \code{list(mask = "*", decoration = NULL, color = NULL)}.}
 
 \item{show_information}{list. Specify format details:
 \itemize{
@@ -163,9 +174,6 @@ the variable's name? Defaults to \code{FALSE}.}
 \item{banner_border_lines}{logical. Should black border lines be shown around the banner?
 Defaults to \code{FALSE}.}
 
-\item{banner_vars_bold}{logical. Should banner (column) categories be bolded?
-Defaults to \code{FALSE}.}
-
 \item{title_on_results_page}{logical. Should title and subtitle be printed on the results page?
 Defaults to \code{FALSE}.}
 
@@ -181,6 +189,20 @@ Defaults to \code{TRUE}.}
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to \code{NULL} - default text style used.}
+
+\item{banner_format}{list. Specify format details:
+\itemize{
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
+ \item size - font size.
+ \item color - a string specifying the font color or NULL (a default color is used).
+}
+related to banner's:
+\itemize{
+ \item labels,
+ \item categories,
+}
+Defaults to list(labels=list(decoration="bold", size=font_size),
+categories=list(decoration="bold", size=font_size)).}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
