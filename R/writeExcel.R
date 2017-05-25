@@ -345,9 +345,9 @@ create_table_of_contents <- function(wb, title, subtitle, toc_row = 2, toc_col =
 }
 
 
-create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL, start_row = 1, banner_cols_pos = NULL,
+create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL, start_row = 1, banner_cols_pos = NULL,
                                title_on_results_page = FALSE, title = NULL, subtitle = NULL, report_desc = NULL,
-                               percent_format_data = TRUE) {
+                               percent_row = FALSE) {
 
   if (title_on_results_page) {
     start_row <- write_report_desc(wb, ws, title = title, subtitle = subtitle, start_row = start_row,
@@ -376,7 +376,7 @@ create_banner_pane <- function(wb, ws, banner, styles, banner_vars_split = NULL,
     openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:(start_row + 1),
                        cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
   }
-  if (!percent_format_data) {
+  if (percent_row) {
     start_row <- start_row + 1
     data <- as.data.frame(lapply(seq_along(banner), function(bv) {
         t(c(rep("%", times = length(multicols[[bv]])), if (empty_col == 1) ""))
@@ -719,11 +719,11 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
         openxlsx::setColWidths(wb, banner_name, start_col, row_label_width)
         if (!is.null(banner)) {
           last_row_used <- last_row_used +
-             create_banner_pane(wb, banner_name, banner = banner[[banner_name]],
+             create_banner_panel(wb, banner_name, banner = banner[[banner_name]],
                              styles = styles, banner_vars_split = banner_vars_split, start_row = last_row_used,
                              banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
                              title = title, subtitle = subtitle, report_desc = report_desc,
-                             percent_format_data = percent_format_data)
+                             percent_row = !percent_format_data & proportions)
           openxlsx::freezePane(wb, banner_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
           if (table_of_contents) {
             toc_col <- toc_res$toc_col
@@ -746,11 +746,11 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
               openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines)
               openxlsx::setColWidths(wb, worksheet_name, start_col, row_label_width)
               if (!is.null(banner)) {
-                last_row_used <- create_banner_pane(wb, worksheet_name, banner = banner[[banner_name]],
+                last_row_used <- create_banner_panel(wb, worksheet_name, banner = banner[[banner_name]],
                                    styles = styles, banner_vars_split = banner_vars_split, start_row = 1,
                                    banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
                                    title = title, subtitle = subtitle, report_desc = report_desc,
-                                   percent_format_data = percent_format_data)
+                                   percent_format_data = !percent_format_data & proportions)
                 last_row_used <- last_row_used + 1
                 openxlsx::freezePane(wb, worksheet_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
                 last_row_used <- last_row_used + 1
