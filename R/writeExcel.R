@@ -323,9 +323,11 @@ write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col 
   openxlsx::addStyle(wb, ws, if (toc_page) styles$toc_title else styles$title, rows = start_row, cols = start_col)
   start_row <- start_row + 1
   if (!is.null(subtitle)) {
-    openxlsx::writeData(wb, ws, subtitle, startCol = start_col, startRow = start_row)
-    openxlsx::addStyle(wb, ws, if (toc_page) styles$toc_subtitle else styles$subtitle, rows = start_row, cols = start_col)
-    start_row <- start_row + 1
+    for (subt in subtitle) {
+      openxlsx::writeData(wb, ws, subt, startCol = start_col, startRow = start_row)
+      openxlsx::addStyle(wb, ws, if (toc_page) styles$toc_subtitle else styles$subtitle, rows = start_row, cols = start_col)
+      start_row <- start_row + 1
+    }
   }
 
   start_row <- start_row + 1
