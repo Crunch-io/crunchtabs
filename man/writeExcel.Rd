@@ -7,22 +7,20 @@
 writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   subtitle = NULL, proportions = FALSE, digits = 0,
   table_of_contents = FALSE, logo = NULL, weighted_n = NULL,
-  unweighted_n = list(name = "Unweighted N", position = "bottom", decoration =
-  NULL, size = font_size, color = NULL), show_totals = TRUE,
-  report_desc = NULL, font = "Calibri", font_size = 12,
-  one_per_sheet = TRUE, append_text = "", row_label_alignment = NULL,
-  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
-  min_base_size = NULL, min_base_label = list(mask = "*", decoration = NULL,
-  color = NULL), show_information = list(name = list(decoration = "bold", size
-  = font_size), description = list(decoration = NULL, size = font_size),
-  filtertext = list(decoration = "italic", size = font_size)),
+  unweighted_n = list(name = "Unweighted N", position = "bottom"),
+  show_totals = TRUE, report_desc = NULL, font = "Calibri",
+  font_size = 12, one_per_sheet = TRUE, append_text = "",
+  row_label_alignment = NULL, banner_vars_split = NULL,
+  row_label_width = 30, reduce_format = FALSE, min_base_size = NULL,
+  min_base_label = list(mask = "*"), show_information = list(name =
+  list(decoration = "bold"), filtertext = list(decoration = "italic")),
   show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
   labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
   banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
   include_aliases = FALSE, banner_border_lines = FALSE,
   title_on_results_page = FALSE, percent_format_data = TRUE,
-  total_col = NULL, banner_format = list(labels = list(decoration = "bold",
-  size = font_size), categories = list(decoration = "bold", size = font_size)))
+  total_col = NULL, banner_format = list(labels = list(decoration = "bold"),
+  categories = list(decoration = "bold"), total = list(decoration = "bold")))
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -58,9 +56,9 @@ Defaults to \code{NULL} - no logo is used.}
 \itemize{
  \item name - row label.
  \item position - row position. Valid values are: "top", "bottom", "both".
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
- \item size - font size.
- \item color - a string specifying the font color or NULL (a default color is used).
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
@@ -69,13 +67,12 @@ Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 \itemize{
  \item name - row label.
  \item position - row position. Valid values are: "top", "bottom", "both".
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
- \item size - font size.
- \item color - a string specifying the font color or NULL (a default color is used).
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
-Defaults to list(name = "Unweighted N", position = "bottom",
-decoration = NULL, size = font_size, color = NULL).}
+Defaults to list(name = "Unweighted N", position = "bottom").}
 
 \item{show_totals}{logical. If \code{TRUE}, the row containing column sums is displayed.
 Defaults to \code{TRUE}.}
@@ -116,15 +113,15 @@ category to be displayed in details in a banner report.}
 less than \code{min_base_size} should be formatted. Valid fields are:
 \itemize{
  \item mask - a string that should be used to mask the results or \code{NULL} if the numbers should be printed.
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
- \item color - a string specifying the font color or NULL (a default color is used).
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
 }
 Defaults to \code{list(mask = "*", decoration = NULL, color = NULL)}.}
 
 \item{show_information}{list. Specify format details:
 \itemize{
  \item decoration - text styling,
- \item size - font size
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
 }
 related to cross-tabulated variable's:
 \itemize{
@@ -142,9 +139,8 @@ Valid text decorations are:
  \item NULL - no decoration
 }
 Infomration will be printed in the order they're listed.
-Defaults to list(name=list(decoration="bold", size=font_size),
-description=list(decoration=NULL, size=font_size),
-filtertext=list(decoration="italic", size=font_size)).}
+Defaults to list(name=list(decoration="bold"),
+filtertext=list(decoration="italic")).}
 
 \item{show_grid_lines}{logical. Should grid lines be shown?
 Defaults to \code{FALSE}.}
@@ -181,28 +177,31 @@ Defaults to \code{FALSE}.}
 be formatted as "Percentage"? If not, a row with percent signs is added to the banner.
 Defaults to \code{TRUE}.}
 
-\item{total_col}{A list of parameters describing the Total" column:
+\item{total_col}{A list of parameters describing the Total column:
 \itemize{
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoratio).
- \item size - font size.
- \item color - font color.
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
 }
 Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 Defaults to \code{NULL} - default text style used.}
 
 \item{banner_format}{list. Specify format details:
 \itemize{
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2", NULL (no decoration).
- \item size - font size.
- \item color - a string specifying the font color or NULL (a default color is used).
+ \item font - a font name. Defaults to the value of the \code{font} parameter.
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
 }
 related to banner's:
 \itemize{
  \item labels,
  \item categories,
+ \item total,
 }
-Defaults to list(labels=list(decoration="bold", size=font_size),
-categories=list(decoration="bold", size=font_size)).}
+Defaults to list(labels = list(decoration="bold"),
+categories = list(decoration = "bold"),
+total = list(decoration = "bold")).}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
