@@ -1,0 +1,74 @@
+{
+    "element": "shoji:entity",
+    "self": "/api/datasets/123/multitables/a95030af1dc741fb89153c5319009b2b/",
+    "views": {
+        "tabbook": "/api/datasets/123/multitables/a95030af1dc741fb89153c5319009b2b/tabbook/"
+    },
+    "specification": "/api/specifications/multitables/",
+    "description": "Detail information for one multitable definition",
+    "body": {
+        "name": "church",
+        "user": "/api/users/5187f95407a7d83fe485396c/",
+        "template": [{
+            "query": [{
+                "variable": "/api/datasets/123/variables/000036/"
+            }],
+            "transform": {
+                "categories": [{
+                    "missing": false,
+                    "hide": false,
+                    "id": 1,
+                    "name": "More than once a week"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 2,
+                    "name": "Once a week"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 3,
+                    "name": "Once or twice a month"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 4,
+                    "name": "A few times a year"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 5,
+                    "name": "Seldom"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 6,
+                    "name": "Never"
+                }, {
+                    "missing": false,
+                    "hide": false,
+                    "id": 7,
+                    "name": "Don't know"
+                }, {
+                    "missing": true,
+                    "hide": true,
+                    "id": 32766,
+                    "name": "skipped"
+                }, {
+                    "missing": true,
+                    "hide": true,
+                    "id": 32767,
+                    "name": "not asked"
+                }, {
+                    "missing": true,
+                    "hide": true,
+                    "id": -1,
+                    "name": "No Data"
+                }]
+            }
+        }],
+        "is_public": false,
+        "display_settings": {},
+        "id": "a95030af1dc741fb89153c5319009b2b"
+    }
+}

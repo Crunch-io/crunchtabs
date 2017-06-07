@@ -1,0 +1,18 @@
+{
+    "banner1": {
+        "___total___": {
+            "alias": "___total___",
+            "name": "",
+            "old_categories": "Total",
+            "categories_out": "Total",
+            "categories": "Total"
+        },
+        "pew_churatd": {
+            "alias": "pew_churatd",
+            "name": "Church Attendance",
+            "old_categories": ["More than once a week", "Once a week", "Once or twice a month", "A few times a year", "Seldom", "Never"],
+            "categories_out": ["More than once a week", "Once a week", "Once or twice a month", "A few times a year", "Seldom", "Never"],
+            "categories": ["More than once a week", "Once a week", "Once or twice a month", "A few times a year", "Seldom", "Never"]
+        }
+    }
+}
