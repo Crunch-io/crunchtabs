@@ -29,7 +29,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 
     checkCrunchDatasetClass(dataset)
 
-    not_found_vars <- setdiff(vars, names(dataset))
+    not_found_vars <- setdiff(vars, aliases(allVariables(dataset)))
     if (length(not_found_vars) > 0) {
         stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found"))
     }
@@ -47,7 +47,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 
     weight_var <- if (!is.null(weight)) dataset[[weight]]
 
-    vars_out <- aliases(variables(dataset))[aliases(variables(dataset)) %in% vars &
+    vars_out <- aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% vars &
                    types(variables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]
 
     filtered_vars <- setdiff(vars, vars_out)
