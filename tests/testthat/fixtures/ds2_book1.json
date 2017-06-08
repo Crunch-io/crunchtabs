@@ -1,0 +1,319 @@
+{
+    "meta": {
+        "toc": false,
+        "layout": "many_sheets",
+        "template": [{
+            "query": [{
+                "variable": "/api/datasets/123/variables/000036/"
+            }],
+            "transform": {
+                "categories": [{
+                    "hide": false,
+                    "id": 1,
+                    "name": "More than once a week",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 2,
+                    "name": "Once a week",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 3,
+                    "name": "Once or twice a month",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 4,
+                    "name": "A few times a year",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 5,
+                    "name": "Seldom",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 6,
+                    "name": "Never",
+                    "missing": false
+                }, {
+                    "hide": false,
+                    "id": 7,
+                    "name": "Don't know",
+                    "missing": false
+                }, {
+                    "hide": true,
+                    "id": 32766,
+                    "name": "skipped",
+                    "missing": true
+                }, {
+                    "hide": true,
+                    "id": 32767,
+                    "name": "not asked",
+                    "missing": true
+                }, {
+                    "hide": true,
+                    "id": -1,
+                    "name": "No Data",
+                    "missing": true
+                }]
+            }
+        }],
+        "sheets": [{
+            "display_settings": {
+                "percentageDirection": {
+                    "value": "colPct"
+                },
+                "valuesAreMeans": {
+                    "value": false
+                },
+                "showSignif": {
+                    "value": true
+                },
+                "slicesOrGroups": {
+                    "value": "slices"
+                },
+                "vizType": {
+                    "value": "table"
+                },
+                "countsOrPercents": {
+                    "value": "percent"
+                },
+                "decimalPlaces": {
+                    "value": 1
+                },
+                "showNotes": {
+                    "value": true
+                },
+                "currentTab": {
+                    "value": 0
+                }
+            },
+            "weight": "weight",
+            "name": "President Trump Job Approval",
+            "filters": null
+        }],
+        "dataset": {
+            "notes": "",
+            "name": "huffington_post_20170308"
+        }
+    },
+    "sheets": [{
+        "result": [{
+            "result": {
+                "counts": [254, 164, 88, 432, 62, 0, 0, 0],
+                "measures": {
+                    "count": {
+                        "data": [233.8294316899, 168.9009571765, 111.0965406625, 393.678139973, 92.4949304981, 0.0, 0.0, 0.0],
+                        "n_missing": 0,
+                        "metadata": {
+                            "references": {},
+                            "derived": true,
+                            "type": {
+                                "integer": false,
+                                "missing_rules": {},
+                                "missing_reasons": {
+                                    "No Data": -1
+                                },
+                                "class": "numeric"
+                            }
+                        }
+                    }
+                },
+                "dimensions": [{
+                    "references": {
+                        "alias": "app_dtrmp",
+                        "name": "President Trump Job Approval",
+                        "description": "Do you approve or disapprove of the way Donald Trump is handling his job as President?"
+                    },
+                    "derived": false,
+                    "type": {
+                        "ordinal": false,
+                        "class": "categorical",
+                        "categories": [{
+                            "numeric_value": 1,
+                            "missing": false,
+                            "id": 1,
+                            "name": "Strongly approve"
+                        }, {
+                            "numeric_value": 2,
+                            "missing": false,
+                            "id": 2,
+                            "name": "Somewhat approve"
+                        }, {
+                            "numeric_value": 3,
+                            "missing": false,
+                            "id": 3,
+                            "name": "Somewhat disapprove"
+                        }, {
+                            "numeric_value": 4,
+                            "missing": false,
+                            "id": 4,
+                            "name": "Strongly disapprove"
+                        }, {
+                            "numeric_value": 5,
+                            "missing": false,
+                            "id": 5,
+                            "name": "Not sure"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32766,
+                            "name": "skipped"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32767,
+                            "name": "not asked"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": -1,
+                            "name": "No Data"
+                        }]
+                    }
+                }],
+                "n": 1000
+            }
+        }, {
+            "result": {
+                "counts": [49, 56, 18, 29, 54, 42, 6, 0, 0, 0, 19, 33, 14, 33, 32, 29, 4, 0, 0, 0, 9, 19, 5, 14, 15, 26, 0, 0, 0, 0, 17, 55, 21, 52, 101, 181, 5, 0, 0, 0, 4, 9, 4, 9, 9, 19, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                "measures": {
+                    "count": {
+                        "data": [45.5210876241, 49.2764521601, 14.106069065, 22.5813294653, 49.1253173407, 49.4384685379, 3.7807074967, 0.0, 0.0, 0.0, 16.1236150311, 31.6268385815, 15.4861839148, 32.026139901, 34.1541246467, 34.5628664839, 4.9211886176, 0.0, 0.0, 0.0, 15.6036839669, 23.1965975084, 6.4138224692, 17.5051659268, 19.5607159298, 28.8165548614, 0.0, 0.0, 0.0, 0.0, 17.2915432401, 49.3714460096, 19.5511686765, 47.1750726004, 104.3349673408, 149.7976386912, 6.1563034145, 0.0, 0.0, 0.0, 7.1201404216, 12.6285435412, 5.5032279499, 15.3091202479, 11.3306357163, 28.2211699417, 12.3820926795, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                        "n_missing": 0,
+                        "metadata": {
+                            "references": {},
+                            "derived": true,
+                            "type": {
+                                "integer": false,
+                                "missing_rules": {},
+                                "missing_reasons": {
+                                    "No Data": -1
+                                },
+                                "class": "numeric"
+                            }
+                        }
+                    }
+                },
+                "dimensions": [{
+                    "references": {
+                        "alias": "app_dtrmp",
+                        "name": "President Trump Job Approval",
+                        "description": "Do you approve or disapprove of the way Donald Trump is handling his job as President?"
+                    },
+                    "derived": false,
+                    "type": {
+                        "ordinal": false,
+                        "class": "categorical",
+                        "categories": [{
+                            "numeric_value": 1,
+                            "missing": false,
+                            "id": 1,
+                            "name": "Strongly approve"
+                        }, {
+                            "numeric_value": 2,
+                            "missing": false,
+                            "id": 2,
+                            "name": "Somewhat approve"
+                        }, {
+                            "numeric_value": 3,
+                            "missing": false,
+                            "id": 3,
+                            "name": "Somewhat disapprove"
+                        }, {
+                            "numeric_value": 4,
+                            "missing": false,
+                            "id": 4,
+                            "name": "Strongly disapprove"
+                        }, {
+                            "numeric_value": 5,
+                            "missing": false,
+                            "id": 5,
+                            "name": "Not sure"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32766,
+                            "name": "skipped"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32767,
+                            "name": "not asked"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": -1,
+                            "name": "No Data"
+                        }]
+                    }
+                }, {
+                    "references": {
+                        "alias": "pew_churatd",
+                        "name": "Church Attendance",
+                        "description": "Aside from weddings and funerals, how often do you attend religious services?"
+                    },
+                    "derived": false,
+                    "type": {
+                        "ordinal": false,
+                        "class": "categorical",
+                        "categories": [{
+                            "numeric_value": 1,
+                            "missing": false,
+                            "id": 1,
+                            "name": "More than once a week"
+                        }, {
+                            "numeric_value": 2,
+                            "missing": false,
+                            "id": 2,
+                            "name": "Once a week"
+                        }, {
+                            "numeric_value": 3,
+                            "missing": false,
+                            "id": 3,
+                            "name": "Once or twice a month"
+                        }, {
+                            "numeric_value": 4,
+                            "missing": false,
+                            "id": 4,
+                            "name": "A few times a year"
+                        }, {
+                            "numeric_value": 5,
+                            "missing": false,
+                            "id": 5,
+                            "name": "Seldom"
+                        }, {
+                            "numeric_value": 6,
+                            "missing": false,
+                            "id": 6,
+                            "name": "Never"
+                        }, {
+                            "numeric_value": 7,
+                            "missing": false,
+                            "id": 7,
+                            "name": "Don't know"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32766,
+                            "name": "skipped"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": 32767,
+                            "name": "not asked"
+                        }, {
+                            "numeric_value": null,
+                            "missing": true,
+                            "id": -1,
+                            "name": "No Data"
+                        }]
+                    }
+                }],
+                "n": 1000
+            }
+        }]
+    }]
+}
