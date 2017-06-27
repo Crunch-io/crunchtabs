@@ -2,6 +2,9 @@ Sys.setlocale("LC_COLLATE", "C") ## What CRAN does; affects sort order
 set.seed(999) ## To ensure that tests that involve randomness are reproducible
 options(warn=1)
 
+## Load the crunch package test setup
+source(system.file("crunch-test.R", package="crunch"))
+
 fromJSON <- jsonlite::fromJSON
 fixtures_dir <- "fixtures"
 
@@ -21,3 +24,4 @@ newDatasetFromFixture <- function (filename) {
   m <- fromJSON(file.path(fixtures_dir, paste0(filename, ".json")), simplifyVector=FALSE)
   return(suppressMessages(createWithMetadataAndFile(m, file.path(fixtures_dir, paste0(filename, ".csv")))))
 }
+

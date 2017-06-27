@@ -148,6 +148,8 @@
 #' @param percent_format_data logical. Should data when \code{proportions = TRUE}
 #' be formatted as "Percentage"? If not, a row with percent signs is added to the banner.
 #' Defaults to \code{TRUE}.
+#' @param hypothesis_test logical.
+#' Defaults to \code{FALSE}.
 #' @param return_data logical. If \code{TRUE}, a processed data that was used to produce
 #' the report is returned.
 #' @return If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
@@ -177,7 +179,8 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        title_on_results_page = FALSE, percent_format_data = TRUE, total_col = NULL,
                        banner_format = list(labels = list(decoration="bold"),
                                             categories = list(decoration = "bold"),
-                                            total = list(decoration = "bold"))) {
+                                            total = list(decoration = "bold")),
+                       hypothesis_test = FALSE) {
 
   if (is.null(filename)) {
     stop("No valid filename provided.")
@@ -201,7 +204,8 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 title_on_results_page = FALSE, percent_format_data = TRUE, total_col = NULL,
                                 banner_format = list(labels = list(decoration="bold"),
                                                      categories = list(decoration = "bold"),
-                                                     total = list(decoration = "bold"))) {
+                                                     total = list(decoration = "bold")),
+                                hypothesis_test = FALSE) {
 
   data_summary$results <- lapply(data_summary$results, function(var_data) {
         var_data$data <- reformatResults(var_data, proportions = proportions, digits = digits,
@@ -253,12 +257,17 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  title_on_results_page = FALSE, percent_format_data = TRUE, total_col = NULL,
                                  banner_format = list(labels = list(decoration="bold"),
                                                       categories = list(decoration = "bold"),
-                                                      total = list(decoration = "bold"))) {
+                                                      total = list(decoration = "bold")),
+                                 hypothesis_test = FALSE) {
 
     banner <- data_summary$banner
+    if (hypothesis_test) {
+      data_summary$results <- reformatHypothesisTest(data_summary$results)
+    }
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
     # add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
     # min_base_size = min_base_size, min_base_label = min_base_label, reformat = FALSE)
+
     if (one_per_sheet && length(banner) > 1) {
       banner_name <- "Results"
       data_summary$results <- mergeBannerResults(data_summary$results, banner_name = banner_name)
@@ -301,7 +310,15 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       desc = openxlsx::createStyle(halign = row_label_alignment, valign = "center"),
       # toc_lot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline", valign = "center"),
       toc_banner = openxlsx::createStyle(textDecoration = "bold", valign = "center"),
-      total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"), valign = "center")
+      total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"), valign = "center"),
+      bg_col_green4 = openxlsx::createStyle(fgFill = "palegreen4"),
+      bg_col_green3 = openxlsx::createStyle(fgFill = "palegreen3"),
+      bg_col_green2 = openxlsx::createStyle(fgFill = "palegreen2"),
+      bg_col_green1 = openxlsx::createStyle(fgFill = "palegreen1"),
+      bg_col_red4 = openxlsx::createStyle(fgFill = "salmon4"),
+      bg_col_red3 = openxlsx::createStyle(fgFill = "salmon3"),
+      bg_col_red2 = openxlsx::createStyle(fgFill = "salmon2"),
+      bg_col_red1 = openxlsx::createStyle(fgFill = "salmon1")
     )
 
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
@@ -313,8 +330,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
         show_information = show_information, logging = logging, first_active_col = first_active_col,
         reduce_format = reduce_format, include_aliases = include_aliases, title_on_results_page = title_on_results_page,
-        percent_format_data = percent_format_data)
-
+        percent_format_data = percent_format_data, hypothesis_test = hypothesis_test)
 }
 
 write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col = 2, report_desc = NULL, styles = NULL, toc_page = TRUE) {
@@ -430,12 +446,40 @@ write_bases_data <- function(wb, ws, data, col, row, last_col_num, reduce_format
   }
   row + 1
 }
+
+hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, empty_col, styles, crow, ccol) {
+  pvals <- c(0.1, 0.05, 0.01, 0.001)
+  pcol_pos <- c("bg_col_green1", "bg_col_green2", "bg_col_green3", "bg_col_green4")
+  pcol_neg <- c("bg_col_red1", "bg_col_red2", "bg_col_red3", "bg_col_red4")
+
+  pvals_row <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
+    d <- x$pvals_col
+    d <- as.data.frame(d)
+    if (empty_col) cbind(d, "" ) else d
+  }))
+  if (empty_col) {
+    pvals_row <- sapply(pvals_row, function(x) as.numeric(as.character(x)))
+  }
+
+  for (pvi in seq_along(pvals)) {
+    inds <- which(!is.na(pvals_row) & pvals_row < pvals[pvi] & pvi < length(pvals) & pvals_row >= pvals[pvi+1] | (pvi == length(pvals) & pvals_row < pvals[pvi] & pvals_row > 0), arr.ind = TRUE)
+    openxlsx::addStyle(wb, ws, styles[[pcol_pos[pvi]]], rows = crow + inds[, 1] - 1,
+                       cols = ccol + inds[, 2] - 1, gridExpand = FALSE, stack = TRUE)
+  }
+  pvals <- pvals * (-1)
+  for (pvi in seq_along(pvals)) {
+    inds <- which(!is.na(pvals_row) & pvals_row > pvals[pvi] & pvi < length(pvals) & pvals_row <= pvals[pvi+1] | (pvi == length(pvals) & pvals_row > pvals[pvi] & pvals_row < 0), arr.ind = TRUE)
+    openxlsx::addStyle(wb, ws, styles[[pcol_neg[pvi]]], rows = crow + inds[, 1] - 1,
+                       cols = ccol + inds[, 2] - 1, gridExpand = FALSE, stack = TRUE)
+  }
+}
+
 #' @importFrom stats setNames
 writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_pos, start_col = 1, start_row = 1,
     digits = 0, proportions = TRUE, show_totals = TRUE, unweighted_n = NULL, weighted_n = NULL,
     row_label_width = 20, toc_sheet = NULL, toc_row = 1, toc_col = 1, styles = NULL,
     banner_vars_split = NULL, show_information = NULL, min_base_size = NULL, min_base_label = NULL,
-    reduce_format = FALSE, include_aliases = FALSE, percent_format_data = TRUE) {
+    reduce_format = FALSE, include_aliases = FALSE, percent_format_data = TRUE, hypothesis_test = FALSE) {
 
   show_totals <- !cross_tab_var$options$no_totals & show_totals
   start_row <- writeVarHeader(wb, ws, cross_tab_var, start_col = start_col, start_row = start_row, toc_sheet = toc_sheet,
@@ -535,6 +579,12 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     openxlsx::addStyle(wb, ws, styles$total_col, rows = crow:(crow + nrow(data) - 1),
                        cols = start_col, stack = TRUE)
   }
+
+  if (hypothesis_test) {
+    # hypho_test(wb, ws, cross_tab_var, banner_name, margin = 1, empty_col, styles, crow, ccol = start_col)
+    hypho_test(wb, ws, cross_tab_var, banner_name, margin = 2, empty_col, styles, crow, ccol = start_col)
+  }
+
   crow <- crow + nrow(data)
 
   if (unweighted_n_bottom || weighted_n_bottom || show_totals) {
@@ -707,7 +757,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
     min_base_label = NULL, one_per_sheet = TRUE, row_label_width = 20, styles = NULL,
     logo = NULL, show_information = NULL, logging = FALSE, first_active_col = 2,
     reduce_format = FALSE, include_aliases = FALSE, title_on_results_page = FALSE,
-    percent_format_data = TRUE) {
+    percent_format_data = TRUE, hypothesis_test = FALSE) {
 
     if (logging) {
       start.time.wb <- Sys.time()
@@ -795,7 +845,7 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                       toc_row = toc_row, toc_col = toc_col, styles = styles,
                       min_base_size = min_base_size, min_base_label = min_base_label,
                       show_information = show_information, reduce_format = reduce_format, include_aliases = include_aliases,
-                      percent_format_data = percent_format_data)
+                      percent_format_data = percent_format_data, hypothesis_test = hypothesis_test)
               }
           toc_row <- toc_row + 1
       }
@@ -828,3 +878,56 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
         return(x)
     }
  }
+
+
+compute_pvals <- function(x, margin) {
+  shape <- dim(x$counts)
+  n <- margin.table(x$counts)
+  bases_adj <- x$counts_unweighted + 1
+  n_adj <- margin.table(bases_adj)
+
+  nrows <- nrow(x$counts)
+  ncols <- ncol(x$counts)
+  if (margin == 2) {
+    R <- margin.table(x$counts, 1) / n
+    C_adj <- margin.table(bases_adj, 2) / n_adj
+    Ctbl <- prop.table(x$counts, margin = 2)
+    Ctbl_adj <- prop.table(bases_adj, margin = 2)
+
+    observed <- ( Ctbl_adj * (1 - Ctbl_adj ))
+    expected <- observed %*% C_adj
+    # ev.c <- ( Ctbl_adj * (1 - Ctbl_adj )) %*% C_adj
+    d.c <- (1 - 2*C_adj) / C_adj
+    se.c <- matrix(nrow = nrows, ncol = ncols)
+    for (i in 1: nrows) {
+      for (j in 1: ncols) {
+        # se.c[i,j] <- d.c[j] * Ctbl_adj[i,j] * (1 - Ctbl_adj[i,j]) + ev.c[i]
+        se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
+      }
+    }
+    se.c <- sqrt(se.c / n_adj)
+    Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
+    psign <- sign(Z.c)
+    pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
+    pvals[is.nan(pvals) | psign == 0] <- 1
+    return(pvals)
+  }
+  # if (margin == 1) {
+    # C <- margin.table(x$counts, 2) / n
+    # R_adj <- margin.table(bases_adj, 1) / n_adj
+    # Rtbl <- prop.table(x$counts, margin = 1)
+    # Rtbl_adj <- prop.table(bases_adj, margin = 1)
+  #   observed <- (Rtbl_adj * (1 - Rtbl_adj))
+  #   expected <- R_adj %*% observed
+  #   d.r <- (1 - 2*R_adj) / R_adj
+  #   se.r <- matrix(nrow = nrows, ncol = ncols)
+  #   for (i in 1:nrows) {
+  #     for (j in 1:ncols) {
+  #       se.r[i,j] <- d.r[i] * observed[i,j] + expected[j]
+  #     }
+  #   }
+  #   se.r <- sqrt(se.r / n_adj)
+  #   Z.r <- (Rtbl - matrix(rep(C, nrows), byrow =TRUE , nrow = nrows)) / se.r
+  #   return(2 * pnorm(abs(Z.r), lower.tail = FALSE ))
+  # }
+}

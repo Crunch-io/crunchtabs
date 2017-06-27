@@ -28,8 +28,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
     # generate new names and aliases for categorical_array variables by combining variable's names/aliases
     # with subvariables' names/aliases
-    vnames <- if(is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
-    valiases <- if(is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
+    vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
+    valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
 
     # prepare a data structure for every variable (categorical_array variables are sliced)
     for (vai in seq_along(valiases)) {
@@ -37,12 +37,12 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                                                    , name = vnames[vai]
                                                    , description = getDescription(crunch_cube)
                                                    , notes = getNotes(crunch_cube)
-                                                   , options = list(no_totals = if (is_mr_type) TRUE else FALSE)
+                                                   , options = list(no_totals = is_mr_type)
                                                    , crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
                                                    ), class = "CrossTabVar")
     }
 
-    # for every "banner"/"column" variable
+    # for every "column" variable
     for (vbi in seq_along(book[[vi]])) {
       crunch_cube <- book[[vi]][[vbi]]
       margin <- if (is_array_type) c(2, 3) else 2
@@ -52,12 +52,14 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
       banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
       banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
+      banner_counts_unweighted <- if (is.null(weight)) banner_counts else as.array(bases(crunch_cube, margin = 0))
 
       banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
       banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
       banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
       banner_proportions[banner_proportions %in% c(NULL, NaN)] <- 0
       banner_counts[banner_counts %in% c(NULL, NaN)] <- 0
+      banner_counts_unweighted[banner_counts_unweighted %in% c(NULL, NaN)] <- 0
 
       banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
 
@@ -67,9 +69,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+        counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
+
         if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
           col_names <- dimnames(banner_counts)[[2]]
-          colnames(counts_out) <- colnames(proportions_out) <- col_names
+          colnames(counts_unweighted_out) <- colnames(counts_out) <- colnames(proportions_out) <- col_names
           colnames(totals_counts_out) <- colnames(totals_proportions_out) <- colnames(unweighted_n_out) <- col_names
         }
 
@@ -96,6 +100,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
           totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
           totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
           unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
+          counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
         }
 
         banner_var_cross <- structure(list(
@@ -103,7 +108,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
           proportions = proportions_out,
           totals_counts = totals_counts_out,
           totals_proportions = totals_proportions_out,
-          unweighted_n = unweighted_n_out
+          unweighted_n = unweighted_n_out,
+          counts_unweighted = counts_unweighted_out
         ), class = c("CrossTabBannerVar", "list"))
 
         for (bi in seq_along(banner_map)) {
