@@ -3,8 +3,8 @@
 tabBooks <- function(dataset, vars, banner, weight = NULL) {
   tabs_data <- list()
 
-  m <- getMultitable(banner, dataset)
-  book <- tabBook(m, dataset = dataset[vars], weight = weight, format="json")
+  multitable <- getMultitable(banner, dataset)
+  book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
@@ -36,6 +36,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     # for every "column" variable
     for (vbi in seq_along(book[[vi]])) {
       crunch_cube <- book[[vi]][[vbi]]
+      # there is a very rare case where a user will want to "include missing", should handle that
+      # somewhere in ... or other options to tabBooks.
+      crunch_cube@useNA <- "no"
       margin <- if (is_array_type) c(2, 3) else 2
 
       banner_counts <- as.array(crunch_cube)
@@ -43,7 +46,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
       banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
       banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
-      banner_counts_unweighted <- if (is.null(weight)) banner_counts else as.array(bases(crunch_cube, margin = 0))
+      banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
 
       banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
       banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
@@ -122,13 +125,16 @@ getMultitable <- function (banner, dataset) {
     ## Given a Banner object and a dataset, find/create the Crunch multitable that corresponds
     mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
     mt_name <- digest(sort(mtvars), "md5")
-    m <- multitables(dataset)[[mt_name]]
+    multitable <- multitables(dataset)[[mt_name]]
     if (is.null(m)) {
-      m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
+      multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
     }
-    return(m)
+    return(multitable)
 }
 
+# Both arguments must be *valid* counts, or refactor
+# so that the input is a CrunchCube and you can explicitly
+# exclude the missing rows/columns.
 compute_pvals <- function(counts, counts_unweighted) {
   shape <- dim(counts)
   n <- margin.table(counts)
