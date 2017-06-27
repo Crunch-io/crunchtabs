@@ -261,9 +261,9 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  hypothesis_test = FALSE) {
 
     banner <- data_summary$banner
-    if (hypothesis_test) {
-      data_summary$results <- reformatHypothesisTest(data_summary$results)
-    }
+    # if (hypothesis_test) {
+    #   data_summary$results <- reformatHypothesisTest(data_summary$results)
+    # }
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
     # add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
     # min_base_size = min_base_size, min_base_label = min_base_label, reformat = FALSE)
@@ -592,29 +592,6 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
                        cols = start_col:last_col_num, stack = TRUE)
   }
 
-  # if (show_totals) {
-  #   data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-  #     d <- as.data.frame(t(if (proportions) x$totals_proportions else x$totals_counts))
-  #     if (nrow(d)) c(d, if (empty_col) "")}))
-  #   if (any(min_cell_mask) && !is.null(min_base_label)) {
-  #     data[, min_cell_mask] <- min_base_label
-  #   }
-  #   openxlsx::writeData(wb, ws, data, startCol = start_col, startRow = start_row, colNames = FALSE)
-  #     openxlsx::addStyle(wb, ws, styles$body, rows = start_row,
-  #                        cols = start_col:last_col_num, stack = FALSE)
-  #   if (any(min_cell_mask)) {
-  #     if (is.null(min_base_label)) {
-  #       openxlsx::addStyle(wb, ws, styles$body_min_base, rows = start_row,
-  #                          cols = start_col + which(min_cell_mask) - 1, gridExpand = FALSE, stack = FALSE)
-  #     }
-  #     if (reduce_format) {
-  #       openxlsx::addStyle(wb, ws, styles$body_text, rows = start_row,
-  #                          cols = start_col + which(min_cell_mask) - 1, gridExpand = FALSE, stack = FALSE)
-  #     }
-  #   }
-  #   start_row <-start_row + nrow(data)
-  # }
-
   if (weighted_n_bottom) {
     crow <- write_bases_data(wb, ws, data=weighted_n_data, col=start_col, row=crow,
                              last_col_num=last_col_num, reduce_format=reduce_format,
@@ -878,56 +855,3 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
         return(x)
     }
  }
-
-
-compute_pvals <- function(x, margin) {
-  shape <- dim(x$counts)
-  n <- margin.table(x$counts)
-  bases_adj <- x$counts_unweighted + 1
-  n_adj <- margin.table(bases_adj)
-
-  nrows <- nrow(x$counts)
-  ncols <- ncol(x$counts)
-  if (margin == 2) {
-    R <- margin.table(x$counts, 1) / n
-    C_adj <- margin.table(bases_adj, 2) / n_adj
-    Ctbl <- prop.table(x$counts, margin = 2)
-    Ctbl_adj <- prop.table(bases_adj, margin = 2)
-
-    observed <- ( Ctbl_adj * (1 - Ctbl_adj ))
-    expected <- observed %*% C_adj
-    # ev.c <- ( Ctbl_adj * (1 - Ctbl_adj )) %*% C_adj
-    d.c <- (1 - 2*C_adj) / C_adj
-    se.c <- matrix(nrow = nrows, ncol = ncols)
-    for (i in 1: nrows) {
-      for (j in 1: ncols) {
-        # se.c[i,j] <- d.c[j] * Ctbl_adj[i,j] * (1 - Ctbl_adj[i,j]) + ev.c[i]
-        se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
-      }
-    }
-    se.c <- sqrt(se.c / n_adj)
-    Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
-    psign <- sign(Z.c)
-    pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
-    pvals[is.nan(pvals) | psign == 0] <- 1
-    return(pvals)
-  }
-  # if (margin == 1) {
-    # C <- margin.table(x$counts, 2) / n
-    # R_adj <- margin.table(bases_adj, 1) / n_adj
-    # Rtbl <- prop.table(x$counts, margin = 1)
-    # Rtbl_adj <- prop.table(bases_adj, margin = 1)
-  #   observed <- (Rtbl_adj * (1 - Rtbl_adj))
-  #   expected <- R_adj %*% observed
-  #   d.r <- (1 - 2*R_adj) / R_adj
-  #   se.r <- matrix(nrow = nrows, ncol = ncols)
-  #   for (i in 1:nrows) {
-  #     for (j in 1:ncols) {
-  #       se.r[i,j] <- d.r[i] * observed[i,j] + expected[j]
-  #     }
-  #   }
-  #   se.r <- sqrt(se.r / n_adj)
-  #   Z.r <- (Rtbl - matrix(rep(C, nrows), byrow =TRUE , nrow = nrows)) / se.r
-  #   return(2 * pnorm(abs(Z.r), lower.tail = FALSE ))
-  # }
-}

@@ -8,10 +8,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
   banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
   banner_flatten <- flattenBanner(banner)
-  # var_names <- names(allVariables(dataset))
-  # var_aliases <- aliases(allVariables(dataset))
-  # var_types <- types(allVariables(dataset))
-  # banner_var_aliases <- c("___total___", mtvars)
 
   # for every variable in the book
   for (vi in seq_along(book)) {
@@ -20,11 +16,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     var_type <- type(dataset[[getAlias(crunch_cube)]])
     is_array_type <- var_type == 'categorical_array'
     is_mr_type <- var_type == 'multiple_response'
-
-    ## NPR: seems like most logic below switches on `is_array_type` so I'd recommend
-    ## factoring that out into functions. More readable IMO, more testable, etc.
-    ## And, once you slice the array crosstabs into the various subtables, the
-    ## following logic should be the same.
 
     # generate new names and aliases for categorical_array variables by combining variable's names/aliases
     # with subvariables' names/aliases
@@ -109,7 +100,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
           totals_counts = totals_counts_out,
           totals_proportions = totals_proportions_out,
           unweighted_n = unweighted_n_out,
-          counts_unweighted = counts_unweighted_out
+          counts_unweighted = counts_unweighted_out,
+          pvals_col = compute_pvals(counts_out, counts_unweighted_out)
         ), class = c("CrossTabBannerVar", "list"))
 
         for (bi in seq_along(banner_map)) {
@@ -135,4 +127,35 @@ getMultitable <- function (banner, dataset) {
       m <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
     }
     return(m)
+}
+
+compute_pvals <- function(counts, counts_unweighted) {
+  shape <- dim(counts)
+  n <- margin.table(counts)
+  bases_adj <- counts_unweighted + 1
+  n_adj <- margin.table(bases_adj)
+
+  nrows <- nrow(counts)
+  ncols <- ncol(counts)
+
+  R <- margin.table(counts, 1) / n
+  C_adj <- margin.table(bases_adj, 2) / n_adj
+  Ctbl <- prop.table(counts, margin = 2)
+  Ctbl_adj <- prop.table(bases_adj, margin = 2)
+
+  observed <- (Ctbl_adj * (1 - Ctbl_adj))
+  expected <- observed %*% C_adj
+  d.c <- (1 - 2 * C_adj) / C_adj
+  se.c <- matrix(nrow = nrows, ncol = ncols)
+  for (i in 1: nrows) {
+    for (j in 1: ncols) {
+      se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
+    }
+  }
+  se.c <- sqrt(se.c / n_adj)
+  Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
+  psign <- sign(Z.c)
+  pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
+  pvals[is.nan(pvals) | psign == 0] <- 1
+  return(pvals)
 }
