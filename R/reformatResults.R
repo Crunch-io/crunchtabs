@@ -102,7 +102,9 @@ reformatHypothesisTest <- function(x) {
   sapply(x, function(var) {
     var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
       sapply(names(var$crosstabs[[banner_name]]), function(banner_var_name) {
-          var$crosstabs[[banner_name]][[banner_var_name]]$pvals_col <- compute_pvals(var$crosstabs[[banner_name]][[banner_var_name]], margin = 2)
+          var$crosstabs[[banner_name]][[banner_var_name]]$pvals_col <-
+            compute_pvals(var$crosstabs[[banner_name]][[banner_var_name]]$counts_unweighted,
+                          var$crosstabs[[banner_name]][[banner_var_name]]$counts_unweighted)
           var$crosstabs[[banner_name]][[banner_var_name]]
       }, simplify = FALSE)
     }, simplify = FALSE)

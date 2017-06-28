@@ -79,8 +79,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
           colnames(unweighted_n_out) <- "Total"
         }
 
-        if (banner_var_alias != "___total___") {
-          banner_var <- banner_flatten[[banner_var_alias]]
+        banner_var <- banner_flatten[[banner_var_alias]]
+        if (banner_var_alias != "___total___" &&
+            !identical(banner_var$old_categories, banner_var$categories)) {
           counts_out <- bannerDataRecode(counts_out, banner_var)
           proportions_out <- bannerDataRecode(proportions_out, banner_var)
           # proportions_out <- if (ncol(counts_out) == ncol(proportions_out)) {
@@ -126,15 +127,14 @@ getMultitable <- function (banner, dataset) {
     mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
     mt_name <- digest(sort(mtvars), "md5")
     multitable <- multitables(dataset)[[mt_name]]
-    if (is.null(m)) {
+    if (is.null(multitable)) {
       multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
     }
     return(multitable)
 }
 
-# Both arguments must be *valid* counts, or refactor
-# so that the input is a CrunchCube and you can explicitly
-# exclude the missing rows/columns.
+# This function computes p-values for column hypothesis testing only.
+#' @importFrom stats pnorm
 compute_pvals <- function(counts, counts_unweighted) {
   shape <- dim(counts)
   n <- margin.table(counts)

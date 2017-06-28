@@ -20,7 +20,8 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   include_aliases = FALSE, banner_border_lines = FALSE,
   title_on_results_page = FALSE, percent_format_data = TRUE,
   total_col = NULL, banner_format = list(labels = list(decoration = "bold"),
-  categories = list(decoration = "bold"), total = list(decoration = "bold")))
+  categories = list(decoration = "bold"), total = list(decoration = "bold")),
+  hypothesis_test = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -202,6 +203,9 @@ related to banner's:
 Defaults to list(labels = list(decoration="bold"),
 categories = list(decoration = "bold"),
 total = list(decoration = "bold")).}
+
+\item{hypothesis_test}{logical.
+Defaults to \code{FALSE}.}
 }
 \value{
 If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
