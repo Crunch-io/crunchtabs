@@ -311,14 +311,14 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       # toc_lot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline", valign = "center"),
       toc_banner = openxlsx::createStyle(textDecoration = "bold", valign = "center"),
       total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"), valign = "center"),
-      bg_col_green4 = openxlsx::createStyle(fgFill = "palegreen4"),
-      bg_col_green3 = openxlsx::createStyle(fgFill = "palegreen3"),
-      bg_col_green2 = openxlsx::createStyle(fgFill = "palegreen2"),
-      bg_col_green1 = openxlsx::createStyle(fgFill = "palegreen1"),
-      bg_col_red4 = openxlsx::createStyle(fgFill = "salmon4"),
-      bg_col_red3 = openxlsx::createStyle(fgFill = "salmon3"),
-      bg_col_red2 = openxlsx::createStyle(fgFill = "salmon2"),
-      bg_col_red1 = openxlsx::createStyle(fgFill = "salmon1")
+      bg_col_green4 = openxlsx::createStyle(fgFill = "darkolivegreen4"),
+      bg_col_green3 = openxlsx::createStyle(fgFill = "darkolivegreen3"),
+      bg_col_green2 = openxlsx::createStyle(fgFill = "darkolivegreen2"),
+      bg_col_green1 = openxlsx::createStyle(fgFill = "darkolivegreen1"),
+      bg_col_red4 = openxlsx::createStyle(fgFill = "firebrick"),
+      bg_col_red3 = openxlsx::createStyle(fgFill = "firebrick3"),
+      bg_col_red2 = openxlsx::createStyle(fgFill = "firebrick2"),
+      bg_col_red1 = openxlsx::createStyle(fgFill = "firebrick1")
     )
 
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
