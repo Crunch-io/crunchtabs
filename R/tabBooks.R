@@ -48,6 +48,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
       banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
       banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
 
+      # shape <- dim(as.array(crunch_cube))
+      # n <- crunch::margin.table(crunch_cube, margin = if (is_array_type) 3)
+      # bases_adj <- bases(crunch_cube, margin = 0) + 1
+      # n_adj <- n + shape[1] * shape[2]
+
       banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
       banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
       banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
@@ -64,6 +69,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
         unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
         counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
+
+        # R <- margin.table(counts, 1) / n
+        # C_adj <- margin.table(bases_adj, 2) / n_adj
+        # Ctbl <- prop.table(counts, margin = 2)
+        # Ctbl_adj <- prop.table(bases_adj, margin = 2)
 
         if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
           col_names <- dimnames(banner_counts)[[2]]
@@ -165,3 +175,58 @@ compute_pvals <- function(counts, counts_unweighted) {
   pvals[is.nan(pvals) | psign == 0] <- 1
   return(pvals)
 }
+
+
+# This function computes p-values for column hypothesis testing only.
+#' @importFrom stats pnorm
+# compute_pvals <- function(crc, dim3=NULL) {
+#   shape <- dim(as.array(crc))
+#   n <- margin.table(crc, margin = dim3)
+#   bases_adj <- bases(crunch_cube, margin = if (!is.null(dim3)) dime3 else 0) + 1
+#   n_adj <- n + shape[1] * shape[2]
+#
+#   nrows <- nrow(counts)
+#   ncols <- ncol(counts)
+#
+#   R <- margin.table(counts, 1) / n
+#   C_adj <- margin.table(bases_adj, 2) / n_adj
+#   Ctbl <- prop.table(counts, margin = 2)
+#   Ctbl_adj <- prop.table(bases_adj, margin = 2)
+#
+#   observed <- (Ctbl_adj * (1 - Ctbl_adj))
+#   expected <- observed %*% C_adj
+#   d.c <- (1 - 2 * C_adj) / C_adj
+#   se.c <- matrix(nrow = nrows, ncol = ncols)
+#   for (i in 1: nrows) {
+#     for (j in 1: ncols) {
+#       se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
+#     }
+#   }
+#   se.c <- sqrt(se.c / n_adj)
+#   Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
+#   psign <- sign(Z.c)
+#   pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
+#   pvals[is.nan(pvals) | psign == 0] <- 1
+#   return(pvals)
+# }
+
+
+# This function computes p-values for column hypothesis testing only.
+#' @importFrom stats pnorm
+# compute_pvals <- function(R, C_adj, Ctbl, Ctbl_adj) {
+#   observed <- (Ctbl_adj * (1 - Ctbl_adj))
+#   expected <- observed %*% C_adj
+#   d.c <- (1 - 2 * C_adj) / C_adj
+#   se.c <- matrix(nrow = nrows, ncol = ncols)
+#   for (i in 1: nrows) {
+#     for (j in 1: ncols) {
+#       se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
+#     }
+#   }
+#   se.c <- sqrt(se.c / n_adj)
+#   Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
+#   psign <- sign(Z.c)
+#   pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
+#   pvals[is.nan(pvals) | psign == 0] <- 1
+#   return(pvals)
+# }
