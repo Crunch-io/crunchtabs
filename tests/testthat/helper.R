@@ -2,27 +2,20 @@ Sys.setlocale("LC_COLLATE", "C") ## What CRAN does; affects sort order
 set.seed(999) ## To ensure that tests that involve randomness are reproducible
 options(warn=1)
 
-## Load the crunch package test setup
-source(system.file("crunch-test.R", package="crunch"))
+unserializeJSON <- jsonlite::unserializeJSON
 
-fromJSON <- jsonlite::fromJSON
-unserializeJSON <- jsonlite::unserializeJSON
-unserializeJSON <- jsonlite::unserializeJSON
+with_mock_crunchtabs <- function (expr) {
+  env <- parent.frame()
+  with(temp.options(crunch.api="https://app.crunch.io/api/",
+                    httptest.mock.paths=c(".", system.file(package="crunchtabs"))), {
+                      with_mock_API({
+                        try(crunch:::warmSessionCache())
+                        eval(expr, envir=env)
+                      })
+                    })
+}
 
 fixtures_dir <- "fixtures"
-
-
-# with_mock_crunch <- function (expr) {
-#   env <- parent.frame()
-#   print(getwd())
-#   with(temp.options(crunch.api="https://app.crunch.io/api/"), {
-#                       with_mock_API({
-#                         try(crunch:::warmSessionCache())
-#                         eval(expr, envir=env)
-#                       })
-#                     })
-# }
-
 with_mock_tabs <- function(book_file, mt_file, expr) {
     with_mock(
         `crunch::tabBook`=function (...) {
@@ -35,8 +28,5 @@ with_mock_tabs <- function(book_file, mt_file, expr) {
     )
 }
 
-newDatasetFromFixture <- function (filename) {
-  m <- fromJSON(file.path(fixtures_dir, paste0(filename, ".json")), simplifyVector=FALSE)
-  return(suppressMessages(createWithMetadataAndFile(m, file.path(fixtures_dir, paste0(filename, ".csv")))))
-}
-
+## Load the crunch package test setup
+source(system.file("crunch-test.R", package="crunch"))
