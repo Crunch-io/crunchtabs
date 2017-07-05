@@ -1,1 +1,155 @@
-{"banner1":{"___total___":{"alias":"___total___","name":"","old_categories":"Total","categories_out":"Total","categories":"Total"},"gender":{"alias":"gender","name":"Gender","old_categories":["Male","Female"],"categories_out":["Male","Female"],"categories":["Male","Female"]},"age5":{"alias":"age5","name":"Age 5","old_categories":["16 to 24","25 to 34","35 to 44","45 to 54","55+"],"categories_out":["16 to 24","25 to 34","35 to 44","45 to 54","55+"],"categories":["16 to 24","25 to 34","35 to 44","45 to 54","55+"]}}}
+{
+  "type": "list",
+  "attributes": {
+    "names": {
+      "type": "character",
+      "attributes": {},
+      "value": ["banner 1"]
+    },
+    "class": {
+      "type": "character",
+      "attributes": {},
+      "value": ["Banner"]
+    }
+  },
+  "value": [
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["___total___", "gender", "age5"]
+        }
+      },
+      "value": [
+        {
+          "type": "list",
+          "attributes": {
+            "names": {
+              "type": "character",
+              "attributes": {},
+              "value": ["alias", "name", "old_categories", "categories_out", "categories"]
+            },
+            "class": {
+              "type": "character",
+              "attributes": {},
+              "value": ["BannerVar"]
+            }
+          },
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["___total___"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": [""]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Total"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Total"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Total"]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "attributes": {
+            "names": {
+              "type": "character",
+              "attributes": {},
+              "value": ["alias", "name", "old_categories", "categories_out", "categories"]
+            },
+            "class": {
+              "type": "character",
+              "attributes": {},
+              "value": ["BannerVar", "list"]
+            }
+          },
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["gender"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Gender"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Male", "Female"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Male", "Female"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Male", "Female"]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "attributes": {
+            "names": {
+              "type": "character",
+              "attributes": {},
+              "value": ["alias", "name", "old_categories", "categories_out", "categories"]
+            },
+            "class": {
+              "type": "character",
+              "attributes": {},
+              "value": ["BannerVar", "list"]
+            }
+          },
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["age5"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["Age 5"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"]
+            },
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

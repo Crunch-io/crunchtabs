@@ -6,7 +6,22 @@ options(warn=1)
 source(system.file("crunch-test.R", package="crunch"))
 
 fromJSON <- jsonlite::fromJSON
+unserializeJSON <- jsonlite::unserializeJSON
+unserializeJSON <- jsonlite::unserializeJSON
+
 fixtures_dir <- "fixtures"
+
+
+# with_mock_crunch <- function (expr) {
+#   env <- parent.frame()
+#   print(getwd())
+#   with(temp.options(crunch.api="https://app.crunch.io/api/"), {
+#                       with_mock_API({
+#                         try(crunch:::warmSessionCache())
+#                         eval(expr, envir=env)
+#                       })
+#                     })
+# }
 
 with_mock_tabs <- function(book_file, mt_file, expr) {
     with_mock(
