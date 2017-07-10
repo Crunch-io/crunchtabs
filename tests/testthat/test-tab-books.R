@@ -1,46 +1,32 @@
-context('Preparing banner data summary')
-test_that("We can read a Banner object from a file", {
-  txt <- readLines(con = file.path(fixtures_dir, "ds1_banner1.json"))
-  banner_data <- unserializeJSON(txt)
-  expect_is(banner_data, "Banner")
-})
+context('Preparing a banner data summary')
 
-context('Loading a dataset from the crunch package')
 with_mock_crunch({
-  test_that("We can load a dataset from the crunch package", {
-    ds <- loadDataset("test ds")
+  ds <- loadDataset("https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/")
+  test_that("We can load a dataset from the crunchtabs package", {
     expect_is(ds, "CrunchDataset")
+    expect_identical(name(ds), "Example dataset")
   })
-})
 
-context('Loading a dataset from the crunchtabas package')
-with_mock_crunchtabs({
-  test_that("We can load a dataset from the crunchtabas package", {
-    ds <- loadDataset("Example dataset")
-    expect_is(ds, "CrunchDataset")
+  banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
+  test_that("We can read in a Banner object from a file", {
+    expect_is(banner_data, "Banner")
   })
-})
 
-context('Loading a dataset from the crunchtabas package with mock API')
-with_mock_API({
-  test_that("We can load a dataset from the crunchtabas package with mock API", {
-    ds <- loadDataset("Example dataset")
-    expect_is(ds, "CrunchDataset")
+  tabBook_vars <- c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender")
+  tabBooks_data <- tabBooks(dataset = ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
+  test_that("We can generate a tabBook data summary", {
+    expect_is(tabBooks_data, "list")
   })
-})
 
-context('Loading a dataset from the crunchtabas package with mock API using URL')
-with_mock_API({
-  test_that("We can load a dataset from the crunchtabas package with mock API using URL", {
-    ds <- loadDataset("https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/")
-    expect_is(ds, "CrunchDataset")
+  crosstabs_summary <- crosstabs(ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
+  test_that("We can generate a banner data summary", {
+    expect_is(tabBooks_data, c("Crosstabs"))
   })
-})
 
-context('Loading a dataset from the crunchtabas package using URL')
-with_mock_crunchtabs({
-  test_that("We can load a dataset from the crunchtabas package using URL", {
-    ds <- loadDataset("https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/")
-    expect_is(ds, "CrunchDataset")
-  })
+  # tabBooks_data <- tabBooks(dataset = ds, vars = names(ds), banner = banner_data, weight = NULL)
+  # test_that("We can generate a banner data summary", {
+  #   expect_is(tabBooks_data, "list")
+  #   expect_identical(names(tabBooks_data), c("allpets", "q1", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender"))
+  #   expect_identical(names(tabBooks_data[[1]]), c("alias", "name", "description", "notes", "options", "crosstabs"))
+  # })
 })
