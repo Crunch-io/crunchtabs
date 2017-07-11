@@ -16,17 +16,12 @@ with_mock_crunch({
   tabBooks_data <- tabBooks(dataset = ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
   test_that("We can generate a tabBook data summary", {
     expect_is(tabBooks_data, "list")
+    expect_identical(names(tabBooks_data), c("allpets", "q1", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender"))
+    expect_identical(names(tabBooks_data[[1]]), c("alias", "name", "description", "notes", "options", "crosstabs"))
   })
 
   crosstabs_summary <- crosstabs(ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
   test_that("We can generate a banner data summary", {
-    expect_is(tabBooks_data, c("Crosstabs"))
+    expect_is(crosstabs_summary, c("Crosstabs"))
   })
-
-  # tabBooks_data <- tabBooks(dataset = ds, vars = names(ds), banner = banner_data, weight = NULL)
-  # test_that("We can generate a banner data summary", {
-  #   expect_is(tabBooks_data, "list")
-  #   expect_identical(names(tabBooks_data), c("allpets", "q1", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender"))
-  #   expect_identical(names(tabBooks_data[[1]]), c("alias", "name", "description", "notes", "options", "crosstabs"))
-  # })
 })
