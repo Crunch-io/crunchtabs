@@ -95,6 +95,11 @@ getType.ToplineBase <- function(x) {
 getAlias <- function(x) UseMethod("getAlias", x)
 
 #' @export
+getAlias.default <- function(x) {
+  stop(paste("getAlias doesn't support objects of class", class(x)))
+}
+
+#' @export
 getAlias.ToplineBase <- function(x) {
     x$alias
 }
@@ -115,6 +120,11 @@ getAlias.CrunchCube <- function(x) {
 }
 
 getName <- function(x) UseMethod("getName", x)
+
+#' @export
+getName.default <- function(x) {
+  stop(paste("getName doesn't support objects of class", class(x)))
+}
 
 #' @export
 getName.ToplineBase <- function(x) {
@@ -144,6 +154,11 @@ getName.CrunchTabs <- function(x) {
 getDescription <- function(x) UseMethod("getDescription", x)
 
 #' @export
+getDescription.default <- function(x) {
+  stop(paste("getDescription doesn't support objects of class", class(x)))
+}
+
+#' @export
 getDescription.ToplineBase <- function(x) {
     x$description
 }
@@ -164,6 +179,11 @@ getDescription.CrunchCube <- function(x) {
 }
 
 getNotes <- function(x) UseMethod("getNotes", x)
+
+#' @export
+getNotes.default <- function(x) {
+  stop(paste("getNotes doesn't support objects of class", class(x)))
+}
 
 #' @export
 getNotes.ToplineBase <- function(x) {
@@ -187,6 +207,11 @@ getNotes.CrunchCube <- function(x) {
 getTotal <- function(x) UseMethod("getTotal", x)
 
 #' @export
+getTotal.default <- function(x) {
+  stop(paste("getTotal doesn't support objects of class", class(x)))
+}
+
+#' @export
 getTotal.CrunchCube <- function(out_crtabs) {
     out_crtabs@.Data[[3]]$n
 }
@@ -197,6 +222,11 @@ getTotal.ToplineBase <- function(x) {
 }
 
 getMissing <- function(x) UseMethod("getMissing", x)
+
+#' @export
+getMissing.default <- function(x) {
+  stop(paste("getMissing doesn't support objects of class", class(x)))
+}
 
 #' @export
 getMissing.CrunchCube <- function(out_crtabs) {
