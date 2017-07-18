@@ -1,4 +1,4 @@
-context('hypothesis testing')
+context('Hypothesis testing')
 
 with_mock_tabs("ds2_book1.json", "ds2_mt1.json", {
 	sut <- tabBook()
@@ -9,7 +9,7 @@ with_mock_tabs("ds2_book1.json", "ds2_mt1.json", {
 		expect_equal(sut[[1]][[2]]@useNA, "no")
 		expect_equal(dim(as.array(sut[[1]][[1]])), c(5, 1))
 		expect_equal(dim(as.array(sut[[1]][[2]])), c(5, 7))
-		expect_equal(dim(bases(sut[[1]][[2]], margin=0)), c(5, 7))	
+		expect_equal(dim(bases(sut[[1]][[2]], margin=0)), c(5, 7))
 	})
 	test_that("setting useNA behaves as expected", {
 		subtable <- sut[[1]][[2]]
@@ -25,7 +25,7 @@ with_mock_tabs("ds2_book1.json", "ds2_mt1.json", {
 
 		expected_row_margin <- structure(
 			c(233.8294316898, 168.9009571766, 111.0965406625, 393.6781399731, 92.4949304981),
-			.Dim = 5L, .Dimnames = structure(list(app_dtrmp = 
+			.Dim = 5L, .Dimnames = structure(list(app_dtrmp =
 				c("Strongly approve", "Somewhat approve", "Somewhat disapprove",
 					"Strongly disapprove", "Not sure")),
 			.Names = "app_dtrmp"))
@@ -35,7 +35,7 @@ with_mock_tabs("ds2_book1.json", "ds2_mt1.json", {
 				list(pew_churatd = c("More than once a week", "Once a week", "Once or twice a month",
 					"A few times a year", "Seldom", "Never", "Don't know")),
 			.Names = "pew_churatd"))
-		
+
 		expect_equivalent(rowmargin, expected_row_margin)
 		expect_equivalent(colmargin, expected_col_margin)
 

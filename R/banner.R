@@ -27,16 +27,16 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     checkCrunchDatasetClass(dataset)
 
     if (!(is.vector(vars) && is.recursive(vars))) {
-        stop("The vars parameter should be a list of vectors.")
+        stop("'vars' should be a list of vectors.")
     }
     vars_vec <- unlist(vars)
     if (length(vars_vec) == 0) {
-        stop("The vars parameter doesn't contain valid values.")
+        stop("'vars' doesn't contain valid values.")
     }
 
     not_found_vars <- setdiff(vars_vec, aliases(allVariables(dataset)))
     if (length(not_found_vars) != 0) {
-        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found"))
+        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found."))
     }
 
     ds_vars <- allVariables(dataset[vars_vec])
@@ -44,8 +44,8 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     var_types <- types(ds_vars)
     if (!all(var_types %in% c("categorical", "multiple_response"))) {
         not_categorical <- aliases(ds_vars)[!(var_types %in% c("categorical", "multiple_response"))]
-        stop(paste("All banner variables must be categorical or multiple_response. This is not true for:",
-            paste(not_categorical, collapse = ", ")))
+        stop(paste("All banner variables have to be categorical or multiple_response. This is not true for:",
+                   paste(not_categorical, collapse = ", ")))
     }
 
     if (!is.null(labels)) {
@@ -93,6 +93,10 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                 if (class(set) == "try-error") {
                   stop("\n  in recode term: ", term, "\n  message: ", set)
                 }
+                for (ccat in set)
+                  if (!ccat %in% ret_data[[var_name]][["old_categories"]]) {
+                    stop(paste0("No category with name '", ccat, "' in '", var_name, "'"))
+                  }
                 target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
                 if (class(target) == "try-error") {
                   stop("\n  in recode term: ", term, "\n  message: ", target)

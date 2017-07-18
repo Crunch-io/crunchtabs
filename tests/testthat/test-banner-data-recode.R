@@ -1,4 +1,4 @@
-context("bannerDataRecode")
+context("Banner data recode")
 
 test_that("Martix columns are renamed and excluded according to the parametrization", {
   b_table <- matrix(1:12, ncol = 4, dimnames = list(NULL, c("cat1", "cat2", "cat3", "cat4")))

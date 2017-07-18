@@ -75,7 +75,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 #' @importFrom crunch is.dataset
 checkCrunchDatasetClass <- function(dataset) {
     if (!is.dataset(dataset)) {
-        stop("The dataset parameter must be an object of class 'CrunchDataset'")
+        stop("'dataset' is not an object of class 'CrunchDataset'.")
     }
 }
 
