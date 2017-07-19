@@ -7,16 +7,7 @@
 #' @aliases crunchtabs
 NULL
 
-#' @importFrom httr set_config
 .onAttach <- function (lib, pkgname="crunchtabs") {
   invisible()
 }
 
-setIfNotAlready <- function (...) {
-  newopts <- list(...)
-  oldopts <- options()
-  oldopts <- oldopts[intersect(names(newopts), names(oldopts))]
-  newopts <- modifyList(newopts, oldopts)
-  do.call(options, newopts)
-  invisible(oldopts)
-}
