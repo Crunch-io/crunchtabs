@@ -36,8 +36,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     # for every "column" variable
     for (vbi in seq_along(book[[vi]])) {
       crunch_cube <- book[[vi]][[vbi]]
-      # there is a very rare case where a user will want to "include missing", should handle that
-      # somewhere in ... or other options to tabBooks.
       crunch_cube@useNA <- "no"
       margin <- if (is_array_type) c(2, 3) else 2
 
@@ -87,6 +85,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
           colnames(totals_counts_out) <- "Total"
           colnames(totals_proportions_out) <- "Total"
           colnames(unweighted_n_out) <- "Total"
+          colnames(counts_unweighted_out) <- "Total"
         }
 
         banner_var <- banner_flatten[[banner_var_alias]]
