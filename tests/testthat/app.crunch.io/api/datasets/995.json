@@ -1,0 +1,76 @@
+{
+    "body": {
+        "access_time": "2017-07-10T15:54:19.754000",
+        "app_settings": {
+            "crunch": {
+                "deleted_rogue_vp": true
+            }
+        },
+        "archived": false,
+        "creation_time": "2017-07-05T11:09:43.500000",
+        "current_editor": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "current_editor_name": "Kamil Sedrowicz",
+        "description": "A dataset to illustrate the API",
+        "end_date": null,
+        "id": "995",
+        "is_published": true,
+        "maintainer": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "modification_time": "2017-07-10T15:54:30.596000",
+        "name": "Example dataset",
+        "notes": "",
+        "owner": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "owner_name": "Kamil Sedrowicz",
+        "permissions": {
+            "change_permissions": true,
+            "edit": true,
+            "view": true
+        },
+        "size": {
+            "columns": 16,
+            "rows": 20
+        },
+        "start_date": null
+    },
+    "catalogs": {
+        "actions": "https://app.crunch.io/api/datasets/995/actions/",
+        "batches": "https://app.crunch.io/api/datasets/995/batches/",
+        "boxdata": "https://app.crunch.io/api/datasets/995/boxdata/",
+        "comparisons": "https://app.crunch.io/api/datasets/995/comparisons/",
+        "decks": "https://app.crunch.io/api/datasets/995/decks/",
+        "filters": "https://app.crunch.io/api/datasets/995/filters/",
+        "forks": "https://app.crunch.io/api/datasets/995/forks/",
+        "joins": "https://app.crunch.io/api/datasets/995/joins/",
+        "multitables": "https://app.crunch.io/api/datasets/995/multitables/",
+        "parent": "https://app.crunch.io/api/datasets/",
+        "permissions": "https://app.crunch.io/api/datasets/995/permissions/",
+        "savepoints": "https://app.crunch.io/api/datasets/995/savepoints/",
+        "users": "https://app.crunch.io/api/datasets/995/users/",
+        "variables": "https://app.crunch.io/api/datasets/995/variables/",
+        "weight_variables": "https://app.crunch.io/api/datasets/995/weight_variables/"
+    },
+    "description": "Detail for a given dataset",
+    "element": "shoji:entity",
+    "fragments": {
+        "exclusion": "https://app.crunch.io/api/datasets/995/exclusion/",
+        "pk": "https://app.crunch.io/api/datasets/995/pk/",
+        "preferences": "https://app.crunch.io/api/datasets/995/preferences/",
+        "settings": "https://app.crunch.io/api/datasets/995/settings/",
+        "state": "https://app.crunch.io/api/datasets/995/state/",
+        "stream": "https://app.crunch.io/api/datasets/995/stream/",
+        "table": "https://app.crunch.io/api/datasets/995/table/"
+    },
+    "self": "https://app.crunch.io/api/datasets/995/",
+    "specification": "https://app.crunch.io/api/specifications/datasets/",
+    "urls": {
+        "editor_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "owner_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "user_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "weight_variables_url": "https://app.crunch.io/api/datasets/995/weight_variables/"
+    },
+    "views": {
+        "applied_filters": "https://app.crunch.io/api/datasets/995/filters/applied/",
+        "cube": "https://app.crunch.io/api/datasets/995/cube/",
+        "export": "https://app.crunch.io/api/datasets/995/export/",
+        "summary": "https://app.crunch.io/api/datasets/995/summary/"
+    }
+}

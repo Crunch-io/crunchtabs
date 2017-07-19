@@ -1,7 +1,7 @@
 context('Preparing a banner data summary')
 
 with_mock_crunch({
-  ds <- loadDataset("https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/")
+  ds <- loadDataset("https://app.crunch.io/api/datasets/995/")
   test_that("We can load a dataset from the crunchtabs package", {
     expect_s4_class(ds, "CrunchDataset")
     expect_identical(name(ds), "Example dataset")
@@ -13,7 +13,7 @@ with_mock_crunch({
   })
 
   tabBook_vars <- c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender")
-  with_POST("https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/multitables/e263e0b9ffb8405ba12ca10825425dad/tabbook-22aab0", {
+  with_POST("https://app.crunch.io/api/datasets/995/multitables/e263e0b9ffb8405ba12ca10825425dad/tabbook-22aab0", {
     tabBooks_data <- tabBooks(dataset = ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
     test_that("We can generate a tabBook data summary", {
       expect_is(tabBooks_data, "list")
