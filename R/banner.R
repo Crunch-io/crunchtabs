@@ -24,8 +24,9 @@
 #' @importFrom crunch alias allVariables types categories subvariables
 #' @export
 banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
-    checkCrunchDatasetClass(dataset)
-
+    if (!is.dataset(dataset)) {
+      stop("'dataset' is not an object of class 'CrunchDataset'.")
+    }
     if (!(is.vector(vars) && is.recursive(vars))) {
         stop("'vars' should be a list of vectors.")
     }

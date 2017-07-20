@@ -121,4 +121,4 @@ with_mock_crunch({
     expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]], c("Under 25", NA, NA, NA, "Over 54"))
     expect_identical(banner_data[["Results"]][["age5"]][["categories"]], c("Under 25", "Over 54"))
   })
-  })
+})
