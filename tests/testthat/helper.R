@@ -16,13 +16,13 @@ with_mock_crunchtabs <- function (expr) {
 }
 
 fixtures_dir <- "fixtures"
-with_mock_tabs <- function(book_file, mt_file, expr) {
+with_mock_tabs <- function(book_file, mt_file, path = fixtures_dir, expr) {
     with_mock(
         `crunch::tabBook`=function (...) {
-            crunch:::TabBookResult(jsonlite::fromJSON(file.path(fixtures_dir, book_file), simplifyVector=FALSE))
+            crunch:::TabBookResult(jsonlite::fromJSON(file.path(path, book_file), simplifyVector=FALSE))
         },
         `crunchtabs:::getMultitable`=function (...) {
-          crunch:::Multitable(jsonlite::fromJSON(file.path(fixtures_dir, mt_file), simplifyVector=FALSE))
+          crunch:::Multitable(jsonlite::fromJSON(file.path(path, mt_file), simplifyVector=FALSE))
         },
         eval.parent(expr)
     )

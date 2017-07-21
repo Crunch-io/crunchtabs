@@ -1,6 +1,6 @@
 context('Hypothesis testing')
 
-with_mock_tabs("ds2_book1.json", "ds2_mt1.json", {
+with_mock_tabs("ds2_book1.json", "ds2_mt1.json", expr = {
 	sut <- tabBook()
 
 	test_that("the expected shape of each raw CrunchCube excludes missing values", {
