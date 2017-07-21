@@ -121,66 +121,66 @@
             "notes": "",
             "type": "numeric"
         },
-        "298e49618a264f84b779c27b1bc495d5/": {
+        "298/": {
             "alias": "age5",
             "derived": false,
             "description": "",
             "discarded": false,
-            "id": "298e49618a264f84b779c27b1bc495d5",
+            "id": "298",
             "name": "Age 5",
             "notes": "",
             "scale": "interval",
             "type": "categorical"
         },
-        "5779bfe6bd184e7d83bb1b7e7161d8d7/": {
+        "577/": {
             "alias": "age3",
             "derived": false,
             "description": "",
             "discarded": false,
-            "id": "5779bfe6bd184e7d83bb1b7e7161d8d7",
+            "id": "577",
             "name": "Age 3",
             "notes": "",
             "scale": "interval",
             "type": "categorical"
         },
-        "9a3898507d0d477ba76f2004a68b46f1/": {
+        "9a3/": {
             "alias": "gender",
             "derived": false,
             "description": "",
             "discarded": false,
-            "id": "9a3898507d0d477ba76f2004a68b46f1",
+            "id": "9a3",
             "name": "Gender",
             "notes": "",
             "scale": "interval",
             "type": "categorical"
         },
-        "addbfcddbcf047c3bb990d9fa63d37f7/": {
+        "add/": {
             "alias": "age2",
             "derived": false,
             "description": "",
             "discarded": false,
-            "id": "addbfcddbcf047c3bb990d9fa63d37f7",
+            "id": "add",
             "name": "Age 2",
             "notes": "",
             "scale": "interval",
             "type": "categorical"
         },
-        "cdb70b3fb3be403f8758b2ef72cb9e90/": {
+        "cdb/": {
             "alias": "age",
             "derived": false,
             "description": "",
             "discarded": false,
-            "id": "cdb70b3fb3be403f8758b2ef72cb9e90",
+            "id": "cdb",
             "name": "Age",
             "notes": "",
             "type": "numeric"
         },
-        "f7c1ad8925bc4c52af3c962098eebcec/": {
+        "f7c/": {
             "alias": "Weight",
             "derived": true,
             "description": "What is your favorite pet?",
             "discarded": false,
-            "id": "f7c1ad8925bc4c52af3c962098eebcec",
+            "id": "f7c",
             "name": "Weight",
             "notes": "",
             "type": "numeric"

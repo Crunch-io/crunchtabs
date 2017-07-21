@@ -32,12 +32,12 @@
             ]
         },
         "../000003/",
-        "../f7c1ad8925bc4c52af3c962098eebcec/",
-        "../cdb70b3fb3be403f8758b2ef72cb9e90/",
-        "../addbfcddbcf047c3bb990d9fa63d37f7/",
-        "../5779bfe6bd184e7d83bb1b7e7161d8d7/",
-        "../298e49618a264f84b779c27b1bc495d5/",
-        "../9a3898507d0d477ba76f2004a68b46f1/"
+        "../f7c/",
+        "../cdb/",
+        "../add/",
+        "../577/",
+        "../298/",
+        "../9a3/"
     ],
     "self": "https://app.crunch.io/api/datasets/995/variables/hier/?relative=on"
 }

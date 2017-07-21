@@ -13,9 +13,8 @@ with_mock_crunch({
   })
 
   tabBook_vars <- c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender")
-  # with_POST("https://app.crunch.io/api/datasets/995/multitables/e263e0b9ffb8405ba12ca10825425dad/tabbook-22aab0", {
-  with_mock_tabs(book_file = "e263e0b9ffb8405ba12ca10825425dad/tabbook-22aab0.json",
-                 mt_file = "e263e0b9ffb8405ba12ca10825425dad.json",
+  with_mock_tabs(book_file = "e26/tabbook-22aab0.json",
+                 mt_file = "e26.json",
                  path = "app.crunch.io/api/datasets/995/multitables/", expr = {
     tabBooks_data <- tabBooks(dataset = ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
     test_that("We can generate a tabBook data summary", {

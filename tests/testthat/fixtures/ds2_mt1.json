@@ -1,8 +1,8 @@
 {
     "element": "shoji:entity",
-    "self": "/api/datasets/123/multitables/a95030af1dc741fb89153c5319009b2b/",
+    "self": "/api/datasets/123/multitables/a95/",
     "views": {
-        "tabbook": "/api/datasets/123/multitables/a95030af1dc741fb89153c5319009b2b/tabbook/"
+        "tabbook": "/api/datasets/123/multitables/a95/tabbook/"
     },
     "specification": "/api/specifications/multitables/",
     "description": "Detail information for one multitable definition",
@@ -69,6 +69,6 @@
         }],
         "is_public": false,
         "display_settings": {},
-        "id": "a95030af1dc741fb89153c5319009b2b"
+        "id": "a95"
     }
 }

@@ -8,17 +8,17 @@
         },
         "archived": false,
         "creation_time": "2017-07-05T11:09:43.500000",
-        "current_editor": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "current_editor": "https://app.crunch.io/api/users/631/",
         "current_editor_name": "Kamil Sedrowicz",
         "description": "A dataset to illustrate the API",
         "end_date": null,
         "id": "995",
         "is_published": true,
-        "maintainer": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "maintainer": "https://app.crunch.io/api/users/631/",
         "modification_time": "2017-07-10T15:54:30.596000",
         "name": "Example dataset",
         "notes": "",
-        "owner": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "owner": "https://app.crunch.io/api/users/631/",
         "owner_name": "Kamil Sedrowicz",
         "permissions": {
             "change_permissions": true,
@@ -62,9 +62,9 @@
     "self": "https://app.crunch.io/api/datasets/995/",
     "specification": "https://app.crunch.io/api/specifications/datasets/",
     "urls": {
-        "editor_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
-        "owner_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
-        "user_url": "https://app.crunch.io/api/users/63196cf14b374926a76d5d4f2480378e/",
+        "editor_url": "https://app.crunch.io/api/users/631/",
+        "owner_url": "https://app.crunch.io/api/users/631/",
+        "user_url": "https://app.crunch.io/api/users/631/",
         "weight_variables_url": "https://app.crunch.io/api/datasets/995/weight_variables/"
     },
     "views": {

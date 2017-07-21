@@ -1,0 +1,32 @@
+{
+    "body": {
+        "display_settings": {},
+        "id": "e26",
+        "is_public": false,
+        "name": "5d1",
+        "template": [
+            {
+                "query": [
+                    {
+                        "variable": "https://app.crunch.io/api/datasets/995/variables/9a3/"
+                    }
+                ]
+            },
+            {
+                "query": [
+                    {
+                        "variable": "https://app.crunch.io/api/datasets/995/variables/298/"
+                    }
+                ]
+            }
+        ],
+        "user": "https://app.crunch.io/api/users/631/"
+    },
+    "description": "Detail information for one multitable definition",
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/995/multitables/e26/",
+    "specification": "https://app.crunch.io/api/specifications/multitables/",
+    "views": {
+        "tabbook": "https://app.crunch.io/api/datasets/995/multitables/e26/tabbook/"
+    }
+}
