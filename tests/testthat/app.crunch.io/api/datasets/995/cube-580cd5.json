@@ -1,0 +1,178 @@
+{
+    "element": "shoji:view",
+    "self": "https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/cube/?query=%7B%22dimensions%22%3A%5B%7B%22function%22%3A%22selected_array%22%2C%22args%22%3A%5B%7B%22variable%22%3A%22https%3A%2F%2Fapp.crunch.io%2Fapi%2Fdatasets%2F9955eddef2674cb895a4f91857965e9f%2Fvariables%2F000006%2F%22%7D%5D%7D%2C%7B%22each%22%3A%22https%3A%2F%2Fapp.crunch.io%2Fapi%2Fdatasets%2F9955eddef2674cb895a4f91857965e9f%2Fvariables%2F000006%2F%22%7D%5D%2C%22measures%22%3A%7B%22count%22%3A%7B%22function%22%3A%22cube_count%22%2C%22args%22%3A%5B%5D%7D%7D%2C%22weight%22%3Anull%7D&filter=%7B%7D",
+    "value": {
+        "query": {
+            "dimensions": [
+                {
+                    "args": [
+                        {
+                            "variable": "https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/variables/000006/"
+                        }
+                    ],
+                    "function": "selected_array"
+                },
+                {
+                    "each": "https://app.crunch.io/api/datasets/9955eddef2674cb895a4f91857965e9f/variables/000006/"
+                }
+            ],
+            "measures": {
+                "count": {
+                    "args": [],
+                    "function": "cube_count"
+                }
+            },
+            "weight": null
+        },
+        "query_environment": {
+            "filter": []
+        },
+        "result": {
+            "counts": [
+                4,
+                5,
+                5,
+                3,
+                7,
+                10
+            ],
+            "dimensions": [
+                {
+                    "derived": true,
+                    "references": {
+                        "alias": "allpets",
+                        "description": "Do you have any of these animals as pets? Please select all that apply.",
+                        "name": "All pets owned",
+                        "subreferences": [
+                            {
+                                "alias": "allpets_1",
+                                "name": "Cat"
+                            },
+                            {
+                                "alias": "allpets_2",
+                                "name": "Dog"
+                            },
+                            {
+                                "alias": "allpets_3",
+                                "name": "Bird"
+                            },
+                            {},
+                            {},
+                            {}
+                        ]
+                    },
+                    "type": {
+                        "class": "enum",
+                        "elements": [
+                            {
+                                "id": 1,
+                                "missing": false,
+                                "value": {
+                                    "derived": false,
+                                    "id": "0001",
+                                    "references": {
+                                        "alias": "allpets_1",
+                                        "name": "Cat"
+                                    },
+                                    "type": {
+                                        "class": "boolean"
+                                    }
+                                }
+                            },
+                            {
+                                "id": 2,
+                                "missing": false,
+                                "value": {
+                                    "derived": false,
+                                    "id": "0002",
+                                    "references": {
+                                        "alias": "allpets_2",
+                                        "name": "Dog"
+                                    },
+                                    "type": {
+                                        "class": "boolean"
+                                    }
+                                }
+                            },
+                            {
+                                "id": 3,
+                                "missing": false,
+                                "value": {
+                                    "derived": false,
+                                    "id": "0003",
+                                    "references": {
+                                        "alias": "allpets_3",
+                                        "name": "Bird"
+                                    },
+                                    "type": {
+                                        "class": "boolean"
+                                    }
+                                }
+                            },
+                            {
+                                "id": -1,
+                                "missing": true,
+                                "value": null
+                            },
+                            {
+                                "id": -127,
+                                "missing": false,
+                                "value": {
+                                    "derived": false,
+                                    "id": "__none__",
+                                    "references": {},
+                                    "type": {
+                                        "class": "boolean"
+                                    }
+                                }
+                            },
+                            {
+                                "id": 0,
+                                "missing": false,
+                                "value": {
+                                    "derived": false,
+                                    "id": "__any__",
+                                    "references": {},
+                                    "type": {
+                                        "class": "boolean"
+                                    }
+                                }
+                            }
+                        ],
+                        "subtype": {
+                            "class": "variable"
+                        }
+                    }
+                }
+            ],
+            "element": "crunch:cube",
+            "measures": {
+                "count": {
+                    "data": [
+                        4,
+                        5,
+                        5,
+                        3,
+                        7,
+                        10
+                    ],
+                    "metadata": {
+                        "derived": true,
+                        "references": {},
+                        "type": {
+                            "class": "numeric",
+                            "integer": true,
+                            "missing_reasons": {
+                                "No Data": -1
+                            },
+                            "missing_rules": {}
+                        }
+                    },
+                    "n_missing": 3
+                }
+            },
+            "missing": 3,
+            "n": 20
+        }
+    }
+}

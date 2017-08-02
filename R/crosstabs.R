@@ -21,28 +21,30 @@
 #' crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
 #'                                weight = 'weight', banner = banner_object)
 #' }
-#' @importFrom crunch name aliases allVariables is.Numeric
+#' @importFrom crunch name aliases allVariables is.Numeric is.dataset
 #' @importFrom methods is
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL,
     title = name(dataset), date = Sys.Date()) {
 
-    checkCrunchDatasetClass(dataset)
+    if (!is.dataset(dataset)) {
+      stop("'dataset' is not an object of class 'CrunchDataset'.")
+    }
 
     not_found_vars <- setdiff(vars, aliases(allVariables(dataset)))
     if (length(not_found_vars) > 0) {
-        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found"))
+        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found."))
     }
     if (!is.null(weight)) {
         if (!weight %in% aliases(allVariables(dataset))) {
-            stop(paste("No 'weight' variable with alias", weight, "found in", sQuote(name(dataset))))
+            stop(paste("No 'weight' variable with alias", weight, "found in 'dataset'."))
         }
         if (!is.Numeric(dataset[[weight]])) {
-            stop("The weight variable has to be numeric")
+            stop("The weight variable has to be numeric.")
         }
     }
     if (!is.null(banner) && !is(banner, "Banner")) {
-        stop("The banner parameter, if provided, must be an object of class 'Banner'")
+        stop("'banner', if provided, must be an object of class 'Banner'.")
     }
 
     weight_var <- if (!is.null(weight)) dataset[[weight]]
@@ -57,7 +59,8 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
 
     if (is.null(banner)) {
-        results <- lapply(dataset[vars_out], topline, data = dataset, weight = weight_var)
+        # results <- lapply(dataset[vars_out], topline, data = dataset, weight = weight_var)
+        results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var))
         names(results) <- vars_out
         res_class <- c("Toplines", "CrunchTabs")
     } else {

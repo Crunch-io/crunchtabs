@@ -44,9 +44,6 @@ topline.CategoricalVariable <- function(var, dataset, weight = NULL) {
 
 #' @export
 topline.MultipleResponseVariable <- function(var, dataset, weight = NULL) {
-    #### Persephone: it's not always 'not selected'. if it didn't come in from the
-    #### exporter, it won't be.  so maybe make 'not selected' a default? and let people
-    #### change it if necessary
     ret <- toplineGen(var, dataset = dataset, weight = weight)
     ret$counts <- cbind(selected = ret$counts, `not selected` = ret$total - ret$counts -
         ret$missing, missing = ret$missing)
@@ -55,7 +52,7 @@ topline.MultipleResponseVariable <- function(var, dataset, weight = NULL) {
 
 #' @export
 topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
-    ret <- toplineGen(var, dataset, weight = weight, sumFun = rowSums, margin = 1)
+    ret <- toplineGen(var, dataset, weight = weight, margin = 1)
     ret$valid = rowSums(ret$counts)
     ret$missing = ret$total - ret$valid
     dimnames(ret$counts) <- list(subvariables = dimnames(ret$counts)[[1]], categories = dimnames(ret$counts)[[2]])
@@ -63,7 +60,7 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
     ret
 }
 
-toplineGen <- function(var, dataset, weight = NULL, sumFun = sum, margin = NULL) {
+toplineGen <- function(var, dataset, weight = NULL, margin = NULL) {
     topline_base <- toplineBase(var)
     out_crtabs <- crtabs(formula = paste0("~", "`", alias(var), "`"), data = dataset, weight = weight)
     total <- getTotal.CrunchCube(out_crtabs)
@@ -75,8 +72,7 @@ toplineGen <- function(var, dataset, weight = NULL, sumFun = sum, margin = NULL)
 }
 
 generateClassList <- function(topline_base) {
-    categorical_general <- NULL
-    if (getType(topline_base) %in% c("categorical", "multiple_response", "categorical_array")) {
+    categorical_general <- if (getType(topline_base) %in% c("categorical", "multiple_response", "categorical_array")) {
         categorical_general <- "ToplineCategoricalGeneral"
     }
     c(paste0("Topline", nameToClass(getType(topline_base))), categorical_general,

@@ -21,7 +21,7 @@
 #'         alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
 #'         alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
 #' }
-#' @importFrom crunch alias allVariables types categories subvariables
+#' @importFrom crunch alias allVariables types categories subvariables is.dataset
 #' @export
 banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     if (!is.dataset(dataset)) {
