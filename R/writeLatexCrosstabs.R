@@ -26,7 +26,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
   bodies <- lapply(data_summary$results, function (x) {
     sapply(x$crosstabs, function (y) {
       latexTable.body(y, longtablewrap = longtablewrap, autorownames = TRUE, summary.midrule = TRUE,
-                      show_totals = !x$options$no_totals & show_totals)
+                      show_totals = !x$settings$no_totals & show_totals)
     })
   })
 
@@ -164,7 +164,7 @@ latexStartLT <- function(table_of_contents, font_size){
 
 tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
   return(sapply(1:nbanners, function (k) {
-    longtableHeader(num=k, hinfo, table_num = table_num, parbox_width = parbox_width,
+    longtableHeader(num=k, hinfo, table_num = hinfo$number, parbox_width = parbox_width,
                     title=I(k==1))
   }))
 }
@@ -225,7 +225,7 @@ getBannerInfo <- function(banner) lapply(banner, function(x) {list(label = getNa
 
 getTableHeader <- function (ds_var) {
   description <- paste(getDescription(ds_var), getFilterText(ds_var))
-  list(label=getName(ds_var), wording=description)
+  list(label=getName(ds_var), wording=description, number=ds_var$settings$number)
 }
 
 tableFootLT <- function() "\n \\end{longtable}\n\n"

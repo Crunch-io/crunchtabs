@@ -62,7 +62,7 @@ with_mock_crunch({
     expect_s3_class(crosstabs_data$banner, "Banner")
     expect_identical(crosstabs_data$title, "Example dataset")
     expect_named(crosstabs_data$results, c('allpets', 'q1', 'petloc_home', 'petloc_work', 'ndogs', 'ndogs_a', 'ndogs_b', 'country', 'Weight', 'age', 'age2', 'age3', 'age5', 'gender'))
-    expect_named(crosstabs_data$results$q1, c('alias', 'name', 'description', 'notes', 'options', 'crosstabs'))
+    expect_named(crosstabs_data$results$q1, c('alias', 'name', 'description', 'notes', 'settings', 'crosstabs'))
     expect_identical(crosstabs_data$results$q1$alias, "q1")
     expect_identical(crosstabs_data$results$q1$name, "Pet")
     expect_identical(crosstabs_data$results$q1$description, "What is your favorite pet?")

@@ -481,7 +481,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     banner_vars_split = NULL, show_information = NULL, min_base_size = NULL, min_base_label = NULL,
     reduce_format = FALSE, include_aliases = FALSE, percent_format_data = TRUE, hypothesis_test = FALSE) {
 
-  show_totals <- !cross_tab_var$options$no_totals & show_totals
+  show_totals <- !cross_tab_var$settings$no_totals & show_totals
   start_row <- writeVarHeader(wb, ws, cross_tab_var, start_col = start_col, start_row = start_row, toc_sheet = toc_sheet,
                              toc_row = toc_row, toc_col = toc_col, styles = styles, show_information = show_information,
                              include_aliases = include_aliases)

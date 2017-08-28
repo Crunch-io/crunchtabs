@@ -21,17 +21,18 @@ reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, re
     reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
 }
 
+#' @importFrom methods is
 reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE) {
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
-      if (!proportions || class(x) == "ToplineMultipleResponse") {
+      if (!proportions || is(x, "ToplineMultipleResponse")) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
       }
-      else if (class(x) == "ToplineCategorical") {
+      else if (is(x, "ToplineCategorical")) {
         data[] <- roundPropCategorical(data, digits)
       }
-      else if (class(x) == "ToplineCategoricalArray") {
+      else if (is(x, "ToplineCategoricalArray")) {
         data[] <- roundPropCategoricalArray(data, digits)
       }
     }
@@ -114,7 +115,7 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
                 banner_var <- banner[[banner_name]][[banner_var_ind]]
                 cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
                 reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
-                  digits = digits, add_parenthesis = add_parenthesis, show_totals = !var$options$no_totals & show_totals,
+                  digits = digits, add_parenthesis = add_parenthesis, show_totals = !var$settings$no_totals & show_totals,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
                   min_cell_label = min_cell_label, reformat = reformat)
             })

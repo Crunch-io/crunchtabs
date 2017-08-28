@@ -20,7 +20,7 @@ with_mock_crunch({
     test_that("We can generate a tabBook data summary", {
       expect_is(tabBooks_data, "list")
       expect_named(tabBooks_data, c("allpets", "q1", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "Weight", "age", "age2", "age3", "age5", "gender"))
-      expect_named(tabBooks_data$allpets, c("alias", "name", "description", "notes", "options", "crosstabs"))
+      expect_named(tabBooks_data$allpets, c("alias", "name", "description", "notes", "settings", "crosstabs"))
       expect_named(tabBooks_data$allpets$crosstabs, c("banner 1"))
       expect_named(tabBooks_data$allpets$crosstabs$`banner 1`, c("Total", "gender", "age5"))
       expect_named(tabBooks_data$allpets$crosstabs$`banner 1`$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))

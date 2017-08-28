@@ -28,7 +28,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                                                    , name = vnames[vai]
                                                    , description = getDescription(crunch_cube)
                                                    , notes = getNotes(crunch_cube)
-                                                   , options = list(no_totals = is_mr_type)
+                                                   , settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = ""))
                                                    , crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
                                                    ), class = "CrossTabVar")
     }
@@ -229,3 +229,15 @@ compute_pvals <- function(counts, counts_unweighted) {
 #   pvals[is.nan(pvals) | psign == 0] <- 1
 #   return(pvals)
 # }
+
+
+# Return Excel-style column name.
+get_grid_number <- function(n) {
+  out <- c()
+  while (n > 0) {
+    modulo <- (n - 1) %% 26
+    out <- c(LETTERS[modulo + 1], out)
+    n <- (n - modulo) %/% 26
+  }
+  paste0(out, collapse = "")
+}
