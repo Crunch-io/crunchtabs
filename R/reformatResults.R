@@ -1,33 +1,39 @@
 
-reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE, ...) {
+reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
     UseMethod("reformatResults", x)
 }
 
 #' @export
-reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-    ...) {
+reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
     stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
 
 #' @export
-reformatResults.ToplineCategoricalGeneral <- function(x, proportions = TRUE, digits = 0,
-    reformat = TRUE, ...) {
-    reformatResultsGen(x, proportions = proportions, digits = digits, reformat = reformat)
+reformatResults.ToplineBase <- function(x, proportions = TRUE, digits = 0,
+    reformat = TRUE) {
+  reformatResultsGen(x, proportions = proportions, digits = digits,
+                     reformat = reformat)
 }
 
 #' @export
-reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-    ...) {
+reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
     reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
 }
 
-reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
-    ...) {
+reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE) {
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
+      if (!proportions || class(x) == "ToplineMultipleResponse") {
         data[] <- round(data * if (proportions) 100 else 1, digits)
+      }
+      else if (class(x) == "ToplineCategorical") {
+        data[] <- roundPropCategorical(data, digits)
+      }
+      else if (class(x) == "ToplineCategoricalArray") {
+        data[] <- roundPropCategoricalArray(data, digits)
+      }
     }
     if (proportions && reformat) {
         data[] <- paste0(data, "%")
@@ -35,6 +41,26 @@ reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TR
     data
 }
 
+
+roundPropCategorical <- function(data, digits) {
+  data_rounded <- round(data * 100, digits)
+  data_sum <- sum(data_rounded)
+  if (data_sum > 100) {
+    data_diff <- data_rounded - data
+    data_which_max <- which.max(data_diff)
+    data_rounded[data_which_max] <- data_rounded[data_which_max] - 1
+  }
+  if (data_sum < 100) {
+    data_diff <- data - data_rounded
+    data_which_max <- which.max(data_diff)
+    data_rounded[data_which_max] <- data_rounded[data_which_max] + 1
+  }
+  data_rounded
+}
+
+roundPropCategoricalArray <- function(data, digits) {
+  t(apply(data, 1, roundPropCategorical, digits))
+}
 
 
 reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
