@@ -11,7 +11,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      min_cell_size = NULL, min_cell_label = NULL,
      show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
      dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-     latex_adjust = 'c', clearpage = TRUE) {
+     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE) {
 
   # reformat results for LaTeX output
   banner <- data_summary$banner
@@ -21,7 +21,8 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
 
   parbox_width <- ifelse(landscape,"8.5in","6in")
   hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
-  headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width, i))
+  headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width,
+                                                                  if (grid_num_letters) hinfo[[i]]$number else i))
 
   bodies <- lapply(data_summary$results, function (x) {
     sapply(x$crosstabs, function (y) {
@@ -164,7 +165,7 @@ latexStartLT <- function(table_of_contents, font_size){
 
 tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
   return(sapply(1:nbanners, function (k) {
-    longtableHeader(num=k, hinfo, table_num = hinfo$number, parbox_width = parbox_width,
+    longtableHeader(num=k, hinfo, table_num = table_num, parbox_width = parbox_width,
                     title=I(k==1))
   }))
 }

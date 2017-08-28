@@ -11,7 +11,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-    latex_adjust = 'c', clearpage = TRUE) {
+    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE) {
 
   data_summary$results <- lapply(data_summary$results, function(x) {
     x$data <- reformatResults(x, proportions = proportions, digits = digits)

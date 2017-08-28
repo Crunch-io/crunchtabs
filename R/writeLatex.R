@@ -67,6 +67,8 @@
 #' @param multirowheaderlines logical. Should banners allow multi-row headlines?
 #' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
 #' @param clearpage logical. Should every banner be on a separete page?
+#' @param grid_num_letters logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
+#' have the same number with consecutive letters appended? Defaults to \code{TRUE}.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -90,7 +92,7 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-    latex_adjust = 'c', clearpage = TRUE) {
+    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE) {
 
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
