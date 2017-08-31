@@ -16,7 +16,7 @@ writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
   right = 1), min_cell_size = NULL, min_cell_label = NULL,
   show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
   dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
-  clearpage = TRUE, grid_num_letters = TRUE)
+  clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -120,6 +120,9 @@ Defaults to \code{TRUE}.}
 
 \item{grid_num_letters}{logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
 have the same number with consecutive letters appended? Defaults to \code{TRUE}.}
+
+\item{custom_numbering}{A vector of custom values to be used for numbering banner tables.
+Defaults to \code{NULL} - default numbering scheme is used.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

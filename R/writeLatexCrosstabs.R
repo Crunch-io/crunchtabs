@@ -11,7 +11,11 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      min_cell_size = NULL, min_cell_label = NULL,
      show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
      dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE) {
+     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL) {
+
+  if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
+    stop("The length of 'custom_numbering' provided (", length(custom_numbering), ") is not equal to the length of results (", length(data_summary$results), ").")
+  }
 
   # reformat results for LaTeX output
   banner <- data_summary$banner
@@ -22,7 +26,9 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
   parbox_width <- ifelse(landscape,"8.5in","6in")
   hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
   headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width,
-                                                                  if (grid_num_letters) hinfo[[i]]$number else i))
+                                                                  if (!is.null(custom_numbering)) custom_numbering[i]
+                                                                  else if (grid_num_letters) hinfo[[i]]$number
+                                                                  else i))
 
   bodies <- lapply(data_summary$results, function (x) {
     sapply(x$crosstabs, function (y) {
@@ -185,7 +191,7 @@ longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
 
 latexTableHeadTitle <- function (hinfo, table_num, parbox_width) {
   paste("\\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}\n",
-        "\\hangindent=0em \\parbox{", parbox_width, "}{{\\bf", table_num, ". ", hinfo$label, "} \\\\ \n",
+        "\\hangindent=0em \\parbox{", parbox_width, "}{{\\bf ", table_num, ". ", hinfo$label, "} \\\\ \n",
         hinfo$wording, "} \\\\", sep="")
 }
 
