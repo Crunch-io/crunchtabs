@@ -45,7 +45,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
   }
 
   if (returndata) {
-    return(out)
+    return(data_summary)
   }
 }
 
