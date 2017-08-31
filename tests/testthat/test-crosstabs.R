@@ -31,9 +31,10 @@ with_mock_crunch({
   test_that("Toplines", {
     crosstabs_data <- crosstabs(ds, vars = c('allpets', 'q1', 'petloc'))
     expect_s3_class(crosstabs_data, "Toplines")
-    expect_named(crosstabs_data, c("title", "date", "results", "banner"))
+    expect_named(crosstabs_data, c("title", "date", "results", "banner", "weight"))
     expect_null(crosstabs_data$banner)
     expect_identical(crosstabs_data$title, "Example dataset")
+    expect_null(crosstabs_data$weight)
     expect_named(crosstabs_data$results, c("allpets", "q1", "petloc"))
     expect_named(crosstabs_data$results$allpets, c("alias", "name", "type", "description", "notes", "counts", "proportions", "total", "missing", "valid"))
     expect_identical(crosstabs_data$results$allpets$alias, "allpets")
@@ -58,9 +59,10 @@ with_mock_crunch({
     crosstabs_data <- crosstabs(ds, vars = tabBook_vars, banner = banner_data)
     test_that("Crosstabs", {
     expect_s3_class(crosstabs_data, "Crosstabs")
-    expect_named(crosstabs_data, c("title", "date", "results", "banner"))
+    expect_named(crosstabs_data, c("title", "date", "results", "banner", "weight"))
     expect_s3_class(crosstabs_data$banner, "Banner")
     expect_identical(crosstabs_data$title, "Example dataset")
+    expect_null(crosstabs_data$weight)
     expect_named(crosstabs_data$results, c('allpets', 'q1', 'petloc_home', 'petloc_work', 'ndogs', 'ndogs_a', 'ndogs_b', 'country', 'Weight', 'age', 'age2', 'age3', 'age5', 'gender'))
     expect_named(crosstabs_data$results$q1, c('alias', 'name', 'description', 'notes', 'settings', 'crosstabs'))
     expect_identical(crosstabs_data$results$q1$alias, "q1")

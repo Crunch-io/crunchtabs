@@ -69,7 +69,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         res_class <- c("Crosstabs", "CrunchTabs")
     }
 
-    summary_data <- list(title = title, date = date, results = results, banner = banner)
+    summary_data <- list(title = title, date = date, results = results, banner = banner, weight = weight)
     class(summary_data) <- res_class
 
     return(summary_data)
