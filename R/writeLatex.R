@@ -100,6 +100,11 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
         stop("Please provide a file name to generate PDF output.")
     }
 
+    if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
+      stop("The length of 'custom_numbering' provided (", length(custom_numbering),
+           ") is not equal to the length of the results (", length(data_summary$results), ").")
+    }
+
     UseMethod("writeLatex", data_summary)
 }
 

@@ -19,7 +19,8 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
   })
 
   headers <- lapply(seq_along(data_summary$results), function(i) {
-    toplineHeader(data_summary$results[[i]], page_width = page_width, num = i, row_label_width = row_label_width)
+    toplineHeader(data_summary$results[[i]], page_width = page_width, row_label_width = row_label_width,
+                  num = if (!is.null(custom_numbering)) custom_numbering[i] else i)
   })
 
   footers <- lapply(data_summary$results, toplineFooter)

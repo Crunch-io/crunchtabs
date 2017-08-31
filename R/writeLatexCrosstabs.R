@@ -13,10 +13,6 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      dc = c(3.2, 4.1), multirowheaderlines = FALSE,
      latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL) {
 
-  if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
-    stop("The length of 'custom_numbering' provided (", length(custom_numbering), ") is not equal to the length of results (", length(data_summary$results), ").")
-  }
-
   # reformat results for LaTeX output
   banner <- data_summary$banner
   data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
