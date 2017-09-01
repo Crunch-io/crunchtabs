@@ -82,6 +82,26 @@ getNames.BannerVar <- function(x) {
 # print.ToplineNumeric <- function(x, proportions) {
 # cat(paste(print.ToplineBase(x), '\nSummary:\n')) print(getResults(x)) }
 
+
+#' @export
+print.Toplines <- function(x, ...) {
+  cat(paste("Data summary for Toplines report.\n",
+              "Title:", x$title, "\n",
+              if (is.null(x$weight)) "Unweighted.\n" else paste0("Weighted based on: '", x$weight, "' variable.\n"),
+              "Contains data for the following variables:\n",
+              paste(names(x), collapse = ", ")))
+}
+
+
+#' @export
+print.Crosstabs <- function(x, ...) {
+  cat(paste("Data summary for Crosstabs report.\n",
+            "Title:", x$title, "\n",
+            if (is.null(x$weight)) "Unweighted.\n" else paste0("Weighted based on: '", x$weight, "' variable.\n"),
+            "Contains data for the following variables:\n",
+            paste(names(x), collapse = ", ")))
+}
+
 getType <- function(x) UseMethod("getType", x)
 
 #' @export
