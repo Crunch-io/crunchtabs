@@ -86,8 +86,8 @@ getNames.BannerVar <- function(x) {
 #' @export
 print.Toplines <- function(x, ...) {
   cat(paste("Data summary for Toplines report.\n",
-              "Title:", x$title, "\n",
-              if (is.null(x$weight)) "Unweighted.\n" else paste0("Weighted based on: '", x$weight, "' variable.\n"),
+              "Title:", getName(x), "\n",
+              if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
               "Contains data for the following variables:\n",
               paste(names(x), collapse = ", ")))
 }
@@ -96,8 +96,8 @@ print.Toplines <- function(x, ...) {
 #' @export
 print.Crosstabs <- function(x, ...) {
   cat(paste("Data summary for Crosstabs report.\n",
-            "Title:", x$title, "\n",
-            if (is.null(x$weight)) "Unweighted.\n" else paste0("Weighted based on: '", x$weight, "' variable.\n"),
+            "Title:", getName(x), "\n",
+            if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
             "Contains data for the following variables:\n",
             paste(names(x), collapse = ", ")))
 }
@@ -168,7 +168,7 @@ getName.CrunchCube <- function(x) {
 
 #' @export
 getName.CrunchTabs <- function(x) {
-    x$title
+    x$metadata$title
 }
 
 getDescription <- function(x) UseMethod("getDescription", x)

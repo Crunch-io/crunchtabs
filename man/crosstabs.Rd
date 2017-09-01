@@ -5,7 +5,7 @@
 \title{Toplines and Crosstabs Summaries}
 \usage{
 crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
-  title = name(dataset), date = Sys.Date())
+  title = name(dataset), date = Sys.Date(), metadata = NULL)
 }
 \arguments{
 \item{dataset}{A Crunch dataset.}
@@ -22,6 +22,8 @@ a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and retur
 \item{title}{An optional title. Defaults to the name of the dataset.}
 
 \item{date}{An optional date. Defaults to the current date.}
+
+\item{metadata}{An optional list with additional metadata that should be added to the summary.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
