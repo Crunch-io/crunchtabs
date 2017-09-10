@@ -28,8 +28,8 @@ topline.NumericVariable <- function(var, dataset, weight = NULL) {
     topline_base <- toplineBase(var)
     var_alias <- getAlias(topline_base)
     out_crtabs <- crtabs(paste0("list(min(", var_alias, "), max(", var_alias, "), mean(", var_alias, "), sd(", var_alias, ")) ~ 1"), data = dataset, weight = weight)
-    total <- getTotal.CrunchCube(out_crtabs)
-    missing <- getMissing.CrunchCube(out_crtabs)
+    total <- getTotal(out_crtabs)
+    missing <- getMissing(out_crtabs)
     summary_data <- c(Minimum = out_crtabs@arrays$min, Maximum = out_crtabs@arrays$max, Mean = out_crtabs@arrays$mean, `Standard deviation` = out_crtabs@arrays$stddev)
     ret <- c(topline_base, list(summary = array(summary_data, dimnames = list(names(summary_data)))
                                 , total = total, missing = missing, valid = total - missing))
@@ -44,9 +44,8 @@ topline.CategoricalVariable <- function(var, dataset, weight = NULL) {
 
 #' @export
 topline.MultipleResponseVariable <- function(var, dataset, weight = NULL) {
-    ret <- toplineGen(var, dataset = dataset, weight = weight)
-    ret$counts <- cbind(selected = ret$counts, `not selected` = ret$total - ret$counts -
-        ret$missing, missing = ret$missing)
+    ret <- toplineGen(var, dataset = dataset, weight = weight, margin = 1, mr = TRUE)
+    ret$proportions <- ret$proportions[, "Selected"]
     ret
 }
 
@@ -60,11 +59,11 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
     ret
 }
 
-toplineGen <- function(var, dataset, weight = NULL, margin = NULL) {
+toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE) {
     topline_base <- toplineBase(var)
-    out_crtabs <- crtabs(formula = paste0("~", "`", alias(var), "`"), data = dataset, weight = weight)
-    total <- getTotal.CrunchCube(out_crtabs)
-    missing <- getMissing.CrunchCube(out_crtabs)
+    out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
+    total <- getTotal(out_crtabs)
+    missing <- getMissing(out_crtabs)
     ret <- c(topline_base, list(counts = as.array(out_crtabs), proportions = crunch::prop.table(out_crtabs,
         margin = margin), total = total, missing = missing, valid = total - missing))
     class(ret) <- c(generateClassList(topline_base), class(ret))
