@@ -6,7 +6,7 @@ test_that("Error handling - not a dataset", {
 })
 
 with_mock_crunch({
-  ds <- loadDataset("https://app.crunch.io/api/datasets/995/")
+  ds <- loadDataset("https://app.crunch.io/api/datasets/85f/")
   test_that("Error handling - vars", {
     expect_error(banner(ds, 'a'),
                  "'vars' should be a list of vectors.")
@@ -20,18 +20,18 @@ with_mock_crunch({
                  "Variables: a, b not found.")
     expect_error(banner(ds, list(Results = c('ndogs'))),
                  "All banner variables have to be categorical or multiple_response. This is not true for: ndogs")
-    expect_error(banner(ds, list(Results = c('ndogs', 'petloc', 'q3', 'age'))),
-                 "All banner variables have to be categorical or multiple_response. This is not true for: ndogs, petloc, q3, age")
-    expect_error(banner(ds, list(Results = c('allpets', 'ndogs', 'q3', 'age2'))),
-                 "All banner variables have to be categorical or multiple_response. This is not true for: ndogs, q3")
+    expect_error(banner(ds, list(Results = c('ndogs', 'petloc', 'petname', 'age'))),
+                 "All banner variables have to be categorical or multiple_response. This is not true for: ndogs, petloc, petname, age")
+    expect_error(banner(ds, list(Results = c('allpets', 'ndogs', 'petname', 'age2'))),
+                 "All banner variables have to be categorical or multiple_response. This is not true for: ndogs, petname")
     expect_error(banner(ds, list(Results = c('allpets')), labels = c(allpets1 = 'All Pets')),
                  "Aliases used in 'labels' not in 'vars': allpets1")
     expect_error(banner(ds, list(Results = c('allpets', 'age2')), labels = c(allpets1 = 'All Pets', age2 = "Age (2 categories")),
                  "Aliases used in 'labels' not in 'vars': allpets1")
-    expect_error(banner(ds, list(Results = c('q1')), recodes = list(q11 = "'Dog' = 'Doggy'")),
-                 "Aliases used in 'recodes' not in 'vars': q11")
-    expect_error(banner(ds, list(Results = c('q1', 'age2', 'age3')), recodes = list(age2 = "'16 to 34' = '<= 34", q11 = "'Dog' = 'Doggy'", age3 = "'16 to 34' = '<= 34")),
-                 "Aliases used in 'recodes' not in 'vars': q11")
+    expect_error(banner(ds, list(Results = c('favpet')), recodes = list(favpet1 = "'Dog' = 'Doggy'")),
+                 "Aliases used in 'recodes' not in 'vars': favpet1")
+    expect_error(banner(ds, list(Results = c('favpet', 'age2', 'age3')), recodes = list(age2 = "'16 to 34' = '<= 34", favpet1 = "'Dog' = 'Doggy'", age3 = "'16 to 34' = '<= 34")),
+                 "Aliases used in 'recodes' not in 'vars': favpet1")
     expect_error(banner(ds, list(Results = c('gender')), recodes = list(gender = "'Male2' = 'Male1'")),
                  "No category with name 'Male2' in 'gender'")
     expect_error(banner(ds, list(Results = c('gender')), recodes = list(gender = "'Male = 'Male1'")),

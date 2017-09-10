@@ -1,0 +1,254 @@
+{
+  "value": {
+    "query_environment": {
+      "filter": []
+    },
+    "query": {
+      "weight": null,
+      "dimensions": [
+        {
+          "each": "https://app.crunch.io/api/datasets/85f/variables/000008/"
+        },
+        {
+          "variable": "https://app.crunch.io/api/datasets/85f/variables/000008/"
+        }
+      ],
+      "measures": {
+        "count": {
+          "args": [],
+          "function": "cube_count"
+        }
+      }
+    },
+    "result": {
+      "element": "crunch:cube",
+      "dimensions": [
+        {
+          "type": {
+            "elements": [
+              {
+                "value": {
+                  "type": {
+                    "categories": [
+                      {
+                        "name": "Cat",
+                        "numeric_value": 1,
+                        "id": 1,
+                        "missing": false
+                      },
+                      {
+                        "name": "Dog",
+                        "numeric_value": 2,
+                        "id": 2,
+                        "missing": false
+                      },
+                      {
+                        "name": "Bird",
+                        "numeric_value": 3,
+                        "id": 3,
+                        "missing": false
+                      },
+                      {
+                        "name": "Skipped",
+                        "numeric_value": 8,
+                        "id": 8,
+                        "missing": true
+                      },
+                      {
+                        "name": "Not Asked",
+                        "numeric_value": 9,
+                        "id": 9,
+                        "missing": true
+                      }
+                    ],
+                    "ordinal": false,
+                    "class": "categorical"
+                  },
+                  "derived": false,
+                  "id": "0001",
+                  "references": {
+                    "alias": "petloc_home",
+                    "name": "Home"
+                  }
+                },
+                "id": 1,
+                "missing": false
+              },
+              {
+                "value": {
+                  "type": {
+                    "categories": [
+                      {
+                        "name": "Cat",
+                        "numeric_value": 1,
+                        "id": 1,
+                        "missing": false
+                      },
+                      {
+                        "name": "Dog",
+                        "numeric_value": 2,
+                        "id": 2,
+                        "missing": false
+                      },
+                      {
+                        "name": "Bird",
+                        "numeric_value": 3,
+                        "id": 3,
+                        "missing": false
+                      },
+                      {
+                        "name": "Skipped",
+                        "numeric_value": 8,
+                        "id": 8,
+                        "missing": true
+                      },
+                      {
+                        "name": "Not Asked",
+                        "numeric_value": 9,
+                        "id": 9,
+                        "missing": true
+                      }
+                    ],
+                    "ordinal": false,
+                    "class": "categorical"
+                  },
+                  "derived": false,
+                  "id": "0002",
+                  "references": {
+                    "alias": "petloc_work",
+                    "name": "Work"
+                  }
+                },
+                "id": 2,
+                "missing": false
+              }
+            ],
+            "subtype": {
+              "class": "variable"
+            },
+            "class": "enum"
+          },
+          "derived": true,
+          "references": {
+            "alias": "petloc",
+            "subreferences": [
+              {
+                "alias": "petloc_home",
+                "name": "Home"
+              },
+              {
+                "alias": "petloc_work",
+                "name": "Work"
+              }
+            ],
+            "name": "Pets by location",
+            "description": "Name the kinds of pets you have at these locations."
+          }
+        },
+        {
+          "type": {
+            "categories": [
+              {
+                "name": "Cat",
+                "numeric_value": 1,
+                "id": 1,
+                "missing": false
+              },
+              {
+                "name": "Dog",
+                "numeric_value": 2,
+                "id": 2,
+                "missing": false
+              },
+              {
+                "name": "Bird",
+                "numeric_value": 3,
+                "id": 3,
+                "missing": false
+              },
+              {
+                "name": "Skipped",
+                "numeric_value": 8,
+                "id": 8,
+                "missing": true
+              },
+              {
+                "name": "Not Asked",
+                "numeric_value": 9,
+                "id": 9,
+                "missing": true
+              }
+            ],
+            "ordinal": false,
+            "subvariables": [
+              "0001",
+              "0002"
+            ],
+            "class": "categorical"
+          },
+          "derived": false,
+          "references": {
+            "alias": "petloc",
+            "subreferences": [
+              {
+                "alias": "petloc_home",
+                "name": "Home"
+              },
+              {
+                "alias": "petloc_work",
+                "name": "Work"
+              }
+            ],
+            "name": "Pets by location",
+            "description": "Name the kinds of pets you have at these locations."
+          }
+        }
+      ],
+      "missing": 2,
+      "n": 20,
+      "measures": {
+        "count": {
+          "n_missing": 2,
+          "metadata": {
+            "type": {
+              "missing_reasons": {
+                "No Data": -1
+              },
+              "missing_rules": {},
+              "integer": true,
+              "class": "numeric"
+            },
+            "derived": true,
+            "references": {}
+          },
+          "data": [
+            5,
+            3,
+            3,
+            4,
+            5,
+            6,
+            4,
+            6,
+            3,
+            1
+          ]
+        }
+      },
+      "counts": [
+        5,
+        3,
+        3,
+        4,
+        5,
+        6,
+        4,
+        6,
+        3,
+        1
+      ]
+    }
+  },
+  "self": "https://app.crunch.io/api/datasets/85f/cube/?query=%7B%22dimensions%22%3A%5B%7B%22each%22%3A%22https%3A%2F%2Fapp.crunch.io%2Fapi%2Fdatasets%2F85f%2Fvariables%2F000008%2F%22%7D%2C%7B%22variable%22%3A%22https%3A%2F%2Fapp.crunch.io%2Fapi%2Fdatasets%2F85f%2Fvariables%2F000008%2F%22%7D%5D%2C%22measures%22%3A%7B%22count%22%3A%7B%22function%22%3A%22cube_count%22%2C%22args%22%3A%5B%5D%7D%7D%2C%22weight%22%3Anull%7D&filter=%7B%7D",
+  "element": "shoji:view"
+}

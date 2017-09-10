@@ -1,0 +1,69 @@
+{
+  "self": "https://app.crunch.io/api/datasets/85f/variables/9a3/",
+  "body": {
+    "dataset_id": "85f",
+    "alias": "gender",
+    "derived": false,
+    "view": {
+      "column_width": null,
+      "show_counts": false,
+      "show_numeric_values": false,
+      "include_missing": false
+    },
+    "name": "Gender",
+    "notes": "",
+    "id": "9a3",
+    "missing_reasons": {
+      "No Data": -1
+    },
+    "owner": null,
+    "categories": [
+      {
+        "name": "Male",
+        "numeric_value": 1,
+        "id": 1,
+        "missing": false
+      },
+      {
+        "name": "Female",
+        "numeric_value": 2,
+        "id": 2,
+        "missing": false
+      },
+      {
+        "name": "No Data",
+        "numeric_value": null,
+        "id": -1,
+        "missing": true
+      }
+    ],
+    "type": "categorical",
+    "description": "",
+    "private": false,
+    "discarded": false,
+    "format": {
+      "summary": {
+        "digits": 0
+      }
+    }
+  },
+  "urls": {
+    "dataset_url": "https://app.crunch.io/api/datasets/85f/"
+  },
+  "fragments": {
+    "missing_rules": "https://app.crunch.io/api/datasets/85f/variables/9a3/missing_rules/",
+    "user_settings": "https://app.crunch.io/api/datasets/85f/variables/9a3/user_settings/"
+  },
+  "specification": "https://app.crunch.io/api/specifications/categorical_variables/",
+  "description": "Details for a given Variable",
+  "views": {
+    "values": "https://app.crunch.io/api/datasets/85f/variables/9a3/values/",
+    "frequencies": "https://app.crunch.io/api/datasets/85f/variables/9a3/frequencies/",
+    "cast": "https://app.crunch.io/api/datasets/85f/variables/9a3/cast/",
+    "summary": "https://app.crunch.io/api/datasets/85f/variables/9a3/summary/"
+  },
+  "element": "shoji:entity",
+  "catalogs": {
+    "parent": "https://app.crunch.io/api/datasets/85f/variables/"
+  }
+}
