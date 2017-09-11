@@ -89,7 +89,7 @@ print.Toplines <- function(x, ...) {
               "Title:", getName(x), "\n",
               if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
               "Contains data for the following variables:\n",
-              paste(names(x), collapse = ", ")))
+              paste(names(x$results), collapse = ", ")))
 }
 
 
@@ -99,7 +99,7 @@ print.Crosstabs <- function(x, ...) {
             "Title:", getName(x), "\n",
             if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
             "Contains data for the following variables:\n",
-            paste(names(x), collapse = ", ")))
+            paste(names(x$results), collapse = ", ")))
 }
 
 getType <- function(x) UseMethod("getType", x)
