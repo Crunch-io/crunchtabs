@@ -64,8 +64,12 @@ toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE) {
     out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
     total <- getTotal(out_crtabs)
     missing <- getMissing(out_crtabs)
-    ret <- c(topline_base, list(counts = as.array(out_crtabs), proportions = crunch::prop.table(out_crtabs,
-        margin = margin), total = total, missing = missing, valid = total - missing))
+    ret <- c(topline_base, list(counts = as.array(out_crtabs),
+                                proportions = crunch::prop.table(out_crtabs, margin = margin),
+                                counts_unweighted = bases(out_crtabs, 0),
+                                total = total,
+                                missing = missing,
+                                valid = total - missing))
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }

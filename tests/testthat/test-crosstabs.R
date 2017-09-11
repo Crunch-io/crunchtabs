@@ -37,7 +37,7 @@ with_mock_crunch({
     expect_identical(getName(crosstabs_data), "Example Dataset")
     expect_null(crosstabs_data$metadata$weight)
     expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc"))
-    expect_named(crosstabs_data$results$allpets, c("alias", "name", "type", "description", "notes", "counts", "proportions", "total", "missing", "valid"))
+    expect_named(crosstabs_data$results$allpets, c("alias", "name", "type", "description", "notes", "counts", "proportions", "counts_unweighted", "total", "missing", "valid"))
     expect_identical(crosstabs_data$results$allpets$alias, "allpets")
     expect_identical(crosstabs_data$results$allpets$name, "All pets owned")
     expect_identical(crosstabs_data$results$allpets$type, "multiple_response")
