@@ -64,7 +64,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     }
 
     ret_data <- list(alias = aliases(ds_vars), name = replace(names(ds_vars), match(names(labels),
-        (aliases(ds_vars))), labels), old_categories = lapply(vars_vec, function(x) {
+        (aliases(ds_vars))), labels), type = types(ds_vars), old_categories = lapply(vars_vec, function(x) {
           cat_fun <- if (type(dataset[[x]]) == "multiple_response") {
             names(subvariables(dataset[[x]]))
           } else {
@@ -129,8 +129,8 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         ret_val
     }, simplify = FALSE))
 
-    total <- list(alias = "___total___", name = "", old_categories = "Total", categories_out = "Total",
-        categories = "Total")
+    total <- list(alias = "___total___", name = "", type = "Total", old_categories = "Total",
+                  categories_out = "Total", categories = "Total")
     class(total) <- "BannerVar"
 
     # Add the 'Total' column at the beginning of each subbanner

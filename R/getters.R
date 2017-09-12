@@ -109,6 +109,11 @@ getType.ToplineBase <- function(x) {
     x$type
 }
 
+#' @export
+getType.BannerVar <- function(x) {
+  x$type
+}
+
 # getType.CrunchCube <- function(out_crtabs) {
 # out_crtabs$result$dimensions[[1]]$type$class }
 
