@@ -11,7 +11,8 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      min_cell_size = NULL, min_cell_label = NULL,
      show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
      dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL) {
+     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
+     round_to_100 = FALSE) {
 
   # reformat results for LaTeX output
   banner <- data_summary$banner

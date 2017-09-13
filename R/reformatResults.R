@@ -1,32 +1,36 @@
 
-reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
+reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
+                            round_to_100 = FALSE) {
     UseMethod("reformatResults", x)
 }
 
 #' @export
-reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
+reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
+                                    round_to_100 = FALSE) {
     stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
 
 #' @export
 reformatResults.ToplineBase <- function(x, proportions = TRUE, digits = 0,
-    reformat = TRUE) {
+    reformat = TRUE, round_to_100 = FALSE) {
   reformatResultsGen(x, proportions = proportions, digits = digits,
-                     reformat = reformat)
+                     reformat = reformat, round_to_100 = round_to_100)
 }
 
 #' @export
-reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE) {
+reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
+                                           round_to_100 = FALSE) {
     reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
 }
 
 #' @importFrom methods is
-reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE) {
+reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
+                               round_to_100 = FALSE) {
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
-      if (!proportions || is(x, "ToplineMultipleResponse")) {
+      if (!proportions || is(x, "ToplineMultipleResponse") || !round_to_100) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
       }
       else if (is(x, "ToplineCategorical")) {
@@ -43,21 +47,17 @@ reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TR
 }
 
 
-roundPropCategorical <- function(data, digits) {
-  data_rounded <- round(data * 100, digits)
-  data_sum <- sum(data_rounded)
-  if (data_sum > 100) {
-    data_diff <- data_rounded - data
-    data_which_max <- which.max(data_diff)
-    data_rounded[data_which_max] <- data_rounded[data_which_max] - 1
+roundPropCategorical <- function(data, digits = 0) {
+  data <- data * 100
+  rounded <- round(data, digits)
+  while (sum(rounded) != 100) {
+    sgn <- sign(sum(rounded) - 100)
+    index <- which.max((rounded - data) * sgn)
+    rounded[index] <- rounded[index] - sgn * 10^(-digits)
   }
-  if (data_sum < 100) {
-    data_diff <- data - data_rounded
-    data_which_max <- which.max(data_diff)
-    data_rounded[data_which_max] <- data_rounded[data_which_max] + 1
-  }
-  data_rounded
+  return(rounded)
 }
+
 
 roundPropCategoricalArray <- function(data, digits) {
   t(apply(data, 1, roundPropCategorical, digits))

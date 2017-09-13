@@ -71,6 +71,8 @@
 #' have the same number with consecutive letters appended? Defaults to \code{TRUE}.
 #' @param custom_numbering A vector of custom values to be used for numbering banner tables.
 #' Defaults to \code{NULL} - default numbering scheme is used.
+#' @param round_to_100 logical. Should percentages be rounded to sum up to 100?
+#' Defaults to \code{FALSE}.
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -94,7 +96,8 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     min_cell_size = NULL, min_cell_label = NULL,
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL) {
+    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
+    round_to_100 = FALSE) {
 
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
