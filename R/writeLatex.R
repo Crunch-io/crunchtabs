@@ -162,7 +162,9 @@ latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames 
 
 
 escM <- function(str) {
-    gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", gsub("([#$%&_])", "\\\\\\1", str))
+    str <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", gsub("([#$%&_])", "\\\\\\1", str))
+    str <- gsub("[£￡]", "\\\\pounds", str)
+    str
 }
 
 ltranspose <- function(l) {
