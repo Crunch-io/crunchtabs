@@ -5,7 +5,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      table_of_contents = FALSE, returndata = FALSE, append_text = "",
      pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
      headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-     tableonly = FALSE, landscape = TRUE, font = "helvet", font_size = NULL,
+     tableonly = FALSE, landscape = TRUE, font = "helvet", font_size = "small",
      page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
      margin = list(top = .6, bottom = .6, left = .5, right = .5),
      min_cell_size = NULL, min_cell_label = NULL,

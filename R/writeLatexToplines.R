@@ -5,7 +5,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     table_of_contents = FALSE, returndata = FALSE, append_text = "",
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-    tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
+    tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = 12,
     page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
     margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
     min_cell_size = NULL, min_cell_label = NULL,
