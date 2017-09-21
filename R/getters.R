@@ -1,45 +1,114 @@
 
-getResults <- function(x, proportions = FALSE) {
+getResults <- function(x, proportions = FALSE, details = FALSE) {
     UseMethod("getResults", x)
 }
 
 #' @export
-getResults.default <- function(x, proportions) {
+getResults.default <- function(x, proportions, details) {
     stop(paste("getResults doesn't support objects of class",
         class(x)))
 }
 
 #' @export
-getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE) {
+getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-        return(x$proportions)
+      # if (details) {
+      #   return(x$proportions_details)
+      # }
+      return(x$proportions)
     } else {
-        return(x$counts)
+      if (details) {
+        return(x$counts_details)
+      }
+      return(x$counts)
     }
 }
 
 #' @export
-getResults.ToplineMultipleResponse <- function(x, proportions = FALSE) {
+getResults.ToplineMultipleResponse <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-        return(x$proportions)
+      # if (details) {
+      #   return(x$proportions_details)
+      # }
+      return(x$proportions)
     } else {
-        return(x$counts[, 1])
+      if (details) {
+        return(x$counts_details)
+      }
+      return(x$counts)
     }
 }
 
 #' @export
-getResults.ToplineNumeric <- function(x, proportions = FALSE) {
+getResults.ToplineNumeric <- function(x, proportions = FALSE, details = FALSE) {
     x$summary
 }
 
 #' @export
-getResults.CrossTabBannerVar <- function(x, proportions = FALSE) {
+getResults.CrossTabBannerVar <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
         return(x$proportions)
     } else {
         return(x$counts)
     }
 }
+
+
+
+setResults <- function(x, value, proportions = FALSE, details = FALSE) {
+  UseMethod("setResults", x)
+}
+
+#' @export
+setResults.default <- function(x, value, proportions = FALSE, details = FALSE) {
+  stop(paste("setResults doesn't support objects of class",
+             class(x)))
+}
+
+#' @export
+setResults.ToplineCategoricalGeneral <- function(x, value, proportions = FALSE, details = FALSE) {
+  if (proportions) {
+    # if (details) {
+    #   x$proportions_details <- value
+    #   return(x)
+    # }
+    x$proportions <- value
+    return(x)
+  } else {
+    if (details) {
+      x$counts_details <- value
+      return(x)
+    }
+    x$counts <- value
+    return(x)
+  }
+}
+
+#' @export
+setResults.ToplineMultipleResponse <- function(x, value, proportions = FALSE, details = FALSE) {
+  if (proportions) {
+    # if (details) {
+    #   x$proportions_details <- value
+    #   return(x)
+    # }
+    x$proportions <- value
+    return(x)
+  } else {
+    if (details) {
+      x$counts_details <- value
+      return(x)
+    }
+    x$counts <- value
+    return(x)
+  }
+}
+
+#' @export
+setResults.ToplineNumeric <- function(x, value, proportions = FALSE, details = FALSE) {
+  x$summary <- value
+  return(x)
+}
+
 
 
 getNames <- function(x) {

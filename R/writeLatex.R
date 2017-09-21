@@ -112,6 +112,13 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
 }
 
 
+#' @export
+writeLatex.default <- function(data_summary, ...) {
+  stop(paste0("writeLatex doesn't support objects of class '",
+             paste0(class(data_summary), collapse = " "), "'"))
+}
+
+
 latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
     moe_text <- ""
     if (sample_desc != "")
@@ -163,7 +170,7 @@ latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames 
 
 escM <- function(str) {
     str <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", gsub("([#$%&_])", "\\\\\\1", str))
-    str <- gsub("[£￡]", "\\\\pounds", str)
+    str <- gsub("[\u00A3\uFFE1]", "\\\\pounds", str)
     str
 }
 

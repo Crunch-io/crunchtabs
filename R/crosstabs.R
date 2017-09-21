@@ -11,6 +11,7 @@
 #' Defaults to NULL - data is not weighted.
 #' @param banner An optional object of class \code{Banner} that should be used to generate
 #' a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and returned.
+#' @param codebook If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.
 #' @param title An optional title. Defaults to the name of the dataset.
 #' @param date An optional date. Defaults to the current date.
 #' @param metadata An optional list with additional metadata that should be added to the summary.
@@ -25,7 +26,7 @@
 #' @importFrom crunch name aliases allVariables is.Numeric is.dataset
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL,
+crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
 
     if (!is.dataset(dataset)) {
@@ -53,8 +54,9 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 
     weight_var <- if (!is.null(weight)) dataset[[weight]]
 
-    vars_out <- aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% vars &
-                   types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]
+    vars_out <- if (codebook) { vars } else {
+        aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% vars &
+                   types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]}
 
     filtered_vars <- setdiff(vars, vars_out)
     if (length(filtered_vars) > 0) {
@@ -64,9 +66,10 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
 
     if (is.null(banner)) {
         # results <- lapply(dataset[vars_out], topline, data = dataset, weight = weight_var)
-        results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var))
+        results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var,
+                                                          codebook = codebook))
         names(results) <- vars_out
-        res_class <- c("Toplines", "CrunchTabs")
+        res_class <- c(if (codebook) "Codebook" else "Toplines", "CrunchTabs")
     } else {
         results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))

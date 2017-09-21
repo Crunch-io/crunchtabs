@@ -5,7 +5,8 @@
 \title{Toplines and Crosstabs Summaries}
 \usage{
 crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
-  title = name(dataset), date = Sys.Date(), metadata = NULL)
+  codebook = FALSE, title = name(dataset), date = Sys.Date(),
+  metadata = NULL)
 }
 \arguments{
 \item{dataset}{A Crunch dataset.}
@@ -18,6 +19,8 @@ Defaults to NULL - data is not weighted.}
 
 \item{banner}{An optional object of class \code{Banner} that should be used to generate
 a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and returned.}
+
+\item{codebook}{If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.}
 
 \item{title}{An optional title. Defaults to the name of the dataset.}
 

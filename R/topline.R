@@ -6,25 +6,37 @@
 #' @param dataset A Crunch dataset.
 #' @param weight A numeric Cruch variable that should be used for data weighting.
 #' Defaults to NULL - data is not weighted.
+#' @param codebook If \code{TRUE}, codebook data summaries are prepared.
+#' Defaults to \code{FALSE}.
 #' @return A Toplines summary of a Crunch variable.
 #' @examples
 #' \dontrun{
 #' topline_summary <- topline(crunch_variable, crunch_dataset, crunch_weight_variable)
 #' }
 #' @export
-topline <- function(var, dataset, weight) {
+topline <- function(var, dataset, weight, codebook = FALSE) {
     UseMethod("topline", var)
 }
 
 #' @export
-topline.default <- function(var, dataset, weight = NULL) {
+topline.default <- function(var, dataset, weight = NULL, codebook = FALSE) {
     warning(paste("topline doesn't support objects of class", class(var)))
     NULL
 }
 
+#' @export
+topline.TextVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
+  toplineBase(var)
+}
+
+#' @export
+topline.DatetimeVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
+  toplineBase(var)
+}
+
 #' @importFrom stats sd
 #' @export
-topline.NumericVariable <- function(var, dataset, weight = NULL) {
+topline.NumericVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
     topline_base <- toplineBase(var)
     var_alias <- getAlias(topline_base)
     out_crtabs <- crtabs(paste0("list(min(", var_alias, "), max(", var_alias, "), mean(", var_alias, "), sd(", var_alias, ")) ~ 1"), data = dataset, weight = weight)
@@ -38,20 +50,20 @@ topline.NumericVariable <- function(var, dataset, weight = NULL) {
 }
 
 #' @export
-topline.CategoricalVariable <- function(var, dataset, weight = NULL) {
-    toplineGen(var, dataset, weight = weight)
+topline.CategoricalVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
+    toplineGen(var, dataset, weight = weight, codebook = codebook)
 }
 
 #' @export
-topline.MultipleResponseVariable <- function(var, dataset, weight = NULL) {
-    ret <- toplineGen(var, dataset = dataset, weight = weight, margin = 1, mr = TRUE)
+topline.MultipleResponseVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
+    ret <- toplineGen(var, dataset = dataset, weight = weight, margin = 1, mr = TRUE, codebook = codebook)
     ret$proportions <- ret$proportions[, "Selected"]
     ret
 }
 
 #' @export
-topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
-    ret <- toplineGen(var, dataset, weight = weight, margin = 1)
+topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
+    ret <- toplineGen(var, dataset, weight = weight, margin = 1, codebook = codebook)
     ret$valid = rowSums(ret$counts)
     ret$missing = ret$total - ret$valid
     dimnames(ret$counts) <- list(subvariables = dimnames(ret$counts)[[1]], categories = dimnames(ret$counts)[[2]])
@@ -59,7 +71,7 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL) {
     ret
 }
 
-toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE) {
+toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE, codebook = FALSE) {
     topline_base <- toplineBase(var)
     out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
     total <- getTotal(out_crtabs)
@@ -70,6 +82,13 @@ toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE) {
                                 total = total,
                                 missing = missing,
                                 valid = total - missing))
+    if (codebook) {
+      out_crtabs_details <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"),
+                                   data = dataset, weight = weight, useNA = "always")
+      ret$counts_details <- as.array(out_crtabs_details)
+      # ret$proportions_details <- crunch::prop.table(out_crtabs_details, margin = margin)
+      ret$categories <- categories(dataset[[alias(var)]])
+    }
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }

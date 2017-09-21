@@ -1,33 +1,35 @@
 
 reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                            round_to_100 = FALSE) {
+                            round_to_100 = FALSE, details = FALSE) {
     UseMethod("reformatResults", x)
 }
 
 #' @export
 reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                                    round_to_100 = FALSE) {
+                                    round_to_100 = FALSE, details = FALSE) {
     stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
 
 #' @export
 reformatResults.ToplineBase <- function(x, proportions = TRUE, digits = 0,
-    reformat = TRUE, round_to_100 = FALSE) {
+    reformat = TRUE, round_to_100 = FALSE, details = FALSE) {
   reformatResultsGen(x, proportions = proportions, digits = digits,
-                     reformat = reformat, round_to_100 = round_to_100)
+                     reformat = reformat, round_to_100 = round_to_100,
+                     details = details)
 }
 
 #' @export
 reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                                           round_to_100 = FALSE) {
-    reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat)
+                                           round_to_100 = FALSE, details = FALSE) {
+    reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat,
+                       details = details)
 }
 
 #' @importFrom methods is
 reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
-                               round_to_100 = FALSE) {
-    data <- getResults(x, proportions = proportions)
+                               round_to_100 = FALSE, details = FALSE) {
+    data <- getResults(x, proportions = proportions, details = details)
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
       if (!proportions || is(x, "ToplineMultipleResponse") || !round_to_100) {
@@ -188,4 +190,44 @@ bannerDataRecode <- function(b_table, b_recode) {
     #   rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
     # })
     b_table
+}
+
+
+
+reformatCodebookResults <- function(x, digits = 0, reformat = FALSE, round_to_100 = FALSE, details = TRUE) {
+  UseMethod("reformatCodebookResults", x)
+}
+
+#' @export
+reformatCodebookResults.default <- function(x, digits = 0, reformat = FALSE,
+                                    round_to_100 = FALSE, details = TRUE) {
+  stop(paste("reformatCodebookResults generic function doesn't support objects of type:",
+             paste(class(x), collapse = ",")))
+}
+
+#' @export
+reformatCodebookResults.ToplineCategoricalGeneral <- function(x, digits = 0, reformat = FALSE,
+                                                   round_to_100 = FALSE, details = TRUE) {
+  x <- setResults(x, reformatResultsGen(x, proportions = FALSE, digits = digits, reformat = reformat,
+                                 round_to_100 = round_to_100, details = details),
+             proportions = FALSE, details = details)
+
+  x <- setResults(x, reformatResultsGen(x, proportions = TRUE, digits = digits, reformat = reformat,
+                                 round_to_100 = round_to_100, details = details),
+            proportions = TRUE, details = details)
+  x
+}
+
+#' @export
+reformatCodebookResults.ToplineNumeric <- function(x, digits = 0, reformat = FALSE,
+                                                   round_to_100 = FALSE, details = TRUE) {
+  x <- setResults(x, reformatResultsGen(x, digits = 0, details = details),
+             details = details)
+  x
+}
+
+#' @export
+reformatCodebookResults.ToplineBase <- function(x, digits = 0, reformat = FALSE,
+                                                   round_to_100 = FALSE, details = TRUE) {
+  x
 }

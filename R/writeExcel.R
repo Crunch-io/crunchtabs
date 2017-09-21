@@ -189,6 +189,12 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
 }
 
 #' @export
+writeExcel.default <- function(data_summary, ...) {
+  stop(paste0("writeExcel doesn't support objects of class '",
+              paste0(class(data_summary), collapse = " "), "'"))
+}
+
+#' @export
 writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(data_summary), subtitle = NULL,
                                 proportions = FALSE, digits = 0, table_of_contents = FALSE, logo = NULL,
                                 weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),

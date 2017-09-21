@@ -4,7 +4,7 @@
 \alias{topline}
 \title{Topline summary of a Crunch variable}
 \usage{
-topline(var, dataset, weight)
+topline(var, dataset, weight, codebook = FALSE)
 }
 \arguments{
 \item{var}{A Cruch variable.}
@@ -13,6 +13,9 @@ topline(var, dataset, weight)
 
 \item{weight}{A numeric Cruch variable that should be used for data weighting.
 Defaults to NULL - data is not weighted.}
+
+\item{codebook}{If \code{TRUE}, codebook data summaries are prepared.
+Defaults to \code{FALSE}.}
 }
 \value{
 A Toplines summary of a Crunch variable.
