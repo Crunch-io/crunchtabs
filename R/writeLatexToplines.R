@@ -183,6 +183,8 @@ latexHeadT <- function(surveyhead, font_size, margin, font, landscape=FALSE, sub
         "\\usepackage[dvipsnames]{color}\n",
         "\\definecolor{gray}{gray}{0.85}\n\n",
         "\\usepackage[english]{babel}\n",
+        "\\usepackage{caption}\n",
+        "\\captionsetup[table]{labelformat=empty}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
         "\\#1\\let\\",
         "\\=\\temp}\n",

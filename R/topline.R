@@ -35,6 +35,7 @@ topline.DatetimeVariable <- function(var, dataset, weight = NULL, codebook = FAL
 }
 
 #' @importFrom stats sd
+#' @importFrom crunch digits
 #' @export
 topline.NumericVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
     topline_base <- toplineBase(var)
@@ -44,7 +45,7 @@ topline.NumericVariable <- function(var, dataset, weight = NULL, codebook = FALS
     missing <- getMissing(out_crtabs)
     summary_data <- c(Minimum = out_crtabs@arrays$min, Maximum = out_crtabs@arrays$max, Mean = out_crtabs@arrays$mean, `Standard deviation` = out_crtabs@arrays$stddev)
     ret <- c(topline_base, list(summary = array(summary_data, dimnames = list(names(summary_data)))
-                                , total = total, missing = missing, valid = total - missing))
+                                , total = total, missing = missing, valid = total - missing, settings = list(digits = digits(var))))
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }
@@ -58,12 +59,14 @@ topline.CategoricalVariable <- function(var, dataset, weight = NULL, codebook = 
 topline.MultipleResponseVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
     ret <- toplineGen(var, dataset = dataset, weight = weight, margin = 1, mr = TRUE, codebook = codebook)
     ret$proportions <- ret$proportions[, "Selected"]
+    ret$subvariables <- getSubvarData(var)
     ret
 }
 
 #' @export
 topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
     ret <- toplineGen(var, dataset, weight = weight, margin = 1, codebook = codebook)
+    ret$subvariables <- getSubvarData(var)
     ret$valid = rowSums(ret$counts)
     ret$missing = ret$total - ret$valid
     dimnames(ret$counts) <- list(subvariables = dimnames(ret$counts)[[1]], categories = dimnames(ret$counts)[[2]])
@@ -73,25 +76,36 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL, codebo
 
 toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE, codebook = FALSE) {
     topline_base <- toplineBase(var)
-    out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
-    total <- getTotal(out_crtabs)
-    missing <- getMissing(out_crtabs)
-    ret <- c(topline_base, list(counts = as.array(out_crtabs),
-                                proportions = crunch::prop.table(out_crtabs, margin = margin),
-                                counts_unweighted = bases(out_crtabs, 0),
-                                total = total,
-                                missing = missing,
-                                valid = total - missing))
-    if (codebook) {
+    ret <- c(topline_base, if (codebook) {
       out_crtabs_details <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"),
                                    data = dataset, weight = weight, useNA = "always")
-      ret$counts_details <- as.array(out_crtabs_details)
-      # ret$proportions_details <- crunch::prop.table(out_crtabs_details, margin = margin)
-      ret$categories <- categories(dataset[[alias(var)]])
-    }
+      list(counts_details = as.array(out_crtabs_details),
+           proportions_details = crunch::prop.table(out_crtabs_details),
+           categories = as.data.frame(lapply(as.data.frame(do.call(rbind, lapply(categories(var),
+                                      function(x) {
+                                        sapply(x[c("id", "missing", "name", "numeric_value")]
+                                               , function(xx) if (is.null(xx)) NA else xx)
+                                      }))), unlist), stringsAsFactors = FALSE))
+    } else {
+      out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
+      total <- getTotal(out_crtabs)
+      missing <- getMissing(out_crtabs)
+      list(counts = as.array(out_crtabs),
+           proportions = crunch::prop.table(out_crtabs, margin = margin),
+           counts_unweighted = bases(out_crtabs, 0),
+           total = total,
+           missing = missing,
+           valid = total - missing)
+    })
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }
+
+
+getSubvarData <- function(var) {
+  list(aliases = aliases(subvariables(var)), names = names(subvariables(var)))
+}
+
 
 generateClassList <- function(topline_base) {
     categorical_general <- if (getType(topline_base) %in% c("categorical", "multiple_response", "categorical_array")) {

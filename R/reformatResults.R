@@ -221,7 +221,7 @@ reformatCodebookResults.ToplineCategoricalGeneral <- function(x, digits = 0, ref
 #' @export
 reformatCodebookResults.ToplineNumeric <- function(x, digits = 0, reformat = FALSE,
                                                    round_to_100 = FALSE, details = TRUE) {
-  x <- setResults(x, reformatResultsGen(x, digits = 0, details = details),
+  x <- setResults(x, reformatResultsGen(x, digits = digits, details = details),
              details = details)
   x
 }

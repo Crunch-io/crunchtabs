@@ -12,9 +12,9 @@ getResults.default <- function(x, proportions, details) {
 #' @export
 getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-      # if (details) {
-      #   return(x$proportions_details)
-      # }
+      if (details) {
+        return(x$proportions_details)
+      }
       return(x$proportions)
     } else {
       if (details) {
@@ -27,9 +27,9 @@ getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE, details
 #' @export
 getResults.ToplineMultipleResponse <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-      # if (details) {
-      #   return(x$proportions_details)
-      # }
+      if (details) {
+        return(x$proportions_details)
+      }
       return(x$proportions)
     } else {
       if (details) {
@@ -68,10 +68,10 @@ setResults.default <- function(x, value, proportions = FALSE, details = FALSE) {
 #' @export
 setResults.ToplineCategoricalGeneral <- function(x, value, proportions = FALSE, details = FALSE) {
   if (proportions) {
-    # if (details) {
-    #   x$proportions_details <- value
-    #   return(x)
-    # }
+    if (details) {
+      x$proportions_details <- value
+      return(x)
+    }
     x$proportions <- value
     return(x)
   } else {
@@ -87,10 +87,10 @@ setResults.ToplineCategoricalGeneral <- function(x, value, proportions = FALSE, 
 #' @export
 setResults.ToplineMultipleResponse <- function(x, value, proportions = FALSE, details = FALSE) {
   if (proportions) {
-    # if (details) {
-    #   x$proportions_details <- value
-    #   return(x)
-    # }
+    if (details) {
+      x$proportions_details <- value
+      return(x)
+    }
     x$proportions <- value
     return(x)
   } else {

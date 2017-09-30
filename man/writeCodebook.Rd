@@ -7,12 +7,13 @@
 writeCodebook(data_summary, filename = NULL, digits = 0,
   title = getName(data_summary), description = NULL, field_period = NULL,
   sample_desc = NULL, notes = NULL, moe = NULL, append_text = NULL,
-  table_of_contents = FALSE, returndata = FALSE, pdf = FALSE,
+  table_of_contents = FALSE, pdf = FALSE,
   path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
   foottext = "", graphicspath = NULL, logo = NULL, landscape = FALSE,
   font = "helvet", font_size = 12, page_width = ifelse(landscape, 9, 6.5),
   row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left = 1,
-  right = 1), clearpage = TRUE, round_to_100 = FALSE)
+  right = 1), clearpage = TRUE, round_to_100 = FALSE,
+  concatenate_categories = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Codebook}.}
@@ -39,9 +40,6 @@ the final table. Useful for adding in disclosure information.}
 
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report Defaults to \code{FALSE}.}
-
-\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
 
 \item{pdf}{logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.}
 
@@ -81,12 +79,14 @@ right=1in, includeheadfoot'.}
 
 \item{clearpage}{logical. Should every variable be on a separete page?}
 
-\item{round_to_100}{logical. Should percentages be rounded to sum up to 100?
+\item{round_to_100}{logical. Should percentages be rounded to sum up to 100?}
+
+\item{concatenate_categories}{logical. Should category' ID be concatenated
+with category's name?
 Defaults to \code{FALSE}.}
 }
 \value{
-If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
-the report is returned. Otherwise \code{NULL} is returned.
+Processed data (invisibly).
 }
 \description{
 \code{writeCodebook} produces codebooks (as LaTeX files) containing statistics

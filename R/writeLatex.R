@@ -140,9 +140,7 @@ latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames 
     show_totals = TRUE) {
     if (!is.data.frame(df))
         df <- as.data.frame(df)
-
     if (autocolnames) {
-
         df <- if (is.null(colnames))
             rbind(gsub(".", " ", names(df), fixed = TRUE), df) else rbind(colnames, df)
     }
