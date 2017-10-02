@@ -30,7 +30,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                                                    , notes = getNotes(crunch_cube)
                                                    , settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = ""))
                                                    , crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
-                                                   ), class = "CrossTabVar")
+                                                   ), class = c(if (is_mr_type) "MultipleResponseCrossTabVar", "CrossTabVar"))
     }
 
     # for every "column" variable

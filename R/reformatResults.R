@@ -52,7 +52,7 @@ reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TR
 roundPropCategorical <- function(data, digits = 0) {
   data <- data * 100
   rounded <- round(data, digits)
-  while (sum(rounded) != 100) {
+  while (sum(rounded) > 100) {
     sgn <- sign(sum(rounded) - 100)
     index <- which.max((rounded - data) * sgn)
     rounded[index] <- rounded[index] - sgn * 10^(-digits)
@@ -66,28 +66,41 @@ roundPropCategoricalArray <- function(data, digits) {
 }
 
 
+roundPropCrosstabs <- function(data, digits) {
+  apply(data, 2, roundPropCategorical, digits)
+}
+
+
 reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
-    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_to_100 = FALSE) {
 
     data <- getResults(x, proportions = proportions)
-    if (show_totals) {
-        data <- rbind(data, if (proportions) x$totals_proportions else x$totals_counts)
-        rownames(data)[length(rownames(data))] <- "Totals"
-    }
     data[is.nan(data)] <- 0
-    if (!reformat) {
-      data <- as.data.frame(data)
-    }
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
     min_cell_mask <- NULL
     if (!is.null(min_cell_size)) {
       min_cell_mask <- n_data < min_cell_size
     }
+    if (!reformat) {
+      data <- as.data.frame(data)
+    }
     if (digits > -1 && reformat) {
-        data[] <- format(round(data * if (proportions) 100 else 1, digits), nsmall=digits, big.mark=",")
-        n_data[] <- round(n_data, digits)
-        n_data[] <- format(n_data, nsmall=digits, big.mark=",")
+      if (!proportions || !round_to_100) {
+        data[] <- round(data * if (proportions) 100 else 1, digits)
+      }
+      else {
+        data[] <- roundPropCrosstabs(data, digits)
+      }
+    }
+    if (show_totals) {
+      data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
+      rownames(data)[length(rownames(data))] <- "Totals"
+    }
+    if (digits > -1 && reformat) {
+      data[] <- format(data, nsmall=digits, big.mark=",")
+      n_data[] <- round(n_data, digits)
+      n_data[] <- format(n_data, nsmall=digits, big.mark=",")
     }
     if (proportions && reformat) {
         data[] <- paste0(data, "%")
@@ -110,7 +123,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
 
 reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = FALSE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
-    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, ...) {
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_to_100 = FALSE) {
     lapply(x, function(var) {
         var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
             lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
@@ -119,7 +132,8 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
                 reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
                   digits = digits, add_parenthesis = add_parenthesis, show_totals = !var$settings$no_totals & show_totals,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
-                  min_cell_label = min_cell_label, reformat = reformat)
+                  min_cell_label = min_cell_label, reformat = reformat,
+                  round_to_100 = round_to_100 && !is(var, "MultipleResponseCrossTabVar"))
             })
         }, simplify = FALSE)
         var
