@@ -12,21 +12,12 @@
 #' @param field_period A character string describing the field period.
 #' @param sample_desc A character string describing the sample.
 #' @param notes A character string with additional information.
-#' @param moe An optional numeric margin of error.
-#' @param append_text An optional character string that, if supplied, will be appended after
-#' the final table. Useful for adding in disclosure information.
 #' @param table_of_contents logical. Should a list of tables be included at the start
 #' of the report Defaults to \code{FALSE}.
 #' @param pdf logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.
 #' @param path.to.pdflatex Character path to pdflatex.
 #' @param open logical. If PDF document was produced, open it with
 #' the default application? Only implemented for MacOS.
-#' @param headtext An optional character string indicating what text should be
-#' placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-#' continued.'
-#' @param foottext An optional character string indicating what text should be
-#' placed at the bottom of continuation tables. 'tbc' is a shortcut for
-#' 'continued from previous page.'
 #' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
 #' Defaults to \code{NULL} - LaTeX output directory is used.
 #' @param logo character. The name of the logo file.
@@ -35,8 +26,6 @@
 #' mode. Defaults to \code{FALSE}.
 #' @param font A character string specifying the font package to use in LaTeX.
 #' @param font_size Font size points. Defaults to '12' pt font.
-#' @param page_width Page width. Defaults to 9in for landscape mode and 6.5in otherwise.
-#' @param row_label_width Width of the row label comuln. Defaults to 1.5in.
 #' @param margin An optional argument to pass to the LaTeX package
 #' \code{geometry}. Default is 'top=.6in, bottom=.6in, left=1in,
 #' right=1in, includeheadfoot'.
@@ -54,13 +43,17 @@
 #' @export
 writeCodebook <- function(data_summary, filename = NULL, digits = 0, title = getName(data_summary),
                           description = NULL, field_period = NULL, sample_desc = NULL, notes = NULL,
-                          moe = NULL, append_text = NULL, table_of_contents = FALSE,
+                          table_of_contents = FALSE,
                           pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
-                          headtext = "", foottext = "", graphicspath = NULL, logo = NULL,
+                          graphicspath = NULL, logo = NULL,
                           landscape = FALSE, font = "helvet", font_size = 12,
-                          page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
                           margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
                           clearpage = TRUE, round_to_100 = FALSE, concatenate_categories = FALSE) {
+
+  if (!is(data_summary, "Codebook")) {
+    stop(paste0("writeCodebook doesn't support objects of class '",
+                paste0(class(data_summary), collapse = " "), "'"))
+  }
 
   data_summary$results <- lapply(data_summary$results, function(x) {
     reformatCodebookResults(x, digits = if (!is.null(x$settings) && !is.null(x$settings$digits)) x$settings$digits else digits,
@@ -281,7 +274,6 @@ generateCodebookVarResults.ToplineCategoricalGeneral <- function(x, weight = NUL
                              concatenate_categories = concatenate_categories),
     collapse = "\n\n")
 }
-
 
 
 #' @export

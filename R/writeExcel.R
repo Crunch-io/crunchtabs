@@ -172,7 +172,7 @@ writeExcel <- function(data_summary, filename = NULL, title = getName(data_summa
                        banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                        min_base_size = NULL, min_base_label = list(mask = "*"),
                        show_information = list(name = list(decoration="bold"), filtertext=list(decoration="italic")),
-                       show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
+                       show_grid_lines = FALSE, return_data = FALSE, logging = FALSE,
                        labels_wrap = list(name = TRUE, description = TRUE,
                                           row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                        first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
@@ -203,7 +203,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
                                 banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                 min_base_size = NULL, min_base_label = list(mask = "*"),
                                 show_information = list(name = list(decoration="bold"), filtertext=list(decoration="italic")),
-                                show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
+                                show_grid_lines = FALSE, return_data = FALSE, logging = FALSE,
                                 labels_wrap = list(name = TRUE, description = TRUE,
                                                    row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                 first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
@@ -256,7 +256,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  banner_vars_split = NULL, row_label_width = 30, reduce_format = FALSE,
                                  min_base_size = NULL, min_base_label = list(mask = "*"),
                                  show_information = list(name = list(decoration="bold"), filtertext=list(decoration="italic")),
-                                 show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
+                                 show_grid_lines = FALSE, return_data = FALSE, logging = FALSE,
                                  labels_wrap = list(name = TRUE, description = TRUE,
                                                     row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE),
                                  first_active_col = 2, include_aliases = FALSE, banner_border_lines = FALSE,
@@ -267,20 +267,12 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
                                  hypothesis_test = FALSE) {
 
     banner <- data_summary$banner
-    # if (hypothesis_test) {
-    #   data_summary$results <- reformatHypothesisTest(data_summary$results)
-    # }
-    # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits,
-    # add_parenthesis = FALSE, show_totals = show_totals, weighted_n = weighted_n,
-    # min_base_size = min_base_size, min_base_label = min_base_label, reformat = FALSE)
 
     if (one_per_sheet && length(banner) > 1) {
       banner_name <- "Results"
       data_summary$results <- mergeBannerResults(data_summary$results, banner_name = banner_name)
       banner <- mergeBanner(banner, banner_name = banner_name)
     }
-
-    # banner_vars_split_line <- banner_vars_split == "line"
 
     get_format_info <- function(format_data, info_name, elem) {
       if (!is.null(format_data) && info_name %in% names(format_data)) format_data[[info_name]][[elem]]
@@ -587,7 +579,6 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
   }
 
   if (hypothesis_test) {
-    # hypho_test(wb, ws, cross_tab_var, banner_name, margin = 1, empty_col, styles, crow, ccol = start_col)
     hypho_test(wb, ws, cross_tab_var, banner_name, margin = 2, empty_col, styles, crow, ccol = start_col)
   }
 
@@ -733,7 +724,7 @@ writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = 
 }
 
 writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = TRUE,
-    digits = 0, title = "", subtitle = NULL, return_data = TRUE, table_of_contents = FALSE,
+    digits = 0, title = "", subtitle = NULL, return_data = FALSE, table_of_contents = FALSE,
     report_desc = NULL, font = "Calibri", font_size = 12, show_grid_lines = FALSE,
     unweighted_n = NULL, weighted_n = NULL, banner_vars_split = NULL,
     show_totals = TRUE, append_text = "", min_base_size = NULL,

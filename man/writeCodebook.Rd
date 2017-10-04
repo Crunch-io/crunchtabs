@@ -6,13 +6,11 @@
 \usage{
 writeCodebook(data_summary, filename = NULL, digits = 0,
   title = getName(data_summary), description = NULL, field_period = NULL,
-  sample_desc = NULL, notes = NULL, moe = NULL, append_text = NULL,
-  table_of_contents = FALSE, pdf = FALSE,
-  path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
-  foottext = "", graphicspath = NULL, logo = NULL, landscape = FALSE,
-  font = "helvet", font_size = 12, page_width = ifelse(landscape, 9, 6.5),
-  row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left = 1,
-  right = 1), clearpage = TRUE, round_to_100 = FALSE,
+  sample_desc = NULL, notes = NULL, table_of_contents = FALSE,
+  pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
+  graphicspath = NULL, logo = NULL, landscape = FALSE, font = "helvet",
+  font_size = 12, margin = list(top = 0.6, bottom = 0.6, left = 1, right =
+  1), clearpage = TRUE, round_to_100 = FALSE,
   concatenate_categories = FALSE)
 }
 \arguments{
@@ -33,11 +31,6 @@ Defaults to 0.}
 
 \item{notes}{A character string with additional information.}
 
-\item{moe}{An optional numeric margin of error.}
-
-\item{append_text}{An optional character string that, if supplied, will be appended after
-the final table. Useful for adding in disclosure information.}
-
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report Defaults to \code{FALSE}.}
 
@@ -47,14 +40,6 @@ of the report Defaults to \code{FALSE}.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
-
-\item{headtext}{An optional character string indicating what text should be
-placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-continued.'}
-
-\item{foottext}{An optional character string indicating what text should be
-placed at the bottom of continuation tables. 'tbc' is a shortcut for
-'continued from previous page.'}
 
 \item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
 Defaults to \code{NULL} - LaTeX output directory is used.}
@@ -68,10 +53,6 @@ mode. Defaults to \code{FALSE}.}
 \item{font}{A character string specifying the font package to use in LaTeX.}
 
 \item{font_size}{Font size points. Defaults to '12' pt font.}
-
-\item{page_width}{Page width. Defaults to 9in for landscape mode and 6.5in otherwise.}
-
-\item{row_label_width}{Width of the row label comuln. Defaults to 1.5in.}
 
 \item{margin}{An optional argument to pass to the LaTeX package
 \code{geometry}. Default is 'top=.6in, bottom=.6in, left=1in,

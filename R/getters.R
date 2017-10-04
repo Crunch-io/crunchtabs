@@ -54,7 +54,6 @@ getResults.CrossTabBannerVar <- function(x, proportions = FALSE, details = FALSE
 }
 
 
-
 setResults <- function(x, value, proportions = FALSE, details = FALSE) {
   UseMethod("setResults", x)
 }

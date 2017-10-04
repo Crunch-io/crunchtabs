@@ -17,7 +17,7 @@ These should be categorical (and typically hidden) variables present in the \cod
 Defaults to NULL - variables names are used.}
 
 \item{recodes}{An optional named list of categories recodes (the syntax is similar
-to the one used in the \code{recode} function in the R \code{car} library). Use \code{NA} to
+to the one used in the \code{recode} function in the R \code{car} package). Use \code{NA} to
 exclude categories. Not listed categories will be left unchanged.
 Use \code{else} to replace all not listed categories. See examples for details.
 Defaults to NULL - categories are not modified.}

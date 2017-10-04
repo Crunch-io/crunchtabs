@@ -14,7 +14,7 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   row_label_width = 30, reduce_format = FALSE, min_base_size = NULL,
   min_base_label = list(mask = "*"), show_information = list(name =
   list(decoration = "bold"), filtertext = list(decoration = "italic")),
-  show_grid_lines = FALSE, return_data = TRUE, logging = FALSE,
+  show_grid_lines = FALSE, return_data = FALSE, logging = FALSE,
   labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
   banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
   include_aliases = FALSE, banner_border_lines = FALSE,

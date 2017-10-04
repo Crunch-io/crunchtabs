@@ -65,7 +65,6 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
 
     if (is.null(banner)) {
-        # results <- lapply(dataset[vars_out], topline, data = dataset, weight = weight_var)
         results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var,
                                                           codebook = codebook))
         names(results) <- vars_out
