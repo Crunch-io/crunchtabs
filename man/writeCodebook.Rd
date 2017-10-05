@@ -10,7 +10,7 @@ writeCodebook(data_summary, filename = NULL, digits = 0,
   pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
   graphicspath = NULL, logo = NULL, landscape = FALSE, font = "helvet",
   font_size = 12, margin = list(top = 0.6, bottom = 0.6, left = 1, right =
-  1), clearpage = TRUE, round_to_100 = FALSE,
+  1), clearpage = TRUE, round_percentages = FALSE,
   concatenate_categories = FALSE)
 }
 \arguments{
@@ -60,7 +60,7 @@ right=1in, includeheadfoot'.}
 
 \item{clearpage}{logical. Should every variable be on a separete page?}
 
-\item{round_to_100}{logical. Should percentages be rounded to sum up to 100?}
+\item{round_percentages}{logical. Should percentages be rounded to sum up to 100?}
 
 \item{concatenate_categories}{logical. Should category' ID be concatenated
 with category's name?

@@ -30,7 +30,7 @@
 #' \code{geometry}. Default is 'top=.6in, bottom=.6in, left=1in,
 #' right=1in, includeheadfoot'.
 #' @param clearpage logical. Should every variable be on a separete page?
-#' @param round_to_100 logical. Should percentages be rounded to sum up to 100?
+#' @param round_percentages logical. Should percentages be rounded to sum up to 100?
 #' @param concatenate_categories logical. Should category' ID be concatenated
 #' with category's name?
 #' Defaults to \code{FALSE}.
@@ -48,7 +48,7 @@ writeCodebook <- function(data_summary, filename = NULL, digits = 0, title = get
                           graphicspath = NULL, logo = NULL,
                           landscape = FALSE, font = "helvet", font_size = 12,
                           margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
-                          clearpage = TRUE, round_to_100 = FALSE, concatenate_categories = FALSE) {
+                          clearpage = TRUE, round_percentages = FALSE, concatenate_categories = FALSE) {
 
   if (!is(data_summary, "Codebook")) {
     stop(paste0("writeCodebook doesn't support objects of class '",
@@ -57,7 +57,7 @@ writeCodebook <- function(data_summary, filename = NULL, digits = 0, title = get
 
   data_summary$results <- lapply(data_summary$results, function(x) {
     reformatCodebookResults(x, digits = if (!is.null(x$settings) && !is.null(x$settings$digits)) x$settings$digits else digits,
-                            reformat = TRUE, round_to_100 = round_to_100)
+                            reformat = TRUE, round_percentages = round_percentages)
   })
 
   data_summary <- addMetadata(data_summary, description = description, field_period = field_period,

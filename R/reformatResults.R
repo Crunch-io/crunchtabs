@@ -1,38 +1,38 @@
 
 reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                            round_to_100 = FALSE, details = FALSE) {
+                            round_percentages = FALSE, details = FALSE) {
     UseMethod("reformatResults", x)
 }
 
 #' @export
 reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                                    round_to_100 = FALSE, details = FALSE) {
+                                    round_percentages = FALSE, details = FALSE) {
     stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
         paste(class(x), collapse = ",")))
 }
 
 #' @export
 reformatResults.ToplineBase <- function(x, proportions = TRUE, digits = 0,
-    reformat = TRUE, round_to_100 = FALSE, details = FALSE) {
+    reformat = TRUE, round_percentages = FALSE, details = FALSE) {
   reformatResultsGen(x, proportions = proportions, digits = digits,
-                     reformat = reformat, round_to_100 = round_to_100,
+                     reformat = reformat, round_percentages = round_percentages,
                      details = details)
 }
 
 #' @export
 reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
-                                           round_to_100 = FALSE, details = FALSE) {
+                                           round_percentages = FALSE, details = FALSE) {
     reformatResultsGen(x, proportions = FALSE, digits = 0, reformat = reformat,
                        details = details)
 }
 
 #' @importFrom methods is
 reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
-                               round_to_100 = FALSE, details = FALSE) {
+                               round_percentages = FALSE, details = FALSE) {
     data <- getResults(x, proportions = proportions, details = details)
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
-      if (!proportions || is(x, "ToplineMultipleResponse") || !round_to_100) {
+      if (!proportions || is(x, "ToplineMultipleResponse") || !round_percentages) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
       }
       else if (is(x, "ToplineCategorical")) {
@@ -73,7 +73,7 @@ roundPropCrosstabs <- function(data, digits) {
 
 reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
-    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_to_100 = FALSE) {
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_percentages = FALSE) {
 
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
@@ -86,7 +86,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
       data <- as.data.frame(data)
     }
     if (digits > -1 && reformat) {
-      if (!proportions || !round_to_100) {
+      if (!proportions || !round_percentages) {
         data[] <- round(data * if (proportions) 100 else 1, digits)
       }
       else {
@@ -123,7 +123,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
 
 reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = FALSE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
-    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_to_100 = FALSE) {
+    min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_percentages = FALSE) {
     lapply(x, function(var) {
         var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
             lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
@@ -133,7 +133,7 @@ reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE,
                   digits = digits, add_parenthesis = add_parenthesis, show_totals = !var$settings$no_totals & show_totals,
                   weighted_n = weighted_n, latex_adjust = latex_adjust, min_cell_size = min_cell_size,
                   min_cell_label = min_cell_label, reformat = reformat,
-                  round_to_100 = round_to_100 && !is(var, "MultipleResponseCrossTabVar"))
+                  round_percentages = round_percentages && !is(var, "MultipleResponseCrossTabVar"))
             })
         }, simplify = FALSE)
         var
@@ -208,33 +208,33 @@ bannerDataRecode <- function(b_table, b_recode) {
 
 
 
-reformatCodebookResults <- function(x, digits = 0, reformat = FALSE, round_to_100 = FALSE, details = TRUE) {
+reformatCodebookResults <- function(x, digits = 0, reformat = FALSE, round_percentages = FALSE, details = TRUE) {
   UseMethod("reformatCodebookResults", x)
 }
 
 #' @export
 reformatCodebookResults.default <- function(x, digits = 0, reformat = FALSE,
-                                    round_to_100 = FALSE, details = TRUE) {
+                                    round_percentages = FALSE, details = TRUE) {
   stop(paste("reformatCodebookResults generic function doesn't support objects of type:",
              paste(class(x), collapse = ",")))
 }
 
 #' @export
 reformatCodebookResults.ToplineCategoricalGeneral <- function(x, digits = 0, reformat = FALSE,
-                                                   round_to_100 = FALSE, details = TRUE) {
+                                                   round_percentages = FALSE, details = TRUE) {
   x <- setResults(x, reformatResultsGen(x, proportions = FALSE, digits = digits, reformat = reformat,
-                                 round_to_100 = round_to_100, details = details),
+                                 round_percentages = round_percentages, details = details),
              proportions = FALSE, details = details)
 
   x <- setResults(x, reformatResultsGen(x, proportions = TRUE, digits = digits, reformat = reformat,
-                                 round_to_100 = round_to_100, details = details),
+                                 round_percentages = round_percentages, details = details),
             proportions = TRUE, details = details)
   x
 }
 
 #' @export
 reformatCodebookResults.ToplineNumeric <- function(x, digits = 0, reformat = FALSE,
-                                                   round_to_100 = FALSE, details = TRUE) {
+                                                   round_percentages = FALSE, details = TRUE) {
   x <- setResults(x, reformatResultsGen(x, digits = digits, details = details),
              details = details)
   x
@@ -242,6 +242,6 @@ reformatCodebookResults.ToplineNumeric <- function(x, digits = 0, reformat = FAL
 
 #' @export
 reformatCodebookResults.ToplineBase <- function(x, digits = 0, reformat = FALSE,
-                                                   round_to_100 = FALSE, details = TRUE) {
+                                                   round_percentages = FALSE, details = TRUE) {
   x
 }

@@ -12,14 +12,14 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
      show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
      dc = c(3.2, 4.1), multirowheaderlines = FALSE,
      latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-     round_to_100 = FALSE) {
+     round_percentages = FALSE) {
 
   # reformat results for LaTeX output
   banner <- data_summary$banner
   data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
                                                show_totals = show_totals, weighted_n = weighted_n, latex_adjust = latex_adjust,
                                                min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = TRUE,
-                                               round_to_100 = round_to_100)
+                                               round_percentages = round_percentages)
 
   parbox_width <- ifelse(landscape,"8.5in","6in")
   hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))

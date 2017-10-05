@@ -12,10 +12,10 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    round_to_100 = FALSE) {
+    round_percentages = FALSE) {
 
   data_summary$results <- lapply(data_summary$results, function(x) {
-    x$data <- reformatResults(x, proportions = proportions, digits = digits, round_to_100 = round_to_100)
+    x$data <- reformatResults(x, proportions = proportions, digits = digits, round_percentages = round_percentages)
     x
   })
 
