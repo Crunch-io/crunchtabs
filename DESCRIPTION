@@ -18,5 +18,8 @@ Imports:
     digest,
     methods
 Suggests:
-    httptest (>= 2.0.0)
+    httptest (>= 2.0.0),
+    knitr,
+    rmarkdown
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
