@@ -286,6 +286,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
       name = openxlsx::createStyle(textDecoration = get_format_info(show_information, "name", "decoration"), fontSize = get_format_info(show_information, "name", "size"), wrapText = labels_wrap$name, halign = row_label_alignment, valign = "center"),
       filtertext = openxlsx::createStyle(textDecoration = get_format_info(show_information, "filtertext", "decoration"), fontSize = get_format_info(show_information, "filtertext", "size"), wrapText = labels_wrap$description, halign = row_label_alignment, valign = "center"),
       description = openxlsx::createStyle(textDecoration = get_format_info(show_information, "description", "decoration"), fontSize = get_format_info(show_information, "description", "size"), wrapText = labels_wrap$description, halign = row_label_alignment, valign = "center"),
+      subname = openxlsx::createStyle(textDecoration = get_format_info(show_information, "subname", "decoration"), fontSize = get_format_info(show_information, "subname", "size"), wrapText = labels_wrap$description, halign = row_label_alignment, valign = "center"),
       body = openxlsx::createStyle(numFmt = if (proportions) numFmtProp else numFmt, halign = if (!reduce_format) "center"),
       body_min_base = openxlsx::createStyle(numFmt =  if (proportions) numFmtProp else numFmt, halign = if (reduce_format) "right" else "center", textDecoration = get_decoration_data(min_base_label, "decoration"), fontColour = get_decoration_data(min_base_label, "color"), valign = "center"),
       body_text = openxlsx::createStyle(halign = if (reduce_format) "right" else "center", valign = "center"),
@@ -704,12 +705,13 @@ write_var_info <- function(wb, ws, var_info, elem_name, styles, col, row) {
 
 writeVarHeader <- function(wb, ws, x, start_col = 1, start_row = 1, toc_sheet = NULL,
     toc_row = 1, toc_col = 1, styles = NULL, show_information = NULL, include_aliases = FALSE) {
-    var_info = list(name = if (include_aliases) paste0(getAlias(x), " - ", getName(x)) else getName(x),
+    var_info <- list(name = if (include_aliases) paste0(getAlias(x), " - ", getName(x)) else getName(x),
                  description = getDescription(x),
-                 filtertext = getNotes(x))
+                 filtertext = getNotes(x),
+                 subname=x$subname)
     add_toc_info <- !is.null(toc_sheet)
     for (info_name in names(show_information)) {
-      if (info_name %in% names(var_info) && !is.null(var_info[[info_name]]) && var_info[[info_name]] != "") {
+      if (info_name %in% names(var_info) && !is.null(var_info[[info_name]]) && !is.na(var_info[[info_name]]) && var_info[[info_name]] != "") {
         start_row <- write_var_info(wb, ws, var_info = var_info[[info_name]], elem_name = info_name, styles = styles, col = start_col, row = start_row)
         if (add_toc_info) {
           openxlsx::writeFormula(wb, toc_sheet, startCol = toc_col, startRow = toc_row, x = openxlsx::makeHyperlinkString(sheet = ws,

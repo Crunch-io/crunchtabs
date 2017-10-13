@@ -21,16 +21,18 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
     # with subvariables' names/aliases
     vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
     valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
+    subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
 
     # prepare a data structure for every variable (categorical_array variables are sliced)
     for (vai in seq_along(valiases)) {
-      tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai]
-                                                   , name = vnames[vai]
-                                                   , description = getDescription(crunch_cube)
-                                                   , notes = getNotes(crunch_cube)
-                                                   , settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = ""))
-                                                   , crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
-                                                   ), class = c(if (is_mr_type) "MultipleResponseCrossTabVar", "CrossTabVar"))
+      tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai], 
+          name = vnames[vai], 
+          subnames = subnames[vai],
+          description = getDescription(crunch_cube), 
+          notes = getNotes(crunch_cube), 
+          settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = "")), 
+          crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
+        class = c(if (is_mr_type) "MultipleResponseCrossTabVar", "CrossTabVar"))
     }
 
     # for every "column" variable
