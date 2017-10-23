@@ -73,6 +73,19 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner, weight = weight_var)
         class(results) <- c("CrosstabsResults", class(results))
         res_class <- c("Crosstabs", "CrunchTabs")
+        banner <- lapply(banner, function(b)
+            lapply(b, function(b1) {
+                if (b1$alias %in% '___total___') {
+                    b1$unweighted_n <- nrow(ds)
+                    b1$weighted_n <- sum(as.vector(weight_var), na.rm = TRUE)
+                } else {
+                    b1$unweighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data=dataset, weight=NULL)), b1$categories_out)
+                    b1$unweighted_n <- b1$unweighted_n[!is.na(names(b1$unweighted_n))]
+                    b1$weighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data=dataset, weight=weight_var)), b1$categories_out)
+                    b1$weighted_n <- b1$weighted_n[!is.na(names(b1$weighted_n))]
+                }
+                return(b1)
+            }))
     }
 
     summary_data <- list(metadata = c(list(title = title, date = date, weight = weight), metadata),

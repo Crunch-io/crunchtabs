@@ -59,7 +59,8 @@
 #' \itemize{
 #'  \item name,
 #'  \item description,
-#'  \item filtertext.
+#'  \item filtertext,
+#'  \item subname.
 #' }
 #' Valid text decorations are:
 #' \itemize{
@@ -76,7 +77,7 @@
 #' @param unweighted_n A list of parameters describing the row containing the unweighted bases:
 #' \itemize{
 #'  \item name - row label.
-#'  \item position - row position. Valid values are: "top", "bottom", "both".
+#'  \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
 #'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
 #'  \item size - font size. Defaults to the value of the \code{font_size} parameter.
 #'  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -86,7 +87,7 @@
 #' @param weighted_n A list of parameters describing the row containing the weighted bases:
 #' \itemize{
 #'  \item name - row label.
-#'  \item position - row position. Valid values are: "top", "bottom", "both".
+#'  \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
 #'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
 #'  \item size - font size. Defaults to the value of the \code{font_size} parameter.
 #'  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -238,7 +239,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, title = getName(d
       desc = openxlsx::createStyle()
     )
 
-    writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
+     writeReportGeneral(data_summary, filename = filename, proportions = proportions, digits = digits,
         title = title, subtitle = subtitle, return_data = return_data, table_of_contents = table_of_contents,
         report_desc = report_desc, font = font, show_grid_lines = show_grid_lines,
         font_size = font_size, show_totals = show_totals, logging = logging,
@@ -389,8 +390,9 @@ create_table_of_contents <- function(wb, title, subtitle, toc_row = 2, toc_col =
 
 
 create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL, start_row = 1, banner_cols_pos = NULL,
-                               title_on_results_page = FALSE, title = NULL, subtitle = NULL, report_desc = NULL,
-                               percent_row = FALSE) {
+    title_on_results_page = FALSE, title = NULL, subtitle = NULL, report_desc = NULL,
+    percent_row = FALSE, weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
+    reduce_format=FALSE) {
 
   if (title_on_results_page) {
     start_row <- write_report_desc(wb, ws, title = title, subtitle = subtitle, start_row = start_row,
@@ -421,6 +423,25 @@ create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL
     openxlsx::addStyle(wb, ws, styles$border_right, rows = start_row:(start_row + 1),
                        cols = banner_cols_pos, gridExpand = TRUE, stack = TRUE)
   }
+    if (!is.null(weighted_n) && 'fixed' %in% weighted_n$position) {
+        openxlsx::writeData(wb, ws, weighted_n$name, startCol = 1, startRow = start_row + 2, colNames = FALSE)
+        wn <- matrix(unlist(sapply(seq_along(banner), function(bv) {
+            c(banner[[bv]]$weighted_n, if (empty_col == 1) "")
+            })), nrow=1)
+        start_row <- write_bases_data(wb, ws, wn, col=2, row=start_row + 2,
+            last_col_num=length(wn)+2, reduce_format=reduce_format,
+            style_data=styles$n_weighted, style_label=styles$row_n_weighted) - 2
+    }
+    if (!is.null(unweighted_n) && 'fixed' %in% unweighted_n$position) {
+        openxlsx::writeData(wb, ws, unweighted_n$name, startCol = 1, startRow = start_row + 2, colNames = FALSE)
+        uwn <- matrix(unlist(sapply(seq_along(banner), function(bv) {
+            c(banner[[bv]]$unweighted_n, if (empty_col == 1) "")
+            })), nrow=1)
+        start_row <- write_bases_data(wb, ws, uwn, col=2, row=start_row + 2,
+            last_col_num=length(uwn)+2, reduce_format=reduce_format,
+            style_data=styles$n_unweighted, style_label=styles$row_n_unweighted) - 2
+    }
+
   if (percent_row) {
     start_row <- start_row + 1
     data <- as.data.frame(lapply(seq_along(banner), function(bv) {
@@ -435,15 +456,15 @@ create_banner_panel <- function(wb, ws, banner, styles, banner_vars_split = NULL
 }
 
 write_bases_data <- function(wb, ws, data, col, row, last_col_num, reduce_format, style_data, style_label) {
-  openxlsx::writeData(wb, ws, data, startCol = col, startRow = row,
+    openxlsx::writeData(wb, ws, data, startCol = col, startRow = row,
                       colNames = FALSE)
-  if (!reduce_format) {
-    openxlsx::addStyle(wb, ws, style_data, rows = row,
-                       cols = col:last_col_num, stack = FALSE)
-    openxlsx::addStyle(wb, ws, style_label, rows = row,
-                       cols = col - 1, stack = FALSE)
-  }
-  row + 1
+    if (!reduce_format) {
+        openxlsx::addStyle(wb, ws, style_data, rows = row,
+                           cols = col:last_col_num, stack = FALSE)
+        openxlsx::addStyle(wb, ws, style_label, rows = row,
+                           cols = col - 1, stack = FALSE)
+    }
+    row + 1
 }
 
 hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, empty_col, styles, crow, ccol) {
@@ -485,10 +506,10 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
                              toc_row = toc_row, toc_col = toc_col, styles = styles, show_information = show_information,
                              include_aliases = include_aliases)
   crow <- start_row
-  weighted_n_top <- !is.null(weighted_n) && (weighted_n$position == "top" || weighted_n$position == "both")
-  unweighted_n_top <- !is.null(unweighted_n) && (unweighted_n$position == "top" || unweighted_n$position == "both")
-  weighted_n_bottom <- !is.null(weighted_n) && (weighted_n$position == "bottom" || weighted_n$position == "both")
-  unweighted_n_bottom <- !is.null(unweighted_n) && (unweighted_n$position == "bottom" || unweighted_n$position == "both")
+  weighted_n_top <- !is.null(weighted_n) && 'top' %in% weighted_n$position
+  unweighted_n_top <- !is.null(unweighted_n) && 'top' %in% unweighted_n$position
+  weighted_n_bottom <- !is.null(weighted_n) && 'bottom' %in% weighted_n$position
+  unweighted_n_bottom <- !is.null(unweighted_n) && 'bottom' %in% unweighted_n$position
   empty_col <- !is.null(banner_vars_split) && banner_vars_split == "empty_col"
 
   row_names <- c(
@@ -773,7 +794,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                              styles = styles, banner_vars_split = banner_vars_split, start_row = last_row_used,
                              banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
                              title = title, subtitle = subtitle, report_desc = report_desc,
-                             percent_row = !percent_format_data & proportions)
+                             percent_row = !percent_format_data & proportions,
+                 weighted_n=weighted_n, unweighted_n=unweighted_n, reduce_format = reduce_format)
           openxlsx::freezePane(wb, banner_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
           if (table_of_contents) {
             toc_col <- toc_res$toc_col
@@ -800,7 +822,8 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
                                    styles = styles, banner_vars_split = banner_vars_split, start_row = 1,
                                    banner_cols_pos = banner_cols_pos, title_on_results_page = title_on_results_page,
                                    title = title, subtitle = subtitle, report_desc = report_desc,
-                                   percent_row = !percent_format_data & proportions)
+                                   percent_row = !percent_format_data & proportions,
+                    weighted_n=weighted_n, unweighted_n=unweighted_n, reduce_format = reduce_format)
                 last_row_used <- last_row_used + 1
                 openxlsx::freezePane(wb, worksheet_name, firstActiveRow = last_row_used, firstActiveCol = first_active_col)
                 last_row_used <- last_row_used + 1
