@@ -57,8 +57,7 @@ topline.CategoricalVariable <- function(var, dataset, weight = NULL, codebook = 
 
 #' @export
 topline.MultipleResponseVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
-    ret <- toplineGen(var, dataset = dataset, weight = weight, margin = 1, mr = TRUE, codebook = codebook)
-    ret$proportions <- ret$proportions[, "Selected"]
+    ret <- toplineGen(var, dataset = dataset, weight = weight, margin = NULL, mr = TRUE, codebook = codebook)
     ret$subvariables <- getSubvarData(var)
     ret
 }
