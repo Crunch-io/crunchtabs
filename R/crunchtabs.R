@@ -8,6 +8,6 @@
 NULL
 
 .onAttach <- function (lib, pkgname="crunchtabs") {
-  invisible()
+    invisible()
 }
 

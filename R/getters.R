@@ -12,30 +12,30 @@ getResults.default <- function(x, proportions, details) {
 #' @export
 getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-      if (details) {
-        return(x$proportions_details)
-      }
-      return(x$proportions)
+        if (details) {
+            return(x$proportions_details)
+        }
+        return(x$proportions)
     } else {
-      if (details) {
-        return(x$counts_details)
-      }
-      return(x$counts)
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$counts)
     }
 }
 
 #' @export
 getResults.ToplineMultipleResponse <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
-      if (details) {
-        return(x$proportions_details)
-      }
-      return(x$proportions)
+        if (details) {
+            return(x$proportions_details)
+        }
+        return(x$proportions)
     } else {
-      if (details) {
-        return(x$counts_details)
-      }
-      return(x$counts)
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$counts)
     }
 }
 
@@ -55,57 +55,57 @@ getResults.CrossTabBannerVar <- function(x, proportions = FALSE, details = FALSE
 
 
 setResults <- function(x, value, proportions = FALSE, details = FALSE) {
-  UseMethod("setResults", x)
+    UseMethod("setResults", x)
 }
 
 #' @export
 setResults.default <- function(x, value, proportions = FALSE, details = FALSE) {
-  stop(paste("setResults doesn't support objects of class",
-             class(x)))
+    stop(paste("setResults doesn't support objects of class",
+        class(x)))
 }
 
 #' @export
 setResults.ToplineCategoricalGeneral <- function(x, value, proportions = FALSE, details = FALSE) {
-  if (proportions) {
-    if (details) {
-      x$proportions_details <- value
-      return(x)
+    if (proportions) {
+        if (details) {
+            x$proportions_details <- value
+            return(x)
+        }
+        x$proportions <- value
+        return(x)
+    } else {
+        if (details) {
+            x$counts_details <- value
+            return(x)
+        }
+        x$counts <- value
+        return(x)
     }
-    x$proportions <- value
-    return(x)
-  } else {
-    if (details) {
-      x$counts_details <- value
-      return(x)
-    }
-    x$counts <- value
-    return(x)
-  }
 }
 
 #' @export
 setResults.ToplineMultipleResponse <- function(x, value, proportions = FALSE, details = FALSE) {
-  if (proportions) {
-    if (details) {
-      x$proportions_details <- value
-      return(x)
+    if (proportions) {
+        if (details) {
+            x$proportions_details <- value
+            return(x)
+        }
+        x$proportions <- value
+        return(x)
+    } else {
+        if (details) {
+            x$counts_details <- value
+            return(x)
+        }
+        x$counts <- value
+        return(x)
     }
-    x$proportions <- value
-    return(x)
-  } else {
-    if (details) {
-      x$counts_details <- value
-      return(x)
-    }
-    x$counts <- value
-    return(x)
-  }
 }
 
 #' @export
 setResults.ToplineNumeric <- function(x, value, proportions = FALSE, details = FALSE) {
-  x$summary <- value
-  return(x)
+    x$summary <- value
+    return(x)
 }
 
 
@@ -153,21 +153,21 @@ getNames.BannerVar <- function(x) {
 
 #' @export
 print.Toplines <- function(x, ...) {
-  cat(paste("Data summary for Toplines report.\n",
-              "Title:", getName(x), "\n",
-              if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
-              "Contains data for the following variables:\n",
-              paste(names(x$results), collapse = ", ")))
+    cat(paste("Data summary for Toplines report.\n",
+        "Title:", getName(x), "\n",
+        if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
+        "Contains data for the following variables:\n",
+        paste(names(x$results), collapse = ", ")))
 }
 
 
 #' @export
 print.Crosstabs <- function(x, ...) {
-  cat(paste("Data summary for Crosstabs report.\n",
-            "Title:", getName(x), "\n",
-            if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
-            "Contains data for the following variables:\n",
-            paste(names(x$results), collapse = ", ")))
+    cat(paste("Data summary for Crosstabs report.\n",
+        "Title:", getName(x), "\n",
+        if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
+        "Contains data for the following variables:\n",
+        paste(names(x$results), collapse = ", ")))
 }
 
 getType <- function(x) UseMethod("getType", x)
@@ -179,7 +179,7 @@ getType.ToplineBase <- function(x) {
 
 #' @export
 getType.BannerVar <- function(x) {
-  x$type
+    x$type
 }
 
 # getType.CrunchCube <- function(out_crtabs) {
@@ -189,7 +189,7 @@ getAlias <- function(x) UseMethod("getAlias", x)
 
 #' @export
 getAlias.default <- function(x) {
-  stop(paste("getAlias doesn't support objects of class", class(x)))
+    stop(paste("getAlias doesn't support objects of class", class(x)))
 }
 
 #' @export
@@ -216,7 +216,7 @@ getName <- function(x) UseMethod("getName", x)
 
 #' @export
 getName.default <- function(x) {
-  stop(paste("getName doesn't support objects of class", class(x)))
+    stop(paste("getName doesn't support objects of class", class(x)))
 }
 
 #' @export
@@ -248,7 +248,7 @@ getDescription <- function(x) UseMethod("getDescription", x)
 
 #' @export
 getDescription.default <- function(x) {
-  stop(paste("getDescription doesn't support objects of class", class(x)))
+    stop(paste("getDescription doesn't support objects of class", class(x)))
 }
 
 #' @export
@@ -275,7 +275,7 @@ getNotes <- function(x) UseMethod("getNotes", x)
 
 #' @export
 getNotes.default <- function(x) {
-  stop(paste("getNotes doesn't support objects of class", class(x)))
+    stop(paste("getNotes doesn't support objects of class", class(x)))
 }
 
 #' @export
@@ -301,7 +301,7 @@ getTotal <- function(x) UseMethod("getTotal", x)
 
 #' @export
 getTotal.default <- function(x) {
-  stop(paste("getTotal doesn't support objects of class", class(x)))
+    stop(paste("getTotal doesn't support objects of class", class(x)))
 }
 
 #' @export
@@ -318,7 +318,7 @@ getMissing <- function(x) UseMethod("getMissing", x)
 
 #' @export
 getMissing.default <- function(x) {
-  stop(paste("getMissing doesn't support objects of class", class(x)))
+    stop(paste("getMissing doesn't support objects of class", class(x)))
 }
 
 #' @export

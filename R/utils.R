@@ -22,7 +22,7 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
     if (grepl(" ", filepath)) {
         filepath <- paste("\"", filepath, "\"", sep = "")
     }
-
+    
     if (grepl("unix", .Platform$OS.type)) {
         if (nchar(path.to.pdflatex) == 0) {
             path.to.pdflatex <- "/usr/texbin/pdflatex"
@@ -38,16 +38,16 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
     }
     if (verbose)
         nullout <- ""
-
+    
     texcommand <- paste(path.to.pdflatex, options, "-output-directory", filepath,
         texfile, nullout)
     system(texcommand)
     system(texcommand)
-
+    
     pdffile <- sub("^\"", "", sub("\"$", "", pdffile))
     filepath <- sub("^\"", "", sub("\"$", "", filepath))
     returnfile <- paste(filepath, pdffile, sep = directory())
-
+    
     if (cleanup) {
         files <- dir(path = filepath, pattern = sub("\\.pdf$", "", pdffile))
         files <- sgrep(c("out$", "log$", "aux$"), files, value = TRUE)
@@ -55,13 +55,13 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
             file.remove(paste(filepath, files, sep = directory()))
         }
     }
-
+    
     if (!file.exists(returnfile)) {
         stop("PDF file does not exist. Check that there are no errors ", "in the LaTeX file.")
     } else if (open) {
         file.open(returnfile)
     }
-
+    
     return(returnfile)
 }
 

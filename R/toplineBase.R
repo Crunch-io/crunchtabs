@@ -9,11 +9,11 @@
 #' @export
 toplineBase <- function (var) {
     return(structure(list(
-            alias = alias(var),
-            name = name(var),
-            type = type(var),
-            description = description(var),
-            notes = notes(var)
-        ),
+        alias = alias(var),
+        name = name(var),
+        type = type(var),
+        description = description(var),
+        notes = notes(var)
+    ),
         class="ToplineBase"))
 }

@@ -98,24 +98,24 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
     round_percentages = FALSE) {
-
+    
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
-
+    
     if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
-      stop("The length of 'custom_numbering' provided (", length(custom_numbering),
-           ") is not equal to the length of the results (", length(data_summary$results), ").")
+        stop("The length of 'custom_numbering' provided (", length(custom_numbering),
+            ") is not equal to the length of the results (", length(data_summary$results), ").")
     }
-
+    
     UseMethod("writeLatex", data_summary)
 }
 
 
 #' @export
 writeLatex.default <- function(data_summary, ...) {
-  stop(paste0("writeLatex doesn't support objects of class '",
-             paste0(class(data_summary), collapse = " "), "'"))
+    stop(paste0("writeLatex doesn't support objects of class '",
+        paste0(class(data_summary), collapse = " "), "'"))
 }
 
 
@@ -130,7 +130,7 @@ latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
     paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents ==
-            TRUE, "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
+                TRUE, "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
         sep = "")
 }
 
@@ -150,7 +150,7 @@ latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames 
         for (j in 1:ncol(df)) df[, j] <- escM(df[, j])
     }
     collapsestring <- paste("\\\\", ifelse(longtablewrap, "", "*"), "\n", sep = "")
-
+    
     sepstring <- ifelse(dotfill && ncol(df) == 2, " \\hspace*{0.15em} \\dotfill ",
         " & ")
     if (!summary.midrule) {

@@ -26,12 +26,12 @@ topline.default <- function(var, dataset, weight = NULL, codebook = FALSE) {
 
 #' @export
 topline.TextVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
-  toplineBase(var)
+    toplineBase(var)
 }
 
 #' @export
 topline.DatetimeVariable <- function(var, dataset, weight = NULL, codebook = FALSE) {
-  toplineBase(var)
+    toplineBase(var)
 }
 
 #' @importFrom stats sd
@@ -45,7 +45,7 @@ topline.NumericVariable <- function(var, dataset, weight = NULL, codebook = FALS
     missing <- getMissing(out_crtabs)
     summary_data <- c(Minimum = out_crtabs@arrays$min, Maximum = out_crtabs@arrays$max, Mean = out_crtabs@arrays$mean, `Standard deviation` = out_crtabs@arrays$stddev)
     ret <- c(topline_base, list(summary = array(summary_data, dimnames = list(names(summary_data)))
-                                , total = total, missing = missing, valid = total - missing, settings = list(digits = digits(var))))
+        , total = total, missing = missing, valid = total - missing, settings = list(digits = digits(var))))
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
 }
@@ -76,25 +76,25 @@ topline.CategoricalArrayVariable <- function(var, dataset, weight = NULL, codebo
 toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE, codebook = FALSE) {
     topline_base <- toplineBase(var)
     ret <- c(topline_base, if (codebook) {
-      out_crtabs_details <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"),
-                                   data = dataset, weight = weight, useNA = "always")
-      list(counts_details = as.array(out_crtabs_details),
-           proportions_details = crunch::prop.table(out_crtabs_details),
-           categories = as.data.frame(lapply(as.data.frame(do.call(rbind, lapply(categories(var),
-                                      function(x) {
-                                        sapply(x[c("id", "missing", "name", "numeric_value")]
-                                               , function(xx) if (is.null(xx)) NA else xx)
-                                      }))), unlist), stringsAsFactors = FALSE))
+        out_crtabs_details <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"),
+            data = dataset, weight = weight, useNA = "always")
+        list(counts_details = as.array(out_crtabs_details),
+            proportions_details = crunch::prop.table(out_crtabs_details),
+            categories = as.data.frame(lapply(as.data.frame(do.call(rbind, lapply(categories(var),
+                function(x) {
+                    sapply(x[c("id", "missing", "name", "numeric_value")]
+                        , function(xx) if (is.null(xx)) NA else xx)
+                }))), unlist), stringsAsFactors = FALSE))
     } else {
-      out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
-      total <- getTotal(out_crtabs)
-      missing <- getMissing(out_crtabs)
-      list(counts = as.array(out_crtabs),
-           proportions = crunch::prop.table(out_crtabs, margin = margin),
-           counts_unweighted = bases(out_crtabs, 0),
-           total = total,
-           missing = missing,
-           valid = total - missing)
+        out_crtabs <- crtabs(formula = paste0("~", if (mr) "as_selected(", "`", alias(var), "`", if (mr) ")"), data = dataset, weight = weight)
+        total <- getTotal(out_crtabs)
+        missing <- getMissing(out_crtabs)
+        list(counts = as.array(out_crtabs),
+            proportions = crunch::prop.table(out_crtabs, margin = margin),
+            counts_unweighted = bases(out_crtabs, 0),
+            total = total,
+            missing = missing,
+            valid = total - missing)
     })
     class(ret) <- c(generateClassList(topline_base), class(ret))
     ret
@@ -102,7 +102,7 @@ toplineGen <- function(var, dataset, weight = NULL, margin = NULL, mr = FALSE, c
 
 
 getSubvarData <- function(var) {
-  list(aliases = aliases(subvariables(var)), names = names(subvariables(var)))
+    list(aliases = aliases(subvariables(var)), names = names(subvariables(var)))
 }
 
 
