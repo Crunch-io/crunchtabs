@@ -98,6 +98,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     totals_proportions = totals_proportions_out,
                     unweighted_n = unweighted_n_out,
                     counts_unweighted = counts_unweighted_out,
+                    ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+                    inserts = transformStyles(transforms(crunch_cube), categories(dataset[[getName(crunch_cube)]])[!is.na(categories(dataset[[getName(crunch_cube)]]))]),
                     pvals_col = NULL
                 ), class = c("CrossTabBannerVar", "list"))
                 
