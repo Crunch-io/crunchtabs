@@ -72,11 +72,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 }
                 
                 if (vbi == 1) {
-                    if (is_mr_type){
-                        totals_counts_out <- t(totals_counts_out)
-                        totals_proportions_out <- t(totals_proportions_out)
-                        unweighted_n_out <- t(unweighted_n_out)
-                    }
+                    # if (is_mr_type){
+                    #     totals_counts_out <- t(totals_counts_out)
+                    #     totals_proportions_out <- t(totals_proportions_out)
+                    #     unweighted_n_out <- t(unweighted_n_out)
+                    # }
                     colnames(counts_out) <- "Total"
                     colnames(proportions_out) <- "Total"
                     colnames(totals_counts_out) <- "Total"

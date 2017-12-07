@@ -16,6 +16,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     
     # reformat results for LaTeX output
     banner <- data_summary$banner
+    print(data_summary$results$shut_blame$crosstabs$banner1)
     data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
         show_totals = show_totals, weighted_n = weighted_n, latex_adjust = latex_adjust,
         min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = TRUE,
