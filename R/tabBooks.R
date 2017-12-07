@@ -60,9 +60,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             for (ri in seq_along(valiases)) {
                 counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
                 proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-                totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
-                totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-                unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+                totals_counts_out <- as.matrix(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+                totals_proportions_out <- as.matrix(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
+                unweighted_n_out <- as.matrix(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
                 counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
                 
                 if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
@@ -78,6 +78,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     colnames(totals_proportions_out) <- "Total"
                     colnames(unweighted_n_out) <- "Total"
                     colnames(counts_unweighted_out) <- "Total"
+                }
+                
+                if(!is_mr_type){
+                    totals_counts_out <- t(totals_counts_out)
+                    unweighted_n_out <- t(unweighted_n_out)
                 }
                 
                 banner_var <- banner_flatten[[banner_var_alias]]

@@ -78,6 +78,9 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
+    # if (!is.null(banner_var)) {
+    #     if(banner_var$type %in% "categorical") n_data <- t(n_data)
+    # }
     min_cell_mask <- NULL
     if (!is.null(min_cell_size)) {
         min_cell_mask <- n_data < min_cell_size
@@ -114,6 +117,8 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     if (!is.null(latex_adjust)) {
         n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
     }
+    
+    
     
     data <- rbind(data, n_data)
     rownames(data)[length(rownames(data))] <- if (weighted_n)
