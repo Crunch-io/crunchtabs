@@ -75,6 +75,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_percentages = FALSE) {
     
+    
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
@@ -114,6 +115,8 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     if (!is.null(latex_adjust)) {
         n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
     }
+    
+    if (nrow(n_data) != nrow(data) && nrow(n_data) == ncol(data)) n_data <- t(n_data)
     
     data <- rbind(data, n_data)
     rownames(data)[length(rownames(data))] <- if (weighted_n)

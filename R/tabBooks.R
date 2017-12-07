@@ -72,6 +72,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 }
                 
                 if (vbi == 1) {
+                    if (is_mr_type){
+                        totals_counts_out <- t(totals_counts_out)
+                        totals_proportions_out <- t(totals_proportions_out)
+                        unweighted_n_out <- t(unweighted_n_out)
+                    }
                     colnames(counts_out) <- "Total"
                     colnames(proportions_out) <- "Total"
                     colnames(totals_counts_out) <- "Total"
@@ -91,6 +96,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
                 }
                 
+                ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+                cats <- categories(dataset[[getAlias(crunch_cube)]])
                 banner_var_cross <- structure(list(
                     counts = counts_out,
                     proportions = proportions_out,
@@ -99,7 +106,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     unweighted_n = unweighted_n_out,
                     counts_unweighted = counts_unweighted_out,
                     ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
-                    inserts = transformStyles(transforms(crunch_cube), categories(dataset[[getName(crunch_cube)]])[!is.na(categories(dataset[[getName(crunch_cube)]]))]),
+                    inserts = if (!is.null(cats)) transformStyles(transforms(crunch_cube), cats[!is.na(cats)]),
                     pvals_col = NULL
                 ), class = c("CrossTabBannerVar", "list"))
                 
