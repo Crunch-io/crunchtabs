@@ -88,7 +88,6 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     if (!reformat) {
         data <- as.data.frame(data)
     }
-    print(data)
     if (digits > -1 && reformat) {
         if (!proportions || !round_percentages) {
             data[] <- round(data * if (proportions) 100 else 1, digits)
