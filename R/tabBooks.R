@@ -83,11 +83,12 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
                 
                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
-                if(!is_mr_type){
+                if(is_mr_type){
+                    unweighted_n_out <- unweighted_n_out[0,]
+                    totals_counts_out <- totals_counts_out[0,]
+                } else {
                     totals_counts_out <- t(totals_counts_out)
                     unweighted_n_out <- t(unweighted_n_out)
-                } else {
-                    unweighted_n_out <- unweighted_n_out[0,]
                 }
                 
                 banner_var <- banner_flatten[[banner_var_alias]]

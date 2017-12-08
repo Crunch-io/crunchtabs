@@ -88,6 +88,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     if (!reformat) {
         data <- as.data.frame(data)
     }
+    print(data)
     if (digits > -1 && reformat) {
         if (!proportions || !round_percentages) {
             data[] <- round(data * if (proportions) 100 else 1, digits)
@@ -98,7 +99,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     }
     if (show_totals) {
         data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
-        rownames(data)[length(rownames(data))] <- "Totals"
+        rownames(data)[nrow(data)] <- "Totals"
     }
     if (digits > -1 && reformat) {
         data[] <- format(data, nsmall=digits, big.mark=",")
@@ -121,8 +122,14 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     
     
     data <- rbind(data, n_data)
-    rownames(data)[length(rownames(data))] <- if (weighted_n)
-        "Weighted N" else "Unweighted N"
+    
+    if(length(n_data) > 0){
+        if(nrow(n_data) > 0){
+            rownames(data)[length(rownames(data))] <- if (weighted_n)
+                "Weighted N" else "Unweighted N"
+        }
+    }
+    
     return(data)
 }
 
