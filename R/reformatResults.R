@@ -119,7 +119,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     }
     
     
-    
+    if (class(n_data) %in% 'character') n_data <- as.array(n_data)
     data <- rbind(data, n_data)
     
     if(length(n_data) > 0){
