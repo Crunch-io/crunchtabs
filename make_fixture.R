@@ -2,6 +2,7 @@ options(stringsAsFactors = FALSE)
 library(crunch)
 login()
 
+ds <- loadDataset('crunchtabs fixture')
 # dt <- read.csv('~/Dropbox (YouGov Analytics)/crunchtabs/tests/testthat/fixtures/ds1.csv')
 # names(dt)[match(c('Weight', 'q1', 'q3'), names(dt))] <- c('weight', 'favpet', 'petname')
 # dt$noweight <- sample(0:-5, 20, replace = TRUE)
@@ -68,9 +69,11 @@ capture_requests(crGET(self(ordering(ds))), path = '~/Dropbox (YouGov Analytics)
 
 banner_data <- jsonlite::unserializeJSON(readLines(con = file.path('~/Dropbox (YouGov Analytics)/crunchtabs/tests/testthat/fixtures/', "ds1_banner1.json")))
 tabBook_vars <- c("allpets", "favpet", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight")
+devtools::load_all('.')
 capture_requests(crosstabs(ds, vars=tabBook_vars, banner=banner_data), path = '~/Dropbox (YouGov Analytics)/crunchtabs/')
-capture_requests(tabBook(multitable=multitables(ds)[[1]], ds, weight=ds$weight), path = '~/Dropbox (YouGov Analytics)/crunchtabs/')
-
+t <- tabBook(multitable=multitables(ds)[[1]], ds, weight=ds$weight)
+capture_requests(t, path = '~/Dropbox (YouGov Analytics)/crunchtabs/')
+writeLines(toJSON(t), con='~/Dropbox (YouGov Analytics)/crunchtabs/app.crunch.io/api/datasets/ad5fa16abb5a46819139f7a421bf6d93/multitables/4996c3212e25441bae5bd16605bbc659/tabbook-023abd.json')
 
 
 

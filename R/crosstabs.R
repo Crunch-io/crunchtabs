@@ -39,13 +39,10 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
     if (!is.null(weight)) {
         if (!weight %in% aliases(allVariables(dataset))) {
+            stop(paste("No variable with alias", weight, "found in 'dataset'."))
+        }
+        if (!weight %in% weightVariables(dataset)) {
             stop(paste("No 'weight' variable with alias", weight, "found in 'dataset'."))
-        }
-        if (!is.Numeric(dataset[[weight]])) {
-            stop("The weight variable has to be numeric.")
-        }
-        if (as.array(crtabs(paste0("~ `", weight, "` < 0"), data = dataset, weight = NULL))['TRUE'] > 0) {
-            stop("The weight variable contains value(s) less than 0.")
         }
     }
     if (!is.null(banner) && !is(banner, "Banner")) {
