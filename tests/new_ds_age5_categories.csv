@@ -1,0 +1,7 @@
+"name","id","numeric_value","missing"
+"16 to 24",1,1,FALSE
+"25 to 34",2,2,FALSE
+"35 to 44",3,3,FALSE
+"45 to 54",4,4,FALSE
+"55+",5,5,FALSE
+"No Data",-1,NA,TRUE
