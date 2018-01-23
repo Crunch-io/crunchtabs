@@ -73,7 +73,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         banner <- lapply(banner, function(b)
             lapply(b, function(b1) {
                 if (b1$alias %in% '___total___') {
-                    b1$unweighted_n <- nrow(ds)
+                    b1$unweighted_n <- nrow(dataset)
                     b1$weighted_n <- sum(as.vector(weight_var), na.rm = TRUE)
                 } else {
                     b1$unweighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data=dataset, weight=NULL)), b1$categories_out)

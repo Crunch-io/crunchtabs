@@ -48,6 +48,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
             banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
             
+
             banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
             banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
             banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
@@ -60,9 +61,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             for (ri in seq_along(valiases)) {
                 counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
                 proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-                totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
-                totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-                unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+                totals_counts_out <- as.matrix(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+                totals_proportions_out <- as.matrix(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
+                unweighted_n_out <- as.matrix(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
                 counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
                 
                 if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
@@ -83,6 +84,16 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     colnames(totals_proportions_out) <- "Total"
                     colnames(unweighted_n_out) <- "Total"
                     colnames(counts_unweighted_out) <- "Total"
+                }
+
+                
+                ## conditional transpose to flip totals and unweighted Ns -- added 20171207
+                if(is_mr_type){
+                    unweighted_n_out <- c(unweighted_n_out[1,])
+                    totals_counts_out <- c(totals_counts_out[1,])
+                } else {
+                    totals_counts_out <- t(totals_counts_out)
+                    unweighted_n_out <- t(unweighted_n_out)
                 }
                 
                 banner_var <- banner_flatten[[banner_var_alias]]

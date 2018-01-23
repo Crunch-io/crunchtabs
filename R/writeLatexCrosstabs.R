@@ -41,6 +41,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
             sep="\n", collapse="\n"),
             ifelse(clearpage, "\\clearpage", ""))
     })
+    
     out <- c(out, append_text)
     
     if (!tableonly) {
