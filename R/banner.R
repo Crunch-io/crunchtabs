@@ -68,7 +68,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
             cat_fun <- if (type(dataset[[x]]) == "multiple_response") {
                 names(subvariables(dataset[[x]]))
             } else {
-                names(categories(dataset[[x]])[!is.na(categories(dataset[[x]]))])
+                names(na.omit(categories(dataset[[x]])))
             }}))
     ret_data$categories_out <- ret_data$old_categories
     

@@ -207,6 +207,7 @@ mergeBanner <- function(x, banner_name = NULL) {
 
 
 bannerDataRecode <- function(b_table, b_recode) {
+    if (is.null(dim(b_table))) b_table <- matrix(b_table, nrow=1, dimnames = list(c(), names(b_table))) ##  -- added 20180123
     names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
     b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
         drop = FALSE]
