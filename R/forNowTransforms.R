@@ -1,32 +1,32 @@
 # collate insertions and categories together
+# given a set of insertions and categories, collate together into a single set
+# of AbstractCategories which includes both `Category`s and `Insertion`s
 collateCats <- function (inserts, var_cats) {
-    # setup abstract categories to collate into
-    cats_out <- AbsCats(data=lapply(var_cats, function(x) {
-        new_abscat <- as(x, "AbsCat")
-        # save the original class for easy of iding former categories later.
-        new_abscat$class <- class(x)
-        return(new_abscat)
-    }))
+    # setup an empty AbstractCategories object to collate into
+    cats_out <- AbstractCategories()
+    cats_out@.Data <- var_cats
     
     # for each insert, find the position for its anchor, and add the insertion
     # at that position we use a for loop, because as we insert, the positions of
     # categories (which may serve as anchors) will change.
     for (insert in inserts) {
         pos <- findInsertPosition(insert, cats_out)
-        new_abscat <- as(insert, "AbsCat")
-        new_abscat$class <- class(insert)
-        cats_out <- AbsCats(data = append(cats_out, list(new_abscat), pos))
+        cats_out@.Data <- append(cats_out, list(insert), pos)
     }
-    return(cats_out)
+    return(sapply(cats_out, class))
 }
-# for a single Insertion, and a set of categories (or merged categories and
+
+
+# for a single Insertion, and a set of categories (or collated categories and
 # insertions) find the position to insert to
 findInsertPosition <- function (insert, cats) {
     anchr <- anchor(insert)
-    if (anchr == 0) {
+    # if the anchor is 0, put at the beginning
+    if (anchr == 0 | anchr == "top") {
         return(0)
     }
-    # if the anchor is the id of a non-missing category place after
+    
+    # if the anchor is the id of a non-missing category put it after that cat
     if (anchr %in% ids(cats)) {
         which_cat <- which(anchr == ids(cats))
         if (!is.na(cats[[which_cat]])) {
@@ -37,22 +37,3 @@ findInsertPosition <- function (insert, cats) {
     # all other situations, put at the end
     return(Inf)
 }
-
-# make styles based on transforms and categories
-transformStyles <- function (trans, cats) {
-    # collate categories and instertions
-    all_labs <- collateCats(trans$insertions, cats)
-    
-    # make a list of styles to apply
-    styles <- sapply(all_labs, function (lab) {
-        if (is.abscat.subtotal(lab)) {
-            return('subtotal')
-        } else if (is.abscat.heading(lab)) {
-            return('heading')
-        } else {
-            return(NA)
-        }
-    })
-    return(styles)
-}
-

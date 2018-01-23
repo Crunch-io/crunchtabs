@@ -637,14 +637,14 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
             cols = banner_cols_pos[-length(banner_cols_pos)], gridExpand = TRUE, stack = TRUE)
     }
     
-    for (si in which(cross_tab_var$crosstabs[[banner_name]][[1]]$inserts %in% 'subtotal')){
+    for (si in which(cross_tab_var$crosstabs[[banner_name]][[1]]$inserts %in% 'Subtotal')){
         openxlsx::addStyle(wb, ws, styles$subtotal, rows = start_row + si - 1,
             cols = (start_col-1):last_col_num, stack = TRUE)
         openxlsx::addStyle(wb, ws, styles$row_labels, rows = start_row + si - 1,
             cols = start_col-1, stack = TRUE)
     }
     
-    for (si in which(cross_tab_var$crosstabs[[banner_name]][[1]]$inserts %in% 'heading')){
+    for (si in which(cross_tab_var$crosstabs[[banner_name]][[1]]$inserts %in% 'Heading')){
         openxlsx::addStyle(wb, ws, styles$heading, rows = start_row + si - 1,
             cols = (start_col-1):last_col_num, stack = TRUE)
         openxlsx::addStyle(wb, ws, styles$row_labels, rows = start_row + si - 1,
