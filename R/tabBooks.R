@@ -89,8 +89,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 
                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
                 if(is_mr_type){
-                    unweighted_n_out <- c(unweighted_n_out[1,])
-                    totals_counts_out <- c(totals_counts_out[1,])
+                    unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
+                    totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
                 } else {
                     totals_counts_out <- t(totals_counts_out)
                     unweighted_n_out <- t(unweighted_n_out)
