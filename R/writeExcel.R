@@ -50,6 +50,21 @@
 #' Defaults to list(labels = list(decoration="bold"),
 #' categories = list(decoration = "bold"),
 #' total = list(decoration = "bold")).
+#' @param insertions_format list. Specify format details:
+#' \itemize{
+#'  \item font - a font name. Defaults to the value of the \code{font} parameter.
+#'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+#'  \item size - font size. Defaults to the value of the \code{font_size} parameter.
+#'  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
+#'  \item background color - a string specifying the background color. Defaults to \code{NULL} - the workbook default color ("white") is used.
+#' }
+#' related to banner's:
+#' \itemize{
+#'  \item subtotal,
+#'  \item heading,
+#' }
+#' Defaults to list(subtotal=list(decoration = "bold"), 
+#' heading=list(decoration='italic'))
 #' @param show_information list. Specify format details:
 #' \itemize{
 #'  \item decoration - text styling,
