@@ -6,7 +6,7 @@ test_that("Error handling - not a dataset", {
 })
 
 with_mock_crunch({
-    ds <- loadDataset("https://app.crunch.io/api/datasets/ad5fa16abb5a46819139f7a421bf6d93")
+    ds <- loadDataset("https://app.crunch.io/api/datasets/85f")
     
   test_that("Error handling", {
     expect_error(crosstabs(ds, vars = c("a", "b")),
@@ -55,9 +55,9 @@ with_mock_crunch({
   
   banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
   tabBook_vars <- c("allpets", "favpet", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight")
-  with_mock_tabs(book_file = "4996c3212e25441bae5bd16605bbc659/tabbook-023abd.json",
-                 mt_file = "4996c3212e25441bae5bd16605bbc659.json",
-                 path = "app.crunch.io/api/datasets/ad5fa16abb5a46819139f7a421bf6d93/multitables/", expr = {
+  with_mock_tabs(book_file = "85f/tabbook-023abd.json",
+                 mt_file = "85f",
+                 path = "app.crunch.io/api/datasets/85f/multitables/", expr = {
     crosstabs_data <- crosstabs(ds, vars = tabBook_vars, banner = banner_data)
     test_that("Crosstabs", {
     expect_s3_class(crosstabs_data, "Crosstabs")
