@@ -334,14 +334,14 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, title = getName(
         # toc_lot = openxlsx::createStyle(fontColour = "black", textDecoration = "underline", valign = "center"),
         toc_banner = openxlsx::createStyle(textDecoration = "bold", valign = "center"),
         total_col = if (!is.null(total_col)) openxlsx::createStyle(textDecoration = get_decoration_data(total_col, "decoration"), fontSize = get_decoration_data(total_col, "size"), fontColour = get_decoration_data(total_col, "color"), valign = "center"),
-        bg_col_green4 = openxlsx::createStyle(fgFill = "darkolivegreen4"),
-        bg_col_green3 = openxlsx::createStyle(fgFill = "darkolivegreen3"),
-        bg_col_green2 = openxlsx::createStyle(fgFill = "darkolivegreen2"),
-        bg_col_green1 = openxlsx::createStyle(fgFill = "darkolivegreen1"),
-        bg_col_red4 = openxlsx::createStyle(fgFill = "firebrick"),
-        bg_col_red3 = openxlsx::createStyle(fgFill = "firebrick3"),
-        bg_col_red2 = openxlsx::createStyle(fgFill = "firebrick2"),
-        bg_col_red1 = openxlsx::createStyle(fgFill = "firebrick1")
+        bg_col_green4 = openxlsx::createStyle(fgFill = "#00CA81"),
+        bg_col_green3 = openxlsx::createStyle(fgFill = "#7BC99E"),
+        bg_col_green2 = openxlsx::createStyle(fgFill = "#AFDDC3"),
+        bg_col_green1 = openxlsx::createStyle(fgFill = "#D7ECD8"),
+        bg_col_red4 = openxlsx::createStyle(fgFill = "#DA5130"),
+        bg_col_red3 = openxlsx::createStyle(fgFill = "#E67D58"),
+        bg_col_red2 = openxlsx::createStyle(fgFill = "#EEA37D"),
+        bg_col_red1 = openxlsx::createStyle(fgFill = "#FACBAF")
     )
     
     writeReportGeneral(data_summary, banner, filename = filename, proportions = proportions, digits = digits,
@@ -503,7 +503,8 @@ hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, empty_col, st
     if (empty_col) {
         pvals_row <- sapply(pvals_row, function(x) as.numeric(as.character(x)))
     }
-    
+
+    if (sum(dim(pvals_row)) == 0) return(NULL)
     for (pvi in seq_along(pvals)) {
         inds <- which(!is.na(pvals_row) & pvals_row < pvals[pvi] & pvi < length(pvals) & pvals_row >= pvals[pvi+1] | (pvi == length(pvals) & pvals_row < pvals[pvi] & pvals_row > 0), arr.ind = TRUE)
         openxlsx::addStyle(wb, ws, styles[[pcol_pos[pvi]]], rows = crow + inds[, 1] - 1,

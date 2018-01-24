@@ -118,7 +118,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     counts_unweighted = counts_unweighted_out,
                     ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
                     inserts = if (!is.null(cats) && !is_array_type) collateCats(transforms(crunch_cube)[[getAlias(crunch_cube)]]$insertions, cats),
-                    pvals_col = NULL
+                    pvals_col = NULL#crunch::rstandard(crunch_cube)
                 ), class = c("CrossTabBannerVar", "list"))
 
                 for (bi in seq_along(banner_map)) {
