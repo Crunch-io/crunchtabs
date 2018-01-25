@@ -52,7 +52,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     weight_var <- if (!is.null(weight)) dataset[[weight]]
     
     vars_out <- if (codebook) { vars } else {
-        intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array")]) }
+        intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
     
     filtered_vars <- setdiff(vars, vars_out)
     if (length(filtered_vars) > 0) {
