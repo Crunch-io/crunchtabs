@@ -23,6 +23,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
         
+        var_cats <- categories(dataset[[getAlias(crunch_cube)]])
+        inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         for (vai in seq_along(valiases)) {
             tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai], 
@@ -31,6 +33,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 description = getDescription(crunch_cube), 
                 notes = getNotes(crunch_cube), 
                 settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = "")), 
+                inserts = sapply(inserts, class),
                 crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
                 class = c(if (is_mr_type) "MultipleResponseCrossTabVar", "CrossTabVar"))
         }
@@ -42,7 +45,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             margin <- if (is_array_type) c(2, 3) else 2
             
             banner_counts <- as.array(crunch_cube)
-            banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
+            banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
             banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
             banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
             banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
@@ -108,7 +111,12 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 }
                 
                 ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
-                cats <- categories(dataset[[getAlias(crunch_cube)]])
+                if (!is.null(inserts)){
+                    counts_out <- calcInsertions(counts_out, inserts, var_cats)
+                    proportions_out <- calcInsertions(proportions_out, inserts, var_cats)
+                    counts_unweighted_out <- calcInsertions(counts_unweighted_out, inserts, var_cats)
+                }
+
                 banner_var_cross <- structure(list(
                     counts = counts_out,
                     proportions = proportions_out,
@@ -117,7 +125,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     unweighted_n = unweighted_n_out,
                     counts_unweighted = counts_unweighted_out,
                     ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
-                    inserts = if (!is.null(cats) && !is_array_type) collateCats(transforms(crunch_cube)[[getAlias(crunch_cube)]]$insertions, na.omit(cats)),
+                    # inserts = sapply(inserts, class),
                     pvals_col = NULL#crunch::rstandard(crunch_cube)
                 ), class = c("CrossTabBannerVar", "list"))
 

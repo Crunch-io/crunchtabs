@@ -1,3 +1,4 @@
+
 # collate insertions and categories together
 # given a set of insertions and categories, collate together into a single set
 # of AbstractCategories which includes both `Category`s and `Insertion`s
@@ -13,9 +14,8 @@ collateCats <- function (inserts, var_cats) {
         pos <- findInsertPosition(insert, cats_out)
         cats_out@.Data <- append(cats_out, list(insert), pos)
     }
-    return(sapply(cats_out, class))
+    return(cats_out)
 }
-
 
 # for a single Insertion, and a set of categories (or collated categories and
 # insertions) find the position to insert to
@@ -36,4 +36,48 @@ findInsertPosition <- function (insert, cats) {
     
     # all other situations, put at the end
     return(Inf)
+}
+
+#' Given a vector of values and elements, calculate the insertions
+#'
+#' @param vec values to transform (a single dimension of an array)
+#' @param elements AbstractCategories of both `Category`s and `Insertion`s to
+#' calculate. Generally derived from `mapInsertions()`
+#' @param var_cats the `Categories` object tat corresponds to the vector in
+#' `vec` of the transform
+#'
+#' @return the values given in `vec`, with any insertions specified in
+#' `trans` calculated and inserted
+#' @keywords internal
+calcInsertions <- function (vec, elements, var_cats) {
+
+    # make the actual calculations and insertions
+    vec_out <- data.frame(do.call(rbind, lapply(elements, function (element) {
+        # if element is a category, simply return the value
+        if (inherits(element, "Category")) {
+            return(vec[name(element),])
+        }
+        
+        # if element is a heading return NA (since there is no value to be
+        # calculated but we need a placeholder non-number)
+        if (inherits(element, "Heading")) {
+            return(NA)
+        }
+        
+        # if element is a subtotal, sum the things it corresponds to which are
+        # found with arguments()
+        if (inherits(element, "Subtotal")) {
+            # grab category combinations, and then sum those categories.
+            combos <- element$categories
+            which.cats <- names(var_cats[ids(var_cats) %in% combos])
+            if (dim(vec)[2] == 1) return(sum(vec[which.cats,]))
+            return(colSums(vec[which.cats,]))
+        }
+        
+    })))
+    
+    # make sure that the vector is named appropriately
+    rownames(vec_out) <- names(elements)
+    
+    return(vec_out)
 }
