@@ -2,7 +2,7 @@
 #'
 #' \code{topline} returns a Topline summary of a Crunch variable.
 #'
-#' @param var A Cruch variable.
+#' @param var A Crunch variable.
 #' @param dataset A Crunch dataset.
 #' @param weight A numeric Cruch variable that should be used for data weighting.
 #' Defaults to NULL - data is not weighted.

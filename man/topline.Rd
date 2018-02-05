@@ -7,7 +7,7 @@
 topline(var, dataset, weight, codebook = FALSE)
 }
 \arguments{
-\item{var}{A Cruch variable.}
+\item{var}{A Crunch variable.}
 
 \item{dataset}{A Crunch dataset.}
 
