@@ -1,4 +1,0 @@
-"name","id","numeric_value","missing"
-"Male",1,1,FALSE
-"Female",2,2,FALSE
-"No Data",-1,NA,TRUE
