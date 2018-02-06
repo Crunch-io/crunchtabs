@@ -78,6 +78,9 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
+    # if (!is.null(banner_var)) {
+    #     if(banner_var$type %in% "categorical") n_data <- t(n_data)
+    # }
     min_cell_mask <- NULL
     if (!is.null(min_cell_size)) {
         min_cell_mask <- n_data < min_cell_size
@@ -95,7 +98,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     }
     if (show_totals) {
         data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
-        rownames(data)[length(rownames(data))] <- "Totals"
+        rownames(data)[nrow(data)] <- "Totals"
     }
     if (digits > -1 && reformat) {
         data[] <- format(data, nsmall=digits, big.mark=",")
@@ -115,9 +118,17 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         n_data[] <- paste0("\\multicolumn{1}{", latex_adjust, "}{", n_data, "}")
     }
     
+    
+    if (class(n_data) %in% 'character') n_data <- as.array(n_data)
     data <- rbind(data, n_data)
-    rownames(data)[length(rownames(data))] <- if (weighted_n)
-        "Weighted N" else "Unweighted N"
+    
+    if(length(n_data) > 0){
+        if(nrow(n_data) > 0){
+            rownames(data)[length(rownames(data))] <- if (weighted_n)
+                "Weighted N" else "Unweighted N"
+        }
+    }
+    
     return(data)
 }
 
@@ -196,6 +207,7 @@ mergeBanner <- function(x, banner_name = NULL) {
 
 
 bannerDataRecode <- function(b_table, b_recode) {
+    # if (is.null(dim(b_table))) b_table <- matrix(b_table, nrow=1, dimnames = list(c(), names(b_table))) ##  -- added 20180123
     names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
     b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
         drop = FALSE]

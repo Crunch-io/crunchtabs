@@ -23,6 +23,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
         
+        var_cats <- categories(dataset[[getAlias(crunch_cube)]])
+        inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         for (vai in seq_along(valiases)) {
             tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai], 
@@ -31,6 +33,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 description = getDescription(crunch_cube), 
                 notes = getNotes(crunch_cube), 
                 settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(valiases) > 1) get_grid_number(vai), collapse = "")), 
+                inserts = sapply(inserts, class),
                 crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
                 class = c(if (is_mr_type) "MultipleResponseCrossTabVar", "CrossTabVar"))
         }
@@ -42,12 +45,13 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             margin <- if (is_array_type) c(2, 3) else 2
             
             banner_counts <- as.array(crunch_cube)
-            banner_proportions <- crunch::prop.table(crunch_cube, margin = margin)
+            banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
             banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
             banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
             banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
             banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
             
+
             banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
             banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
             banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
@@ -60,9 +64,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             for (ri in seq_along(valiases)) {
                 counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
                 proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-                totals_counts_out <- t(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
-                totals_proportions_out <- t(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-                unweighted_n_out <- t(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+                totals_counts_out <- as.matrix(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+                totals_proportions_out <- as.matrix(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
+                unweighted_n_out <- as.matrix(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
                 counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
                 
                 if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
@@ -72,12 +76,27 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 }
                 
                 if (vbi == 1) {
+                    # if (is_mr_type){
+                    #     totals_counts_out <- t(totals_counts_out)
+                    #     totals_proportions_out <- t(totals_proportions_out)
+                    #     unweighted_n_out <- t(unweighted_n_out)
+                    # }
                     colnames(counts_out) <- "Total"
                     colnames(proportions_out) <- "Total"
                     colnames(totals_counts_out) <- "Total"
                     colnames(totals_proportions_out) <- "Total"
                     colnames(unweighted_n_out) <- "Total"
                     colnames(counts_unweighted_out) <- "Total"
+                }
+
+                
+                ## conditional transpose to flip totals and unweighted Ns -- added 20171207
+                if(is_mr_type){
+                    unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
+                    totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
+                } else {
+                    totals_counts_out <- t(totals_counts_out)
+                    unweighted_n_out <- t(unweighted_n_out)
                 }
                 
                 banner_var <- banner_flatten[[banner_var_alias]]
@@ -91,6 +110,13 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
                 }
                 
+                ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+                if (!is.null(inserts)){
+                    counts_out <- calcInsertions(counts_out, inserts, var_cats)
+                    proportions_out <- calcInsertions(proportions_out, inserts, var_cats)
+                    counts_unweighted_out <- calcInsertions(counts_unweighted_out, inserts, var_cats)
+                }
+
                 banner_var_cross <- structure(list(
                     counts = counts_out,
                     proportions = proportions_out,
@@ -98,9 +124,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     totals_proportions = totals_proportions_out,
                     unweighted_n = unweighted_n_out,
                     counts_unweighted = counts_unweighted_out,
-                    pvals_col = NULL
+                    ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+                    # inserts = sapply(inserts, class),
+                    pvals_col = NULL#crunch::rstandard(crunch_cube)
                 ), class = c("CrossTabBannerVar", "list"))
-                
+
                 for (bi in seq_along(banner_map)) {
                     for (bij in seq_along(banner_map[[bi]])) {
                         if (banner_var_alias == banner_map[[bi]][bij]) {

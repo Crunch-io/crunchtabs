@@ -39,13 +39,10 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     }
     if (!is.null(weight)) {
         if (!weight %in% aliases(allVariables(dataset))) {
+            stop(paste("No variable with alias", weight, "found in 'dataset'."))
+        }
+        if (!weight %in% weightVariables(dataset)) {
             stop(paste("No 'weight' variable with alias", weight, "found in 'dataset'."))
-        }
-        if (!is.Numeric(dataset[[weight]])) {
-            stop("The weight variable has to be numeric.")
-        }
-        if (as.array(crtabs(paste0("~ `", weight, "` < 0"), data = dataset, weight = NULL))['TRUE'] > 0) {
-            stop("The weight variable contains value(s) less than 0.")
         }
     }
     if (!is.null(banner) && !is(banner, "Banner")) {
@@ -55,13 +52,16 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     weight_var <- if (!is.null(weight)) dataset[[weight]]
     
     vars_out <- if (codebook) { vars } else {
-        aliases(allVariables(dataset))[aliases(allVariables(dataset)) %in% vars &
-                types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]}
+        intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
     
     filtered_vars <- setdiff(vars, vars_out)
     if (length(filtered_vars) > 0) {
         warning(paste("Variables of types:", paste(unique(types(allVariables(dataset[filtered_vars]))),
             collapse = ", "), "are not supported and have been skipped"))
+    }
+    
+    if (length(vars_out) == 0){
+        stop("No variables provided.")
     }
     
     if (is.null(banner)) {
@@ -76,7 +76,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         banner <- lapply(banner, function(b)
             lapply(b, function(b1) {
                 if (b1$alias %in% '___total___') {
-                    b1$unweighted_n <- nrow(ds)
+                    b1$unweighted_n <- nrow(dataset)
                     b1$weighted_n <- sum(as.vector(weight_var), na.rm = TRUE)
                 } else {
                     b1$unweighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data=dataset, weight=NULL)), b1$categories_out)

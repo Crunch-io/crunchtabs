@@ -10,3 +10,9 @@ inst/doc/*.html
 .Rproj.user
 *.Rproj
 inst/doc
+make_fixture.R
+tests/new_ds_age5_categories.csv
+tests/new_ds_allpets_subvariables.csv
+tests/new_ds_gender_categories.csv
+tests/new_ds_petloc_subvariables.csv
+tests/new_ds_variables.csv

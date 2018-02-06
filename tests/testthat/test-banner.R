@@ -6,7 +6,7 @@ test_that("Error handling - not a dataset", {
 })
 
 with_mock_crunch({
-  ds <- loadDataset("https://app.crunch.io/api/datasets/85f/")
+  ds <- loadDataset("https://app.crunch.io/api/datasets/ad5fa16abb5a46819139f7a421bf6d93/")
   test_that("Error handling - vars", {
     expect_error(banner(ds, 'a'),
                  "'vars' should be a list of vectors.")
