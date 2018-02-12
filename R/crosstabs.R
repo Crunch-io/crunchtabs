@@ -8,9 +8,9 @@
 #' @param vars An optional vector of aliases of the non-hidden variables that shoulds be used.
 #' Defaults to all non-hidden variables.
 #' @param weight The alias of a numeric variable that should be used for data weighting.
-#' Defaults to NULL - data is not weighted.
+#' Defaults to current weight variable. For unweighted, set to \code{NULL}
 #' @param banner An optional object of class \code{Banner} that should be used to generate
-#' a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and returned.
+#' a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.
 #' @param codebook If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.
 #' @param title An optional title. Defaults to the name of the dataset.
 #' @param date An optional date. Defaults to the current date.
@@ -26,7 +26,7 @@
 #' @importFrom crunch name aliases allVariables is.Numeric is.dataset
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
+crosstabs <- function(dataset, vars = names(dataset), weight = weight(dataset), banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
     
     if (!is.dataset(dataset)) {

@@ -48,10 +48,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
             banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
             banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
             banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
-            banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else bases(crunch_cube, margin = margin)
-            banner_counts_unweighted <- if (is.null(weight)) banner_counts else bases(crunch_cube, margin = 0)
+            banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else crunch::bases(crunch_cube, margin = margin)
+            banner_counts_unweighted <- if (is.null(weight)) banner_counts else crunch::bases(crunch_cube, margin = 0)
             
-
             banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
             banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
             banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
@@ -76,11 +75,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 }
                 
                 if (vbi == 1) {
-                    # if (is_mr_type){
-                    #     totals_counts_out <- t(totals_counts_out)
-                    #     totals_proportions_out <- t(totals_proportions_out)
-                    #     unweighted_n_out <- t(unweighted_n_out)
-                    # }
                     colnames(counts_out) <- "Total"
                     colnames(proportions_out) <- "Total"
                     colnames(totals_counts_out) <- "Total"
@@ -91,9 +85,14 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
 
                 
                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
+                ## min and max on MR -- added 20180212
                 if(is_mr_type){
-                    unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
-                    totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
+                    if (length(unlist(apply(round(totals_counts_out), 2, unique))) == ncol(totals_counts_out)) totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
+                    else totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
+                    if (length(unlist(apply(round(unweighted_n_out), 2, unique))) == ncol(unweighted_n_out)) unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
+                    else unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
+                    # totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
+                    # unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
                 } else {
                     totals_counts_out <- t(totals_counts_out)
                     unweighted_n_out <- t(unweighted_n_out)

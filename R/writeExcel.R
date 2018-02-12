@@ -47,9 +47,9 @@
 #'  \item categories,
 #'  \item total,
 #' }
-#' Defaults to list(labels = list(decoration="bold"),
+#' Defaults to \code{list(labels = list(decoration="bold"),
 #' categories = list(decoration = "bold"),
-#' total = list(decoration = "bold")).
+#' total = list(decoration = "bold"))}.
 #' @param insertions_format list. Specify format details:
 #' \itemize{
 #'  \item font - a font name. Defaults to the value of the \code{font} parameter.
@@ -96,6 +96,9 @@
 #'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
 #'  \item size - font size. Defaults to the value of the \code{font_size} parameter.
 #'  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
+#'  \item min_name - a string specifying the name you want for min rows in MR variables. Defaults to "Min".
+#'  \item max_name - a string specifying the name you want for min rows in MR variables. Defaults to "Max".
+#'  \item sep - a string specifying how you want to seperate the `name` and `min_name` or `name` and `max_name` in MR variables. Defaults to ":".
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to list(name = "Unweighted N", position = "bottom").
@@ -106,6 +109,9 @@
 #'  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
 #'  \item size - font size. Defaults to the value of the \code{font_size} parameter.
 #'  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
+#'  \item min_name - a string specifying the name you want for min rows in MR variables. Defaults to "Min".
+#'  \item max_name - a string specifying the name you want for min rows in MR variables. Defaults to "Max".
+#'  \item sep - a string specifying how you want to seperate the `name` and `min_name` or `name` and `max_name` in MR variables. Defaults to ":".
 #' }
 #' Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
 #' Defaults to \code{NULL} - the row containing the weighted bases is not printed.
@@ -395,7 +401,6 @@ create_table_of_contents <- function(wb, title, subtitle, toc_row = 2, toc_col =
     
     toc_row <- toc_row + 1
     openxlsx::writeData(wb, toc_sheet, "List of tables:", startCol = toc_col, startRow = toc_row)
-    # openxlsx::addStyle(wb, toc_sheet, styles$toc_title, rows = toc_row, cols = toc_col, stack = FALSE)
     toc_row <- toc_row + 1
     
     if (!is.null(logo)) {
@@ -482,12 +487,14 @@ write_bases_data <- function(wb, ws, data, col, row, last_col_num, reduce_format
     openxlsx::writeData(wb, ws, data, startCol = col, startRow = row,
         colNames = FALSE)
     if (!reduce_format) {
-        openxlsx::addStyle(wb, ws, style_data, rows = row,
-            cols = col:last_col_num, stack = FALSE)
-        openxlsx::addStyle(wb, ws, style_label, rows = row,
-            cols = col - 1, stack = FALSE)
+        for (r in (row + (1:nrow(data))-1)){
+            openxlsx::addStyle(wb, ws, style_data, rows = r,
+                cols = col:last_col_num, stack = FALSE)
+            openxlsx::addStyle(wb, ws, style_label, rows = r,
+                cols = col - 1, stack = FALSE)
+        }
     }
-    row + 1
+    row + nrow(data)
 }
 
 hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, empty_col, styles, crow, ccol) {
@@ -536,13 +543,25 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     unweighted_n_bottom <- !is.null(unweighted_n) && 'bottom' %in% unweighted_n$position
     empty_col <- !is.null(banner_vars_split) && banner_vars_split == "empty_col"
     
+    unweighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
+        d <- as.data.frame(x$unweighted_n)
+        if (empty_col) cbind(d,  "") else d
+    }))
+    if (nrow(unweighted_n_data) != 1 && !is.null(unweighted_n)) rownames(unweighted_n_data) <- c(unweighted_n$min_name, unweighted_n$max_name)
+
+    weighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
+        d <- as.data.frame(if (reduce_format) round(x$totals_counts, digits) else x$totals_counts)
+        if (empty_col) cbind(d,  "") else d
+    }))
+    if (nrow(weighted_n_data) != 1 && !is.null(weighted_n)) rownames(weighted_n_data) <- c(weighted_n$min_name, weighted_n$max_name)
+    
     row_names <- c(
-        if (weighted_n_top) weighted_n$name,
-        if (unweighted_n_top) unweighted_n$name,
+        if (weighted_n_top) paste0(weighted_n$name, if (nrow(weighted_n_data) != 1) paste(weighted_n$sep, rownames(weighted_n_data))),
+        if (unweighted_n_top) paste0(weighted_n$name, if (nrow(unweighted_n_data) != 1) paste(unweighted_n$sep, rownames(unweighted_n_data))),
         rownames(cross_tab_var$crosstabs[[banner_name]][[1]]$proportions),
         if (show_totals) "Totals",
-        if (weighted_n_bottom) weighted_n$name,
-        if (unweighted_n_bottom) unweighted_n$name
+        if (weighted_n_bottom) paste0(weighted_n$name, if (nrow(weighted_n_data) != 1) paste(weighted_n$sep, rownames(weighted_n_data))),
+        if (unweighted_n_bottom) paste0(unweighted_n$name, if (nrow(unweighted_n_data) != 1) paste(unweighted_n$sep, rownames(unweighted_n_data)))
     )
 
     openxlsx::writeData(wb, ws, row_names, startCol = start_col, startRow = crow,
@@ -552,19 +571,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     
     start_col <- start_col + 1
     
-    unweighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-        d <- as.data.frame(x$unweighted_n)
-        if (empty_col) cbind(d,  "") else d
-    }))
-    
     last_col_num <- start_col + ncol(unweighted_n_data) - 1 - empty_col
-    
-    if (!is.null(weighted_n)) {
-        weighted_n_data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
-            d <- as.data.frame(if (reduce_format) round(x$totals_counts, digits) else x$totals_counts)
-            if (empty_col) cbind(d,  "") else d
-        }))
-    }
     
     if (weighted_n_top) {
         crow <- write_bases_data(wb, ws, data=weighted_n_data, col=start_col, row=crow,
@@ -585,7 +592,6 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     
     data <- as.data.frame(lapply(cross_tab_var$crosstabs[[banner_name]], function(x) {
         d <- getResults(x, proportions = proportions)
-        # if (is.vector(d)) d <- t(d)
         d <- as.data.frame(d)
         if (show_totals) {
             d <- rbind(d, setNames(as.data.frame(if (proportions) x$totals_proportions else x$totals_counts), colnames(d)))
@@ -599,6 +605,7 @@ writeExcelVarBanner <- function(wb, ws, banner_name, cross_tab_var, banner_cols_
     min_cell_mask <- NULL
     if (!is.null(min_base_size)) {
         unweighted_n_data_num <- sapply(unweighted_n_data, function(x) as.numeric(as.character(x)))
+        if (class(unweighted_n_data_num) == 'matrix') unweighted_n_data_num <- c(unweighted_n_data_num[nrow(unweighted_n_data_num),])
         min_cell_mask <- !is.na(unweighted_n_data_num) & unweighted_n_data_num < min_base_size
     }
     if (any(min_cell_mask) && !is.null(min_base_label) && !is.null(min_base_label[["mask"]])) {
@@ -814,6 +821,13 @@ writeReportGeneral <- function(x, banner = NULL, filename = NULL, proportions = 
         toc_row <- toc_res$toc_row
         toc_col <- toc_res$toc_col
     }
+    
+    if (!is.null(unweighted_n) && is.null(unweighted_n$min_name)) unweighted_n$min_name <- 'Min'
+    if (!is.null(unweighted_n) && is.null(unweighted_n$max_name)) unweighted_n$max_name <- 'Max'
+    if (!is.null(unweighted_n) && is.null(unweighted_n$sep)) unweighted_n$sep <- ':'
+    if (!is.null(weighted_n) && is.null(weighted_n$min_name)) weighted_n$min_name <- 'Min'
+    if (!is.null(weighted_n) && is.null(weighted_n$max_name)) weighted_n$max_name <- 'Max'
+    if (!is.null(weighted_n) && is.null(weighted_n$sep)) weighted_n$sep <- ':'
     
     for (banner_name in banner_names) {
         if (logging) {

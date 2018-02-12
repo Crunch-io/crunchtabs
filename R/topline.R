@@ -5,7 +5,7 @@
 #' @param var A Crunch variable.
 #' @param dataset A Crunch dataset.
 #' @param weight A numeric Cruch variable that should be used for data weighting.
-#' Defaults to NULL - data is not weighted.
+#' Defaults to \code{NULL} - data is not weighted.
 #' @param codebook If \code{TRUE}, codebook data summaries are prepared.
 #' Defaults to \code{FALSE}.
 #' @return A Toplines summary of a Crunch variable.
