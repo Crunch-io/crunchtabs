@@ -35,7 +35,7 @@ with_test_authentication({
     expect_named(crosstabs_data, c("metadata", "results", "banner"))
     expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
     expect_null(crosstabs_data$banner)
-    expect_identical(getName(crosstabs_data), "crunchtabs fixture")
+    expect_identical(getName(crosstabs_data), "Example Dataset")
     expect_null(crosstabs_data$metadata$weight)
     expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc"))
     expect_named(crosstabs_data$results$allpets, c("alias", "name", "type", "description", "notes", "counts", "proportions", "counts_unweighted", "total", "missing", "valid", 'subvariables'))
@@ -53,27 +53,26 @@ with_test_authentication({
     expect_equal(crosstabs_data$results$allpets$valid, 17)
   })
   
-  banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
+  # banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
+  banner_data <- banner(ds, vars=list('gender', 'age5'))
   tabBook_vars <- c("allpets", "favpet", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight")
-  with_mock_tabs(book_file = "85f/tabbook-023abd.json",
-                 mt_file = "85f",
-                 path = "app.crunch.io/api/datasets/85f/multitables/", expr = {
-    crosstabs_data <- crosstabs(ds, vars = tabBook_vars, banner = banner_data)
-    test_that("Crosstabs", {
-    expect_s3_class(crosstabs_data, "Crosstabs")
-    expect_named(crosstabs_data, c("metadata", "results", "banner"))
-    expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
-    expect_s3_class(crosstabs_data$banner, "Banner")
-    expect_identical(getName(crosstabs_data), "crunchtabs fixture")
-    expect_null(crosstabs_data$metadata$weight)
-    expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight"))
-    expect_named(crosstabs_data$results$favpet, c("alias", "name", "description", "notes", "settings", "crosstabs"))
-    expect_identical(crosstabs_data$results$favpet$alias, "favpet")
-    expect_identical(crosstabs_data$results$favpet$name, "Favorite pet")
-    expect_identical(crosstabs_data$results$favpet$description, "What is your favorite pet?")
-    expect_identical(crosstabs_data$results$favpet$notes, NULL)
-    expect_named(crosstabs_data$results$favpet$crosstabs, c("banner 1"))
-  })
+  
+  crosstabs_data <- crosstabs(ds, vars = tabBook_vars, banner = banner_data)
+  test_that("Crosstabs", {
+  expect_s3_class(crosstabs_data, "Crosstabs")
+  expect_named(crosstabs_data, c("metadata", "results", "banner"))
+  expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
+  expect_s3_class(crosstabs_data$banner, "Banner") # NOTE: check expectation
+  expect_identical(getName(crosstabs_data), "Example Dataset")
+  expect_null(crosstabs_data$metadata$weight)
+  expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight"))
+  expect_named(crosstabs_data$results$favpet, c("alias", "name", "subnames", "description", "notes", "settings", "inserts", "crosstabs"))
+  expect_identical(crosstabs_data$results$favpet$alias, "favpet")
+  expect_identical(crosstabs_data$results$favpet$name, "Favorite pet")
+  expect_identical(crosstabs_data$results$favpet$description, "What is your favorite pet?")
+  expect_identical(crosstabs_data$results$favpet$notes, NULL)
+  expect_named(crosstabs_data$results$favpet$crosstabs, c("Banner1", "Banner2"))
+
  })
 })
 
