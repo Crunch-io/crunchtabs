@@ -35,9 +35,13 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         stop("'vars' doesn't contain valid values.")
     }
     
+    if (any(duplicated(names(vars)))){
+        stop("Banner name ", paste(names(vars)[duplicated(names(vars))], collapse = ", "), " is duplicated.")
+    }
+    
     not_found_vars <- setdiff(vars_vec, aliases(allVariables(dataset)))
     if (length(not_found_vars) != 0) {
-        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found."))
+        stop("Variables:", paste(not_found_vars, collapse = ", "), "not found.")
     }
     
     ds_vars <- allVariables(dataset[vars_vec])
