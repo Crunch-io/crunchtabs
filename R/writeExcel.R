@@ -190,6 +190,8 @@
 #' "&[Path]" File path
 #' "&[File]" File name
 #' "&[Tab]" Worksheet name
+#' @param orientation One of "portrait" or "landscape" indicating the page orientation in excel.
+#' Defaults to "portrait".
 #' @return If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -220,7 +222,7 @@ writeExcel <- function(data_summary, filename = NULL, wb = NULL, title = getName
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"), 
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL) {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
     
     if (is.null(filename)) {
         stop("No valid filename provided.")
@@ -253,7 +255,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, wb = NULL, title 
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"),
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL) {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
 
     if (is.null(crosstabs_summary$metadata$weight) && !is.null(weighted_n)) {
         warning('Data is unweighted. "weighted_n" row will not appear.', call. = FALSE)
@@ -289,7 +291,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, wb = NULL, title 
         show_information = show_information, logging = logging, first_active_col = first_active_col, 
         reduce_format = reduce_format, include_aliases = include_aliases, 
         title_on_results_page = title_on_results_page, percent_format_data = percent_format_data, 
-        hypothesis_test = hypothesis_test, header = header, footer = footer)
+        hypothesis_test = hypothesis_test, header = header, footer = footer, orientation=orientation)
 }
 
 #' @export
@@ -311,7 +313,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, wb = NULL, title
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"), 
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL) {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
     
     if (is.null(crosstabs_summary$metadata$weight) && !is.null(weighted_n)) {
         warning('Data is unweighted. "weighted_n" row will not appear.', call. = FALSE)
@@ -340,7 +342,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, wb = NULL, title
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
         show_information = show_information, logging = logging, first_active_col = first_active_col,
         reduce_format = reduce_format, include_aliases = include_aliases, title_on_results_page = title_on_results_page,
-        percent_format_data = percent_format_data, hypothesis_test = hypothesis_test, header=header, footer=footer)
+        percent_format_data = percent_format_data, hypothesis_test = hypothesis_test, header=header, footer=footer, orientation = orientation)
 }
 
 write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col = 2, report_desc = NULL, styles = NULL, toc_page = TRUE) {
@@ -369,10 +371,10 @@ write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col 
 }
 
 create_table_of_contents <- function(wb, title, subtitle, toc_row = 2, toc_col = 2,
-    report_desc = NULL, styles = NULL, show_grid_lines = FALSE, logo = NULL, header, footer) {
+    report_desc = NULL, styles = NULL, show_grid_lines = FALSE, logo = NULL, header, footer, orientation) {
     
     toc_sheet <- "TOC"
-    openxlsx::addWorksheet(wb, toc_sheet, gridLines = show_grid_lines, header=header, footer=footer)
+    openxlsx::addWorksheet(wb, toc_sheet, gridLines = show_grid_lines, header=header, footer=footer, orientation=orientation)
     
     toc_row <- write_report_desc(wb, toc_sheet, title = title, subtitle = subtitle, start_row = toc_row,
         start_col = toc_col, report_desc = report_desc, styles = styles)
@@ -825,8 +827,9 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     min_base_label, one_per_sheet, row_label_width, styles,
     logo, show_information, logging, first_active_col,
     reduce_format, include_aliases, title_on_results_page,
-    percent_format_data, hypothesis_test, header, footer) {
+    percent_format_data, hypothesis_test, header, footer, orientation) {
 
+    #pageSetup
     if (logging) {
         start.time.wb <- Sys.time()
         print(paste(start.time.wb, "-- workbook generation -- start"))
@@ -842,7 +845,7 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     toc_col <- 2
     if (table_of_contents) {
         toc_res <- create_table_of_contents(wb, title = title, subtitle = subtitle, toc_row = toc_row, toc_col = toc_col,
-            report_desc = report_desc, show_grid_lines = show_grid_lines, styles = styles, logo = logo, header=header, footer=footer)
+            report_desc = report_desc, show_grid_lines = show_grid_lines, styles = styles, logo = logo, header=header, footer=footer, orientation = orientation)
         toc_sheet <- toc_res$toc_sheet
         toc_col <- toc_res$toc_col
         openxlsx::freezePane(wb, toc_sheet, firstActiveRow = toc_res$toc_row + 1)
@@ -866,7 +869,7 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     }
     if (n_and_percent) worksheet_names <- sapply(worksheet_names, function(wn) paste0(wn, '_', c('P', 'C')))
     for (worksheet_name in c(worksheet_names)){
-        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines, header=header, footer=footer)
+        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines, header=header, footer=footer, orientation=orientation)
         openxlsx::setColWidths(wb, worksheet_name, cols = 1, row_label_width)
     }
     
@@ -947,7 +950,7 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     }
     if (append_text != "") {
         worksheet_name <- "Notes"
-        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines, header=header, footer=footer)
+        openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines, header=header, footer=footer, orientation=orientation)
         openxlsx::writeData(wb, worksheet_name, append_text, startCol = 1, startRow = 1)
     }
     
