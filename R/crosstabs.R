@@ -23,11 +23,12 @@
 #' crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
 #'                                weight = 'weight', banner = banner_object)
 #' }
-#' @importFrom crunch name aliases allVariables is.Numeric is.dataset
+#' @importFrom crunch name aliases allVariables is.Numeric is.dataset weight alias weightVariables
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = weight(dataset), banner = NULL, codebook = FALSE,
+crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
+    ## TODO: make weight = alias(weight(dataset))
     
     if (!is.dataset(dataset)) {
         stop("'dataset' is not an object of class 'CrunchDataset'.")

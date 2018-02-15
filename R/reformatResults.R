@@ -74,7 +74,7 @@ roundPropCrosstabs <- function(data, digits) {
 reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
     digits = 0, add_parenthesis = TRUE, show_totals = TRUE, weighted_n = FALSE, latex_adjust = NULL,
     min_cell_size = NULL, min_cell_label = "*", reformat = TRUE, round_percentages = FALSE) {
-    
+
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     n_data <- if (weighted_n) x$totals_counts else x$unweighted_n
@@ -101,9 +101,9 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         rownames(data)[nrow(data)] <- "Totals"
     }
     if (digits > -1 && reformat) {
-        data[] <- format(data, nsmall=digits, big.mark=",")
+        data[] <- formatC(data, nsmall=digits, big.mark=",")
         n_data[] <- round(n_data, digits)
-        n_data[] <- format(n_data, nsmall=digits, big.mark=",")
+        n_data[] <- formatC(n_data, nsmall=digits, big.mark=",")
     }
     if (proportions && reformat) {
         data[] <- paste0(data, "%")
@@ -121,11 +121,12 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     
     if (class(n_data) %in% 'character') n_data <- as.array(n_data)
     data <- rbind(data, n_data)
-    
+
     if(length(n_data) > 0){
-        if(nrow(n_data) > 0){
-            rownames(data)[length(rownames(data))] <- if (weighted_n)
-                "Weighted N" else "Unweighted N"
+        if(nrow(n_data) == 1){
+            rownames(data)[length(rownames(data))] <- ifelse(weighted_n, "Weighted N", "Unweighted N")
+        } else if (nrow(n_data) == 2){
+            rownames(data)[length(rownames(data))-(1:0)] <- paste0(ifelse(weighted_n, "Weighted N", "Unweighted N"), ': ', c('Min', 'Max'))
         }
     }
     

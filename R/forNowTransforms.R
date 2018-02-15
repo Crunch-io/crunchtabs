@@ -76,6 +76,8 @@ calcInsertions <- function (vec, elements, var_cats) {
         
     })))
     
+    colnames(vec_out) <- colnames(vec)
+    
     # make sure that the vector is named appropriately
     rownames(vec_out) <- names(elements)
     

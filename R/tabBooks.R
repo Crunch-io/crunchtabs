@@ -111,9 +111,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 
                 ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
                 if (!is.null(inserts)){
-                    counts_out <- calcInsertions(counts_out, inserts, var_cats)
-                    proportions_out <- calcInsertions(proportions_out, inserts, var_cats)
-                    counts_unweighted_out <- calcInsertions(counts_unweighted_out, inserts, var_cats)
+                    counts_out <- as.matrix(calcInsertions(counts_out, inserts, var_cats))
+                    proportions_out <- as.matrix(calcInsertions(proportions_out, inserts, var_cats))
+                    counts_unweighted_out <- as.matrix(calcInsertions(counts_unweighted_out, inserts, var_cats))
                 }
 
                 banner_var_cross <- structure(list(
