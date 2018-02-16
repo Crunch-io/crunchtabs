@@ -1,10 +1,10 @@
 context('Preparing a banner data summary')
 
 with_test_authentication({
-  ds <- loadDataset("Example Dataset", project="crunchtabs")
+  ds <- loadDataset("Testing Dataset", project="crunchtabs")
   test_that("We can load a dataset from the crunchtabs package", {
     expect_s4_class(ds, "CrunchDataset")
-    expect_identical(name(ds), "Example Dataset")
+    expect_identical(name(ds), "Testing Dataset")
   })
 
   # NOTE: is this an expected behaviour?

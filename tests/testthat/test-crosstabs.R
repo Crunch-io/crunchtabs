@@ -6,7 +6,7 @@ test_that("Error handling - not a dataset", {
 })
 
 with_test_authentication({
-    ds <- loadDataset("Example Dataset", project='crunchtabs')
+    ds <- loadDataset("Testing Dataset", project='crunchtabs')
     
     test_that("Error handling", {
         expect_error(crosstabs(ds, vars = c("a", "b")),
@@ -34,7 +34,7 @@ with_test_authentication({
         expect_named(crosstabs_data, c("metadata", "results", "banner"))
         expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
         expect_null(crosstabs_data$banner)
-        expect_identical(getName(crosstabs_data), "Example Dataset")
+        expect_identical(getName(crosstabs_data), "Testing Dataset")
         expect_null(crosstabs_data$metadata$weight)
         expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc"))
         expect_named(crosstabs_data$results$allpets, c("alias", "name", "type", "description", "notes", "counts", "proportions", "counts_unweighted", "total", "missing", "valid", 'subvariables'))
@@ -62,7 +62,7 @@ with_test_authentication({
         expect_named(crosstabs_data, c("metadata", "results", "banner"))
         expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
         expect_s3_class(crosstabs_data$banner, "Banner") # NOTE: check expectation
-        expect_identical(getName(crosstabs_data), "Example Dataset")
+        expect_identical(getName(crosstabs_data), "Testing Dataset")
         expect_null(crosstabs_data$metadata$weight)
         expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight"))
         expect_named(crosstabs_data$results$favpet, c("alias", "name", "subnames", "description", "notes", "settings", "inserts", "crosstabs"))
