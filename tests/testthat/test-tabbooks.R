@@ -21,37 +21,37 @@ with_test_authentication({
   test_that("We can generate a tabBook data summary", {
     expect_is(tabBooks_data, "list")
     expect_named(tabBooks_data, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight"))
-    expect_named(tabBooks_data$allpets, c("alias", "name", "description", "notes", "settings", "crosstabs"))
-    expect_named(tabBooks_data$allpets$crosstabs, c("banner 1"))
-    expect_named(tabBooks_data$allpets$crosstabs$`banner 1`, c("Total", "gender", "age5"))
-    expect_named(tabBooks_data$allpets$crosstabs$`banner 1`$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$Total$counts,
+    expect_named(tabBooks_data$allpets, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
+    expect_named(tabBooks_data$allpets$crosstabs, c("Banner1"))
+    expect_named(tabBooks_data$allpets$crosstabs$Banner1, c("Total", "gender", "age5"))
+    expect_named(tabBooks_data$allpets$crosstabs$Banner1$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$counts,
                      structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))))
-    expect_equal(tabBooks_data$allpets$crosstabs$`banner 1`$Total$proportions,
+    expect_equal(tabBooks_data$allpets$crosstabs$Banner1$Total$proportions,
                  structure(c(0.2352941,0.4117647,0.2941176), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))),
                  tolerance = 1e-7)
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$Total$totals_counts,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$totals_counts,
                      structure(c(17), .Dim = c(1,1), .Dimnames = list(NULL, total = c("Total"))))
-    expect_equal(tabBooks_data$allpets$crosstabs$`banner 1`$Total$totals_proportions,
+    expect_equal(tabBooks_data$allpets$crosstabs$Banner1$Total$totals_proportions,
                  structure(c(0.9411765), .Dim = c(1,1), .Dimnames = list(NULL, total = c("Total"))),
                  tolerance = 1e-7)
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$Total$unweighted_n,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$unweighted_n,
                      structure(c(17), .Dim = c(1,1), .Dimnames = list(NULL, total = c("Total"))))
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$Total$counts_unweighted,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$counts_unweighted,
                      structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))))
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$gender$counts,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$counts,
                      structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
-    expect_equal(tabBooks_data$allpets$crosstabs$`banner 1`$gender$proportions,
+    expect_equal(tabBooks_data$allpets$crosstabs$Banner1$gender$proportions,
                  structure(c(0.3333333,0.3333333,0.3333333,0.125,0.500,0.250), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))),
                  tolerance = 1e-7)
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$gender$totals_counts,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$totals_counts,
                      structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-    expect_equal(tabBooks_data$allpets$crosstabs$`banner 1`$gender$totals_proportions,
+    expect_equal(tabBooks_data$allpets$crosstabs$Banner1$gender$totals_proportions,
                  structure(c(1, 0.875), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))),
                  tolerance = 1e-7)
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$gender$unweighted_n,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$unweighted_n,
                      structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-    expect_identical(tabBooks_data$allpets$crosstabs$`banner 1`$gender$counts_unweighted,
+    expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$counts_unweighted,
                      structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
 
 
