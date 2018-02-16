@@ -222,7 +222,7 @@ writeExcel <- function(data_summary, filename = NULL, wb = NULL, title = getName
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"), 
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait', save_workbook=TRUE) {
     
     if (is.null(filename)) {
         stop("No valid filename provided.")
@@ -255,7 +255,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, wb = NULL, title 
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"),
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait', save_workbook=TRUE) {
 
     if (is.null(crosstabs_summary$metadata$weight) && !is.null(weighted_n)) {
         warning('Data is unweighted. "weighted_n" row will not appear.', call. = FALSE)
@@ -291,7 +291,7 @@ writeExcel.Toplines <- function(data_summary, filename = NULL, wb = NULL, title 
         show_information = show_information, logging = logging, first_active_col = first_active_col, 
         reduce_format = reduce_format, include_aliases = include_aliases, 
         title_on_results_page = title_on_results_page, percent_format_data = percent_format_data, 
-        hypothesis_test = hypothesis_test, header = header, footer = footer, orientation=orientation)
+        hypothesis_test = hypothesis_test, header = header, footer = footer, orientation=orientation, save_workbook=save_workbook)
 }
 
 #' @export
@@ -313,7 +313,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, wb = NULL, title
         total = list(decoration = "bold")),
     insertions_format = list(subtotal=list(decoration = "bold"), 
         heading=list(decoration='italic')),
-    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait') {
+    hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait', save_workbook=TRUE) {
     
     if (is.null(crosstabs_summary$metadata$weight) && !is.null(weighted_n)) {
         warning('Data is unweighted. "weighted_n" row will not appear.', call. = FALSE)
@@ -342,7 +342,7 @@ writeExcel.Crosstabs <- function(data_summary, filename = NULL, wb = NULL, title
         one_per_sheet = one_per_sheet, row_label_width = row_label_width, styles = styles, logo = logo,
         show_information = show_information, logging = logging, first_active_col = first_active_col,
         reduce_format = reduce_format, include_aliases = include_aliases, title_on_results_page = title_on_results_page,
-        percent_format_data = percent_format_data, hypothesis_test = hypothesis_test, header=header, footer=footer, orientation = orientation)
+        percent_format_data = percent_format_data, hypothesis_test = hypothesis_test, header=header, footer=footer, orientation = orientation, save_workbook=save_workbook)
 }
 
 write_report_desc <- function(wb, ws, title, subtitle, start_row = 2, start_col = 2, report_desc = NULL, styles = NULL, toc_page = TRUE) {
@@ -827,7 +827,7 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     min_base_label, one_per_sheet, row_label_width, styles,
     logo, show_information, logging, first_active_col,
     reduce_format, include_aliases, title_on_results_page,
-    percent_format_data, hypothesis_test, header, footer, orientation) {
+    percent_format_data, hypothesis_test, header, footer, orientation, save_workbook) {
 
     #pageSetup
     if (logging) {
@@ -952,6 +952,10 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
         worksheet_name <- "Notes"
         openxlsx::addWorksheet(wb, worksheet_name, gridLines = show_grid_lines, header=header, footer=footer, orientation=orientation)
         openxlsx::writeData(wb, worksheet_name, append_text, startCol = 1, startRow = 1)
+    }
+    
+    if (!save_workbook){
+        return(wb)
     }
     
     if (logging) {
