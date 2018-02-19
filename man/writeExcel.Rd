@@ -21,7 +21,8 @@ writeExcel(data_summary, filename = NULL, title = getName(data_summary),
   title_on_results_page = FALSE, percent_format_data = TRUE,
   total_col = NULL, banner_format = list(labels = list(decoration = "bold"),
   categories = list(decoration = "bold"), total = list(decoration = "bold")),
-  hypothesis_test = FALSE)
+  insertions_format = list(subtotal = list(decoration = "bold"), heading =
+  list(decoration = "italic")), hypothesis_test = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -56,7 +57,7 @@ Defaults to \code{NULL} - no logo is used.}
 \item{weighted_n}{A list of parameters describing the row containing the weighted bases:
 \itemize{
  \item name - row label.
- \item position - row position. Valid values are: "top", "bottom", "both".
+ \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
  \item size - font size. Defaults to the value of the \code{font_size} parameter.
  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -67,7 +68,7 @@ Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 \item{unweighted_n}{A list of parameters describing the row containing the unweighted bases:
 \itemize{
  \item name - row label.
- \item position - row position. Valid values are: "top", "bottom", "both".
+ \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
  \item size - font size. Defaults to the value of the \code{font_size} parameter.
  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -128,7 +129,8 @@ related to cross-tabulated variable's:
 \itemize{
  \item name,
  \item description,
- \item filtertext.
+ \item filtertext,
+ \item subname.
 }
 Valid text decorations are:
 \itemize{
@@ -203,6 +205,22 @@ related to banner's:
 Defaults to list(labels = list(decoration="bold"),
 categories = list(decoration = "bold"),
 total = list(decoration = "bold")).}
+
+\item{insertions_format}{list. Specify format details:
+\itemize{
+ \item font - a font name. Defaults to the value of the \code{font} parameter.
+ \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
+ \item size - font size. Defaults to the value of the \code{font_size} parameter.
+ \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
+ \item background color - a string specifying the background color. Defaults to \code{NULL} - the workbook default color ("white") is used.
+}
+related to banner's:
+\itemize{
+ \item subtotal,
+ \item heading,
+}
+Defaults to list(subtotal=list(decoration = "bold"), 
+heading=list(decoration='italic'))}
 
 \item{hypothesis_test}{logical.
 Defaults to \code{FALSE}.}
