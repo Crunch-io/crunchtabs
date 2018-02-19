@@ -28,7 +28,12 @@
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
-    ## TODO: make weight = alias(weight(dataset))
+    
+    # if (missing(weight)) {
+    #     if (is.null(weight(dataset))) weight <- NULL
+    #     else weight <- alias(weight(dataset))
+    #     print(weight)
+    # }
     
     if (!is.dataset(dataset)) {
         stop("'dataset' is not an object of class 'CrunchDataset'.")

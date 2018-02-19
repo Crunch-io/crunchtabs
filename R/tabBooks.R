@@ -24,7 +24,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
         
         var_cats <- categories(dataset[[getAlias(crunch_cube)]])
-        inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+        inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         for (vai in seq_along(valiases)) {
             tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai], 
