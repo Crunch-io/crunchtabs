@@ -104,7 +104,7 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
     }
     
     if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
-        stop("The length of 'custom_numbering' provided (", length(custom_numbering),
+        stop("The length of `custom_numbering` provided (", length(custom_numbering),
             ") is not equal to the length of the results (", length(data_summary$results), ").")
     }
     
@@ -114,8 +114,8 @@ writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits
 
 #' @export
 writeLatex.default <- function(data_summary, ...) {
-    stop(paste0("writeLatex doesn't support objects of class '",
-        paste0(class(data_summary), collapse = " "), "'"))
+    stop("writeLatex doesn't support objects of class '",
+        collapse_items(class(data_summary)), "'.")
 }
 
 
@@ -174,7 +174,7 @@ escM <- function(str) {
 
 ltranspose <- function(l) {
     if (length(unique(unlist(lapply(l, length)))) > 1)
-        stop("All nested lists must be of equal length")
+        stop("All nested lists must be of equal length.")
     if (!is.null(names(l[[1]]))) {
         return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]])))
     } else {

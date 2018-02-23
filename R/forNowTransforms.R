@@ -49,7 +49,7 @@
 #' @return the values given in `vec`, with any insertions specified in
 #' `trans` calculated and inserted
 #' @keywords internal
-calcInsertions <- function (vec, elements, var_cats) {
+calcTabInsertions <- function (vec, elements, var_cats) {
 
     # make the actual calculations and insertions
     vec_out <- data.frame(do.call(rbind, lapply(elements, function (element) {
