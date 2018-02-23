@@ -5,8 +5,8 @@ test_that("Error handling - not a dataset", {
                "'dataset' is not an object of class 'CrunchDataset'.")
 })
 
-with_mock_crunch({
-  ds <- loadDataset("https://app.crunch.io/api/datasets/ad5fa16abb5a46819139f7a421bf6d93/")
+with_test_authentication({
+  ds <- loadDataset("Testing Dataset", project="crunchtabs")
   test_that("Error handling - vars", {
     expect_error(banner(ds, 'a'),
                  "'vars' should be a list of vectors.")

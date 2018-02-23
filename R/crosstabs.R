@@ -86,6 +86,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
                 }
                 return(b1)
             }))
+        class(banner) <- 'Banner'
     }
     
     summary_data <- list(metadata = c(list(title = title, date = date, weight = weight), metadata),
