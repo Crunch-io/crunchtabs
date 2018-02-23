@@ -347,4 +347,3 @@ collapse_items <- function(x){
     paste(x, collapse = ", ")
 }
 
-
