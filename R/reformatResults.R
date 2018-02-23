@@ -7,8 +7,8 @@ reformatResults <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
 #' @export
 reformatResults.default <- function(x, proportions = TRUE, digits = 0, reformat = TRUE,
     round_percentages = FALSE, details = FALSE) {
-    stop(paste("The 'reformatResults' generic function doesn't support objects of type:",
-        paste(class(x), collapse = ",")))
+    stop("`reformatResults` generic function doesn't support objects of type: ",
+        collapse_items(class(x)))
 }
 
 #' @export
@@ -228,8 +228,8 @@ reformatCodebookResults <- function(x, digits = 0, reformat = FALSE, round_perce
 #' @export
 reformatCodebookResults.default <- function(x, digits = 0, reformat = FALSE,
     round_percentages = FALSE, details = TRUE) {
-    stop(paste("reformatCodebookResults generic function doesn't support objects of type:",
-        paste(class(x), collapse = ",")))
+    stop("`reformatCodebookResults` generic function doesn't support objects of type:",
+        collapse_items(class(x)))
 }
 
 #' @export

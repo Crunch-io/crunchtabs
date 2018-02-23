@@ -19,7 +19,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         
         # generate new names and aliases for categorical_array variables by combining variable's names/aliases
         # with subvariables' names/aliases
-        vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
+        # vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
         valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
         
@@ -28,7 +28,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
         # prepare a data structure for every variable (categorical_array variables are sliced)
         for (vai in seq_along(valiases)) {
             tabs_data[[valiases[vai]]] <- structure(list(alias = valiases[vai], 
-                name = vnames[vai], 
+                name = getName(crunch_cube), #vnames[vai], 
                 subnames = subnames[vai],
                 description = getDescription(crunch_cube), 
                 notes = getNotes(crunch_cube), 
@@ -111,9 +111,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                 
                 ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
                 if (!is.null(inserts)){
-                    counts_out <- as.matrix(calcInsertions(counts_out, inserts, var_cats))
-                    proportions_out <- as.matrix(calcInsertions(proportions_out, inserts, var_cats))
-                    counts_unweighted_out <- as.matrix(calcInsertions(counts_unweighted_out, inserts, var_cats))
+                    counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
+                    proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
+                    counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
                 }
 
                 banner_var_cross <- structure(list(

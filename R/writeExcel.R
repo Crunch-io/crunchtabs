@@ -203,7 +203,7 @@
 #' writeExcel(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeExcel <- function(data_summary, filename = NULL, wb = NULL, title = getName(data_summary), subtitle = NULL,
+writeExcel <- function(data_summary, filename, wb = NULL, title = getName(data_summary), subtitle = NULL,
     n_or_percent='percent', digits = 0, table_of_contents = FALSE, logo = NULL,
     weighted_n = NULL, unweighted_n = list(name = "Unweighted N", position = "bottom"),
     show_totals = TRUE, report_desc = NULL, font = "Calibri", font_size = 12,
@@ -224,7 +224,7 @@ writeExcel <- function(data_summary, filename = NULL, wb = NULL, title = getName
     hypothesis_test = FALSE, header=NULL, footer=NULL, orientation='portrait', save_workbook=TRUE,
     lines_color='black', table_border=FALSE) {
     
-    if (is.null(filename)) {
+    if (missing(filename)) {
         stop("No valid filename provided.")
     }
     UseMethod("writeExcel", data_summary)
@@ -232,8 +232,7 @@ writeExcel <- function(data_summary, filename = NULL, wb = NULL, title = getName
 
 #' @export
 writeExcel.default <- function(data_summary, ...) {
-    stop(paste0("writeExcel doesn't support objects of class '",
-        paste0(class(data_summary), collapse = " "), "'"))
+    wrong_class_error(data_summary, c("Toplines", "Crosstabs"), "data_summary")
 }
 
 #' @export
@@ -673,8 +672,8 @@ writeExcelVarTopline <- function(wb, ws, x, start_col = 1, start_row = 1, digits
 #' @export
 writeExcelVarTopline.default <- function(wb, ws, x, start_col = 1, start_row = 1, digits = 0,
     proportions = TRUE, styles = NULL) {
-    stop(paste("The 'writeExcelVarTopline' generic function doesn't support objects of type:",
-        paste(class(x), collapse = ",")))
+    stop("The 'writeExcelVarTopline' generic function doesn't support objects of type: ",
+        collapse_items(class(x)))
 }
 
 #' @export
@@ -863,7 +862,7 @@ writeReportGeneral <- function(x, banner, filename, wb, n_or_percent,
     
     if (is.character(wb)) wb <- openxlsx::loadWorkbook(file = wb)
     if (is.null(wb)) wb <- openxlsx::createWorkbook()
-    if (!class(wb) == 'Workbook') stop('`wb` object must be NULL, a file path to an excel file, or an openxlsx Workbook object.')
+    if (!class(wb) == 'Workbook') stop('`wb`, if provided, must be a file path to an excel file, or an openxlsx Workbook object.')
     openxlsx::modifyBaseFont(wb, fontSize = font_size, fontColour = "black", fontName = font)
     
     toc_sheet <- NULL

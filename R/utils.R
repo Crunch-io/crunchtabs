@@ -57,7 +57,7 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
     }
     
     if (!file.exists(returnfile)) {
-        stop("PDF file does not exist. Check that there are no errors ", "in the LaTeX file.")
+        stop("PDF file does not exist. Check that there are no errors in the LaTeX file.")
     } else if (open) {
         file.open(returnfile)
     }
@@ -76,4 +76,17 @@ sgrep <- function(strs, ..., simplify = TRUE) {
     if (simplify)
         out <- unique(unlist(out))
     return(out)
+}
+
+error_if_items <- function(items, text, error = TRUE){
+    if (length(items) != 0){
+        if (error) { stop(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE) }
+        warning(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE)
+    }
+}
+
+wrong_class_error <- function(value, expected_class, name){
+    if (length(intersect(class(value), expected_class)) != length(expected_class)){
+        stop("The expected class for `", name, "` is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), call. = FALSE)
+    }
 }

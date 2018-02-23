@@ -20,7 +20,7 @@ topline <- function(var, dataset, weight, codebook = FALSE) {
 
 #' @export
 topline.default <- function(var, dataset, weight = NULL, codebook = FALSE) {
-    warning(paste("topline doesn't support objects of class", class(var)))
+    warning("topline doesn't support objects of class ", class(var))
     NULL
 }
 
