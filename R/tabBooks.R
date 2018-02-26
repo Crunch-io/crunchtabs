@@ -98,6 +98,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL) {
                     totals_counts_out <- t(totals_counts_out)
                     unweighted_n_out <- t(unweighted_n_out)
                 }
+                totals_proportions_out <- t(totals_proportions_out)
                 
                 banner_var <- banner_flatten[[banner_var_alias]]
                 if (banner_var_alias != "___total___" &&
