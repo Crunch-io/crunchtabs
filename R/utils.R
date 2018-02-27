@@ -79,7 +79,7 @@ sgrep <- function(strs, ..., simplify = TRUE) {
 }
 
 error_if_items <- function(items, text, error = TRUE){
-    if (length(items) != 0){
+    if (length(items) != 0 && !all(items %in% "")){
         if (error) { stop(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE) }
         warning(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE)
     }
