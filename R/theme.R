@@ -26,6 +26,7 @@
 #' @param freeze_column
 #' @param percent_format_data
 #' @param digits
+#' @param final_digits
 #' @param one_per_sheet
 
 #' @param page_breaks ?
@@ -37,7 +38,7 @@ theme_new <- function(..., default_theme = theme_default()){
 
     defs_theme <- theme_default()
     
-    dots <<- list(...)
+    dots <- list(...)
     
     if (any(names(dots) == "")) {
         stop("All arguments must have a name.")
@@ -86,17 +87,17 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
         format_banner_labels = c(norm, decoration = "bold", border_style = "thin", border_color = border_color, halign = "center"), 
         format_banner_categories = c(norm, decoration = "bold", border_style = "thin", border_color = border_color, halign = "center"), 
         format_var_alias = c(norm, decoration = "bold", halign = NULL), 
-        format_var_name = c(norm, decoration = "bold", include_alias = FALSE, halign = NULL), 
-        format_var_description = c(norm, decoration = "bold", include_alias = FALSE, halign = NULL), 
+        format_var_name = c(norm, decoration = "bold", include_alias = FALSE, halign = NULL, repeat_for_subs = TRUE), 
+        format_var_description = c(norm, decoration = "bold", include_alias = FALSE, halign = NULL, repeat_for_subs = TRUE), 
         format_var_subname = c(norm, decoration = "bold", include_alias = FALSE, halign = NULL), 
-        format_var_filtertext = c(norm, decoration = "italic", include_alias = FALSE, halign = NULL), 
+        format_var_filtertext = c(norm, decoration = "italic", include_alias = FALSE, halign = NULL, repeat_for_subs = TRUE), 
         format_label_column = c(norm, halign = "right", decoration = NULL, col_width = 80, halign = NULL), 
         format_subtotals = c(norm, decoration = "bold"), 
         format_headers = c(norm, decoration = "bold"), 
         format_means = c(name="Mean", norm, decoration = "bold"), 
         format_weighted_n = c(name = "Weighted N", norm, decoration = "bold", border_where = "TopBottom", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, position_fixed = FALSE, halign = "center"), 
         format_unweighted_n = c(name = "Unweighted N", norm, decoration = "bold", border_where = "TopBottom", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, position_fixed = FALSE, halign = "center"), 
-        format_totals_row = c(name = "Total", norm, decoration = "bold", border_where = "TopBottom", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, halign = NULL), 
+        format_totals_row = c(name = "Total", norm, decoration = "bold", border_where = "TopBottom", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, halign = "center"), 
         format_totals_column = c(norm, decoration = "bold", halign = NULL), 
         format_min_base = c(min_base = 0, mask = "-", norm, decoration = NULL), 
         format_toc_banner = c(sheet_name = "TOC", norm, decoration = "bold", border_where = "TopBottom", border_style = "thin", border_color = border_color, halign = NULL), 
@@ -108,6 +109,7 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
         freeze_column = 1,
         percent_format_data = TRUE,
         digits = 0, 
+        final_digits = Inf, 
         one_per_sheet = FALSE)
     
     class(defaults) <- "Theme"
@@ -152,6 +154,8 @@ political_theme <- function() {
         format_banner_categories=list(font = "Arial Narrow", font_size = 8),
         format_var_alias=NULL,
         format_var_name=NULL,
+        format_var_description=list(repeat_for_subs=FALSE),
+        format_var_filtertext=list(repeat_for_subs=FALSE),
         format_label_column=list(halign = "right", col_width = 80),
         format_subtotals=list(background_color = "#b8cce4"),
         format_headers=list(background_color = "#b8cce4"),
@@ -161,5 +165,6 @@ political_theme <- function() {
         format_totals_row=NULL,
         format_min_base=list(min_base = 50, mask = NULL, decoration = "italic"),
         freeze_column=2,
+        final_digits=0,
         percent_format_data=FALSE)
 }

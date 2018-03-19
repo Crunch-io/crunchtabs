@@ -26,10 +26,18 @@ reformatResults.ToplineNumeric <- function(x, proportions = TRUE, digits = 0, re
         details = details)
 }
 
+#' @export
+reformatResults.CrossTabBannerVar <- function(x, proportions = TRUE, digits = 0,
+    reformat = TRUE, round_percentages = FALSE, details = FALSE) {
+    reformatResultsGen(x, proportions = proportions, digits = digits,
+        reformat = reformat, round_percentages = round_percentages,
+        details = details)
+}
+
 #' @importFrom methods is
 reformatResultsGen <- function(x, proportions = FALSE, digits = 0, reformat = TRUE,
     round_percentages = FALSE, details = FALSE) {
-    data <- getResults(x, proportions = proportions, details = details)
+    data <- as.matrix(getResults(x, proportions = proportions, details = details))
     data[is.nan(data)] <- 0
     if (digits > -1 && reformat) {
         if (!proportions || is(x, "ToplineMultipleResponse") || !round_percentages) {

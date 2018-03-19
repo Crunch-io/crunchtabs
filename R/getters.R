@@ -211,7 +211,8 @@ getAlias.CrossTabVar <- function(x) {
 
 #' @export
 getAlias.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$alias
+    aliases(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$alias
 }
 
 getName <- function(x) UseMethod("getName", x)
@@ -239,7 +240,8 @@ getName.CrossTabVar <- function(x) {
 
 #' @export
 getName.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$name
+    names(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$name
 }
 
 #' @export
@@ -272,7 +274,8 @@ getDescription.CrossTabVar <- function(x) {
 
 #' @export
 getDescription.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$description
+    descriptions(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$description
 }
 
 getNotes <- function(x) UseMethod("getNotes", x)
@@ -298,7 +301,8 @@ getNotes.CrossTabVar <- function(x) {
 
 #' @export
 getNotes.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$notes
+    notes(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$notes
 }
 
 getTotal <- function(x) UseMethod("getTotal", x)
@@ -309,8 +313,9 @@ getTotal.default <- function(x) {
 }
 
 #' @export
-getTotal.CrunchCube <- function(out_crtabs) {
-    out_crtabs@.Data[[3]]$n
+getTotal.CrunchCube <- function(x) {
+    bases(x)
+    # out_crtabs@.Data[[3]]$n
 }
 
 #' @export

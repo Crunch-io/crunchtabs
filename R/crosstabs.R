@@ -64,15 +64,15 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         stop("No variables provided.")
     }
     
-    if (is.null(banner)) {
-        results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var,
-            codebook = codebook))
-        names(results) <- vars_out
-        res_class <- c(if (codebook) "Codebook" else "Toplines", "CrunchTabs")
-    } else {
-        results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner, weight = weight_var)
-        class(results) <- c("CrosstabsResults", class(results))
-        res_class <- c("Crosstabs", "CrunchTabs")
+    banner_use <- if (is.null(banner)) banner(dataset, vars=list('Results'=vars_out[1])) else banner
+    
+    results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner_use, weight = weight_var, topline = is.null(banner))
+
+    if (codebook) { res_class <- "Codebook" }
+    else if (is.null(banner)) { res_class <- c("Toplines", "CrunchTabs") }
+    else res_class <- c("Crosstabs", "CrunchTabs")
+    
+    if (!is.null(banner)) {
         banner <- lapply(banner, function(b)
             lapply(b, function(b1) {
                 if (b1$alias %in% '___total___') {
