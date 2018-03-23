@@ -85,8 +85,8 @@ error_if_items <- function(items, text, error = TRUE){
     }
 }
 
-wrong_class_error <- function(value, expected_class, name){
+wrong_class_error <- function(value, expected_class, name, null = FALSE){
     if (length(intersect(class(value), expected_class)) != length(expected_class)){
-        stop("The expected class for `", name, "` is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), call. = FALSE)
+        stop("The expected class for `", name, "`", if (null) ", if provided, ", " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), call. = FALSE)
     }
 }

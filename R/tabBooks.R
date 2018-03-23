@@ -23,8 +23,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         crunch_cube <- book[[vi]][[1]]
         
         var_type <- type(dataset[[getAlias(crunch_cube)]])
-        is_array_type <- var_type == 'categorical_array'
-        is_mr_type <- var_type == 'multiple_response'
+        is_array_type <- var_type == "categorical_array"
+        is_mr_type <- var_type == "multiple_response"
+        cat_type <- var_type %in% c("categorical", "categorical_array")
         topline_array <- is_array_type && topline
         
         # generate new names and aliases for categorical_array variables by combining variable's names/aliases
@@ -36,6 +37,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         
         var_cats <- categories(dataset[[getAlias(crunch_cube)]])
         inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+        mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
             structure(list(alias = dvaliases[vai], 
@@ -47,6 +49,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             notes = getNotes(crunch_cube), 
             settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1) get_grid_number(vai), collapse = "")), 
             categories = var_cats,
+            mean_median = mean_median,
             inserts = sapply(inserts, class),
             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
             class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineArrayVar", "CrossTabVar")))
@@ -98,16 +101,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     colnames(counts_unweighted_out) <- "Total"
                 }
 
-                
                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
                 ## min and max on MR -- added 20180212
-                if(is_mr_type){
-                    if (length(unlist(apply(round(totals_counts_out), 2, unique))) == ncol(totals_counts_out)) totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
-                    else totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
-                    if (length(unlist(apply(round(unweighted_n_out), 2, unique))) == ncol(unweighted_n_out)) unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
-                    else unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
-                    # totals_counts_out <- matrix(c(totals_counts_out[1,]), nrow=1, dimnames=list(c(), dimnames(totals_counts_out)[[2]]))
-                    # unweighted_n_out <- matrix(c(unweighted_n_out[1,]), nrow=1, dimnames=list(c(), dimnames(unweighted_n_out)[[2]]))
+                if (is_mr_type) {
+                    totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
+                    unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
                 } else {
                     totals_counts_out <- t(totals_counts_out)
                     unweighted_n_out <- t(unweighted_n_out)
@@ -125,8 +123,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
                 }
                 
-                means_out <- if (var_type %in% c("categorical", "categorical_array") && !all(is.na(values(na.omit(var_cats))))) {
+                means_out <- if (mean_median) {
                     unlist(sapply(colnames(counts_out), function(k) calcTabMeanInsert(counts_out[,k], na.omit(var_cats))))
+                }
+                medians_out <- if (mean_median) {
+                    unlist(sapply(colnames(counts_out), function(k) calcTabMedianInsert(counts_out[,k], na.omit(var_cats))))
                 }
                 ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
                 if (!is.null(inserts)){
@@ -134,16 +135,17 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
                     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
                 }
-                
+
                 banner_var_cross <- structure(list(
                     counts = counts_out,
                     proportions = proportions_out,
                     totals_counts = totals_counts_out,
-                    totals_proportions = totals_proportions_out,
+                    totals_proportions = c(totals_proportions_out),
                     unweighted_n = unweighted_n_out,
                     counts_unweighted = counts_unweighted_out,
-                    total = unweighted_n_out,
-                    mean = means_out,
+                    total = c(unweighted_n_out),
+                    mean = c(means_out),
+                    median = c(medians_out),
                     pvals_col = NULL#crunch::rstandard(crunch_cube)
                 ), class = c("CrossTabBannerVar", "list"))
 

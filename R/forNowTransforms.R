@@ -52,3 +52,26 @@ calcTabMeanInsert <- function (vec, var_cats) {
     return(weighted.mean(values(var_cats)[ok], vec[ok]))
 }
 
+calcTabMedianInsert <- function (vec, var_cats) {
+    ok <- !is.na(vec) & !is.na(values(var_cats))
+    if (all(!ok)) return(NA)
+    num_values <- values(var_cats[ok])
+    counts <- vec[ok]
+    
+    # weighted median function
+    o <- order(num_values)
+    num_values <- num_values[o]
+    counts <- counts[o]
+    perc <- cumsum(counts)/sum(counts)
+    
+    # if any of the bins are 0.5, return the mean of that and the one above it.
+    if (any(as.character(perc) %in% as.character(0.5))) {
+        n <- which(perc == 0.5)
+        return((num_values[n]+num_values[n+1])/2)
+    }
+    
+    # otherwise return the first bin that is more than 50%
+    over0.5 <- which(perc > 0.5)
+    return(num_values[min(over0.5)])
+}
+
