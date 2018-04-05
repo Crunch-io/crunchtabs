@@ -1,6 +1,40 @@
+
+#' Generate Excel Reports: Toplines and Banners
+#'
+#' \code{writeExcel} produces publication-quality Excel reports:
+#' Toplines (one-way frequency tables) or Banners (cross tabulations)
+#'
+#' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
+#' @param filename character. The name of the output file (without an extension).
+#' @param wb An openxlsx Workbook object to add to. Useful for custom front pages.
+#' @param theme An object of class \code{Theme}.
+#' @param title character. An optional title. Defaults to the title provided in the summary.
+#' @param subtitle character. An optional subtitle. Defaults to an empty string.
+#' @param table_of_contents logical. Should a list of tables be included at the start
+#' of the report. Defaults to \code{FALSE}.
+#' @param n_or_percent character vector. Should the data be returned as counts or percents? 
+#' Valid values are 'counts', 'percents' or both. 
+#' @param hypothesis_test logical. Should hypothesis testing be shown in the tabs?
+#' ** Not yet implemented. Defaults to \code{FALSE}.
+#' @param logging logical. Should basic information related to the function execution
+#' be printed? Defaults to \code{FALSE}.
+#' @param save_workbook logical. Should the Workbook be saved to an excel file or returned for the 
+#' user to continue editing? Defaults to \code{TRUE}.
+#' @return If \code{save_workbook} is set to \code{FALSE}, the openxlsx Workbook object is returned
+#' allowing the user to continue editing it before saving. Otherwise the data is returned as it was provided.
+#' @examples
+#' \dontrun{
+#' # toplines report
+#' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
+#' writeExcel(toplines_summary, 'filename')
+#' # crosstabs report
+#' crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
+#' writeExcel(crosstabs_summary, 'filename')
+#' }
+#' @export
 #' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = theme_default(), 
-    title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percent", "count"), 
+    title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
     hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
     
     if (is.null(filename) && !save_workbook) {
@@ -11,8 +45,8 @@ writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL
         wrong_class_error(wb, "Workbook", "wb", null = TRUE)
     }
     
-    if (!all(n_or_percent %in% c("count", "percent"))) {
-        stop("`n_or_percent` must be a character vector containing 'count', 'percent' or both, not ", paste0("'", n_or_percent, "'", collapse = ', '))
+    if (!all(n_or_percent %in% c("counts", "percents"))) {
+        stop("`n_or_percent` must be a character vector containing 'counts', 'percents' or both, not ", paste0("'", n_or_percent, "'", collapse = ', '))
     }
     
     theme_validator(theme)
@@ -479,7 +513,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
     for (bix in seq_along(banner_names)) {
         banner_name <- banner_names[bix]
         bna <- ws_subtitles[duplicated(banner_names)[bix] + 1]
-        proportions <- n_or_percent[duplicated(banner_names)[bix] + 1] %in% "percent"
+        proportions <- n_or_percent[duplicated(banner_names)[bix] + 1] %in% "percents"
         if (logging) {
             start.time <- Sys.time()
             print(paste0(start.time, " -- banner generation: ", banner_name, bna, " -- start"))
