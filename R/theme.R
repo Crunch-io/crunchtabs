@@ -34,13 +34,31 @@
 theme_new <- function(..., default_theme = theme_default()){
     
     wrong_class_error(default_theme, "Theme", "default_theme")
-
-    defs_theme <- theme_default()
     
     dots <- list(...)
     
     if (any(names(dots) == "")) {
         stop("All arguments must have a name.")
+    }
+    
+    for (nm in setdiff(names(dots), names(default_theme))) {
+        if (length(unlist(validators_to_use[[nm]]["include"])) > 1) {
+            default_theme[[nm]] <- list()
+            for (incl in setdiff(validators_to_use[[nm]]$include, dots[[nm]])) {
+                if (incl %in% names(default_theme)) {
+                    default_theme[[nm]][[incl]] <- default_theme[[incl]]
+                } else if (as.logical(validators_to_use[[incl]]["NULL"])) { 
+                    next 
+                } else if (!is.null(validators_to_use[[incl]]["default"]) && !is.na(validators_to_use[[incl]]["default"])) {
+                    rsp <- validators_to_use[[incl]]["default"]
+                    if (validators_to_use[[incl]]["class"] %in% "logical") { default_theme[[nm]][[incl]] <- as.logical(rsp) }
+                    else if (validators_to_use[[incl]]["class"] %in% "numeric") { default_theme[[nm]][[incl]] <- as.numeric(rsp) }
+                    else { default_theme[[nm]][[incl]] <- rsp }
+                } else if (incl %in% "name") {
+                    default_theme[[nm]][[incl]] <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", gsub("_", " ", gsub("format_", "", nm)), perl=TRUE)
+                } else print(paste(nm, incl))
+            }
+        }
     }
     
     theme <- modifyList(default_theme, dots, keep.null = TRUE)
@@ -59,10 +77,12 @@ theme_new <- function(..., default_theme = theme_default()){
 theme_default <- function(font = getOption("font", default = "Calibri"),
     font_size = getOption("font_size", default = 12),
     font_color = getOption("font_color", default = "black"),
-    border_color = getOption("border_color", default = "black")){
+    border_color = getOption("border_color", default = "black"),
+    halign = getOption("halign", default = "center"),
+    valign = getOption("valign", default = "center")){
 
-    norm <- list(font = font, font_size = font_size, font_color = font_color, valign = "center", wrap_text = TRUE)
-    defaults <- list(font = font, font_size = font_size, font_color = font_color, valign = "center", halign = "center", 
+    norm <- list(font = font, font_size = font_size, font_color = font_color, valign = valign, wrap_text = TRUE)
+    defaults <- list(font = font, font_size = font_size, font_color = font_color, valign = valign, halign = halign, 
         format_title = c(norm[setdiff(names(norm), "font_size")], decoration = "bold", font_size = font_size + 4), 
         format_subtitle = c(norm[setdiff(names(norm), "font_size")], decoration = "bold", font_size = font_size + 2), 
         format_banner_labels = c(norm, decoration = "bold", border_where = "bottom", border_style = "thin", border_color = border_color, halign = "center"), 
@@ -76,8 +96,8 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
         format_headers = c(norm, decoration = "bold"), 
         format_means = c(name="Mean", norm, decoration = "bold"), 
         format_medians = c(name="Median", norm, decoration = "bold"), 
-        format_unweighted_n = c(name = "Unweighted N", norm, decoration = "bold", position_top = FALSE, position_bottom = TRUE, position_fixed = FALSE, halign = "center"), 
-        format_totals_row = c(name = "Totals", norm, decoration = "bold", border_where = "top", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, halign = "center"), 
+        format_unweighted_n = c(name = "Unweighted N", norm, decoration = "bold", position_top = FALSE, position_bottom = TRUE, position_fixed = FALSE, halign = halign), 
+        format_totals_row = c(name = "Totals", norm, decoration = "bold", border_where = "top", border_style = "thin", border_color = border_color, position_top = FALSE, position_bottom = TRUE, halign = halign), 
         format_totals_column = norm, 
         show_grid_lines = FALSE,
         orientation = "portrait",
@@ -154,17 +174,17 @@ validators_to_use <- list(
         "right", "righttop", "righttopbottom", "righttopbottomleft", "righttopleft", "righttopleftbottom", 
         "rightbottom", "rightbottomtop", "rightbottomtopleft", "rightbottomleft", "rightbottomlefttop", 
         "rightleft", "rightlefttop", "rightlefttopbottom", "rightleftbottom", "rightleftbottomtop")),
-    col_width = c(class = "numeric", len = 1, "NULL" = FALSE),
+    col_width = c(class = "numeric", len = 1, "NULL" = FALSE, default = 40),
     decoration = list(mult = TRUE, "NULL" = TRUE, valid = list("bold","strikeout","italic","underline","underline2")),
-    digits = c(class = "numeric", len = 1, "NULL" = FALSE),
-    dpi = c(class = "numeric", len = 1, "NULL" = FALSE),
-    empty_col = c(class = "logical", len = 1, "NULL" = FALSE),
-    extend_borders = c(class = "logical", len = 1, "NULL" = FALSE),
-    file = c(class = "character", len = 1, "NULL" = TRUE),
+    digits = c(class = "numeric", len = 1, "NULL" = FALSE, default = 0),
     digits_final = c(class = "numeric", len = 1, "NULL" = TRUE),
-    font = c(class = "character", len = 1, "NULL" = FALSE),
+    dpi = c(class = "numeric", len = 1, "NULL" = FALSE, default = 300),
+    empty_col = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    extend_borders = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    file = c(class = "character", len = 1, "NULL" = TRUE),
+    font = c(class = "character", len = 1, "NULL" = TRUE),
     font_color = c(class = "color", len = 1, "NULL" = TRUE),
-    font_size = c(class = "numeric", len = 1, "NULL" = FALSE),
+    font_size = c(class = "numeric", len = 1, "NULL" = TRUE),
     footer = c(class = "character", len = 3, "NULL" = TRUE),
     format_banner_categories = list("NULL" = FALSE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
     format_banner_labels = list("NULL" = TRUE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
@@ -185,31 +205,31 @@ validators_to_use <- list(
     format_var_subname = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "include_q_number")), 
     format_var_filtertext = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
     format_weighted_n = list("NULL" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom", "position_fixed")), 
-    freeze_column = c(class = "numeric", len = 1, "NULL" = FALSE),
+    freeze_column = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
     halign = list(mult = FALSE, "NULL" = TRUE, valid = list("left", "right", "center")),
     header = c(class = "character", len = 3, "NULL" = TRUE),
-    height = c(class = "numeric", len = 1, "NULL" = FALSE),
-    include_alias = c(class = "logical", len = 1, "NULL" = FALSE),
-    include_q_number = c(class = "logical", len = 1, "NULL" = FALSE),
+    height = c(class = "numeric", len = 1, "NULL" = FALSE, default = 2),
+    include_alias = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    include_q_number = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
     logo = list("NULL" = TRUE, include = list("file", "startRow", "startCol", "width", "height", "units", "dpi")),
     mask = c(class = "character", len = 1, "NULL" = TRUE),
     min_base = c(class = "numeric", len = 1, "NULL" = TRUE),
     name = c(class = "character", len = 1, "NULL" = FALSE),
-    one_per_sheet = c(class = "logical", len = 1, "NULL" = FALSE),
-    orientation = list(mult = FALSE, "NULL" = FALSE, valid = list("portrait", "landscape")), 
-    percent_format_data = c(class = "logical", len = 1, "NULL" = FALSE),
-    position_bottom = c(class = "logical", len = 1, "NULL" = FALSE),
-    position_fixed = c(class = "logical", len = 1, "NULL" = FALSE),
-    position_top = c(class = "logical", len = 1, "NULL" = FALSE),
-    repeat_for_subs = c(class = "logical", len = 1, "NULL" = FALSE),
-    show_grid_lines = c(class = "logical", len = 1, "NULL" = FALSE),
-    startCol = c(class = "numeric", len = 1, "NULL" = FALSE),
-    startRow = c(class = "numeric", len = 1, "NULL" = FALSE),
+    one_per_sheet = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    orientation = list(mult = FALSE, "NULL" = FALSE, valid = list("portrait", "landscape"), default = "landscape"), 
+    percent_format_data = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    position_bottom = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE),
+    position_fixed = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    position_top = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    repeat_for_subs = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE),
+    show_grid_lines = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
+    startCol = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
+    startRow = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
     table_border = list("NULL" = TRUE, include = list("border_style", "border_color")), 
-    units = list(mult = FALSE, "NULL" = FALSE, valid = list("in", "cm", "px")),
+    units = list(mult = FALSE, "NULL" = FALSE, valid = list("in", "cm", "px"), default = "in"),
     valign = list(mult = FALSE, "NULL" = TRUE, valid = list("top", "bottom", "center")),
-    width = c(class = "numeric", len = 1, "NULL" = FALSE),
-    wrap_text = c(class = "logical", len = 1, "NULL" = FALSE))
+    width = c(class = "numeric", len = 1, "NULL" = FALSE, default = 4),
+    wrap_text = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE))
 
 theme_validator <- function(theme) {
     theme_required <- c("banner_vars_split", "digits", "digits_final", "font", "font_color", "font_size", "footer", 
@@ -247,9 +267,7 @@ political_theme <- function() {
         format_label_column=list(halign = "right", col_width = 80),
         format_subtotals=list(background_color = "#b8cce4"),
         format_headers=list(background_color = "#b8cce4"),
-        format_means=list(background_color = "#b8cce4"),
-        format_medians=list(background_color = "#b8cce4"),
-        format_weighted_n=list(name = "Weighted Sample", border_where = "TopBottomLeftRight", position_bottom = FALSE, position_fixed = TRUE),
+        format_weighted_n=list(name = "Weighted Sample", border_where = "TopBottomLeftRight", position_bottom = FALSE, position_fixed = TRUE, halign="center"),
         format_unweighted_n=list(name = "Unweighted Sample", font_color = "#969696", border_where = "TopBottomLeftRight", position_bottom = FALSE, position_fixed = TRUE),
         format_totals_row=NULL,
         format_min_base=list(min_base = 50, mask = NULL, decoration = "italic"),

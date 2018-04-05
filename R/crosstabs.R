@@ -41,6 +41,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         "{items} listed in `vars` must be valid aliases in aliases(allVariables(dataset)).")
     
     if (!is.null(weight)) {
+        if (is.variable(weight)) weight <- alias(weight)
         if (!weight %in% aliases(allVariables(dataset))) {
             stop("`weight`, if provided, must be a valid variable in `dataset`. ", weight, " is not found.")
         }

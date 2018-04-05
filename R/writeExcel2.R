@@ -231,6 +231,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     unweighted_n_bottom <- !is.null(theme$format_unweighted_n) && theme$format_unweighted_n$position_bottom
     totals_bottom <- !var$settings$no_totals && !is.null(theme$format_totals_row) && theme$format_totals_row$position_bottom
     min_base <- !is.null(theme$format_min_base$min_base) && theme$format_min_base$min_base >= 0
+    show_totals <- totals_top | totals_bottom
     show_mean <- !is.null(theme$format_mean) && !is.null(var$crosstabs[[banner_name]]$Total$mean)
     show_median <- !is.null(theme$format_medians) && var$mean_median
     
@@ -264,8 +265,9 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     
     unweighted_n_data <- clean_data(get_data(var$crosstabs[[banner_name]], "unweighted_n", banner_info$empty_col, round = FALSE), data)
     weighted_n_data <- clean_data(get_data(var$crosstabs[[banner_name]], "totals_counts", banner_info$empty_col, round = FALSE), data)
-
-    totals_data <- clean_data(get_data(var$crosstabs[[banner_name]], if (proportions) "totals_proportions" else "totals_counts", banner_info$empty_col, round = FALSE), data)
+    if (show_totals) {
+        totals_data <- clean_data(get_data(var$crosstabs[[banner_name]], if (proportions) "totals_proportions" else "totals_counts", banner_info$empty_col, round = FALSE), data)
+    }
     if (show_mean) { 
         mean_data <- clean_data(get_data(var$crosstabs[[banner_name]], "mean", banner_info$empty_col, round = FALSE), data) 
         var$inserts <- c(var$inserts, "Mean")
@@ -274,7 +276,6 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
         median_data <- clean_data(get_data(var$crosstabs[[banner_name]], "median", banner_info$empty_col, round = FALSE), data) 
         var$inserts <- c(var$inserts, "Median")
     }
-    
     if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")){
         data <- data[-c(which(var$inserts %in% "Heading")),]
         var$inserts <- var$inserts[-c(which(var$inserts %in% "Heading"))]
@@ -298,10 +299,10 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     
     if (!is.null(theme$digits_final) && !is.infinite(theme$digits_final)){
         data <- round(data, theme$digits_final + (proportions && theme$percent_format_data)*2)
-        totals_data <- round(totals_data, theme$digits_final + (proportions && theme$percent_format_data)*2)
+        if (show_totals) totals_data <- round(totals_data, theme$digits_final + (proportions && theme$percent_format_data)*2)
         weighted_n_data <- round(weighted_n_data, theme$digits_final)
-        if (show_mean) mean <- round(mean, theme$digits_final + 2)
-        if (show_median) median <- round(median, theme$digits_final + 2)
+        if (show_mean) mean_data <- round(mean_data, theme$digits_final + 2)
+        if (show_median) median_data <- round(median_data, theme$digits_final + 2)
     }
     
     all_data <- rbind(if (weighted_n_top) weighted_n_data,
