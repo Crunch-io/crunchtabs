@@ -7,16 +7,16 @@
 writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
   title = getName(data_summary), subtitle = NULL, sample_desc = "",
   field_period = "", moe = NULL, table_of_contents = FALSE,
-  returndata = FALSE, append_text = "", pdf = FALSE,
-  path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
-  foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-  tableonly = FALSE, landscape = FALSE, font = "helvet",
-  font_size = NULL, page_width = ifelse(landscape, 9, 6.5),
-  row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left = 1,
-  right = 1), min_cell_size = NULL, min_cell_label = NULL,
-  show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-  dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
-  clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
+  append_text = "", pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"),
+  open = FALSE, headtext = "", foottext = "", graphicspath = NULL,
+  logo = NULL, longtablewrap = TRUE, tableonly = FALSE,
+  landscape = FALSE, font = "helvet", font_size = NULL,
+  page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
+  margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
+  min_cell_size = NULL, min_cell_label = NULL, show_totals = TRUE,
+  weighted_n = FALSE, add_parenthesis = FALSE, dc = c(3.2, 4.1),
+  multirowheaderlines = FALSE, latex_adjust = "c", clearpage = TRUE,
+  grid_num_letters = TRUE, custom_numbering = NULL,
   round_percentages = FALSE)
 }
 \arguments{
@@ -42,9 +42,6 @@ Defaults to 0.}
 
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report Defaults to \code{FALSE}.}
-
-\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
 
 \item{append_text}{An optional character string that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information. Defaults to an empty string.}
@@ -127,6 +124,8 @@ Defaults to \code{NULL} - default numbering scheme is used.}
 
 \item{round_percentages}{logical. Should percentages be rounded to sum up to 100?
 Defaults to \code{FALSE}.}
+
+\item{theme}{}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
