@@ -1,35 +1,41 @@
-#' @param format_title 
-#' @param format_subtitle
-#' @param format_banner_labels
-#' @param format_banner_categories #XX
-#' @param format_var_alias
-#' @param format_var_name
-#' @param format_var_description
-#' @param format_var_subname
-#' @param format_var_filtertext
-#' @param format_label_column #XX
-#' @param format_subtotals
-#' @param format_headers
-#' @param format_means
-#' @param format_medians
-#' @param format_weighted_n
-#' @param format_unweighted_n
-#' @param format_totals_row
-#' @param format_totals_column #XX
-#' @param format_min_base
-
-#' @param table_border
-#' @param banner_vars_split
-#' @param show_grid_lines
-#' @param orientation
-#' @param logo
-#' @param freeze_column
-#' @param percent_format_data
-#' @param digits
-#' @param digits_final
-#' @param one_per_sheet
-
-#' @param page_breaks ?
+#' Generate Theme for writeExcel
+#'
+#' \code{theme_new} produces themes for writeExcel.
+#'
+#' @param format_title  format_title format_title
+#' @param format_subtitle format_subtitle format_subtitle
+#' @param format_banner_labels format_banner_labels format_banner_labels
+#' @param format_banner_categories format_banner_categories format_banner_categories #XX
+#' @param format_var_alias format_var_alias format_var_alias
+#' @param format_var_name format_var_name format_var_name
+#' @param format_var_description format_var_description format_var_description
+#' @param format_var_subname format_var_subname format_var_subname
+#' @param format_var_filtertext format_var_filtertext format_var_filtertext
+#' @param format_label_column format_label_column format_label_column #XX 
+#' @param format_subtotals format_subtotals format_subtotals
+#' @param format_headers format_headers format_headers
+#' @param format_means format_means format_means
+#' @param format_medians format_medians format_medians
+#' @param format_weighted_n format_weighted_n format_weighted_n
+#' @param format_unweighted_n format_unweighted_n format_unweighted_n
+#' @param format_totals_row format_totals_row format_totals_row
+#' @param format_totals_column format_totals_column format_totals_column #XX
+#' @param format_min_base format_min_base format_min_base
+#' @param table_border table_border table_border
+#' @param banner_vars_split banner_vars_split banner_vars_split
+#' @param show_grid_lines show_grid_lines show_grid_lines
+#' @param orientation orientation orientation
+#' @param logo logo logo
+#' @param freeze_column freeze_column freeze_column
+#' @param percent_format_data percent_format_data percent_format_data
+#' @param digits digits digits
+#' @param digits_final digits_final digits_final
+#' @param one_per_sheet one_per_sheet one_per_sheet
+#' @param page_breaks ? page_breaks page_breaks
+#' @examples
+#' \dontrun{
+#' theme stuff
+#' }
 #' @export
 theme_new <- function(..., default_theme = theme_default()){
     
@@ -69,10 +75,14 @@ theme_new <- function(..., default_theme = theme_default()){
     return(theme)
 }
 
-#' @param font
-#' @param font_size
-#' @param font_color
-#' @param border_color
+#' Generate default Theme for writeExcel
+#'
+#' \code{theme_default} is the default theme. Users can change base options
+#'
+#' @param font font font
+#' @param font_size font_size font_size
+#' @param font_color font_color font_color
+#' @param border_color border_color border_color
 #' @export
 theme_default <- function(font = getOption("font", default = "Calibri"),
     font_size = getOption("font_size", default = 12),

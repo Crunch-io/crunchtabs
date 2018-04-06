@@ -32,7 +32,6 @@
 #' writeExcel(crosstabs_summary, 'filename')
 #' }
 #' @export
-#' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = theme_default(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
     hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
