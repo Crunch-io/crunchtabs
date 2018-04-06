@@ -2,7 +2,7 @@
 #' @export
 writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, returndata = FALSE, append_text = "",
+    table_of_contents = FALSE, append_text = "",
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = TRUE, font = "helvet", font_size = "small",
@@ -30,6 +30,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
         else i))
     
     bodies <- lapply(data_summary$results, function (x) {
+        print(paste("bodies", x$alias))
         sapply(x$crosstabs, function (y) {
             latexTable.body(y, longtablewrap = longtablewrap, autorownames = TRUE, summary.midrule = TRUE,
                 show_totals = !x$settings$no_totals & show_totals)
@@ -37,6 +38,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     })
     
     out <- sapply(seq_along(data_summary$results), function(i) {
+        print(paste("out", data_summary$results[[i]]$alias))
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
             ifelse(clearpage, "\\clearpage", ""))
@@ -48,6 +50,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
         out <- c(
             latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font, graphicspath = graphicspath, logo = logo),
             sapply(seq_along(banner), function (j) {
+                print(j)
                 longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, coltype=ifelse(digits==0, "g", "d"),
                     multirow = multirowheaderlines, page_width = page_width, row_label_width = row_label_width)
             }),
@@ -61,12 +64,11 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
         if (pdf) {
+            print("PDF-ing")
             pdflatex(filename, open, path.to.pdflatex = path.to.pdflatex)
         }
     }
-    if (returndata) {
-        return(data_summary)
-    }
+    return(invisible(data_summary))
 }
 
 latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.0"), subtitle=NULL, font="helvet", graphicspath = NULL, logo = NULL) {

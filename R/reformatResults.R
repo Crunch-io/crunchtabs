@@ -109,9 +109,9 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         rownames(data)[nrow(data)] <- "Totals"
     }
     if (digits > -1 && reformat) {
-        data[] <- formatC(data, nsmall=digits, big.mark=",")
+        data[] <- format(data, nsmall=digits, big.mark=",")
         n_data[] <- round(n_data, digits)
-        n_data[] <- formatC(n_data, nsmall=digits, big.mark=",")
+        n_data[] <- format(n_data, nsmall=digits, big.mark=",")
     }
     if (proportions && reformat) {
         data[] <- paste0(data, "%")

@@ -33,8 +33,6 @@
 #' @param pdf logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.
 #' @param open logical. If PDF document was produced, open it with
 #' the default application? Only implemented for MacOS.
-#' @param returndata logical. If \code{TRUE}, a processed data that was used to produce
-#' the report is returned.
 #' @param digits integer. Number of decimal digits to use for rounding.
 #' Defaults to 0.
 #' @param tableonly logical. If \code{TRUE}, function writes out only the LaTeX
@@ -73,6 +71,9 @@
 #' Defaults to \code{NULL} - default numbering scheme is used.
 #' @param round_percentages logical. Should percentages be rounded to sum up to 100?
 #' Defaults to \code{FALSE}.
+#' 
+#' @param theme
+#' 
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -87,7 +88,7 @@
 #' @export
 writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, returndata = FALSE, append_text = "",
+    table_of_contents = FALSE, append_text = "",
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
@@ -184,7 +185,7 @@ ltranspose <- function(l) {
 
 getFilterText <- function(var_summary) {
     filtertext <- getNotes(var_summary)
-    if (filtertext != "") {
+    if (!is.na(filtertext) && filtertext != "") {
         filtertext <- paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}")
     }
     filtertext

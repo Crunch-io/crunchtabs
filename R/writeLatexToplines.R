@@ -2,7 +2,7 @@
 #' @export
 writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, returndata = FALSE, append_text = "",
+    table_of_contents = FALSE, append_text = "",
     pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
     headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
     tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = 12,
@@ -46,9 +46,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
         }
     }
     
-    if (returndata) {
-        return(data_summary)
-    }
+    return(invisible(data_summary))
 }
 
 toplineHeader <- function(x, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE) {

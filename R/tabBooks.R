@@ -44,7 +44,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             type = var_type,
             name = getName(crunch_cube), #vnames[vai], 
             subnames = subnames[vai],
-            subnumber = vai,
+            subnumber = if (is_array_type) vai else NA,
             description = getDescription(crunch_cube), 
             notes = getNotes(crunch_cube), 
             settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1) get_grid_number(vai), collapse = "")), 
