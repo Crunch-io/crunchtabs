@@ -270,23 +270,16 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     
     style_if <- function(ifStatement, start_row, style, data, cols){
         if (ifStatement){
-            openxlsx::addStyle(wb = wb, sheet = ws, style = style, rows = start_row:(start_row + nrow(data) - 1), 
+            nrow <- if (!is.null(dim(data))) { nrow(data) } else { 1 }
+            openxlsx::addStyle(wb = wb, sheet = ws, style = style, rows = start_row:(start_row + nrow - 1), 
                 cols = cols, gridExpand = TRUE, stack = TRUE)
             start_row <- start_row + nrow(data)
         }
         return(start_row)
     }
     
-    clean_data <- function(x, data) {
-        if (!is.null(dim(x)) && nrow(x) == 2) {
-            if (all(x[1, ] == x[2, ])) { x <- x[1, ] }
-        }
-        if (is.null(dim(x))) x <- t(x)
-        x <- setNames(data.frame(x), names(data))
-    }
-    
     data <- as.data.frame(lapply(var$crosstabs[[banner_name]], function(x) {
-        d <- as.data.frame(reformatResults(x, proportions = proportions, reformat = FALSE))
+        d <- as.data.frame(reformatResults(x, proportions = proportions, theme = theme, reformat = FALSE))
         if (is.null(x$type) || x$type %in% c("categorical", "categorical_array", "multiple_response")){
             if (proportions && !theme$percent_format_data) {
                 d[] <- d * 100
@@ -348,7 +341,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
         if (weighted_n_bottom) weighted_n_data,
         if (unweighted_n_bottom) unweighted_n_data)
 
-    topline_array <- is(var, "ToplineArrayVar")
+    topline_array <- is(var, "ToplineCategoricalArray")
     if (topline_array) {
         banner_info$format_cols <- seq_along(unweighted_n_data)
         names(all_data) <- gsub('Total\\.', '', names(all_data))
@@ -406,12 +399,14 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     
     wt <- if (!is.null(theme$format_min_base$mask)) theme$format_min_base$mask else "-"
     if (show_mean && !min_base) {
-        for (bki in which(is.na(mean_data)) + 1) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
+        na_out <- which(is.na(mean_data) & !is.na(weighted_n_data)) + 1
+        for (bki in na_out) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
     }
     start_row <- style_if(show_mean, start_row, styles$body_counts, mean_data, cols = banner_info$format_cols)
     start_row <- style_if(show_mean, start_row - show_mean, styles$format_means, mean_data, cols = c(1, banner_info$format_cols))
     if (show_median && !min_base) {
-        for (bki in which(is.na(median_data)) + 1) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
+        na_out <- which(is.na(median_data) & !is.na(weighted_n_data)) + 1
+        for (bki in na_out) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
     }
     start_row <- style_if(show_median, start_row, styles$body_counts, median_data, cols = banner_info$format_cols)
     start_row <- style_if(show_median, start_row - show_median, styles$format_medians, median_data, cols = c(1, banner_info$format_cols))

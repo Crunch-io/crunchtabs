@@ -72,7 +72,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         used_list <- c()
         else_target <- NULL
         for (term in recode_list) {
-            if (grepl("^else=", squeezeBlanks(term))) {
+            if (grepl("^else=", gsub(" *", "", term))) {
                 target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
                 if (class(target) == "try-error") {
                     stop("\n  in recode term: ", term, "\n  message: ", target)
@@ -133,11 +133,6 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     names(ret) <- if (is.null(names(vars))) paste0("Banner", seq_along(ret)) else names(vars)
     class(ret) <- "Banner"
     ret
-}
-
-
-squeezeBlanks <- function(text) {
-    gsub(" *", "", text)
 }
 
 lstranspose <- function(l) {

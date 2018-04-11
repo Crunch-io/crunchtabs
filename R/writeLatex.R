@@ -1,4 +1,3 @@
-
 #' Generate LaTeX Reports: Toplines and Banners
 #'
 #' \code{writeLatex} produces publication-quality LaTeX reports:
@@ -8,69 +7,25 @@
 #' @param filename character. The name of the output file (without extension).
 #' @param title An optional title. Defaults to the data summary title.
 #' @param subtitle An optional character subtitle. Defaults to an empty string.
-#' @param proportions logical. If \code{TRUE} the output report shows proportions,
-#' if \code{FALSE} the report shows counts.
-#' @param headtext An optional character string indicating what text should be
-#' placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-#' continued.'
-#' @param foottext An optional character string indicating what text should be
-#' placed at the bottom of continuation tables. 'tbc' is a shortcut for
-#' 'continued from previous page.'
-#' @param landscape logical. If \code{TRUE}, generate pages in the landscape
-#' mode. Defaults to \code{TRUE} for Banners and \code{FALSE} for Toplines.
-#' @param margin An optional argument to pass to the LaTeX package
-#' \code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
-#' includeheadfoot' for Banners and 'top=.6in, bottom=.6in, left=1in,
-#' right=1in, includeheadfoot' for Toplines.
-#' @param table_of_contents logical. Should a list of tables be included at the start
-#' of the report Defaults to \code{FALSE}.
-#' @param font A character string specifying the font package to use in LaTeX.
-#' @param font_size Font size points for toplines and fontsize name for banners.
-#' Defaults to '12' pt font for toplines and 'small' for banners
-#' @param sample_desc A character string describing the sample.
-#' @param field_period A character string describing the field period.
-#' @param moe An optional numeric margin of error.
 #' @param pdf logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.
 #' @param open logical. If PDF document was produced, open it with
 #' the default application? Only implemented for MacOS.
-#' @param digits integer. Number of decimal digits to use for rounding.
-#' Defaults to 0.
-#' @param tableonly logical. If \code{TRUE}, function writes out only the LaTeX
-#' content within the \code{table} environments.
+#' @param proportions logical. If \code{TRUE} the output report shows proportions,
+#' if \code{FALSE} the report shows counts.
+#' @param table_of_contents logical. Should a list of tables be included at the start
+#' of the report Defaults to \code{FALSE}.
+#' @param sample_desc A character string describing the sample.
+#' @param field_period A character string describing the field period.
+#' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param longtablewrap logical. Should LaTeX longtables be allowed to wrap to
-#' a new page? If \code{TRUE}, inserts the 'continued on the next page' breaks.
-#' Defaults to \code{TRUE}.
-#' @param path.to.pdflatex Character path to pdflatex.
-#' @param min_cell_size integer. Minimum number of responses for a cross tabulated
-#' category to be displayed in details in a banner report.
-#' @param min_cell_label character. If a number of responses for a
-#' cross tabulated category is less than \code{min_cell_size} then this string is
-#' used to mask out the results.
-#' @param show_totals logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
-#' Defaults to \code{TRUE}.
-#' @param weighted_n logical. Should the total number of responses be weighted?
-#' Defaults to \code{FALSE}.
-#' @param page_width Page width.
-#' Defaults to 9in for banners and 6.5in for toplines.
-#' @param row_label_width Width of the row label comuln. Defaults to 1.5in.
-#' @param add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
-#' Defaults to \code{TRUE}.
-#' @param graphicspath character. The path to the folder with graphics files, e.g. logo.
-#' Defaults to \code{NULL} - LaTeX output directory is used.
-#' @param logo character. The name of the logo file.
-#' Defaults to \code{NULL} - no logo is used.
-#' @param dc Width of new column types for banners.
-#' @param multirowheaderlines logical. Should banners allow multi-row headlines?
-#' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.
-#' @param clearpage logical. Should every banner be on a separete page?
+#' @param row_label_width Width of the row label comuln. Defaults to 1.5in. ***
+#' @param multirowheaderlines logical. Should banners allow multi-row headlines? **
+#' @param clearpage logical. Should every banner be on a separete page? **
 #' @param grid_num_letters logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
-#' have the same number with consecutive letters appended? Defaults to \code{TRUE}.
+#' have the same number with consecutive letters appended? Defaults to \code{TRUE}. **
 #' @param custom_numbering A vector of custom values to be used for numbering banner tables.
 #' Defaults to \code{NULL} - default numbering scheme is used.
-#' @param round_percentages logical. Should percentages be rounded to sum up to 100?
-#' Defaults to \code{FALSE}.
 #' 
 #' @param theme
 #' 
@@ -86,19 +41,14 @@
 #' writeLatex(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
+writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, 
     title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
     table_of_contents = FALSE, append_text = "",
-    pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
-    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-    tableonly = FALSE, landscape = FALSE, font = "helvet", font_size = NULL,
-    page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
-    margin = list(top = 0.6, bottom = 0.6, left = 1, right = 1),
-    min_cell_size = NULL, min_cell_label = NULL,
-    show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-    dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    round_percentages = FALSE) {
+    pdf = FALSE, open = FALSE,
+    row_label_width = 1.5,
+    multirowheaderlines = FALSE,
+    clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
+    theme = theme_default()) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
@@ -119,50 +69,43 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-
-latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
-    moe_text <- ""
-    if (sample_desc != "")
-        sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
-    if (!is.null(moe))
-        moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
-            "\\%$ \\\\ \n")
-    if (field_period != "")
-        field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
-    paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
-        sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents ==
-                TRUE, "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
-        sep = "")
-}
-
-
 latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames = FALSE,
-    autocolnames = FALSE, esc = TRUE, colnames = NULL, longtablewrap = TRUE, summary.midrule = FALSE,
-    show_totals = TRUE) {
-    if (!is.data.frame(df))
-        df <- as.data.frame(df)
-    if (autocolnames) {
-        df <- if (is.null(colnames))
-            rbind(gsub(".", " ", names(df), fixed = TRUE), df) else rbind(colnames, df)
-    }
-    if (autorownames && !is.null(rownames(df)))
-        df <- data.frame(rownames(df), df, stringsAsFactors = FALSE)
-    if (esc) {
-        for (j in 1:ncol(df)) df[, j] <- escM(df[, j])
-    }
-    collapsestring <- paste("\\\\", ifelse(longtablewrap, "", "*"), "\n", sep = "")
+    autocolnames = FALSE, esc = TRUE, colnames = NULL, summary.midrule = FALSE) {
     
-    sepstring <- ifelse(dotfill && ncol(df) == 2, " \\hspace*{0.15em} \\dotfill ",
+    if (!is.list(df)) {
+        body <- as.data.frame(df)
+        summary <- NULL
+    } else {
+        body <- as.data.frame(do.call(cbind, lapply(seq_along(df), function(i) df[[i]]$data)))
+        summary <- as.data.frame(do.call(cbind, lapply(seq_along(df), function(i) df[[i]]$bottom)))
+    }
+    
+    if (autocolnames) {
+        body <- if (is.null(colnames))
+            rbind(c(names(body)), body) else rbind(colnames, body)
+            # rbind(gsub(".", " ", names(body), fixed = TRUE), body) else rbind(colnames, body)
+        if (!is.null(summary)) summary <- if (is.null(colnames))
+            rbind(gsub(".", " ", names(summary), fixed = TRUE), summary) else rbind(colnames, summary)
+    }
+    if (autorownames) {
+        if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
+        if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
+    }
+    if (esc) {
+        for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
+        if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
+    }
+    collapsestring <- "\\\\\n"
+    
+    sepstring <- ifelse(dotfill && ncol(body) == 2, " \\hspace*{0.15em} \\dotfill ",
         " & ")
     if (!summary.midrule) {
-        return(paste(paste(apply(df, 1, paste, collapse = sepstring), collapse = collapsestring),
+        return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))
     } else {
-        main_part = paste(paste(apply(df[1:(nrow(df) - 2 + (!show_totals)), ], 1,
-            paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-        summary_part = paste(paste(apply(df[(nrow(df) - 1 + (!show_totals)):nrow(df),
-            ], 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-        return(paste(main_part, "\\midrule", summary_part))
+        body <- paste(paste(apply(body, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
+        summary <- paste(paste(apply(summary, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
+        return(paste(body, "\\midrule", summary))
     }
 }
 
@@ -173,20 +116,62 @@ escM <- function(str) {
     str
 }
 
-ltranspose <- function(l) {
-    if (length(unique(unlist(lapply(l, length)))) > 1)
-        stop("All nested lists must be of equal length.")
-    if (!is.null(names(l[[1]]))) {
-        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]])))
-    } else {
-        return(sapply(1:length(l[[1]]), function(x) lapply(l, function(y) y[[x]])))
-    }
-}
-
 getFilterText <- function(var_summary) {
     filtertext <- getNotes(var_summary)
     if (!is.na(filtertext) && filtertext != "") {
-        filtertext <- paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}")
+        return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
     }
-    filtertext
+}
+
+
+latexHead <- function (theme, title, subtitle, crosstabs) {
+    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
+        "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
+    if (!theme$font %in% poss_fonts) {
+        theme$font <- "helvet"
+        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), ". It has been set to `helvet`.")
+    }
+    
+    paste0("\\documentclass[", ifelse(crosstabs, "landscape", paste0(theme$font_size, "pt")), "]{article}\n",
+        "\\usepackage[pdftex]{graphicx}\n",
+        "\\usepackage[utf8]{inputenc}\n",
+        "\\usepackage{fancyhdr}\n",
+        "\\usepackage{sfmath}\n",
+        "\\usepackage[T1]{fontenc}\n",
+        "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
+        "\\usepackage[scaled]{", theme$font, "}\n",
+        "\\renewcommand*\\familydefault{\\sfdefault}\n",
+        "\\usepackage{booktabs, ", if (crosstabs) "dcolumn, ", "longtable}\n",
+        "\\usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}\n",
+        "\\usepackage{array}\n",
+        "\\usepackage[english]{babel}\n",
+        "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
+        "\\setlength{\\parindent}{0pt}\n",
+        "\\usepackage[dvipsnames]{color}\n",
+        "\\definecolor{gray}{gray}{0.85}\n",
+        "\\pagestyle{fancy}\n",
+        "\\renewcommand{\\headrulewidth}{0pt}\n",
+        "\\renewcommand{\\footrulewidth}{0pt}\n",
+        "\\fancyhead{}\n",
+        "\\fancyhead[L]{{\\Large {\\bf ",
+        ifelse(is.null(title), "", escM(title)), "}}",
+        ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))),
+        "}\n",
+        if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
+        if (crosstabs) "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
+        if (crosstabs) "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", ##
+        if (!crosstabs) "\\usepackage{float}\n", ##
+        if (!crosstabs) "\\usepackage{marginnote}\n", ##
+        if (!crosstabs) "\\setlength\\extrarowheight{2pt}\n", ##
+        if (!crosstabs) "\\newlength\\mywidth\n", ##
+        if (!crosstabs) "\\setlength\\mywidth{3.5in}\n", ##
+        if (!crosstabs) "\\usepackage{caption}\n", ##
+        if (!crosstabs) "\\captionsetup[table]{labelformat=empty}\n", ##
+        if (!crosstabs) "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", ##
+        "\\fancyfoot{}\n",
+        "\\fancyfoot[R]{\\thepage}\n",
+        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
+        "\\#1\\let\\",
+        "\\=\\temp}\n",
+        "\\let\\PBS=\\PreserveBackslash\n")
 }

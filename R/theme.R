@@ -31,7 +31,21 @@
 #' @param digits digits digits
 #' @param digits_final digits_final digits_final
 #' @param one_per_sheet one_per_sheet one_per_sheet
+#' 
+#' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**
+#' @param latex_add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
+#' Defaults to \code{TRUE}. **
+#' @param latex_headtext An optional character string indicating what text should be
+#' placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
+#' continued.' **
+#' @param latex_foottext An optional character string indicating what text should be
+#' placed at the bottom of continuation tables. 'tbc' is a shortcut for
+#' 'continued from previous page.' **
+#' @param latex_round_percentages logical. Should percentages be rounded to sum up to 100?
+#' Defaults to \code{FALSE}. **
+#' 
 #' @param page_breaks ? page_breaks page_breaks
+#' 
 #' @examples
 #' \dontrun{
 #' theme stuff
@@ -53,10 +67,10 @@ theme_new <- function(..., default_theme = theme_default()){
             for (incl in setdiff(validators_to_use[[nm]]$include, dots[[nm]])) {
                 if (incl %in% names(default_theme)) {
                     default_theme[[nm]][[incl]] <- default_theme[[incl]]
-                } else if (as.logical(validators_to_use[[incl]]["NULL"])) { 
+                } else if (as.logical(validators_to_use[[incl]]["missing"])) { 
                     next 
                 } else if (!is.null(validators_to_use[[incl]]["default"]) && !is.na(validators_to_use[[incl]]["default"])) {
-                    rsp <- validators_to_use[[incl]]["default"]
+                    rsp <- unlist(validators_to_use[[incl]]["default"])
                     if (validators_to_use[[incl]]["class"] %in% "logical") { default_theme[[nm]][[incl]] <- as.logical(rsp) }
                     else if (validators_to_use[[incl]]["class"] %in% "numeric") { default_theme[[nm]][[incl]] <- as.numeric(rsp) }
                     else { default_theme[[nm]][[incl]] <- rsp }
@@ -114,7 +128,10 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
         freeze_column = 1,
         percent_format_data = TRUE,
         digits = 0, 
-        one_per_sheet = FALSE)
+        one_per_sheet = FALSE,
+        latex_adjust = "c",
+        latex_round_percentages = FALSE,
+        latex_add_parenthesis = FALSE)
 
     class(defaults) <- "Theme"
     
@@ -124,7 +141,7 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
 theme_validators <- list(
     "find_validator" = function(value, name){
         validator <- validators_to_use[[tail(name, 1)]]
-        if (!as.logical(validator["NULL"]) && is.null(value)) { return(theme_validators$null_error(name)) }
+        if (!as.logical(validator["missing"]) && is.null(value)) { return(theme_validators$null_error(name)) }
         if (is.null(value)) { return(NULL) }
         if (is.list(validator)) {
             if ("include" %in% names(validator)) {
@@ -134,27 +151,27 @@ theme_validators <- list(
             }
             return(theme_validators$valid_values(value, name, validator)) 
         }
-        if (length(value) != as.numeric(validator["len"])) { return(theme_validators$length_error(value, validator["len"], name, validator["NULL"])) }
+        if (length(value) != as.numeric(validator["len"])) { return(theme_validators$length_error(value, validator["len"], name, validator["missing"])) }
         if (is.integer(value)) value <- as.numeric(value)
         if (validator["class"] %in% "color") { return(theme_validators$color(value, name)) }
-        if (class(value) != validator["class"]) { return(theme_validators$class_error(value, validator["class"], name, validator["NULL"])) }
+        if (class(value) != validator["class"]) { return(theme_validators$class_error(value, validator["class"], name, validator["missing"])) }
     },
-    "class_error" = function(value, expected_class, name, null){
-        return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(null)) ", if provided,", " must be of class ", expected_class, ", not ", class(value)))
+    "class_error" = function(value, expected_class, name, missing){
+        return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(missing)) ", if provided,", " must be of class ", expected_class, ", not ", class(value)))
     },
     "null_error" = function(name){
         return(paste0("`", paste0(name, collapse = ":"), "` must have a value. It cannot be `NULL`.")) 
     },
-    "length_error" = function(value, len, name, null){
-        return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(null)) ", if provided,", " must have length ", len, ", not ", length(value))) 
+    "length_error" = function(value, len, name, missing){
+        return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(missing)) ", if provided,", " must have length ", len, ", not ", length(value))) 
     },
     "valid_values" = function(value, name, validator){
-        if (!validator$mult && length(value) != 1) { return(theme_validators$length_error(value, 1, name, validator["NULL"])) }
-        if (class(value) != "character") { return(theme_validators$class_error(value, "character", name, validator["NULL"])) }
+        if (!validator$mult && length(value) != 1) { return(theme_validators$length_error(value, 1, name, validator["missing"])) }
+        if (class(value) != "character") { return(theme_validators$class_error(value, "character", name, validator["missing"])) }
         if (!all(tolower(value) %in% tolower(validator$valid))){
             vals <- paste0("'", validator$valid, "'", collapse = ", ")
             if (nchar(vals) > 100) vals <- paste0(substr(vals, 1, 100), "...")
-            return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(validator["NULL"])) ", if provided,", " must be in ", vals, ", not ", paste0("'", value, "'", collapse = ', ')))
+            return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(validator["missing"])) ", if provided,", " must be in ", vals, ", not ", paste0("'", value, "'", collapse = ', ')))
         }
     },
     "color" = function(value, name){
@@ -167,12 +184,12 @@ theme_validators <- list(
 
 norm <- list("font", "font_size", "font_color", "background_color", "valign", "wrap_text", "decoration", "font_size")
 validators_to_use <- list(
-    background_color = c(class = "color", len = 1, "NULL" = TRUE),
-    banner_vars_split = list("NULL" = TRUE, include = list("border_style", "border_color", "empty_col")),
-    border_color = c(class = "color", len = 1, "NULL" = TRUE),
-    border_style = list(mult = FALSE, "NULL" = TRUE, valid = list("none", "thin", "medium", "dashed", "dotted", "thick", 
+    background_color = c(class = "color", len = 1, "missing" = TRUE),
+    banner_vars_split = list("missing" = TRUE, include = list("border_style", "border_color", "empty_col")),
+    border_color = c(class = "color", len = 1, "missing" = TRUE),
+    border_style = list(mult = FALSE, "missing" = TRUE, valid = list("none", "thin", "medium", "dashed", "dotted", "thick", 
         "double", "hair", "mediumDashed", "dashDot", "mediumDashDot", "dashDotDot", "mediumDashDotDot", "slantDashDot")), 
-    border_where = list(mult = TRUE, "NULL" = TRUE, valid = list("top", "topbottom", "topbottomleft", "topbottomleftright", "topbottomright", 
+    border_where = list(mult = TRUE, "missing" = TRUE, valid = list("top", "topbottom", "topbottomleft", "topbottomleftright", "topbottomright", 
         "topbottomrightleft", "topleft", "topleftbottom", "topleftbottomright", "topleftright", 
         "topleftrightbottom", "topright", "toprightbottom", "toprightbottomleft", "toprightleft", "toprightleftbottom", 
         "bottom", "bottomtop", "bottomtopleft", "bottomtopleftright", "bottomtopright", "bottomtoprightleft", 
@@ -184,62 +201,67 @@ validators_to_use <- list(
         "right", "righttop", "righttopbottom", "righttopbottomleft", "righttopleft", "righttopleftbottom", 
         "rightbottom", "rightbottomtop", "rightbottomtopleft", "rightbottomleft", "rightbottomlefttop", 
         "rightleft", "rightlefttop", "rightlefttopbottom", "rightleftbottom", "rightleftbottomtop")),
-    col_width = c(class = "numeric", len = 1, "NULL" = FALSE, default = 40),
-    decoration = list(mult = TRUE, "NULL" = TRUE, valid = list("bold","strikeout","italic","underline","underline2")),
-    digits = c(class = "numeric", len = 1, "NULL" = FALSE, default = 0),
-    digits_final = c(class = "numeric", len = 1, "NULL" = TRUE),
-    dpi = c(class = "numeric", len = 1, "NULL" = FALSE, default = 300),
-    empty_col = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    extend_borders = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    file = c(class = "character", len = 1, "NULL" = TRUE),
-    font = c(class = "character", len = 1, "NULL" = TRUE),
-    font_color = c(class = "color", len = 1, "NULL" = TRUE),
-    font_size = c(class = "numeric", len = 1, "NULL" = TRUE),
-    footer = c(class = "character", len = 3, "NULL" = TRUE),
-    format_banner_categories = list("NULL" = FALSE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
-    format_banner_labels = list("NULL" = TRUE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
-    format_title = list("NULL" = TRUE, include = c(norm, "halign")), 
-    format_headers = list("NULL" = TRUE, include = norm), 
-    format_label_column = list("NULL" = FALSE, include = c(norm, "halign", "col_width", "extend_borders")), 
-    format_means = list("NULL" = TRUE, include = c(norm, "halign", "name")), 
-    format_medians = list("NULL" = TRUE, include = c(norm, "halign", "name")), 
-    format_min_base = list("NULL" = TRUE, include = c(norm, "halign", "min_base", "mask")),
-    format_subtitle = list("NULL" = TRUE, include = c(norm, "halign")), 
-    format_subtotals = list("NULL" = TRUE, include = norm), 
-    format_totals_column = list("NULL" = FALSE, include = c(norm, "halign")), 
-    format_totals_row = list("NULL" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom")), 
-    format_unweighted_n = list("NULL" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom", "position_fixed")), 
-    format_var_alias = list("NULL" = TRUE, include = c(norm, "halign", "include_q_number")), 
-    format_var_name = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
-    format_var_description = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
-    format_var_subname = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "include_q_number")), 
-    format_var_filtertext = list("NULL" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
-    format_weighted_n = list("NULL" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom", "position_fixed")), 
-    freeze_column = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
-    halign = list(mult = FALSE, "NULL" = TRUE, valid = list("left", "right", "center")),
-    header = c(class = "character", len = 3, "NULL" = TRUE),
-    height = c(class = "numeric", len = 1, "NULL" = FALSE, default = 2),
-    include_alias = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    include_q_number = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    logo = list("NULL" = TRUE, include = list("file", "startRow", "startCol", "width", "height", "units", "dpi")),
-    mask = c(class = "character", len = 1, "NULL" = TRUE),
-    min_base = c(class = "numeric", len = 1, "NULL" = TRUE),
-    name = c(class = "character", len = 1, "NULL" = FALSE),
-    one_per_sheet = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    orientation = list(mult = FALSE, "NULL" = FALSE, valid = list("portrait", "landscape"), default = "landscape"), 
-    percent_format_data = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    position_bottom = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE),
-    position_fixed = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    position_top = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    repeat_for_subs = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE),
-    show_grid_lines = c(class = "logical", len = 1, "NULL" = FALSE, default = FALSE),
-    startCol = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
-    startRow = c(class = "numeric", len = 1, "NULL" = FALSE, default = 1),
-    table_border = list("NULL" = TRUE, include = list("border_style", "border_color")), 
-    units = list(mult = FALSE, "NULL" = FALSE, valid = list("in", "cm", "px"), default = "in"),
-    valign = list(mult = FALSE, "NULL" = TRUE, valid = list("top", "bottom", "center")),
-    width = c(class = "numeric", len = 1, "NULL" = FALSE, default = 4),
-    wrap_text = c(class = "logical", len = 1, "NULL" = FALSE, default = TRUE))
+    col_width = c(class = "numeric", len = 1, "missing" = FALSE, default = 40),
+    decoration = list(mult = TRUE, "missing" = TRUE, valid = list("bold","strikeout","italic","underline","underline2")),
+    digits = c(class = "numeric", len = 1, "missing" = FALSE, default = 0),
+    digits_final = c(class = "numeric", len = 1, "missing" = TRUE),
+    dpi = c(class = "numeric", len = 1, "missing" = FALSE, default = 300),
+    empty_col = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    extend_borders = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    file = c(class = "character", len = 1, "missing" = TRUE),
+    font = c(class = "character", len = 1, "missing" = TRUE),
+    font_color = c(class = "color", len = 1, "missing" = TRUE),
+    font_size = c(class = "numeric", len = 1, "missing" = TRUE),
+    footer = c(class = "character", len = 3, "missing" = TRUE),
+    format_banner_categories = list("missing" = FALSE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
+    format_banner_labels = list("missing" = TRUE, include = c(norm, "halign", "border_where", "border_style", "border_color")), 
+    format_title = list("missing" = TRUE, include = c(norm, "halign")), 
+    format_headers = list("missing" = TRUE, include = norm), 
+    format_label_column = list("missing" = FALSE, include = c(norm, "halign", "col_width", "extend_borders")), 
+    format_means = list("missing" = TRUE, include = c(norm, "halign", "name")), 
+    format_medians = list("missing" = TRUE, include = c(norm, "halign", "name")), 
+    format_min_base = list("missing" = TRUE, include = c(norm, "halign", "min_base", "mask")),
+    format_subtitle = list("missing" = TRUE, include = c(norm, "halign")), 
+    format_subtotals = list("missing" = TRUE, include = norm), 
+    format_totals_column = list("missing" = FALSE, include = c(norm, "halign")), 
+    format_totals_row = list("missing" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom")), 
+    format_unweighted_n = list("missing" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom", "position_fixed")), 
+    format_var_alias = list("missing" = TRUE, include = c(norm, "halign", "include_q_number")), 
+    format_var_name = list("missing" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
+    format_var_description = list("missing" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
+    format_var_subname = list("missing" = TRUE, include = c(norm, "halign", "include_alias", "include_q_number")), 
+    format_var_filtertext = list("missing" = TRUE, include = c(norm, "halign", "include_alias", "repeat_for_subs", "include_q_number")), 
+    format_weighted_n = list("missing" = TRUE, include = c("name", norm, "halign", "border_where", "border_style", "border_color", "position_top", "position_bottom", "position_fixed")), 
+    freeze_column = c(class = "numeric", len = 1, "missing" = FALSE, default = 1),
+    halign = list(mult = FALSE, "missing" = TRUE, valid = list("left", "right", "center")),
+    header = c(class = "character", len = 3, "missing" = TRUE),
+    height = c(class = "numeric", len = 1, "missing" = FALSE, default = 2),
+    include_alias = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    include_q_number = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    latex_add_parenthesis = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    latex_adjust = c(class = "character", len = 1, "missing" = TRUE),
+    latex_foottext = c(class = "character", len = 1, "missing" = TRUE),
+    latex_headtext = c(class = "character", len = 1, "missing" = TRUE),
+    latex_round_percentages = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    logo = list("missing" = TRUE, include = list("file", "startRow", "startCol", "width", "height", "units", "dpi")),
+    mask = c(class = "character", len = 1, "missing" = TRUE),
+    min_base = c(class = "numeric", len = 1, "missing" = TRUE),
+    name = c(class = "character", len = 1, "missing" = FALSE),
+    one_per_sheet = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    orientation = list(mult = FALSE, "missing" = FALSE, valid = list("portrait", "landscape"), default = "landscape"), 
+    percent_format_data = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    position_bottom = c(class = "logical", len = 1, "missing" = FALSE, default = TRUE),
+    position_fixed = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    position_top = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    repeat_for_subs = c(class = "logical", len = 1, "missing" = FALSE, default = TRUE),
+    show_grid_lines = c(class = "logical", len = 1, "missing" = FALSE, default = FALSE),
+    startCol = c(class = "numeric", len = 1, "missing" = FALSE, default = 1),
+    startRow = c(class = "numeric", len = 1, "missing" = FALSE, default = 1),
+    table_border = list("missing" = TRUE, include = list("border_style", "border_color")), 
+    units = list(mult = FALSE, "missing" = FALSE, valid = list("in", "cm", "px"), default = "in"),
+    valign = list(mult = FALSE, "missing" = TRUE, valid = list("top", "bottom", "center")),
+    width = c(class = "numeric", len = 1, "missing" = FALSE, default = 4),
+    wrap_text = c(class = "logical", len = 1, "missing" = FALSE, default = TRUE))
 
 theme_validator <- function(theme) {
     theme_required <- c("banner_vars_split", "digits", "digits_final", "font", "font_color", "font_size", "footer", 
@@ -247,7 +269,7 @@ theme_validator <- function(theme) {
         "format_medians", "format_min_base", "format_subtitle", "format_subtotals", "format_title", "format_totals_column", 
         "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description", 
         "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "freeze_column", "halign", 
-        "header", "logo", "one_per_sheet", "orientation", "percent_format_data", "show_grid_lines", "table_border", "valign")
+        "header", "latex_add_parenthesis", "latex_adjust", "latex_foottext", "latex_headtext", "latex_round_percentages", "logo", "one_per_sheet", "orientation", "percent_format_data", "show_grid_lines", "table_border", "valign")
     
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {

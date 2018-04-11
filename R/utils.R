@@ -90,3 +90,12 @@ wrong_class_error <- function(value, expected_class, name, null = FALSE){
         stop("The expected class for `", name, "`", if (null) ", if provided, ", " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), call. = FALSE)
     }
 }
+
+clean_data <- function(y, data) {
+    if (!is.null(dim(y)) && nrow(y) == 2) {
+        if (all(as.character(y[1, ]) == as.character(y[2, ]), na.rm = TRUE)) { y <- y[1, ] }
+    }
+    if (is.null(dim(y))) y <- t(y)
+    y <- setNames(data.frame(y), colnames(data))
+}
+

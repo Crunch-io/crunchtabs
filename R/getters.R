@@ -10,6 +10,21 @@ getResults.default <- function(x, proportions, details) {
 }
 
 #' @export
+getResults.CrossTabVar <- function(x, proportions = FALSE, details = FALSE) {
+    if (proportions) {
+        if (details) { # TODO: figure out what this was
+            return(x$proportions_details)
+        }
+        return(x$crosstabs$Results$Total$proportions)
+    } else {
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$crosstabs$Results$Total$counts)
+    }
+}
+
+#' @export
 getResults.ToplineCategoricalGeneral <- function(x, proportions = FALSE, details = FALSE) {
     if (proportions) {
         if (details) {
@@ -36,6 +51,21 @@ getResults.ToplineMultipleResponse <- function(x, proportions = FALSE, details =
             return(x$counts_details)
         }
         return(x$counts)
+    }
+}
+
+#' @export
+getResults.MultipleResponseCrossTabVar <- function(x, proportions = FALSE, details = FALSE) {
+    if (proportions) {
+        if (details) { # TODO: figure out what this was
+            return(x$proportions_details)
+        }
+        return(x$crosstabs$Results$Total$proportions)
+    } else {
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$crosstabs$Results$Total$counts)
     }
 }
 

@@ -18,6 +18,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         }
         return(tmp)
     }
+    
+    totals_matrix <- function(data, formatted_data){
+        matrix(data, nrow=nrow(formatted_data), ncol=ncol(formatted_data), byrow = TRUE, dimnames=list(rownames(formatted_data), colnames(formatted_data)))
+    }
+    
     # for every variable in the book
     for (vi in seq_along(book)) {
         crunch_cube <- book[[vi]][[1]]
@@ -52,7 +57,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             mean_median = mean_median,
             inserts = sapply(inserts, class),
             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
-            class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineArrayVar", "CrossTabVar")))
+            class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
 
         seq_num <- if (topline) 1 else seq_along(book[[vi]])
         # for every "column" variable
@@ -65,8 +70,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
             banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
             banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
-            banner_unweighted_n <- if (is.null(weight)) banner_totals_counts else crunch::bases(crunch_cube, margin = margin)
-            banner_counts_unweighted <- if (is.null(weight)) banner_counts else crunch::bases(crunch_cube, margin = 0)
+            banner_unweighted_n <- crunch::bases(crunch_cube, margin = margin)#if (is.null(weight)) banner_totals_counts else crunch::bases(crunch_cube, margin = margin)
+            banner_counts_unweighted <- crunch::bases(crunch_cube, margin = 0)#if (is.null(weight)) banner_counts else crunch::bases(crunch_cube, margin = 0)
 
             banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
             banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
@@ -105,10 +110,14 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                 ## min and max on MR -- added 20180212
                 if (is_mr_type) {
                     totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
+                    totals_counts_all_out <- totals_counts_out
                     unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
+                    unweighted_n_all_out <- unweighted_n_out
                 } else {
                     totals_counts_out <- t(totals_counts_out)
+                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out)
                     unweighted_n_out <- t(unweighted_n_out)
+                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out)
                     totals_proportions_out <- t(totals_proportions_out)
                 }
 
@@ -118,8 +127,10 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     counts_out <- bannerDataRecode(counts_out, banner_var)
                     proportions_out <- bannerDataRecode(proportions_out, banner_var)
                     totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
+                    totals_counts_all_out <- bannerDataRecode(totals_counts_all_out, banner_var)
                     totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
                     unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
+                    unweighted_n_all_out <- bannerDataRecode(unweighted_n_all_out, banner_var)
                     counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
                 }
                 
@@ -134,14 +145,18 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
                     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
                     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
+                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out)
+                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out)
                 }
 
                 banner_var_cross <- structure(list(
                     counts = counts_out,
                     proportions = proportions_out,
                     totals_counts = totals_counts_out,
+                    totals_counts_all = totals_counts_all_out,
                     totals_proportions = c(totals_proportions_out),
                     unweighted_n = unweighted_n_out,
+                    unweighted_n_all = unweighted_n_all_out,
                     counts_unweighted = counts_unweighted_out,
                     total = c(unweighted_n_out),
                     mean = c(means_out),
