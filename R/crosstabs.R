@@ -23,16 +23,16 @@
 #' crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
 #'                                weight = 'weight', banner = banner_object)
 #' }
-#' @importFrom crunch name aliases allVariables is.Numeric is.dataset
+#' @importFrom crunch name aliases allVariables is.Numeric is.dataset weightVariables
 #' @importFrom methods is
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
-    
+
     if (!is.dataset(dataset)) {
         stop("'dataset' is not an object of class 'CrunchDataset'.")
     }
-    
+
     not_found_vars <- setdiff(vars, aliases(allVariables(dataset)))
     if (length(not_found_vars) > 0) {
         stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found."))
@@ -48,22 +48,22 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     if (!is.null(banner) && !is(banner, "Banner")) {
         stop("'banner', if provided, must be an object of class 'Banner'.")
     }
-    
+
     weight_var <- if (!is.null(weight)) dataset[[weight]]
-    
+
     vars_out <- if (codebook) { vars } else {
         intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
-    
+
     filtered_vars <- setdiff(vars, vars_out)
     if (length(filtered_vars) > 0) {
         warning(paste("Variables of types:", paste(unique(types(allVariables(dataset[filtered_vars]))),
             collapse = ", "), "are not supported and have been skipped"))
     }
-    
+
     if (length(vars_out) == 0){
         stop("No variables provided.")
     }
-    
+
     if (is.null(banner)) {
         results <- lapply(vars_out, function(var) topline(var = dataset[[var]], dataset = dataset, weight = weight_var,
             codebook = codebook))
@@ -88,11 +88,11 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
             }))
         class(banner) <- 'Banner'
     }
-    
+
     summary_data <- list(metadata = c(list(title = title, date = date, weight = weight), metadata),
         results = results, banner = banner)
     class(summary_data) <- res_class
-    
+
     return(summary_data)
 }
 

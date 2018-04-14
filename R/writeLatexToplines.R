@@ -13,31 +13,34 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     dc = c(3.2, 4.1), multirowheaderlines = FALSE,
     latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
     round_percentages = FALSE) {
-    
+
     data_summary$results <- lapply(data_summary$results, function(x) {
         x$data <- reformatResults(x, proportions = proportions, digits = digits, round_percentages = round_percentages)
         x
     })
-    
+
     headers <- lapply(seq_along(data_summary$results), function(i) {
         toplineHeader(data_summary$results[[i]], page_width = page_width, row_label_width = row_label_width,
             num = if (!is.null(custom_numbering)) custom_numbering[i] else i)
     })
-    
+
     footers <- lapply(data_summary$results, toplineFooter)
     bodies <- lapply(data_summary$results, function(x) latexTable.body(x$data, dotfill = TRUE, autorownames = TRUE))
-    
+
+    # NPR: this looks like it could instead be:
+    # tables <- mapply(paste, headers, bodies, footers, sep="\n")
+    # and then ltranspose can be deleted
     tables <- sapply(ltranspose(list(headers, bodies, footers)), function(x) paste(x, collapse = "\n"))
-    
+
     out <- c(tables, append_text)
-    
+
     if (!tableonly) {
         latexHeadData <- latexHeadT(surveyhead = title, font_size = font_size, margin = margin, font = font, subhead = subtitle, landscape = landscape, graphicspath = graphicspath, logo = logo)
         latexStartData <- latexStartT(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe)
         latexFootData <- latexFootT()
         out <- c(latexHeadData, latexStartData, out, latexFootData)
     }
-    
+
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
@@ -45,7 +48,7 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
             pdflatex(filename, open, path.to.pdflatex = path.to.pdflatex)
         }
     }
-    
+
     if (returndata) {
         return(data_summary)
     }
@@ -92,7 +95,7 @@ toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5,
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
     tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
         "in}", col.header, "}")
-    
+
     toplineTableDef(var_summary, page_width, num, tab_definition, header_row)
 }
 
@@ -119,7 +122,7 @@ toplineFooter.default <- function(x) {
 #' @export
 toplineFooter.ToplineCategoricalArray <- function(var_summary) {
     toplineFooterDef(is_grid = TRUE)
-    
+
 }
 
 toplineFooterDef <- function(is_grid) {

@@ -2,11 +2,12 @@
 # collate insertions and categories together
 # given a set of insertions and categories, collate together into a single set
 # of AbstractCategories which includes both `Category`s and `Insertion`s
+#' @importFrom crunch AbstractCategories anchor ids noTransforms transforms
 collateCats <- function (inserts, var_cats) {
     # setup an empty AbstractCategories object to collate into
     cats_out <- AbstractCategories()
     cats_out@.Data <- var_cats
-    
+
     # for each insert, find the position for its anchor, and add the insertion
     # at that position we use a for loop, because as we insert, the positions of
     # categories (which may serve as anchors) will change.
@@ -25,7 +26,7 @@ findInsertPosition <- function (insert, cats) {
     if (anchr == 0 | anchr == "top") {
         return(0)
     }
-    
+
     # if the anchor is the id of a non-missing category put it after that cat
     if (anchr %in% ids(cats)) {
         which_cat <- which(anchr == ids(cats))
@@ -33,7 +34,7 @@ findInsertPosition <- function (insert, cats) {
             return(which_cat)
         }
     }
-    
+
     # all other situations, put at the end
     return(Inf)
 }
@@ -57,13 +58,13 @@ calcInsertions <- function (vec, elements, var_cats) {
         if (inherits(element, "Category")) {
             return(vec[name(element),])
         }
-        
+
         # if element is a heading return NA (since there is no value to be
         # calculated but we need a placeholder non-number)
         if (inherits(element, "Heading")) {
             return(NA)
         }
-        
+
         # if element is a subtotal, sum the things it corresponds to which are
         # found with arguments()
         if (inherits(element, "Subtotal")) {
@@ -73,11 +74,11 @@ calcInsertions <- function (vec, elements, var_cats) {
             if (dim(vec)[2] == 1) return(sum(vec[which.cats,]))
             return(colSums(vec[which.cats,]))
         }
-        
+
     })))
-    
+
     # make sure that the vector is named appropriately
     rownames(vec_out) <- names(elements)
-    
+
     return(vec_out)
 }

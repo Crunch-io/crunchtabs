@@ -57,7 +57,7 @@ Defaults to \code{NULL} - no logo is used.}
 \item{weighted_n}{A list of parameters describing the row containing the weighted bases:
 \itemize{
  \item name - row label.
- \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
+ \item position - row position. Valid values are any combination of: "top", "bottom", "fixed".
  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
  \item size - font size. Defaults to the value of the \code{font_size} parameter.
  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -68,7 +68,7 @@ Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
 \item{unweighted_n}{A list of parameters describing the row containing the unweighted bases:
 \itemize{
  \item name - row label.
- \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
+ \item position - row position. Valid values are any combination of: "top", "bottom", "fixed".
  \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
  \item size - font size. Defaults to the value of the \code{font_size} parameter.
  \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
@@ -219,7 +219,7 @@ related to banner's:
  \item subtotal,
  \item heading,
 }
-Defaults to list(subtotal=list(decoration = "bold"), 
+Defaults to list(subtotal=list(decoration = "bold"),
 heading=list(decoration='italic'))}
 
 \item{hypothesis_test}{logical.
