@@ -65,6 +65,22 @@ theme_new(..., default_theme = theme_default())
 
 \item{one_per_sheet}{one_per_sheet one_per_sheet}
 
+\item{latex_adjust}{A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**}
+
+\item{latex_add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
+Defaults to \code{TRUE}. **}
+
+\item{latex_headtext}{An optional character string indicating what text should be
+placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
+continued.' **}
+
+\item{latex_foottext}{An optional character string indicating what text should be
+placed at the bottom of continuation tables. 'tbc' is a shortcut for
+'continued from previous page.' **}
+
+\item{latex_round_percentages}{logical. Should percentages be rounded to sum up to 100?
+Defaults to \code{FALSE}. **}
+
 \item{page_breaks}{? page_breaks page_breaks}
 }
 \description{

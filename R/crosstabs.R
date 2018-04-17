@@ -52,9 +52,9 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
     if (!is.null(banner) && !is(banner, "Banner")) {
         stop("`banner`, if provided, must be an object of class 'Banner'.")
     }
-    
+
     weight_var <- if (!is.null(weight)) dataset[[weight]]
-    
+
     vars_out <- if (codebook) { vars } else {
         intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
     
@@ -90,11 +90,11 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
             }))
         class(banner) <- 'Banner'
     }
-    
+
     summary_data <- list(metadata = c(list(title = title, date = date, weight = weight), metadata),
         results = results, banner = banner)
     class(summary_data) <- res_class
-    
+
     return(summary_data)
 }
 

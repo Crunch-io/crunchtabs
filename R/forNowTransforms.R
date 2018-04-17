@@ -17,13 +17,13 @@ calcTabInsertions <- function (vec, elements, var_cats) {
         if (inherits(element, "Category")) {
             return(vec[name(element),])
         }
-        
+
         # if element is a heading return NA (since there is no value to be
         # calculated but we need a placeholder non-number)
         if (is.Heading(element)) {
             return(NA)
         }
-        
+
         # if element is a subtotal, sum the things it corresponds to which are
         # found with arguments()
         if (is.Subtotal(element)) {
@@ -34,14 +34,14 @@ calcTabInsertions <- function (vec, elements, var_cats) {
             if (dim(vec)[2] == 1) return(sum(vec[which.cats,]))
             return(colSums(vec[which.cats,]))
         }
-        
+
     })))
     
     colnames(vec_out) <- colnames(vec)
     
     # make sure that the vector is named appropriately
     rownames(vec_out) <- names(elements)
-    
+
     return(vec_out)
 }
 

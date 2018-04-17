@@ -561,7 +561,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         end.time <- Sys.time()
         print(paste(end.time, "-- workbook save -- end -- elapsed: ", round(difftime(end.time, start.time, units = "mins"), 2), "mins"))
     }
-    
+
     if (logging) {
         end.time.wb <- Sys.time()
         print(paste(end.time.wb, "-- workbook generation -- end -- elapsed: ", round(difftime(end.time.wb, start.time.wb, units = "mins"), 2), "mins"))

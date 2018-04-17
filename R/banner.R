@@ -21,7 +21,7 @@
 #'         alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
 #'         alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
 #' }
-#' @importFrom crunch alias allVariables types categories subvariables is.dataset
+#' @importFrom crunch alias allVariables types categories subvariables is.dataset na.omit
 #' @export
 banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
 
@@ -60,11 +60,11 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                 names(na.omit(categories(dataset[[x]])))
             }}))
     ret_data$categories_out <- ret_data$old_categories
-    
+
     ret_data <- lstranspose(ret_data)
     names(ret_data) <- vars_vec
     categories_ordered <- list()
-    
+
     for (var_name in names(recodes)) {
         var_recodes <- recodes[[var_name]]
         var_recodes <- gsub("\n|\t", " ", var_recodes)
@@ -105,7 +105,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                 categories_ordered[[var_name]] <- c(else_target, categories_ordered[[var_name]])
         }
     }
-    
+
     ret <- lapply(vars, function(ban) sapply(ban, function(v) {
         ret_val <- ret_data[[v]]
         categories <- unique(ret_val$categories_out[!is.na(ret_val$categories_out)])
@@ -117,11 +117,11 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         class(ret_val) <- c("BannerVar", class(ret_val))
         ret_val
     }, simplify = FALSE))
-    
+
     total <- list(alias = "___total___", name = "", type = "Total", old_categories = "Total",
         categories_out = "Total", categories = "Total")
     class(total) <- "BannerVar"
-    
+
     # Add the 'Total' column at the beginning of each subbanner
     ret <- lapply(ret, function(banner) {
         sapply(c("___total___", names(banner)), function(bi) {
@@ -129,7 +129,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                 total else banner[[bi]]
         }, simplify = FALSE)
     })
-    
+
     names(ret) <- if (is.null(names(vars))) paste0("Banner", seq_along(ret)) else names(vars)
     class(ret) <- "Banner"
     ret
