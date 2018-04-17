@@ -5,12 +5,12 @@
 #' These should be categorical (and typically hidden) variables present in the \code{dataset}.
 #' @param labels An optional named list of labels, where names are variables' aliases
 #' (present in the \code{vars} parameter) and values are the labels that should be used in the report.
-#' Defaults to NULL - variables names are used.
+#' Defaults to \code{NULL} - variables names are used.
 #' @param recodes An optional named list of categories recodes (the syntax is similar
 #' to the one used in the \code{recode} function in the R \code{car} package). Use \code{NA} to
 #' exclude categories. Not listed categories will be left unchanged.
 #' Use \code{else} to replace all not listed categories. See examples for details.
-#' Defaults to NULL - categories are not modified.
+#' Defaults to \code{NULL} - categories are not modified.
 #' @return An object of class \code{Banner}.
 #' @examples
 #' \dontrun{
@@ -24,44 +24,33 @@
 #' @importFrom crunch alias allVariables types categories subvariables is.dataset na.omit
 #' @export
 banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
-    if (!is.dataset(dataset)) {
-        stop("'dataset' is not an object of class 'CrunchDataset'.")
-    }
+
+    wrong_class_error(dataset, "CrunchDataset", "dataset")
+    
     if (!(is.vector(vars) && is.recursive(vars))) {
-        stop("'vars' should be a list of vectors.")
+        stop("`vars` must be a list of vectors.")
     }
     vars_vec <- unlist(vars)
     if (length(vars_vec) == 0) {
-        stop("'vars' doesn't contain valid values.")
+        stop("`vars` must have a length greater than 0.")
     }
+    
+    error_if_items(names(vars)[duplicated(names(vars))], 
+        "Banner name {items} is duplicated.")
 
-    not_found_vars <- setdiff(vars_vec, aliases(allVariables(dataset)))
-    if (length(not_found_vars) != 0) {
-        stop(paste("Variables:", paste(not_found_vars, collapse = ", "), "not found."))
-    }
+    error_if_items(setdiff(vars_vec, aliases(allVariables(dataset))), 
+        "{items} listed in `vars` must be valid aliases in aliases(allVariables(dataset)).")
 
     ds_vars <- allVariables(dataset[vars_vec])
+    
+    error_if_items(aliases(ds_vars)[!(types(ds_vars) %in% c("categorical", "multiple_response"))], 
+        "All banner variables must be categorical or multiple response. This is not true for {items}.")
 
-    var_types <- types(ds_vars)
-    if (!all(var_types %in% c("categorical", "multiple_response"))) {
-        not_categorical <- aliases(ds_vars)[!(var_types %in% c("categorical", "multiple_response"))]
-        stop(paste("All banner variables have to be categorical or multiple_response. This is not true for:",
-            paste(not_categorical, collapse = ", ")))
-    }
+    error_if_items(setdiff(names(labels), vars_vec), 
+        "Aliases used in `labels` must be included in `vars`. This is not true for {items}")
 
-    if (!is.null(labels)) {
-        not_found <- setdiff(names(labels), vars_vec)
-        if (length(not_found) > 0) {
-            stop("Aliases used in 'labels' not in 'vars': ", paste(not_found, collapse = ", "))
-        }
-    }
-
-    if (!is.null(recodes)) {
-        not_found <- setdiff(names(recodes), vars_vec)
-        if (length(not_found) > 0) {
-            stop("Aliases used in 'recodes' not in 'vars': ", paste(not_found, collapse = ", "))
-        }
-    }
+    error_if_items(setdiff(names(recodes), vars_vec), 
+        "Aliases used in `recodes` must be included in `vars`. This is not true for {items}")
 
     ret_data <- list(alias = aliases(ds_vars), name = replace(names(ds_vars), match(names(labels),
         (aliases(ds_vars))), labels), type = types(ds_vars), old_categories = lapply(vars_vec, function(x) {
@@ -83,7 +72,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         used_list <- c()
         else_target <- NULL
         for (term in recode_list) {
-            if (grepl("^else=", squeezeBlanks(term))) {
+            if (grepl("^else=", gsub(" *", "", term))) {
                 target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
                 if (class(target) == "try-error") {
                     stop("\n  in recode term: ", term, "\n  message: ", target)
@@ -96,7 +85,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                 }
                 for (ccat in set)
                     if (!ccat %in% ret_data[[var_name]][["old_categories"]]) {
-                        stop(paste0("No category with name '", ccat, "' in '", var_name, "'"))
+                        stop("No category with name '", ccat, "' in '", var_name, "'.")
                     }
                 target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
                 if (class(target) == "try-error") {
@@ -121,7 +110,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         ret_val <- ret_data[[v]]
         categories <- unique(ret_val$categories_out[!is.na(ret_val$categories_out)])
         if (length(categories) != length(ret_val$categories_out[!is.na(ret_val$categories_out)])) {
-            stop("Combining categories is not supported")
+            stop("Combining categories is not supported.")
         }
         ret_val$categories <- if (length(categories) == length(categories_ordered[[v]]))
             categories_ordered[[v]] else categories
@@ -146,13 +135,8 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     ret
 }
 
-
-squeezeBlanks <- function(text) {
-    gsub(" *", "", text)
-}
-
 lstranspose <- function(l) {
     if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length")
+        stop("All nested lists must be of equal length.")
     return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
 }

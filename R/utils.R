@@ -48,7 +48,7 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
     }
 
     if (!file.exists(returnfile)) {
-        stop("PDF file does not exist. Check that there are no errors ", "in the LaTeX file.")
+        stop("PDF file does not exist. Check that there are no errors in the LaTeX file.")
     } else if (open) {
         file.open(returnfile)
     }
@@ -68,3 +68,25 @@ sgrep <- function(strs, ..., simplify = TRUE) {
         out <- unique(unlist(out))
     return(out)
 }
+
+error_if_items <- function(items, text, error = TRUE){
+    if (length(items) != 0 && !all(items %in% "")){
+        if (error) { stop(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE) }
+        warning(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE)
+    }
+}
+
+wrong_class_error <- function(value, expected_class, name, null = FALSE){
+    if (length(intersect(class(value), expected_class)) != length(expected_class)){
+        stop("The expected class for `", name, "`", if (null) ", if provided, ", " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), call. = FALSE)
+    }
+}
+
+clean_data <- function(y, data) {
+    if (!is.null(dim(y)) && nrow(y) == 2) {
+        if (all(as.character(y[1, ]) == as.character(y[2, ]), na.rm = TRUE)) { y <- y[1, ] }
+    }
+    if (is.null(dim(y))) y <- t(y)
+    y <- setNames(data.frame(y), colnames(data))
+}
+

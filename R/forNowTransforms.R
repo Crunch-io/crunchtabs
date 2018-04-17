@@ -1,44 +1,3 @@
-
-# collate insertions and categories together
-# given a set of insertions and categories, collate together into a single set
-# of AbstractCategories which includes both `Category`s and `Insertion`s
-#' @importFrom crunch AbstractCategories anchor ids noTransforms transforms
-collateCats <- function (inserts, var_cats) {
-    # setup an empty AbstractCategories object to collate into
-    cats_out <- AbstractCategories()
-    cats_out@.Data <- var_cats
-
-    # for each insert, find the position for its anchor, and add the insertion
-    # at that position we use a for loop, because as we insert, the positions of
-    # categories (which may serve as anchors) will change.
-    for (insert in inserts) {
-        pos <- findInsertPosition(insert, cats_out)
-        cats_out@.Data <- append(cats_out, list(insert), pos)
-    }
-    return(cats_out)
-}
-
-# for a single Insertion, and a set of categories (or collated categories and
-# insertions) find the position to insert to
-findInsertPosition <- function (insert, cats) {
-    anchr <- anchor(insert)
-    # if the anchor is 0, put at the beginning
-    if (anchr == 0 | anchr == "top") {
-        return(0)
-    }
-
-    # if the anchor is the id of a non-missing category put it after that cat
-    if (anchr %in% ids(cats)) {
-        which_cat <- which(anchr == ids(cats))
-        if (!is.na(cats[[which_cat]])) {
-            return(which_cat)
-        }
-    }
-
-    # all other situations, put at the end
-    return(Inf)
-}
-
 #' Given a vector of values and elements, calculate the insertions
 #'
 #' @param vec values to transform (a single dimension of an array)
@@ -50,7 +9,7 @@ findInsertPosition <- function (insert, cats) {
 #' @return the values given in `vec`, with any insertions specified in
 #' `trans` calculated and inserted
 #' @keywords internal
-calcInsertions <- function (vec, elements, var_cats) {
+calcTabInsertions <- function (vec, elements, var_cats) {
 
     # make the actual calculations and insertions
     vec_out <- data.frame(do.call(rbind, lapply(elements, function (element) {
@@ -61,24 +20,59 @@ calcInsertions <- function (vec, elements, var_cats) {
 
         # if element is a heading return NA (since there is no value to be
         # calculated but we need a placeholder non-number)
-        if (inherits(element, "Heading")) {
+        if (is.Heading(element)) {
             return(NA)
         }
 
         # if element is a subtotal, sum the things it corresponds to which are
         # found with arguments()
-        if (inherits(element, "Subtotal")) {
+        if (is.Subtotal(element)) {
             # grab category combinations, and then sum those categories.
             combos <- element$categories
-            which.cats <- names(var_cats[ids(var_cats) %in% combos])
+            which.cats <- names(var_cats)[ids(var_cats) %in% combos]
+            if (any(is.na(var_cats)[ids(var_cats) %in% combos])) return(NA)
             if (dim(vec)[2] == 1) return(sum(vec[which.cats,]))
             return(colSums(vec[which.cats,]))
         }
 
     })))
-
+    
+    colnames(vec_out) <- colnames(vec)
+    
     # make sure that the vector is named appropriately
     rownames(vec_out) <- names(elements)
 
     return(vec_out)
 }
+
+
+#' @importFrom stats weighted.mean
+# a list of possible summary statistics to use as an insertion
+calcTabMeanInsert <- function (vec, var_cats) {
+    ok <- !is.na(vec) & !is.na(values(var_cats))
+    return(weighted.mean(values(var_cats)[ok], vec[ok]))
+}
+
+calcTabMedianInsert <- function (vec, var_cats) {
+    ok <- !is.na(vec) & vec != 0 & !is.na(values(var_cats))
+    if (all(!ok)) return(NA)
+    num_values <- values(var_cats[ok])
+    counts <- vec[ok]
+    
+    # weighted median function
+    o <- order(num_values)
+    num_values <- num_values[o]
+    counts <- counts[o]
+    perc <- cumsum(counts)/sum(counts)
+    
+    # if any of the bins are 0.5, return the mean of that and the one above it.
+    if (any(as.character(perc) %in% as.character(0.5))) {
+        n <- which(perc == 0.5)
+        return((num_values[n]+num_values[n+1])/2)
+    }
+    
+    # otherwise return the first bin that is more than 50%
+    over0.5 <- which(perc > 0.5)
+    return(num_values[min(over0.5)])
+}
+
