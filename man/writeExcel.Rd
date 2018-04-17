@@ -4,230 +4,42 @@
 \alias{writeExcel}
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
-writeExcel(data_summary, filename = NULL, title = getName(data_summary),
-  subtitle = NULL, proportions = FALSE, digits = 0,
-  table_of_contents = FALSE, logo = NULL, weighted_n = NULL,
-  unweighted_n = list(name = "Unweighted N", position = "bottom"),
-  show_totals = TRUE, report_desc = NULL, font = "Calibri",
-  font_size = 12, one_per_sheet = TRUE, append_text = "",
-  row_label_alignment = NULL, banner_vars_split = NULL,
-  row_label_width = 30, reduce_format = FALSE, min_base_size = NULL,
-  min_base_label = list(mask = "*"), show_information = list(name =
-  list(decoration = "bold"), filtertext = list(decoration = "italic")),
-  show_grid_lines = FALSE, return_data = FALSE, logging = FALSE,
-  labels_wrap = list(name = TRUE, description = TRUE, row_labels = TRUE,
-  banner_labels = TRUE, column_categories = TRUE), first_active_col = 2,
-  include_aliases = FALSE, banner_border_lines = FALSE,
-  title_on_results_page = FALSE, percent_format_data = TRUE,
-  total_col = NULL, banner_format = list(labels = list(decoration = "bold"),
-  categories = list(decoration = "bold"), total = list(decoration = "bold")),
-  insertions_format = list(subtotal = list(decoration = "bold"), heading =
-  list(decoration = "italic")), hypothesis_test = FALSE)
+writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
+  theme = theme_default(), title = getName(data_summary), subtitle = NULL,
+  table_of_contents = FALSE, n_or_percent = c("percents", "counts"),
+  hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
-\item{filename}{The name of the output file (without an extension).}
+\item{filename}{character. The name of the output file (without an extension).}
 
-\item{title}{An optional title. Defaults to the title provided in the summary.}
+\item{wb}{An openxlsx Workbook object to add to. Useful for custom front pages.}
 
-\item{subtitle}{An optional subtitle. Defaults to an empty string.}
+\item{theme}{An object of class \code{Theme}.}
 
-\item{proportions}{logical. If \code{TRUE}, the output report shows proportions,
-if \code{FALSE}, the report shows counts.}
+\item{title}{character. An optional title. Defaults to the title provided in the summary.}
 
-\item{digits}{integer. The number of decimal places that should be used for
-rounding numbers. Defaults to \code{0}.}
+\item{subtitle}{character. An optional subtitle. Defaults to an empty string.}
 
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report. Defaults to \code{FALSE}.}
 
-\item{logo}{A list of parameters describing the logo:
-\itemize{
- \item file - the path to the logo file. Valid file types are: jpeg, png, bmp.
- \item startRow - row coordinate of upper left corner of the image.
- \item startCol - column coordinate of upper left corner of the image.
- \item width - width of figure.
- \item height - height of figure.
- \item units - units of width and height. Can be "in", "cm" or "px".
- \item dpi - image resolution used for conversion between units.
-}
-Defaults to \code{NULL} - no logo is used.}
+\item{n_or_percent}{character vector. Should the data be returned as counts or percents? 
+Valid values are 'counts', 'percents' or both.}
 
-\item{weighted_n}{A list of parameters describing the row containing the weighted bases:
-\itemize{
- \item name - row label.
- \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
-}
-Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
-Defaults to \code{NULL} - the row containing the weighted bases is not printed.}
-
-\item{unweighted_n}{A list of parameters describing the row containing the unweighted bases:
-\itemize{
- \item name - row label.
- \item position - row position. Valid values are any combination of: "top", "bottom", "fixed". 
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
-}
-Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
-Defaults to list(name = "Unweighted N", position = "bottom").}
-
-\item{show_totals}{logical. If \code{TRUE}, the row containing column sums is displayed.
-Defaults to \code{TRUE}.}
-
-\item{report_desc}{An optional named list of report descriptions that should be
-displayed on the front page / table of contents, e.g.
-list(`Fieldwork date` = "2017-01-01", `Sample description` = "description").
-Defaults to \code{NULL}.}
-
-\item{font}{A text specifying the font to use. Defaults to \code{'Calibri'}.}
-
-\item{font_size}{Numeric font size points. Defaults to 12pt font.}
-
-\item{one_per_sheet}{logical. Should every variable be written on a separate sheet?
-Defaults to \code{TRUE}.}
-
-\item{append_text}{A text that, if supplied, will be appended after
-the final table. Useful for adding in disclosure information.}
-
-\item{row_label_alignment}{alignment of the first column.
-Valid values are: "left", "right", "center", NULL (a default alignemt).
-Defaults to NULL.}
-
-\item{banner_vars_split}{the method of splitting banner variables.
-Valid values are: {NULL, "empty_col", "line"}.
-Defaults to \code{NULL} - no split.}
-
-\item{row_label_width}{width of the first column. Defaults to 30pt.}
-
-\item{reduce_format}{logical. Should the number of operations that apply styles
-to tables be minimized? Results in slightly faster execution and slightly different table styles.
-Defaults to \code{FALSE}.}
-
-\item{min_base_size}{integer. The minimum number of responses for a cross tabulated
-category to be displayed in details in a banner report.}
-
-\item{min_base_label}{list. Specifies how cross-tabulated results that are
-less than \code{min_base_size} should be formatted. Valid fields are:
-\itemize{
- \item mask - a string that should be used to mask the results or \code{NULL} if the numbers should be printed.
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
-}
-Defaults to \code{list(mask = "*", decoration = NULL, color = NULL)}.}
-
-\item{show_information}{list. Specify format details:
-\itemize{
- \item decoration - text styling,
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
-}
-related to cross-tabulated variable's:
-\itemize{
- \item name,
- \item description,
- \item filtertext,
- \item subname.
-}
-Valid text decorations are:
-\itemize{
- \item bold - bold cell contents
- \item strikeout - strikeout cell contents
- \item italic - italicise cell contents
- \item underline - underline cell contents
- \item underline2 - double underline cell contents
- \item NULL - no decoration
-}
-Infomration will be printed in the order they're listed.
-Defaults to list(name=list(decoration="bold"),
-filtertext=list(decoration="italic")).}
-
-\item{show_grid_lines}{logical. Should grid lines be shown?
-Defaults to \code{FALSE}.}
-
-\item{return_data}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
+\item{hypothesis_test}{logical. Should hypothesis testing be shown in the tabs?
+** Not yet implemented. Defaults to \code{FALSE}.}
 
 \item{logging}{logical. Should basic information related to the function execution
 be printed? Defaults to \code{FALSE}.}
 
-\item{labels_wrap}{list. Specifies which labels should be wrapped:
-\itemize{
- \item name - variable's name.
- \item description - variable's description.
- \item row_labels - row labels.
- \item banner_labels - banner labels
- \item column_categories - column categories.
-}
-Defaults to list(name = TRUE, description = TRUE,
-row_labels = TRUE, banner_labels = TRUE, column_categories = TRUE).}
-
-\item{first_active_col}{number. First active coulumn. Defaults to \code{2}.}
-
-\item{include_aliases}{logical. Should the variable's alias be concatenated with
-the variable's name? Defaults to \code{FALSE}.}
-
-\item{banner_border_lines}{logical. Should black border lines be shown around the banner?
-Defaults to \code{FALSE}.}
-
-\item{title_on_results_page}{logical. Should title and subtitle be printed on the results page?
-Defaults to \code{FALSE}.}
-
-\item{percent_format_data}{logical. Should data when \code{proportions = TRUE}
-be formatted as "Percentage"? If not, a row with percent signs is added to the banner.
-Defaults to \code{TRUE}.}
-
-\item{total_col}{A list of parameters describing the Total column:
-\itemize{
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
-}
-Decoration, size and color options are applied only when \code{reduce_format = FALSE}.
-Defaults to \code{NULL} - default text style used.}
-
-\item{banner_format}{list. Specify format details:
-\itemize{
- \item font - a font name. Defaults to the value of the \code{font} parameter.
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
-}
-related to banner's:
-\itemize{
- \item labels,
- \item categories,
- \item total,
-}
-Defaults to list(labels = list(decoration="bold"),
-categories = list(decoration = "bold"),
-total = list(decoration = "bold")).}
-
-\item{insertions_format}{list. Specify format details:
-\itemize{
- \item font - a font name. Defaults to the value of the \code{font} parameter.
- \item decoration - text styling. Valid values are: "bold", "strikeout", "italic", "underline", "underline2". Defaults to \code{NULL} - default text style is used.
- \item size - font size. Defaults to the value of the \code{font_size} parameter.
- \item color - a string specifying the font color. Defaults to \code{NULL} - the workbook default color ("black") is used.
- \item background color - a string specifying the background color. Defaults to \code{NULL} - the workbook default color ("white") is used.
-}
-related to banner's:
-\itemize{
- \item subtotal,
- \item heading,
-}
-Defaults to list(subtotal=list(decoration = "bold"), 
-heading=list(decoration='italic'))}
-
-\item{hypothesis_test}{logical.
-Defaults to \code{FALSE}.}
+\item{save_workbook}{logical. Should the Workbook be saved to an excel file or returned for the 
+user to continue editing? Defaults to \code{TRUE}.}
 }
 \value{
-If \code{return_data} is set to \code{TRUE}, a processed data that was used to produce
-the report is returned. Otherwise \code{NULL} is returned.
+If \code{save_workbook} is set to \code{FALSE}, the openxlsx Workbook object is returned
+allowing the user to continue editing it before saving. Otherwise the data is returned as it was provided.
 }
 \description{
 \code{writeExcel} produces publication-quality Excel reports:

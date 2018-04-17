@@ -51,8 +51,7 @@ writeCodebook <- function(data_summary, filename = NULL, digits = 0, title = get
     clearpage = TRUE, round_percentages = FALSE, concatenate_categories = FALSE) {
     
     if (!is(data_summary, "Codebook")) {
-        stop(paste0("writeCodebook doesn't support objects of class '",
-            paste0(class(data_summary), collapse = " "), "'"))
+        wrong_class_error(data_summary, "Codebook", "data_summary")
     }
     
     data_summary$results <- lapply(data_summary$results, function(x) {
@@ -245,7 +244,7 @@ generateCodebookVarResults <- function(x, weight = NULL, concatenate_categories 
 
 #' @export
 generateCodebookVarResults.default <- function(x, weight = NULL, concatenate_categories = FALSE) {
-    warning(paste("generateCodebookVarResults doesn't support objects of class", class(x)))
+    warning("generateCodebookVarResults doesn't support objects of class ", class(x))
     NULL
 }
 

@@ -7,7 +7,6 @@
 #' @aliases crunchtabs
 NULL
 
-.onAttach <- function (lib, pkgname="crunchtabs") {
+.onLoad <- function (lib, pkgname="crunchtabs") {
     invisible()
 }
-

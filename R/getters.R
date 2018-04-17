@@ -5,8 +5,23 @@ getResults <- function(x, proportions = FALSE, details = FALSE) {
 
 #' @export
 getResults.default <- function(x, proportions, details) {
-    stop(paste("getResults doesn't support objects of class",
-        class(x)))
+    wrong_class_error(x, c("ToplineCategoricalGeneral", "ToplineMultipleResponse",
+        "ToplineNumeric", "CrossTabBannerVar"), "getResults")
+}
+
+#' @export
+getResults.CrossTabVar <- function(x, proportions = FALSE, details = FALSE) {
+    if (proportions) {
+        if (details) { # TODO: figure out what this was
+            return(x$proportions_details)
+        }
+        return(x$crosstabs$Results$Total$proportions)
+    } else {
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$crosstabs$Results$Total$counts)
+    }
 }
 
 #' @export
@@ -40,6 +55,21 @@ getResults.ToplineMultipleResponse <- function(x, proportions = FALSE, details =
 }
 
 #' @export
+getResults.MultipleResponseCrossTabVar <- function(x, proportions = FALSE, details = FALSE) {
+    if (proportions) {
+        if (details) { # TODO: figure out what this was
+            return(x$proportions_details)
+        }
+        return(x$crosstabs$Results$Total$proportions)
+    } else {
+        if (details) {
+            return(x$counts_details)
+        }
+        return(x$crosstabs$Results$Total$counts)
+    }
+}
+
+#' @export
 getResults.ToplineNumeric <- function(x, proportions = FALSE, details = FALSE) {
     x$summary
 }
@@ -60,8 +90,8 @@ setResults <- function(x, value, proportions = FALSE, details = FALSE) {
 
 #' @export
 setResults.default <- function(x, value, proportions = FALSE, details = FALSE) {
-    stop(paste("setResults doesn't support objects of class",
-        class(x)))
+    wrong_class_error(x, c("ToplineCategoricalGeneral", "ToplineMultipleResponse",
+        "ToplineNumeric"), "setResults")
 }
 
 #' @export
@@ -116,7 +146,8 @@ getNames <- function(x) {
 
 #' @export
 getNames.default <- function(x) {
-    stop(paste("getNames doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineCategoricalGeneral", "ToplineCategoricalArray",
+        "ToplineNumeric", "BannerVar"), "getNames")
 }
 
 #' @export
@@ -157,7 +188,7 @@ print.Toplines <- function(x, ...) {
         "Title:", getName(x), "\n",
         if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
         "Contains data for the following variables:\n",
-        paste(names(x$results), collapse = ", ")))
+        collapse_items(names(x$results))))
 }
 
 
@@ -167,7 +198,7 @@ print.Crosstabs <- function(x, ...) {
         "Title:", getName(x), "\n",
         if (is.null(x$metadata$weight)) "Unweighted.\n" else paste0("Weighted based on: the '", x$metadata$weight, "' variable.\n"),
         "Contains data for the following variables:\n",
-        paste(names(x$results), collapse = ", ")))
+        collapse_items(names(x$results))))
 }
 
 getType <- function(x) UseMethod("getType", x)
@@ -189,7 +220,8 @@ getAlias <- function(x) UseMethod("getAlias", x)
 
 #' @export
 getAlias.default <- function(x) {
-    stop(paste("getAlias doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "BannerVar",
+        "CrossTabVar", "CrunchCube"), "getAlias")
 }
 
 #' @export
@@ -209,14 +241,16 @@ getAlias.CrossTabVar <- function(x) {
 
 #' @export
 getAlias.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$alias
+    aliases(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$alias
 }
 
 getName <- function(x) UseMethod("getName", x)
 
 #' @export
 getName.default <- function(x) {
-    stop(paste("getName doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "BannerVar",
+        "CrossTabVar", "CrunchCube"), "getName")
 }
 
 #' @export
@@ -236,7 +270,8 @@ getName.CrossTabVar <- function(x) {
 
 #' @export
 getName.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$name
+    names(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$name
 }
 
 #' @export
@@ -248,7 +283,8 @@ getDescription <- function(x) UseMethod("getDescription", x)
 
 #' @export
 getDescription.default <- function(x) {
-    stop(paste("getDescription doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "BannerVar",
+        "CrossTabVar", "CrunchCube"), "getDescription")
 }
 
 #' @export
@@ -268,14 +304,15 @@ getDescription.CrossTabVar <- function(x) {
 
 #' @export
 getDescription.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$description
+    descriptions(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$description
 }
 
 getNotes <- function(x) UseMethod("getNotes", x)
 
 #' @export
 getNotes.default <- function(x) {
-    stop(paste("getNotes doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "CrossTabVar", "CrunchCube"), "getNotes")
 }
 
 #' @export
@@ -294,19 +331,21 @@ getNotes.CrossTabVar <- function(x) {
 
 #' @export
 getNotes.CrunchCube <- function(x) {
-    x@.Data[[1]]$dimensions[[1]]$references$notes
+    notes(variables(x))[1]
+    # x@.Data[[1]]$dimensions[[1]]$references$notes
 }
 
 getTotal <- function(x) UseMethod("getTotal", x)
 
 #' @export
 getTotal.default <- function(x) {
-    stop(paste("getTotal doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "CrunchCube"), "getTotal")
 }
 
 #' @export
-getTotal.CrunchCube <- function(out_crtabs) {
-    out_crtabs@.Data[[3]]$n
+getTotal.CrunchCube <- function(x) {
+    bases(x)
+    # out_crtabs@.Data[[3]]$n
 }
 
 #' @export
@@ -318,7 +357,7 @@ getMissing <- function(x) UseMethod("getMissing", x)
 
 #' @export
 getMissing.default <- function(x) {
-    stop(paste("getMissing doesn't support objects of class", class(x)))
+    wrong_class_error(x, c("ToplineBase", "CrunchCube"), "getMissing")
 }
 
 #' @export
@@ -338,3 +377,8 @@ getSubNames <- function(x) {
 getSubAliases <- function(x) {
     sapply(x@.Data[[1]]$dimensions[[1]]$references$subreferences, function(xi) xi$alias)
 }
+
+collapse_items <- function(x){
+    paste(x, collapse = ", ")
+}
+
