@@ -186,31 +186,15 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
 }
 
 write_var_header <- function(wb, ws, var, theme, styles, start_row, toc_sheet, toc_row, toc_col) {
-    if_there <- function(str) { if (!(is.null(str) || is.na(str) || str == "")) return(str) }
-    var_info <- list(format_var_alias = if_there(getAlias(var)),
-        format_var_name = if_there(getName(var)),
-        format_var_description = if_there(getDescription(var)),
-        format_var_filtertext = if_there(getNotes(var)),
-        format_var_subname = if_there(var$subname))
-    number <- if_there(var$settings$number)
+    var_info <- var_header(var, theme)
     if (!is.null(toc_sheet)) {
         openxlsx::writeFormula(wb, toc_sheet, startCol = toc_col, startRow = toc_row, 
             x = openxlsx::makeHyperlinkString(sheet = ws,
                 row = start_row - 1, col = 1, text = var_info$format_var_alias))
         openxlsx::writeData(wb, toc_sheet, paste0(c(var_info$format_var_subname, var_info$format_var_description), collapse = " - "), startCol = toc_col+1, startRow = toc_row)
     }
-    for (info_name in intersect(names(theme), names(var_info))){
-        if (!is.null(theme[[info_name]]) && !is.null(var_info[[info_name]])) {
-            if (is.null(theme[[info_name]]$repeat_for_subs) || theme[[info_name]]$repeat_for_subs || var$subnumber %in% 1){
-                if (!is.null(theme[[info_name]]$include_q_number) && theme[[info_name]]$include_q_number){
-                    var_info[[info_name]] <- paste0(number, ". ", var_info[[info_name]])
-                }
-                if (!is.null(theme[[info_name]]$include_alias) && theme[[info_name]]$include_alias){
-                    var_info[[info_name]] <- paste0(var_info$format_var_alias, " - ", var_info[[info_name]])
-                }
-                start_row <- write_and_style(wb, ws, data = var_info[[info_name]], style = styles[[info_name]], start_row = start_row, cols = 1, write_as_rows = FALSE)
-            }
-        }
+    for (info_name in names(var_info)){
+        start_row <- write_and_style(wb, ws, data = var_info[[info_name]], style = styles[[info_name]], start_row = start_row, cols = 1, write_as_rows = FALSE)
     }
     return(start_row)
 }
@@ -384,7 +368,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         openxlsx::setColWidths(wb, worksheet_name, cols = 1, theme$format_label_column$col_width)
     }
     
-    if (length(n_or_percent) == 2) { banner_names <- sapply(banner_names, rep, 2) }
+    if (length(n_or_percent) == 2) { banner_names <- unlist(lapply(banner_names, rep, 2)) }
     
     for (bix in seq_along(banner_names)) {
         banner_name <- banner_names[bix]

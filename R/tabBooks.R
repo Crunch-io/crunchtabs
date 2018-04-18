@@ -31,7 +31,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     for (vi in seq_along(book)) {
         crunch_cube <- book[[vi]][[1]]
         
-        var_type <- type(dataset[[getAlias(crunch_cube)]])
+        cube_variable <- variables(crunch_cube)[1]
+        
+        var_type <- ifelse(length(variables(crunch_cube)) %in% 3, "categorical_array", 
+            ifelse("subvariable_items" %in% types(cube_variable), "multiple_response", types(cube_variable)))
+        # var_type <- type(dataset[[aliases(cube_variable)]])
         is_array_type <- var_type == "categorical_array"
         is_mr_type <- var_type == "multiple_response"
         cat_type <- var_type %in% c("categorical", "categorical_array")
@@ -40,31 +44,31 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         # generate new names and aliases for categorical_array variables by combining variable's names/aliases
         # with subvariables' names/aliases
         # vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
-        valiases <- if (is_array_type) getSubAliases(crunch_cube) else getAlias(crunch_cube)
+        valiases <- if (is_array_type) getSubAliases(crunch_cube) else aliases(cube_variable)
         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
-        dvaliases <- c(if (topline_array) getAlias(crunch_cube), valiases)
+        dvaliases <- c(if (topline_array) aliases(cube_variable), valiases)
         
-        var_cats <- categories(dataset[[getAlias(crunch_cube)]])
+        var_cats <- categories(cube_variable[[1]])#categories(dataset[[getAlias(crunch_cube)]])
         # inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
-        inserts <- if (cat_type) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+        inserts <- if (cat_type) crunch:::collateCats(transforms(cube_variable)$insertions, na.omit(var_cats))
         mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
             structure(list(alias = dvaliases[vai], 
             type = var_type,
-            name = getName(crunch_cube), #vnames[vai], 
+            name = names(cube_variable), #vnames[vai], 
             subnames = if (topline_array) subnames else subnames[vai],
             subnumber = if (is_array_type) vai else NA,
-            description = getDescription(crunch_cube), 
-            notes = getNotes(crunch_cube), 
-            settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1) get_grid_number(vai), collapse = "")), 
+            description = descriptions(cube_variable), 
+            notes = notes(cube_variable), 
+            settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1 && !topline_array) get_grid_number(vai), collapse = "")), 
             categories = var_cats,
             mean_median = mean_median,
             inserts = sapply(inserts, class),
             inserts_m = c(sapply(inserts, class), if (mean_median) c("Mean", "Median")),
             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
             class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
-
+        
         seq_num <- if (topline) 1 else seq_along(book[[vi]])
         # for every "column" variable
         for (vbi in seq_num) {

@@ -4,9 +4,9 @@
 \alias{crosstabs}
 \title{Toplines and Crosstabs Summaries}
 \usage{
-crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
-  codebook = FALSE, title = name(dataset), date = Sys.Date(),
-  metadata = NULL)
+crosstabs(dataset, vars = names(dataset), weight = crunch::weight(dataset),
+  banner = NULL, codebook = FALSE, title = name(dataset),
+  date = Sys.Date(), metadata = NULL)
 }
 \arguments{
 \item{dataset}{A Crunch dataset.}

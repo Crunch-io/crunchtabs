@@ -26,14 +26,8 @@
 #' @importFrom crunch name aliases allVariables is.Numeric is.dataset weight alias weightVariables
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NULL, codebook = FALSE,
+crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE,
     title = name(dataset), date = Sys.Date(), metadata = NULL) {
-    
-    # if (missing(weight)) {
-    #     if (is.null(weight(dataset))) weight <- NULL
-    #     else weight <- alias(weight(dataset))
-    #     print(weight)
-    # }
     
     wrong_class_error(dataset, "CrunchDataset", "dataset")
     
@@ -41,7 +35,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = NULL, banner = NU
         "{items} listed in `vars` must be valid aliases in aliases(allVariables(dataset)).")
     
     if (!is.null(weight)) {
-        if (is.variable(weight)) weight <- alias(weight)
+        if (is.variable(weight)) { weight <- alias(weight) }
         if (!weight %in% aliases(allVariables(dataset))) {
             stop("`weight`, if provided, must be a valid variable in `dataset`. ", weight, " is not found.")
         }

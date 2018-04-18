@@ -7,7 +7,7 @@
 writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
   theme = theme_default(), title = getName(data_summary), subtitle = NULL,
   table_of_contents = FALSE, n_or_percent = c("percents", "counts"),
-  hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE)
+  hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}

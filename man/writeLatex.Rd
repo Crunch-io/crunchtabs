@@ -5,9 +5,9 @@
 \title{Generate LaTeX Reports: Toplines and Banners}
 \usage{
 writeLatex(data_summary, filename = NULL, proportions = TRUE,
-  title = getName(data_summary), subtitle = NULL, sample_desc = "",
-  field_period = "", moe = NULL, table_of_contents = FALSE,
-  append_text = "", pdf = FALSE, open = FALSE, row_label_width = 1.5,
+  title = getName(data_summary), subtitle = NULL, sample_desc = NULL,
+  field_period = NULL, moe = NULL, table_of_contents = FALSE,
+  append_text = NULL, pdf = FALSE, open = FALSE, row_label_width = 1.5,
   multirowheaderlines = FALSE, clearpage = TRUE, grid_num_letters = TRUE,
   custom_numbering = NULL, theme = theme_default())
 }

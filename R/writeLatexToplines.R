@@ -8,28 +8,25 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
     theme = theme_default()) {
     
-    # data_summary$results <- lapply(data_summary$results, function(x) {
-    #     x$data <- reformatResults(x, proportions = proportions, theme = theme)
-    #     x
-    # })
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
     headers <- lapply(seq_along(data_summary$results), function(i) {
         toplineHeader(data_summary$results[[i]], page_width = 6.5, row_label_width = row_label_width,
-            num = if (!is.null(custom_numbering)) custom_numbering[i] else i)
+            num = if (!is.null(custom_numbering)) custom_numbering[i] else i, theme = theme)
     })
     
-    footers <- lapply(data_summary$results, toplineFooter)
+    footers <- lapply(data_summary$results, toplineFooterDef)
     bodies <- lapply(results, function(x) latexTable.body(x$Results, dotfill = TRUE, autorownames = TRUE,
         toplines = TRUE))
     
-    tables <- sapply(ltranspose(list(headers, bodies, footers)), function(x) paste(x, collapse = "\n"))
+    tables <- sapply(ltranspose(list(headers, bodies, footers), use_names = TRUE), function(x) paste(x, collapse = "\n"))
     
     out <- c(tables, append_text)
     
     latexHeadData <- latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = FALSE)
     # latexHeadData <- latexHeadT(title = title, font_size = font_size, theme = theme, subtitle = subtitle)
-    latexStartData <- latexStartT(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe)
+    latexStartData <- latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
+        font_size = NULL, crosstabs = FALSE)
     latexFootData <- latexFootT()
     out <- c(latexHeadData, latexStartData, out, latexFootData)
     
@@ -45,18 +42,18 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     return(invisible(data_summary))
 }
 
-toplineHeader <- function(x, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE) {
+toplineHeader <- function(x, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
     UseMethod("toplineHeader", x)
 }
 
 #' @export
-toplineHeader.default <- function(var_summary, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE) {
+toplineHeader.default <- function(var_summary, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
     tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
-    toplineTableDef(var_summary, page_width, num, tab_definition)
+    toplineTableDef(var_summary, page_width, num, tab_definition, header_row = "\n", theme = theme)
 }
 
 #' @export
-toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE) {
+toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE, theme) {
     header_row <- "\n"
     col_names <- getNames(var_summary)[[1]]
     col_names_len <- length(col_names)
@@ -87,37 +84,53 @@ toplineHeader.ToplineCategoricalArray <- function(var_summary, page_width = 6.5,
     tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
         "in}", col.header, "}")
     
-    toplineTableDef(var_summary, page_width, num, tab_definition, header_row)
+    toplineTableDef(var_summary, page_width, num, tab_definition, header_row, theme)
 }
 
-toplineTableDef <- function(var_summary, page_width, num, tab_definition, header_row = '\n') {
-    filtertext <- getFilterText(var_summary)
-    paste("\\begin{table}[H]
+toplineTableDef <- function(var_summary, page_width, num, tab_definition, header_row, theme) {
+    var_info <- var_header(var_summary, theme)
+    for (info_name in names(var_info)) {
+        var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
+            scriptsize = info_name != names(var_info)[1])
+    }
+    return(paste("\\begin{table}[H]
         \\addcontentsline{lot}{table}{", escM(getName(var_summary)), "}
         \\colorbox{gray}{
         \\parbox{",
-        page_width, "in}{", ifelse(is.null(num), "", paste0(num, ". ")), escM(getDescription(var_summary)), filtertext, "}}
+        page_width, "in}{", paste0(unlist(var_info), collapse = ""), "}}
         \\begin{center}", tab_definition,
-        "\n", header_row, "\n", sep = "")
-        }
-
-toplineFooter <- function(x) {
-    UseMethod("toplineFooter", x)
+        "\n", header_row, "\n", sep = ""))
 }
 
-#' @export
-toplineFooter.default <- function(x) {
-    toplineFooterDef(is_grid = FALSE)
+latexDecoration <- function(item, item_theme, scriptsize) {
+    if (!is.null(item_theme$decoration)) { 
+        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
+        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
+        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
+    }
+    if (scriptsize) {
+        item <- paste0("\\\\ \n \\scriptsize{", item, "}")
+    }
+    return(item)
 }
 
-#' @export
-toplineFooter.ToplineCategoricalArray <- function(var_summary) {
-    toplineFooterDef(is_grid = TRUE)
-    
-}
+#' toplineFooter <- function(x) {
+#'     UseMethod("toplineFooter", x)
+#' }
+#' 
+#' #' @export
+#' toplineFooter.default <- function(x) {
+#'     toplineFooterDef(is_grid = FALSE)
+#' }
+#' 
+#' #' @export
+#' toplineFooter.ToplineCategoricalArray <- function(var_summary) {
+#'     toplineFooterDef(is_grid = TRUE)
+#'     
+#' }
 
-toplineFooterDef <- function(is_grid) {
-    paste0("\\end{", paste0("tabular", ifelse(is_grid, "*", "")), "}
+toplineFooterDef <- function(var_summary) {
+    paste0("\\end{", paste0("tabular", ifelse(is(var_summary, "ToplineCategoricalArray"), "*", "")), "}
         \\end{center}
         \\end{table}")
 }
@@ -125,28 +138,28 @@ toplineFooterDef <- function(is_grid) {
 
 latexFootT <- function() "\\end{hyphenrules} \n \\end{document}\n"
 
-latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
-    moe_text <- ""
-    if (!is.null(sample_desc))
-        sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
-    if (!is.null(moe))
-        moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
-            "\\%$ \\\\ \n")
-    if (!is.null(field_period))
-        field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
-    paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
-        sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents,
-            "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
-        sep = "")
-}
+# latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
+#     moe_text <- ""
+#     if (!is.null(sample_desc))
+#         sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
+#     if (!is.null(moe))
+#         moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
+#             "\\%$ \\\\ \n")
+#     if (!is.null(field_period))
+#         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
+#     paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
+#         sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents,
+#             "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
+#         sep = "")
+# }
 
-ltranspose <- function(l) {
-    if (length(unique(unlist(lapply(l, length)))) > 1)
+ltranspose <- function(l, use_names) {
+    if (length(unique(sapply(l, length))) > 1)
         stop("All nested lists must be of equal length.")
-    if (!is.null(names(l[[1]]))) {
+    if (use_names && !is.null(names(l[[1]]))) {
         return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]])))
     } else {
-        return(sapply(1:length(l[[1]]), function(x) lapply(l, function(y) y[[x]])))
+        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
     }
 }
 

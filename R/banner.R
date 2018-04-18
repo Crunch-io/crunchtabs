@@ -61,7 +61,8 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
             }}))
     ret_data$categories_out <- ret_data$old_categories
     
-    ret_data <- lstranspose(ret_data)
+    # ret_data <- lstranspose(ret_data)
+    ret_data <- ltranspose(ret_data, use_names = FALSE)
     names(ret_data) <- vars_vec
     categories_ordered <- list()
     
@@ -135,8 +136,8 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     ret
 }
 
-lstranspose <- function(l) {
-    if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length.")
-    return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-}
+# lstranspose <- function(l) {
+#     if (length(unique(sapply(l, length))) > 1)
+#         stop("All nested lists must be of equal length.")
+#     return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
+# }

@@ -77,8 +77,9 @@ latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames 
         summary <- NULL
     } else {
         body <- df$data_list$body
-        if (toplines) { summary <- NULL }
-        else { 
+        if (toplines || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
+            summary <- NULL 
+        } else { 
             summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
                 df$data_list[[x]]
             }))
@@ -125,7 +126,7 @@ getFilterText <- function(var_summary) {
 latexHead <- function (theme, title, subtitle, crosstabs) {
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
         "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
-    if (!theme$font %in% poss_fonts) {
+    if (is.null(theme$font) || !theme$font %in% poss_fonts) {
         theme$font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), ". It has been set to `helvet`.")
     }
@@ -140,7 +141,7 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\usepackage[scaled]{", theme$font, "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
         "\\usepackage{booktabs, ", if (crosstabs) "dcolumn, ", "longtable}\n",
-        "\\usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}\n",
+        "\\usepackage[top=0.6in, bottom=0.6in, left=", ifelse(crosstabs, 0.5, 1), "in, right=", ifelse(crosstabs, 0.5, 1), "in, includeheadfoot]{geometry}\n",
         "\\usepackage{array}\n",
         "\\usepackage[english]{babel}\n",
         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
@@ -173,3 +174,23 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\=\\temp}\n",
         "\\let\\PBS=\\PreserveBackslash\n")
 }
+
+latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size, crosstabs) {
+    if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
+    if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
+    if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
+    if (!is.null(font_size)) { font_size <- paste0("{\\", font_size, "\n") }
+    return(paste0("\\begin{document}\n", 
+        if (!crosstabs) "\\begin{hyphenrules}{nohyphenation}\n", 
+        "\\begin{tabular}{ll}\n",
+        sample_desc, field_period, moe, 
+        "\\end{tabular}\n", 
+        ifelse(table_of_contents,
+            "\\listoftables\n\\newpage\n\n", "\n\n"), 
+        font_size,
+        "\\setlength{\\LTleft}{0pt}\n",
+        "\\setlength{\\LTright}{\\fill}\n",
+        "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
+        "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
+}
+

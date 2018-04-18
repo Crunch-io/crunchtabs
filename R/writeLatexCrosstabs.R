@@ -8,7 +8,6 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
     theme = theme_default()) {
     
-    # reformat results for LaTeX output
     banner <- data_summary$banner
     
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
@@ -25,15 +24,12 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
             latexTable.body(y, autorownames = TRUE, summary.midrule = TRUE, toplines = FALSE)
         })
     })
-    print('c')
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
             ifelse(clearpage, "\\clearpage", ""))
     })
-    print('d')
     out <- c(out, append_text)
-    print('e')
     out <- c(
         latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = TRUE),
         # latexHeadLT(title = title, subtitle = subtitle, theme = theme),
@@ -41,11 +37,11 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
             longtableHeadFootB(banner[[j]], num = j, coltype=ifelse(theme$digits == 0, "g", "d"),
                 multirow = multirowheaderlines, page_width = 9, row_label_width = row_label_width, theme = theme)
         }),
-        latexStartLT(table_of_contents = table_of_contents, font_size = ifelse(theme$font_size < 16, "small", "large")),
+        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
+            font_size = ifelse(theme$font_size < 16, "small", "large"), crosstabs = TRUE),
         out,
         latexFootLT()
     )
-    print('f')
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
@@ -92,15 +88,15 @@ getMulticolumnWidth <- function(binfo.i) {
     return(c(length(binfo.i[[2]]), length(binfo.i[[1]])))
 }
 
-latexStartLT <- function(table_of_contents, font_size){
-    paste0("\\begin{document}\n",
-        ifelse(table_of_contents, "\\listoftables\n\\newpage\n\n", "\n\n"),
-        "{\\", font_size, "\n",
-        "\\setlength{\\LTleft}{0pt}\n",
-        "\\setlength{\\LTright}{\\fill}\n",
-        "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
-        "%% here's where individual input starts %%\n\n\n")
-}
+# latexStartLT <- function(table_of_contents, font_size){
+#     paste0("\\begin{document}\n",
+#         ifelse(table_of_contents, "\\listoftables\n\\newpage\n\n", "\n\n"),
+#         "{\\", font_size, "\n",
+#         "\\setlength{\\LTleft}{0pt}\n",
+#         "\\setlength{\\LTright}{\\fill}\n",
+#         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
+#         "%% here's where individual input starts %%\n\n\n")
+# }
 
 
 tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
