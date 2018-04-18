@@ -34,7 +34,7 @@ reformatResults.CrossTabBannerVar <- function(x, proportions = TRUE, theme, refo
 }
 
 #' @importFrom methods is
-reformatResultsGen <- function(x, proportions = TRUE, theme, reformat = TRUE, details = FALSE) {
+reformatResultsGen <- function(x, proportions, theme, reformat, details) {
     data <- as.matrix(getResults(x, proportions = proportions, details = details))
     data[is.nan(data)] <- 0
     if (theme$digits > -1 && reformat) {
@@ -54,7 +54,7 @@ reformatResultsGen <- function(x, proportions = TRUE, theme, reformat = TRUE, de
 
 
 roundPropCategorical <- function(data, digits = 0) {
-    data <- data * 100
+    # data <- data * 100
     rounded <- round(data, digits)
     while (sum(rounded) > 100) {
         sgn <- sign(sum(rounded) - 100)
@@ -65,9 +65,9 @@ roundPropCategorical <- function(data, digits = 0) {
 }
 
 
-# roundPropCategoricalArray <- function(data, digits) {
-#     t(apply(data, 1, roundPropCategorical, digits))
-# }
+roundPropCategoricalArray <- function(data, digits) {
+    t(apply(data, 1, roundPropCategorical, digits))
+}
 
 
 roundPropCrosstabs <- function(data, digits) {
@@ -77,11 +77,11 @@ roundPropCrosstabs <- function(data, digits) {
 
 reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
     show_totals = TRUE, theme) {
-    
+
     data <- getResults(x, proportions = proportions)
     data[is.nan(data)] <- 0
     bottom <- NULL
-    
+
     n_data <- NULL
     if (!is.null(theme$format_weighted_n)) {
         weighted_n_data <- clean_data(x$totals_counts, data)
@@ -93,7 +93,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         rownames(unweighted_n_data) <- paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) == 2) c(": Min", ": Max"))
         n_data <- rbind(n_data, unweighted_n_data)
     }
-    
+
     if (theme$digits > -1) {
         if (!proportions || !theme$latex_round_percentages || is(var, "MultipleResponseCrossTabVar")) {
             data[] <- round(data * if (proportions) 100 else 1, theme$digits)
@@ -106,7 +106,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
         data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
         rownames(data)[nrow(data)] <- "Totals"
     }
-    
+
     if (theme$digits > -1) {
         data[] <- format(data, nsmall=theme$digits, big.mark=",")
         n_data[] <- round(n_data, 0)
@@ -119,7 +119,7 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
     for (xi in which(colSums(min_cell_mask) != 0)) {
         data[min_cell_mask[,xi], xi] <- theme$format_min_base$mask
     }
-    
+
     if (theme$latex_add_parenthesis) {
         for (xi in seq_along(n_data)) {
             n_data[,xi] <- paste0("(", n_data[,xi], ")")
@@ -130,13 +130,13 @@ reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions =
             n_data[,xi] <- paste0("\\multicolumn{1}{", theme$latex_adjust, "}{", n_data[,xi], "}")
         }
     }
-    
+
     if (show_totals){
         bottom <- setNames(data.frame(rbind(bottom, "Totals"=c(data[nrow(data),]))), colnames(data))
         data <- data[-nrow(data),]
     }
     bottom <- rbind(bottom, n_data)
-    
+
     return(list(data=data, bottom=bottom))
 }
 
@@ -261,3 +261,16 @@ reformatCodebookResults.ToplineBase <- function(x, digits = 0, reformat = FALSE,
     round_percentages = FALSE, details = TRUE) {
     x
 }
+
+reformatLatexResults <- function(data_summary, proportions, theme) {
+    banner <- data_summary$banner
+    banner_names <- if (is.null(banner)) "Results" else names(banner)
+    banner_info <- sapply(banner_names, function(bn) get_banner_info(banner[[bn]], theme = theme), 
+        simplify = FALSE)
+    
+    return(lapply(data_summary$results, function(x)
+        sapply(banner_names, function(bn) 
+            munge_var(var = x, banner_name = bn, theme = theme, proportions = proportions, 
+                banner_info = banner_info[[bn]], latex = TRUE), simplify = FALSE)))
+}
+

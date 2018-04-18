@@ -232,7 +232,7 @@ generateCodebookVarTable <- function(x, proportions = FALSE, weight = NULL, capt
         if (!is.null(col_names)) c(
             tab_def,
             "\\endhead\n"),
-        latexTable.body(res, autorownames = autorownames),
+        latexTable.body(res, autorownames = autorownames, toplines = FALSE),
         "\\hline\n",
         "\\end{longtabu}\n"), collapse = "")
 }

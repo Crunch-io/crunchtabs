@@ -42,8 +42,8 @@
 #' }
 #' @export
 writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, append_text = "",
+    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
+    table_of_contents = FALSE, append_text = NULL,
     pdf = FALSE, open = FALSE,
     row_label_width = 1.5,
     multirowheaderlines = FALSE,
@@ -70,23 +70,21 @@ writeLatex.default <- function(data_summary, ...) {
 }
 
 latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames = FALSE,
-    autocolnames = FALSE, esc = TRUE, colnames = NULL, summary.midrule = FALSE) {
+    esc = TRUE, colnames = NULL, summary.midrule = FALSE, toplines) {
     
     if (!is.list(df)) {
         body <- as.data.frame(df)
         summary <- NULL
     } else {
-        body <- as.data.frame(do.call(cbind, lapply(seq_along(df), function(i) df[[i]]$data)))
-        summary <- as.data.frame(do.call(cbind, lapply(seq_along(df), function(i) df[[i]]$bottom)))
+        body <- df$data_list$body
+        if (toplines) { summary <- NULL }
+        else { 
+            summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
+                df$data_list[[x]]
+            }))
+        }
     }
     
-    if (autocolnames) {
-        body <- if (is.null(colnames))
-            rbind(c(names(body)), body) else rbind(colnames, body)
-            # rbind(gsub(".", " ", names(body), fixed = TRUE), body) else rbind(colnames, body)
-        if (!is.null(summary)) summary <- if (is.null(colnames))
-            rbind(gsub(".", " ", names(summary), fixed = TRUE), summary) else rbind(colnames, summary)
-    }
     if (autorownames) {
         if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
         if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)

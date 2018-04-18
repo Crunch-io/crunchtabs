@@ -3,6 +3,8 @@
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     tabs_data <- list()
     
+    weighted <- !is.null(weight)
+    
     multitable <- getMultitable(banner, dataset)
     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
     
@@ -19,8 +21,10 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         return(tmp)
     }
     
-    totals_matrix <- function(data, formatted_data){
-        matrix(data, nrow=nrow(formatted_data), ncol=ncol(formatted_data), byrow = TRUE, dimnames=list(rownames(formatted_data), colnames(formatted_data)))
+    totals_matrix <- function(data, formatted_data, na_rows){
+        dt <- matrix(data, nrow=nrow(formatted_data), ncol=ncol(formatted_data), byrow = TRUE, dimnames=list(rownames(formatted_data), colnames(formatted_data)))
+        dt[na_rows, ] <- NA
+        return(dt)
     }
     
     # for every variable in the book
@@ -41,14 +45,15 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         dvaliases <- c(if (topline_array) getAlias(crunch_cube), valiases)
         
         var_cats <- categories(dataset[[getAlias(crunch_cube)]])
-        inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+        # inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+        inserts <- if (cat_type) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
         mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
             structure(list(alias = dvaliases[vai], 
             type = var_type,
             name = getName(crunch_cube), #vnames[vai], 
-            subnames = subnames[vai],
+            subnames = if (topline_array) subnames else subnames[vai],
             subnumber = if (is_array_type) vai else NA,
             description = getDescription(crunch_cube), 
             notes = getNotes(crunch_cube), 
@@ -56,6 +61,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             categories = var_cats,
             mean_median = mean_median,
             inserts = sapply(inserts, class),
+            inserts_m = c(sapply(inserts, class), if (mean_median) c("Mean", "Median")),
             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
             class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
 
@@ -109,15 +115,15 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
                 ## min and max on MR -- added 20180212
                 if (is_mr_type) {
-                    totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
                     totals_counts_all_out <- totals_counts_out
-                    unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
+                    totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
                     unweighted_n_all_out <- unweighted_n_out
+                    unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
                 } else {
                     totals_counts_out <- t(totals_counts_out)
-                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out)
+                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = NULL)
                     unweighted_n_out <- t(unweighted_n_out)
-                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out)
+                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = NULL)
                     totals_proportions_out <- t(totals_proportions_out)
                 }
 
@@ -145,8 +151,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
                     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
                     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
-                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out)
-                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out)
+                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = inserts %in% "Heading")
+                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = inserts %in% "Heading")
                 }
 
                 banner_var_cross <- structure(list(
@@ -161,6 +167,13 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     total = c(unweighted_n_out),
                     mean = c(means_out),
                     median = c(medians_out),
+                    
+                    weighted_n = if (weighted) totals_counts_out,
+                    body_counts = counts_out,
+                    body_proportions = proportions_out,
+                    means = c(means_out),
+                    medians = c(medians_out),
+                    
                     pvals_col = NULL#crunch::rstandard(crunch_cube)
                 ), class = c("CrossTabBannerVar", "list"))
 

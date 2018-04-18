@@ -1,17 +1,18 @@
 #' @export
 writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, append_text = "",
+    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
+    table_of_contents = FALSE, append_text = NULL,
     pdf = FALSE, open = FALSE,
     row_label_width = 1.5,
     multirowheaderlines = FALSE,
     clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
     theme = theme_default()) {
     
-    data_summary$results <- lapply(data_summary$results, function(x) {
-        x$data <- reformatResults(x, proportions = proportions, theme = theme)
-        x
-    })
+    # data_summary$results <- lapply(data_summary$results, function(x) {
+    #     x$data <- reformatResults(x, proportions = proportions, theme = theme)
+    #     x
+    # })
+    results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
     headers <- lapply(seq_along(data_summary$results), function(i) {
         toplineHeader(data_summary$results[[i]], page_width = 6.5, row_label_width = row_label_width,
@@ -19,7 +20,8 @@ writeLatex.Toplines <- function(data_summary, filename = NULL, proportions = TRU
     })
     
     footers <- lapply(data_summary$results, toplineFooter)
-    bodies <- lapply(data_summary$results, function(x) latexTable.body(x$data, dotfill = TRUE, autorownames = TRUE))
+    bodies <- lapply(results, function(x) latexTable.body(x$Results, dotfill = TRUE, autorownames = TRUE,
+        toplines = TRUE))
     
     tables <- sapply(ltranspose(list(headers, bodies, footers)), function(x) paste(x, collapse = "\n"))
     
@@ -125,12 +127,12 @@ latexFootT <- function() "\\end{hyphenrules} \n \\end{document}\n"
 
 latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
     moe_text <- ""
-    if (sample_desc != "")
+    if (!is.null(sample_desc))
         sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
     if (!is.null(moe))
         moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
             "\\%$ \\\\ \n")
-    if (field_period != "")
+    if (!is.null(field_period))
         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
     paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents,
@@ -148,61 +150,3 @@ ltranspose <- function(l) {
     }
 }
 
-
-
-
-# latexHeadT <- function(title, font_size, theme, subtitle=NULL){
-#     margin <- list(top = 0.6, bottom = 0.6, left = 1, right = 1)
-#     paste("\\documentclass[", font_size, "pt]",
-#         "{article}\n",
-#         "\\usepackage[pdftex]{graphicx}\n",
-#         "\\usepackage[utf8]{inputenc}\n",
-#         "\\usepackage{fancyhdr}\n",
-#         "\\usepackage{sfmath}\n",
-#         "\\usepackage[T1]{fontenc}\n",
-#         "\\usepackage{longtable}\n",
-#         "\\usepackage[scaled]{", "helvet", "}\n", #theme$font
-#         '\\renewcommand*\\familydefault{\\sfdefault}
-#         \\usepackage{booktabs}
-#         \\usepackage{float}
-#         \\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX},
-#         pdftitle = {},
-#         colorlinks=true,
-#         urlcolor=blue,
-#         linkcolor=blue,
-#         citecolor=blue,
-#         implicit=true,
-#         hypertexnames=false]{hyperref}\n',
-#         "\\usepackage{marginnote}\n",
-#         "\\usepackage[",
-#         ifelse(!is.null(margin),
-#             paste("top=", margin$t, "in, bottom=", margin$b, "in, left=", margin$l, "in, right=", margin$r, "in, includeheadfoot", sep=""),
-#             "top=.6in,bottom=.6in,left=1in,right=1in,includeheadfoot"),
-#         "]{geometry}\n",
-#         "\\usepackage{array}\n",
-#         "\\setlength\\extrarowheight{2pt}\n",
-#         "\\newlength\\mywidth\n",
-#         "\\setlength\\mywidth{", 3.5, "in}\n",
-#         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
-#         "\\pagestyle{fancy}\n",
-#         "\\renewcommand{\\headrulewidth}{0pt}\n",
-#         "\\renewcommand{\\footrulewidth}{0pt}\n",
-#         "\\fancyhead{}\n",
-#         "\\fancyhead[L]{{\\Large {\\bf ",
-#         ifelse(is.null(title),"",escM(title)), "}}",
-#         ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))), "}\n",
-#         if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
-#         "\\fancyfoot{}\n",
-#         "\\fancyfoot[R]{\\thepage}\n",
-#         "\\setlength{\\parindent}{0pt}",
-#         "\\usepackage[dvipsnames]{color}\n",
-#         "\\definecolor{gray}{gray}{0.85}\n\n",
-#         "\\usepackage[english]{babel}\n",
-#         "\\usepackage{caption}\n",
-#         "\\captionsetup[table]{labelformat=empty}\n",
-#         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
-#         "\\#1\\let\\",
-#         "\\=\\temp}\n",
-#         "\\let\\PBS=\\PreserveBackslash\n\n", sep="",
-#         "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}")
-# }

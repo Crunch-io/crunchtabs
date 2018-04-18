@@ -1,7 +1,7 @@
 #' @export
 writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, append_text = "",
+    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
+    table_of_contents = FALSE, append_text = NULL,
     pdf = FALSE, open = FALSE,
     row_label_width = 1.5,
     multirowheaderlines = FALSE,
@@ -11,28 +11,29 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     # reformat results for LaTeX output
     banner <- data_summary$banner
     
-    data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
+    # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
+    results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
     hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
     headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width = "8.5in",
         if (!is.null(custom_numbering)) custom_numbering[i]
         else if (grid_num_letters) hinfo[[i]]$number
         else i))
-    
-    bodies <- lapply(data_summary$results, function (x) {
-        sapply(x$crosstabs, function (y) {
-            latexTable.body(y, autorownames = TRUE, summary.midrule = TRUE)
+
+    bodies <- lapply(results, function (x) {
+        sapply(x, function (y) {
+            latexTable.body(y, autorownames = TRUE, summary.midrule = TRUE, toplines = FALSE)
         })
     })
-    
+    print('c')
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
             ifelse(clearpage, "\\clearpage", ""))
     })
-    
+    print('d')
     out <- c(out, append_text)
-    
+    print('e')
     out <- c(
         latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = TRUE),
         # latexHeadLT(title = title, subtitle = subtitle, theme = theme),
@@ -44,7 +45,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
         out,
         latexFootLT()
     )
-    
+    print('f')
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
@@ -55,58 +56,6 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
     }
     return(invisible(data_summary))
 }
-
-# latexHeadLT <- function (title="", subtitle=NULL, theme) {
-#     margin <- list(top = 0.6, bottom = 0.6, left = 1, right = 1)
-#     dc <- rep(c("3.2", "5.0"), length=2)
-#     paste("\\documentclass[landscape]",
-#         "{article}\n",
-#         "\\usepackage[pdftex]{graphicx}\n",
-#         "\\usepackage[utf8]{inputenc}\n",
-#         "\\usepackage{fancyhdr}\n",
-#         "\\usepackage{sfmath}\n",
-#         "\\usepackage[T1]{fontenc}\n",
-#         '\\usepackage[pdftex=true,
-#         pdftoolbar=true,
-#         pdfmenubar=true,
-#         pdfauthor = {},
-#         pdfcreator = {PDFLaTeX},
-#         pdftitle = {},
-#         colorlinks=true,
-#         urlcolor=blue,
-#         linkcolor=blue,
-#         citecolor=blue,
-#         implicit=true,
-#         hypertexnames=false]{hyperref}\n',
-#         "\\usepackage[scaled]{", "helvet", "}\n", #theme$font
-#         "\\renewcommand*\\familydefault{\\sfdefault}\n",
-#         "\\usepackage{booktabs, dcolumn, longtable}\n",
-#         "\\usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}\n",
-#         "\\usepackage{array}\n",
-#         "\\usepackage[english]{babel}\n",
-#         "\\setlength{\\parindent}{0pt}",
-#         "\\usepackage[dvipsnames]{color}\n",
-#         "\\definecolor{gray}{gray}{0.85}\n\n",
-#         "\\pagestyle{fancy}\n",
-#         "\\renewcommand{\\headrulewidth}{0pt}\n",
-#         "\\renewcommand{\\footrulewidth}{0pt}\n",
-#         "\\fancyhead{}\n",
-#         "\\fancyhead[L]{{\\Large {\\bf ",
-#         ifelse(is.null(title), "", escM(title)), "}}",
-#         ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))),
-#         "}\n",
-#         if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
-#         "\\fancyfoot{}\n",
-#         "\\fancyfoot[R]{\\thepage}\n\n",
-#         "\\newcolumntype{d}{D{.}{.}{", dc[1],"}}\n\n",
-#         "\\newcolumntype{g}{D{\\%}{\\%}{", dc[2], "}}\n\n",
-#         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
-#         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
-#         "\\#1\\let\\",
-#         "\\=\\temp}\n",
-#         "\\let\\PBS=\\PreserveBackslash\n\n", sep="")
-# }
-
 
 # Long table header and footer creation.
 # Generates two macros for the preamble

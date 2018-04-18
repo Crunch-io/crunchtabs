@@ -34,7 +34,7 @@
 #' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = theme_default(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
-    hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
+    hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE) {
     
     if (is.null(filename) && !save_workbook) {
         stop("No filename provided. If save_workbook is true, a filename must be provided.")
@@ -70,37 +70,30 @@ create_styles <- function(theme){
         if (is.null(x) || (!is.null(theme[[elem]]) && x %in% theme[[elem]])) return(NULL)
         return(x)
     }
-    
+
     numFmt <- paste0("0", if (theme$digits > 0) paste0(".", paste0(rep(0, theme$digits), collapse = "")))
     numFmtProp <- paste0(numFmt, if (theme$percent_format_data) "%")
     
-    style_list <- sapply(setdiff(grep("^format_", names(theme), value = TRUE), "format_label_column"), function(v) {
+    label_column_border <- if (!theme$format_label_column$extend_borders)"TopBottomLeftRight"
+    
+    style_list <- sapply(grep("^format_", names(theme), value = TRUE), function(v) {
         if (!is.null(theme[[v]])) {
+            border_style <- if (v %in% "format_label_column" && !theme$format_label_column$extend_borders) { "none" } else { theme[[v]]$border_style }
+            border_where <- if (!is.null(border_style)) ifelse(is.null(theme[[v]]$border_where), "TopBottomLeftRight", theme[[v]]$border_where)
             openxlsx::createStyle(fontName = find_null_or_base(theme, v, "font"), 
                 fontSize = find_null_or_base(theme, v, "font_size"),
                 fontColour = find_null_or_base(theme, v, "font_color"),
-                border = if (!is.null(get_format_info(theme, v, "border_style"))) if(is.null(get_format_info(theme, v, "border_where"))) "TopBottomLeftRight" else get_format_info(theme, v, "border_where"),
-                borderColour = get_format_info(theme, v, "border_color"),
-                borderStyle = get_format_info(theme, v, "border_style"),
-                fgFill = get_format_info(theme, v, "background_color"),
-                halign = get_format_info(theme, v, "halign"),
-                valign = get_format_info(theme, v, "valign"),
-                textDecoration = get_format_info(theme, v, "decoration"), 
-                wrapText = get_format_info(theme, v, "wrap_text"))
+                border = border_where,
+                borderColour = theme[[v]]$border_color,
+                borderStyle = border_style,
+                fgFill = theme[[v]]$background_color,
+                halign = theme[[v]]$halign,
+                valign = theme[[v]]$valign,
+                textDecoration = theme[[v]]$decoration,
+                wrapText = theme[[v]]$wrap_text,
+                numFmt = ifelse(v %in% c("format_weighted_n", "format_unweighted_n"), "0", "GENERAL"))
         }
     })
-    
-    style_list$format_label_column <- openxlsx::createStyle(
-        fontName = find_null_or_base(theme, "format_label_column", "font"), 
-        fontSize = find_null_or_base(theme, "format_label_column", "font_size"),
-        fontColour = find_null_or_base(theme, "format_label_column", "font_color"),
-        border = if (!theme$format_label_column$extend_borders)"TopBottomLeftRight",
-        borderStyle = "none",
-        fgFill = get_format_info(theme, "format_label_column", "background_color"),
-        halign = get_format_info(theme, "format_label_column", "halign"),
-        valign = get_format_info(theme, "format_label_column", "valign"),
-        textDecoration = get_format_info(theme, "format_label_column", "decoration"), 
-        wrapText = get_format_info(theme, "format_label_column", "wrap_text"))
     
     style_list$body_counts <- openxlsx::createStyle(numFmt = numFmt, halign = theme$halign, valign = theme$valign)
     style_list$body_proportions <- openxlsx::createStyle(numFmt = numFmtProp, halign = theme$halign, valign = theme$valign)
@@ -109,35 +102,6 @@ create_styles <- function(theme){
         borderColour = get_format_info(theme, "banner_vars_split", "border_color"))
 
     return(style_list)
-}
-
-get_banner_info <- function(banner, theme){
-    if (is.null(banner)) return(list(empty_col = TRUE, multicols = NA, multicols_csum = NA, 
-        format_cols = 2, border_columns = NULL))
-    
-    empty_col <- !is.null(theme$banner_vars_split) && theme$banner_vars_split$empty_col
-    banner_cols_pos <- cumsum(sapply(banner, function(x) length(x$categories))) + 1
-    multicols <- sapply(banner, getNames)
-    multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
-    format_cols <- if (empty_col) { unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
-    } else { multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1 - empty_col) }
-    
-    border_columns <- if (empty_col) { multicols_csum[2:(length(multicols_csum)-1)]-1 
-    } else { multicols_csum[2:(length(multicols_csum)-1)] }
-    
-    list(empty_col = empty_col, multicols = multicols, multicols_csum = multicols_csum, 
-        format_cols = format_cols, border_columns = border_columns)
-}
-
-get_data <- function(data, item_name, empty_col, round){
-    tmp_data <- lapply(seq_along(data), function(bv) {
-        dt <- if (round) round(data[[bv]][[item_name]]) else data[[bv]][[item_name]]
-        if (is.vector(dt)) return(c(dt, if (empty_col) as.numeric(NA)))
-        if (!is.vector(dt)) return(cbind(dt, if (empty_col) as.numeric(NA)))
-    })
-    if (is.null(unlist(tmp_data))) return(NULL)
-    if (!is.null(dim(tmp_data[[1]])) && (nrow(tmp_data[[1]]) != 1 || ncol(tmp_data[[1]]) != 1)) { return(do.call(cbind, tmp_data)) }
-    return(unlist(tmp_data))
 }
 
 write_and_style <- function(wb, ws, data, style, start_row, cols, write_as_rows){
@@ -250,182 +214,100 @@ write_var_header <- function(wb, ws, var, theme, styles, start_row, toc_sheet, t
     }
     return(start_row)
 }
-
 #' @importFrom stats setNames
 writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, start_row, start_col,
     toc_sheet, toc_row, toc_col, hypothesis_test, proportions) {
-    
-    start_row <- sr <- write_var_header(wb = wb, ws = ws, var = var, theme = theme, styles = styles, 
+    start_row <- sr <- write_var_header(wb = wb, ws = ws, var = var, theme = theme, styles = styles,
         start_row = start_row, toc_sheet = toc_sheet, toc_row = toc_row, toc_col = toc_col)
-    weighted_n_top <- !is.null(theme$format_weighted_n) && theme$format_weighted_n$position_top
-    unweighted_n_top <- !is.null(theme$format_unweighted_n) && theme$format_unweighted_n$position_top
-    totals_top <- !var$settings$no_totals && !is.null(theme$format_totals_row) && theme$format_totals_row$position_top
-    weighted_n_bottom <- !is.null(theme$format_weighted_n) && theme$format_weighted_n$position_bottom
-    unweighted_n_bottom <- !is.null(theme$format_unweighted_n) && theme$format_unweighted_n$position_bottom
-    totals_bottom <- !var$settings$no_totals && !is.null(theme$format_totals_row) && theme$format_totals_row$position_bottom
-    min_base <- !is.null(theme$format_min_base$min_base) && theme$format_min_base$min_base >= 0
-    show_totals <- totals_top | totals_bottom
-    show_mean <- !is.null(theme$format_mean) && !is.null(var$crosstabs[[banner_name]]$Total$mean)
-    show_median <- !is.null(theme$format_medians) && var$mean_median
-    
+    body_style <- if (proportions) styles$body_proportions else styles$body_counts
+
     style_if <- function(ifStatement, start_row, style, data, cols){
         if (ifStatement){
-            nrow <- if (!is.null(dim(data))) { nrow(data) } else { 1 }
-            openxlsx::addStyle(wb = wb, sheet = ws, style = style, rows = start_row:(start_row + nrow - 1), 
-                cols = cols, gridExpand = TRUE, stack = TRUE)
-            start_row <- start_row + nrow(data)
+            nr <- if (!is.null(dim(data))) { nrow(data) } else { 1 }
+            if (!is.list(style)) style <- list(style)
+            for (s in style) {
+                if (!is.null(s)) {
+                    openxlsx::addStyle(wb = wb, sheet = ws, style = s, rows = start_row:(start_row + nr - 1),
+                        cols = cols, gridExpand = TRUE, stack = TRUE)
+                }
+            }
+            start_row <- start_row + nr
         }
         return(start_row)
     }
-    
-    data <- as.data.frame(lapply(var$crosstabs[[banner_name]], function(x) {
-        d <- as.data.frame(reformatResults(x, proportions = proportions, theme = theme, reformat = FALSE))
-        if (is.null(x$type) || x$type %in% c("categorical", "categorical_array", "multiple_response")){
-            if (proportions && !theme$percent_format_data) {
-                d[] <- d * 100
-            }
-        }
-        if (banner_info$empty_col) cbind(d, as.numeric(NA)) else d
-    }), check.names = FALSE)
-    colnames(data) <- gsub('.*\\.', '', names(data))
-    
-    unweighted_n_data <- clean_data(get_data(var$crosstabs[[banner_name]], "unweighted_n", banner_info$empty_col, round = FALSE), data)
-    weighted_n_data <- clean_data(get_data(var$crosstabs[[banner_name]], "totals_counts", banner_info$empty_col, round = FALSE), data)
-    if (show_totals) {
-        totals_data <- clean_data(get_data(var$crosstabs[[banner_name]], if (proportions) "totals_proportions" else "totals_counts", banner_info$empty_col, round = FALSE), data)
-    }
-    if (show_mean) { 
-        mean_data <- clean_data(get_data(var$crosstabs[[banner_name]], "mean", banner_info$empty_col, round = FALSE), data) 
-        var$inserts <- c(var$inserts, "Mean")
-    }
-    if (show_median) { 
-        median_data <- clean_data(get_data(var$crosstabs[[banner_name]], "median", banner_info$empty_col, round = FALSE), data) 
-        var$inserts <- c(var$inserts, "Median")
-    }
-    if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")){
-        data <- data[-c(which(var$inserts %in% "Heading")),]
-        var$inserts <- var$inserts[-c(which(var$inserts %in% "Heading"))]
-    }
-    if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")){
-        data <- data[-c(which(var$inserts %in% "Subtotal")),]
-        var$inserts <- var$inserts[-c(which(var$inserts %in% "Subtotal"))]
-    }
 
-    row_names <- c(
-        if (weighted_n_top) paste0(theme$format_weighted_n$name, if (nrow(weighted_n_data) != 1) paste(":", c("Min", "Max"))),
-        if (unweighted_n_top) paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) != 1) paste(":", c("Min", "Max"))),
-        if (totals_top) theme$format_totals_row$name,
-        rownames(data),
-        if (show_mean) theme$format_means$name,
-        if (show_median) theme$format_medians$name,
-        if (totals_bottom) theme$format_totals_row$name,
-        if (weighted_n_bottom) paste0(theme$format_weighted_n$name, if (nrow(weighted_n_data) != 1)  paste(":", c("Min", "Max"))),
-        if (unweighted_n_bottom) paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) != 1) paste(":", c("Min", "Max")))
-    )
+    var_info <- munge_var(var = var, banner_name = banner_name, theme = theme, 
+        proportions = proportions, banner_info = banner_info, latex = FALSE) 
+    data_list <- var_info$data_list
     
-    if (!is.null(theme$digits_final) && !is.infinite(theme$digits_final)){
-        data <- round(data, theme$digits_final + (proportions && theme$percent_format_data)*2)
-        if (show_totals) totals_data <- round(totals_data, theme$digits_final + (proportions && theme$percent_format_data)*2)
-        weighted_n_data <- round(weighted_n_data, theme$digits_final)
-        if (show_mean) mean_data <- round(mean_data, theme$digits_final + 2)
-        if (show_median) median_data <- round(median_data, theme$digits_final + 2)
-    }
-    
-    all_data <- rbind(if (weighted_n_top) weighted_n_data,
-        if (unweighted_n_top) unweighted_n_data,
-        if (totals_top) totals_data, 
-        data, 
-        if (show_mean) mean_data,
-        if (show_median) median_data,
-        if (totals_bottom) totals_data,
-        if (weighted_n_bottom) weighted_n_data,
-        if (unweighted_n_bottom) unweighted_n_data)
-
+    all_data <- do.call(rbind, data_list[var_info$data_order])
     topline_array <- is(var, "ToplineCategoricalArray")
     if (topline_array) {
-        banner_info$format_cols <- seq_along(unweighted_n_data)
-        names(all_data) <- gsub('Total\\.', '', names(all_data))
-        all_data <- all_data[, 1:(ncol(all_data)-1)]
+        banner_info$format_cols <- seq_along(c(data_list$unweighted_n, "a"))
+        names(all_data) <- var$subnames
     }
-    
+
     openxlsx::writeData(wb = wb, sheet = ws, x = all_data, startCol = 2, startRow = start_row, colNames = topline_array,
         headerStyle = styles$format_banner_categories,
         borders = ifelse(!is.null(theme$table_border$border_style), "surrounding", "none"), borderColour = theme$table_border$border_color,
         borderStyle = ifelse(!is.null(theme$table_border$border_style), theme$table_border$border_style, "thin"))
     start_row <- sr <- start_row + topline_array
+
+    style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, cols = 2)
+
+    for (dt in c(var_info$top, "body")) {
+        start_row <- style_if(TRUE, start_row = start_row, style = list(styles[[paste0("format_", dt)]],
+            if (dt %in% c("means", "medians")) styles$body_counts,
+            if (gsub("_row", "", dt) %in% c("body", "totals")) body_style),
+            data = data_list[[dt]], cols=c(1, banner_info$format_cols))
+    }
+
+    start_row <- start_row - nrow(data_list$body)
     
-    style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, 2)
-    start_row <- style_if(weighted_n_top, start_row, styles$format_weighted_n, weighted_n_data, cols=c(1, banner_info$format_cols))
-    start_row <- style_if(unweighted_n_top, start_row, styles$format_unweighted_n, unweighted_n_data, cols=c(1, banner_info$format_cols))
-    start_row <- style_if(totals_top, start_row, styles$format_totals_row, totals_data, cols=c(1, banner_info$format_cols))
-    
-    openxlsx::addStyle(wb = wb, sheet = ws, style = if (proportions) styles$body_proportions else styles$body_counts, 
-        rows = start_row:(start_row + nrow(data) - 1), cols = banner_info$format_cols, gridExpand = TRUE)
-    
-    ## TODO: make this work better w/ MR vars. 
-    if (min_base) {
-        unweighted_n_data_num <- sapply(unweighted_n_data[1, ], function(x) as.numeric(as.character(x)))
-        if (class(unweighted_n_data_num) == "matrix") unweighted_n_data_num <- c(unweighted_n_data_num[nrow(unweighted_n_data_num),])
-        min_cell_mask <- !is.na(unweighted_n_data_num) & unweighted_n_data_num <= theme$format_min_base$min_base
-        if (any(min_cell_mask)) {
-            if (!is.null(theme$format_min_base$mask)) {
-                mask_data <- rep(theme$format_min_base$mask, nrow(data) + show_mean + show_median)
-                mask_data[var$inserts %in% "Heading"] <- NA
-                for (bki in which(min_cell_mask)) { 
-                    write_and_style(wb = wb, ws = ws, data = mask_data, 
-                        style = styles$format_min_base, cols = bki + 1, start_row = start_row, write_as_rows = TRUE) 
+    min_cell_mask <- rbind(var_info$min_cell_top, var_info$min_cell_body, var_info$min_cell_bottom)
+    min_row <- (start_row - ifelse(is.null(var_info$min_cell_top), 0, nrow(var_info$min_cell_top)))
+    if (!is.null(theme$format_min_base$mask)) {
+        for (bki in which(colSums(min_cell_mask, na.rm = TRUE) != 0)){
+            vals <- rle(min_cell_mask[, bki])
+            vals$start <- cumsum(vals$lengths) - vals$lengths + min_row
+            for (bkj in seq_along(vals$lengths)) {
+                if (!is.na(vals$values[bkj]) && vals$values[bkj]) {
+                    write_and_style(wb = wb, ws = ws, data = rep(theme$format_min_base$mask, vals$lengths[bkj]),
+                        style = styles$format_min_base, cols = bki + 1, start_row = vals$start[bkj], write_as_rows = TRUE)
                 }
-            } else {
-                openxlsx::addStyle(wb, ws, styles$format_min_base, rows = start_row:(start_row + nrow(data) + show_mean + show_median - 1),
-                    cols = start_col + which(min_cell_mask) - 1, gridExpand = TRUE, stack = TRUE)
             }
         }
-    }
-    
-    if (any(var$inserts %in% "Heading")) {
-        openxlsx::addStyle(wb, ws, styles$format_headers, rows = (start_row + which(var$inserts %in% "Heading") - 1),
-            cols =  c(1, banner_info$format_cols), gridExpand = TRUE, stack = TRUE)
-    }
-    if (any(var$inserts %in% "Subtotal")) {
-        openxlsx::addStyle(wb, ws, styles$format_subtotals, rows = (start_row + which(var$inserts %in% "Subtotal") - 1),
-            cols =  c(1, banner_info$format_cols), gridExpand = TRUE, stack = TRUE)
+    } else if (!is.null(styles$format_min_base)) {
+        cols <- floor((which(min_cell_mask)-1)/nrow(min_cell_mask)) + 1
+        rows <- which(min_cell_mask) %% nrow(min_cell_mask)
+        rows[rows %in% 0] <- nrow(min_cell_mask)
+        rows <- rows + min_row
+        openxlsx::addStyle(wb = wb, sheet = ws, style = styles$format_min_base, rows = rows, cols = cols, stack = TRUE)
     }
 
-    # if (hypothesis_test) {
-    #     hypho_test(wb, ws, var, banner_name, margin = 2, banner_info$empty_col, styles, sr, ccol = start_col)
-    # }
-    
-    start_row <- start_row + nrow(data)
-    
-    wt <- if (!is.null(theme$format_min_base$mask)) theme$format_min_base$mask else "-"
-    if (show_mean && !min_base) {
-        na_out <- which(is.na(mean_data) & !is.na(weighted_n_data)) + 1
-        for (bki in na_out) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
+    if (any(var_info$inserts %in% "Heading")) {
+        openxlsx::addStyle(wb, ws, styles$format_headers, rows = (start_row + which(var_info$inserts %in% "Heading") - 1),
+            cols = c(1, banner_info$format_cols), gridExpand = TRUE, stack = TRUE)
     }
-    start_row <- style_if(show_mean, start_row, styles$body_counts, mean_data, cols = banner_info$format_cols)
-    start_row <- style_if(show_mean, start_row - show_mean, styles$format_means, mean_data, cols = c(1, banner_info$format_cols))
-    if (show_median && !min_base) {
-        na_out <- which(is.na(median_data) & !is.na(weighted_n_data)) + 1
-        for (bki in na_out) openxlsx::writeData(wb = wb, sheet = ws, x = wt, startCol = bki + 1, startRow = start_row)
+    if (any(var_info$inserts %in% "Subtotal")) {
+        openxlsx::addStyle(wb, ws, styles$format_subtotals, rows = (start_row + which(var_info$inserts %in% "Subtotal") - 1),
+            cols = c(1, banner_info$format_cols), gridExpand = TRUE, stack = TRUE)
     }
-    start_row <- style_if(show_median, start_row, styles$body_counts, median_data, cols = banner_info$format_cols)
-    start_row <- style_if(show_median, start_row - show_median, styles$format_medians, median_data, cols = c(1, banner_info$format_cols))
-    
-    start_row <- style_if(totals_bottom, start_row, styles$format_totals_row, totals_data, cols=c(1, banner_info$format_cols))
-    start_row <- style_if(weighted_n_bottom, start_row, styles$format_weighted_n, weighted_n_data, cols=c(1, banner_info$format_cols))
-    start_row <- style_if(unweighted_n_bottom, start_row, styles$format_unweighted_n, unweighted_n_data, cols=c(1, banner_info$format_cols))
 
-    if (!is.null(banner_info$border_columns)){
-        openxlsx::addStyle(wb, ws, styles$split_border, rows = sr:(start_row - 1), 
-            cols = banner_info$border_columns, gridExpand = TRUE, stack = TRUE)
+    start_row <- start_row + nrow(data_list$body)
+
+    for (dt in var_info$bottom) {
+        start_row <- style_if(TRUE, start_row = start_row, style = list(styles[[paste0("format_", dt)]],
+                if (dt %in% c("means", "medians")) styles$body_counts,
+                if (gsub("_row", "", dt) %in% c("body", "totals")) body_style),
+            data = data_list[[dt]], cols=c(1, banner_info$format_cols))
     }
-    
-    openxlsx::writeData(wb = wb, sheet = ws, x = row_names, startCol = 1, startRow = sr)
-    openxlsx::addStyle(wb, ws, styles$format_label_column, rows = sr:(start_row - 1),
-        cols = 1, stack = TRUE)
-    
+
+    write_and_style(wb, ws, data = unlist(lapply(data_list[var_info$data_order], rownames)),
+        style = styles$format_label_column, start_row = sr, cols = 1, write_as_rows = TRUE)
+
     return(start_row)
-}    
+}
 
 hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, banner_info, styles, crow, ccol) {
     pvals <- c(0.1, 0.05, 0.01, 0.001)
@@ -502,7 +384,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         openxlsx::setColWidths(wb, worksheet_name, cols = 1, theme$format_label_column$col_width)
     }
     
-    if (length(n_or_percent) == 2) { banner_names <- rep(banner_names, 2) }
+    if (length(n_or_percent) == 2) { banner_names <- sapply(banner_names, rep, 2) }
     
     for (bix in seq_along(banner_names)) {
         banner_name <- banner_names[bix]
