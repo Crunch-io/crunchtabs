@@ -1,12 +1,12 @@
 #' @export
-writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, 
+writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary), proportions = TRUE, 
     title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
     table_of_contents = FALSE, append_text = NULL,
     pdf = FALSE, open = FALSE,
     row_label_width = 1.5,
     multirowheaderlines = FALSE,
     clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    theme = theme_default()) {
+    theme = theme_default(), logging = FALSE) {
     
     banner <- data_summary$banner
     
@@ -46,7 +46,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TR
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
         if (pdf) {
-            print("PDF-ing")
+            if (logging) { print("PDF-ing") }
             pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
         }
     }

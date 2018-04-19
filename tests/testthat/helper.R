@@ -1,3 +1,4 @@
+library(openxlsx)
 Sys.setlocale("LC_COLLATE", "C") ## What CRAN does; affects sort order
 set.seed(999) ## To ensure that tests that involve randomness are reproducible
 options(warn=1)
@@ -26,6 +27,16 @@ with_mock_tabs <- function(book_file, mt_file, path = fixtures_dir, expr) {
         },
         eval.parent(expr)
     )
+}
+
+with_temp_dir <- function(expr) {
+    wd <- getwd()
+    d <- tempfile()
+    dir.create(d)
+    setwd(d)
+    on.exit(setwd(wd))
+
+    eval.parent(expr)
 }
 
 # Source crunch-test.R when: R CMD check, devtools::test(), make test,

@@ -41,14 +41,14 @@
 #' writeLatex(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeLatex <- function(data_summary, filename = NULL, proportions = TRUE, 
+writeLatex <- function(data_summary, filename = getName(data_summary), proportions = TRUE, 
     title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
     table_of_contents = FALSE, append_text = NULL,
     pdf = FALSE, open = FALSE,
     row_label_width = 1.5,
     multirowheaderlines = FALSE,
     clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    theme = theme_default()) {
+    theme = theme_default(), logging = FALSE) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
