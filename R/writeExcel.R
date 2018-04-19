@@ -5,7 +5,7 @@
 #' Toplines (one-way frequency tables) or Banners (cross tabulations)
 #'
 #' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
-#' @param filename character. The name of the output file (without an extension).
+#' @param filename character. The name of the output file.
 #' @param wb An openxlsx Workbook object to add to. Useful for custom front pages.
 #' @param theme An object of class \code{Theme}.
 #' @param title character. An optional title. Defaults to the title provided in the summary.
@@ -422,7 +422,8 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         start.time <- Sys.time()
         print(paste(start.time, "-- workbook save -- start"))
     }
-    openxlsx::saveWorkbook(wb, paste0(filename, ".xlsx"), overwrite = TRUE)
+    if (!endsWith(filename, ".xlsx")) { filename <- paste0(filename, ".xlsx") }
+    openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
     if (logging) {
         end.time <- Sys.time()
         print(paste(end.time, "-- workbook save -- end -- elapsed: ", round(difftime(end.time, start.time, units = "mins"), 2), "mins"))

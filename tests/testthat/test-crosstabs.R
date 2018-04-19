@@ -2,7 +2,7 @@ context("Generating Toplines and Crosstabs data summaries")
 
 test_that("Error handling - not a dataset", {
   expect_error(crosstabs(NULL),
-               "'dataset' is not an object of class 'CrunchDataset'.")
+               "The expected class for `dataset` is CrunchDataset, not NULL.")
 })
 
 with_test_authentication({

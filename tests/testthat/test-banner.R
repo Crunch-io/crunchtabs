@@ -2,7 +2,7 @@ context("Banner object creation")
 
 test_that("Error handling - not a dataset", {
   expect_error(banner(list()),
-               "'dataset' is not an object of class 'CrunchDataset'.")
+               "The expected class for `dataset` is CrunchDataset, not list.")
 })
 
 with_test_authentication({
