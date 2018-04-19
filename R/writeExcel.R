@@ -34,7 +34,7 @@
 #' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = theme_default(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
-    hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE) {
+    hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
     
     if (is.null(filename) && !save_workbook) {
         stop("No filename provided. If save_workbook is true, a filename must be provided.")
@@ -79,7 +79,7 @@ create_styles <- function(theme){
     style_list <- sapply(grep("^format_", names(theme), value = TRUE), function(v) {
         if (!is.null(theme[[v]])) {
             border_style <- if (v %in% "format_label_column" && !theme$format_label_column$extend_borders) { "none" } else { theme[[v]]$border_style }
-            border_where <- if (!is.null(border_style)) ifelse(is.null(theme[[v]]$border_where), "TopBottomLeftRight", theme[[v]]$border_where)
+            border_where <- if (!is.null(border_style)) if (is.null(theme[[v]]$border_where)) { "TopBottomLeftRight" } else { theme[[v]]$border_where }
             openxlsx::createStyle(fontName = find_null_or_base(theme, v, "font"), 
                 fontSize = find_null_or_base(theme, v, "font_size"),
                 fontColour = find_null_or_base(theme, v, "font_color"),
@@ -91,7 +91,7 @@ create_styles <- function(theme){
                 valign = theme[[v]]$valign,
                 textDecoration = theme[[v]]$decoration,
                 wrapText = theme[[v]]$wrap_text,
-                numFmt = ifelse(v %in% c("format_weighted_n", "format_unweighted_n"), "0", "GENERAL"))
+                numFmt = if (v %in% c("format_weighted_n", "format_unweighted_n")) { "0" } else { "GENERAL" })
         }
     })
     
@@ -179,7 +179,7 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
     
     openxlsx::addStyle(wb, ws, styles$format_label_column, rows = sr:(start_row - 1), cols = 1, gridExpand = FALSE, stack = TRUE)
     
-    openxlsx::pageSetup(wb, ws, printTitleRows = (1 + ifelse(!is.null(theme$format_title), length(title), 0)):start_row)
+    openxlsx::pageSetup(wb, ws, printTitleRows = (1 + if (!is.null(theme$format_title)) { length(title) } else { 0 }):start_row)
     openxlsx::freezePane(wb, ws, firstActiveRow = start_row, firstActiveCol = theme$freeze_column + 1)
     
     return(start_row)
@@ -233,8 +233,9 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
 
     openxlsx::writeData(wb = wb, sheet = ws, x = all_data, startCol = 2, startRow = start_row, colNames = topline_array,
         headerStyle = styles$format_banner_categories,
-        borders = ifelse(!is.null(theme$table_border$border_style), "surrounding", "none"), borderColour = theme$table_border$border_color,
-        borderStyle = ifelse(!is.null(theme$table_border$border_style), theme$table_border$border_style, "thin"))
+        borders = if (!is.null(theme$table_border$border_style)) { "surrounding" } else { "none" }, 
+        borderColour = theme$table_border$border_color,
+        borderStyle = if (!is.null(theme$table_border$border_style)) { theme$table_border$border_style } else { "thin" })
     start_row <- sr <- start_row + topline_array
 
     style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, cols = 2)
@@ -249,7 +250,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     start_row <- start_row - nrow(data_list$body)
     
     min_cell_mask <- rbind(var_info$min_cell_top, var_info$min_cell_body, var_info$min_cell_bottom)
-    min_row <- (start_row - ifelse(is.null(var_info$min_cell_top), 0, nrow(var_info$min_cell_top)))
+    min_row <- (start_row - if (is.null(var_info$min_cell_top)) { 0 } else { nrow(var_info$min_cell_top) })
     if (!is.null(theme$format_min_base$mask)) {
         for (bki in which(colSums(min_cell_mask, na.rm = TRUE) != 0)){
             vals <- rle(min_cell_mask[, bki])

@@ -21,24 +21,24 @@ writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary),
 
     bodies <- lapply(results, function (x) {
         sapply(x, function (y) {
-            latexTable.body(y, autorownames = TRUE, summary.midrule = TRUE, toplines = FALSE)
+            latexTable.body(y, autorownames = TRUE, crosstabs = TRUE)
         })
     })
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
-            ifelse(clearpage, "\\clearpage", ""))
+            if (clearpage) { "\\clearpage" } else { "" })
     })
     out <- c(out, append_text)
     out <- c(
         latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = TRUE),
         # latexHeadLT(title = title, subtitle = subtitle, theme = theme),
         sapply(seq_along(banner), function (j) {
-            longtableHeadFootB(banner[[j]], num = j, coltype=ifelse(theme$digits == 0, "g", "d"),
+            longtableHeadFootB(banner[[j]], num = j, coltype= if (theme$digits == 0) { "g" } else { "d" },
                 multirow = multirowheaderlines, page_width = 9, row_label_width = row_label_width, theme = theme)
         }),
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
-            font_size = ifelse(theme$font_size < 16, "small", "large"), crosstabs = TRUE),
+            font_size = if (theme$font_size < 16) { "small" } else { "large" }, crosstabs = TRUE),
         out,
         latexFootLT()
     )
@@ -112,9 +112,9 @@ tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
 # appears on the top one).
 # Assumes that \banner[a-z]{} macros are defined in the preamble
 longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
-    paste(ifelse(title, "", "\\vspace{-.25in}"),
+    paste(if (title) { "" } else { "\\vspace{-.25in}" },
         "\\tbltop", letters[num], "\n",
-        ifelse(title, latexTableHeadTitle(hinfo, table_num, parbox_width), ""),
+        if (title) { latexTableHeadTitle(hinfo, table_num, parbox_width) } else { "" },
         "\\addlinespace \n",
         "\\banner", letters[num],"{} \n\n", sep="")
 }
@@ -131,9 +131,7 @@ makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
         binfo.i[[1]] <- paste0("\\bf ",binfo.i[[1]])
     }
     binfo.i <- lapply(seq_along(binfo.i), function(i) {paste0("\\multicolumn{", cps[i],
-        ifelse(!multirow | cps[i]>1,
-            "}{c}{",
-            paste0("}{m{", width,"in}}{\\centering ")),
+        if (!multirow | cps[i]>1) { "}{c}{" } else { paste0("}{m{", width,"in}}{\\centering ") },
         escM(binfo.i[[i]]),
         "}",
         collapse=" & ")})

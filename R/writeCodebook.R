@@ -232,7 +232,7 @@ generateCodebookVarTable <- function(x, proportions = FALSE, weight = NULL, capt
         if (!is.null(col_names)) c(
             tab_def,
             "\\endhead\n"),
-        latexTable.body(res, autorownames = autorownames, toplines = FALSE),
+        latexTable.body(res, autorownames = autorownames, crosstabs = FALSE),
         "\\hline\n",
         "\\end{longtabu}\n"), collapse = "")
 }
@@ -334,7 +334,7 @@ matchCategoriesConcatenate <- function(categories, data_names, prefix = NULL, su
 }
 
 latexHeadCb <- function(surveyhead, font_size, margin, font, landscape=FALSE, subhead=NULL, graphicspath = NULL, logo = NULL){
-    paste("\\documentclass[", font_size, "pt", ifelse(landscape, ', landscape', ''), "]",
+    paste("\\documentclass[", font_size, "pt", if (landscape) ', landscape', "]",
         "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }"),

@@ -59,6 +59,8 @@ writeLatex <- function(data_summary, filename = getName(data_summary), proportio
             ") is not equal to the length of the results (", length(data_summary$results), ").")
     }
     
+    theme_validator(theme)
+    
     UseMethod("writeLatex", data_summary)
 }
 
@@ -69,36 +71,28 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-latexTable.body <- function(df, rownames = FALSE, dotfill = FALSE, autorownames = FALSE,
-    esc = TRUE, colnames = NULL, summary.midrule = FALSE, toplines) {
+latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
     
-    if (!is.list(df)) {
-        body <- as.data.frame(df)
-        summary <- NULL
-    } else {
-        body <- df$data_list$body
-        if (toplines || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
-            summary <- NULL 
-        } else { 
-            summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
-                df$data_list[[x]]
-            }))
-        }
+    body <- df$data_list$body
+    if (!crosstabs || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
+        summary <- NULL 
+    } else { 
+        summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
+            df$data_list[[x]]
+        }))
     }
-    
+
     if (autorownames) {
         if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
         if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
     }
-    if (esc) {
-        for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
-        if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
-    }
+    for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
+    if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
+
     collapsestring <- "\\\\\n"
     
-    sepstring <- ifelse(dotfill && ncol(body) == 2, " \\hspace*{0.15em} \\dotfill ",
-        " & ")
-    if (!summary.midrule) {
+    sepstring <- if (!crosstabs && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
+    if (!crosstabs) {
         return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))
     } else {
@@ -131,7 +125,7 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), ". It has been set to `helvet`.")
     }
     
-    paste0("\\documentclass[", ifelse(crosstabs, "landscape", paste0(theme$font_size, "pt")), "]{article}\n",
+    paste0("\\documentclass[", if (crosstabs) { "landscape" } else { paste0(theme$font_size, "pt") }, "]{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
@@ -141,7 +135,8 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\usepackage[scaled]{", theme$font, "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
         "\\usepackage{booktabs, ", if (crosstabs) "dcolumn, ", "longtable}\n",
-        "\\usepackage[top=0.6in, bottom=0.6in, left=", ifelse(crosstabs, 0.5, 1), "in, right=", ifelse(crosstabs, 0.5, 1), "in, includeheadfoot]{geometry}\n",
+        "\\usepackage[top=0.6in, bottom=0.6in, left=", if (crosstabs) { 0.5 } else { 1 }, 
+            "in, right=", if (crosstabs) { 0.5 } else { 1 }, "in, includeheadfoot]{geometry}\n",
         "\\usepackage{array}\n",
         "\\usepackage[english]{babel}\n",
         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
@@ -153,8 +148,8 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
         "\\fancyhead[L]{{\\Large {\\bf ",
-        ifelse(is.null(title), "", escM(title)), "}}",
-        ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))),
+        if (is.null(title)) { "" } else { escM(title) }, "}}",
+        if (is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) },
         "}\n",
         if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
         if (crosstabs) "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
@@ -185,8 +180,7 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe, 
         "\\end{tabular}\n", 
-        ifelse(table_of_contents,
-            "\\listoftables\n\\newpage\n\n", "\n\n"), 
+        if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" }, 
         font_size,
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",

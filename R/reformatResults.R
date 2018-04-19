@@ -75,86 +75,86 @@ roundPropCrosstabs <- function(data, digits) {
 }
 
 
-reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
-    show_totals = TRUE, theme) {
-
-    data <- getResults(x, proportions = proportions)
-    data[is.nan(data)] <- 0
-    bottom <- NULL
-
-    n_data <- NULL
-    if (!is.null(theme$format_weighted_n)) {
-        weighted_n_data <- clean_data(x$totals_counts, data)
-        rownames(weighted_n_data) <- paste0(theme$format_weighted_n$name, if (nrow(weighted_n_data) == 2) c(": Min", ": Max"))
-        n_data <- rbind(n_data, weighted_n_data)
-    }
-    if (!is.null(theme$format_unweighted_n)) {
-        unweighted_n_data <- clean_data(x$unweighted_n, data)
-        rownames(unweighted_n_data) <- paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) == 2) c(": Min", ": Max"))
-        n_data <- rbind(n_data, unweighted_n_data)
-    }
-
-    if (theme$digits > -1) {
-        if (!proportions || !theme$latex_round_percentages || is(var, "MultipleResponseCrossTabVar")) {
-            data[] <- round(data * if (proportions) 100 else 1, theme$digits)
-        }
-        else {
-            data[] <- roundPropCrosstabs(data, theme$digits)
-        }
-    }
-    if (show_totals) {
-        data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
-        rownames(data)[nrow(data)] <- "Totals"
-    }
-
-    if (theme$digits > -1) {
-        data[] <- format(data, nsmall=theme$digits, big.mark=",")
-        n_data[] <- round(n_data, 0)
-        n_data[] <- format(n_data, nsmall=theme$digits, big.mark=",")
-    }
-    if (proportions) {
-        data[] <- paste0(data, "%")
-    }
-    min_cell_mask <- x$unweighted_n_all < theme$format_min_base$min_base
-    for (xi in which(colSums(min_cell_mask) != 0)) {
-        data[min_cell_mask[,xi], xi] <- theme$format_min_base$mask
-    }
-
-    if (theme$latex_add_parenthesis) {
-        for (xi in seq_along(n_data)) {
-            n_data[,xi] <- paste0("(", n_data[,xi], ")")
-        }
-    }
-    if (!is.null(theme$latex_adjust)) {
-        for (xi in seq_along(n_data)) {
-            n_data[,xi] <- paste0("\\multicolumn{1}{", theme$latex_adjust, "}{", n_data[,xi], "}")
-        }
-    }
-
-    if (show_totals){
-        bottom <- setNames(data.frame(rbind(bottom, "Totals"=c(data[nrow(data),]))), colnames(data))
-        data <- data[-nrow(data),]
-    }
-    bottom <- rbind(bottom, n_data)
-
-    return(list(data=data, bottom=bottom))
-}
-
-reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE, theme) {
-    lapply(x, function(var) {
-        var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
-            lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
-                banner_var <- banner[[banner_name]][[banner_var_ind]]
-                cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
-                reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
-                    show_totals = !var$settings$no_totals && !is.null(theme$format_totals_row),
-                    theme = theme)
-            })
-        }, simplify = FALSE)
-        var
-    })
-}
-
+# reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
+#     show_totals = TRUE, theme) {
+# 
+#     data <- getResults(x, proportions = proportions)
+#     data[is.nan(data)] <- 0
+#     bottom <- NULL
+# 
+#     n_data <- NULL
+#     if (!is.null(theme$format_weighted_n)) {
+#         weighted_n_data <- clean_data(x$totals_counts, data)
+#         rownames(weighted_n_data) <- paste0(theme$format_weighted_n$name, if (nrow(weighted_n_data) == 2) c(": Min", ": Max"))
+#         n_data <- rbind(n_data, weighted_n_data)
+#     }
+#     if (!is.null(theme$format_unweighted_n)) {
+#         unweighted_n_data <- clean_data(x$unweighted_n, data)
+#         rownames(unweighted_n_data) <- paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) == 2) c(": Min", ": Max"))
+#         n_data <- rbind(n_data, unweighted_n_data)
+#     }
+# 
+#     if (theme$digits > -1) {
+#         if (!proportions || !theme$latex_round_percentages || is(var, "MultipleResponseCrossTabVar")) {
+#             data[] <- round(data * if (proportions) 100 else 1, theme$digits)
+#         }
+#         else {
+#             data[] <- roundPropCrosstabs(data, theme$digits)
+#         }
+#     }
+#     if (show_totals) {
+#         data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
+#         rownames(data)[nrow(data)] <- "Totals"
+#     }
+# 
+#     if (theme$digits > -1) {
+#         data[] <- format(data, nsmall=theme$digits, big.mark=",")
+#         n_data[] <- round(n_data, 0)
+#         n_data[] <- format(n_data, nsmall=theme$digits, big.mark=",")
+#     }
+#     if (proportions) {
+#         data[] <- paste0(data, "%")
+#     }
+#     min_cell_mask <- x$unweighted_n_all < theme$format_min_base$min_base
+#     for (xi in which(colSums(min_cell_mask) != 0)) {
+#         data[min_cell_mask[,xi], xi] <- theme$format_min_base$mask
+#     }
+# 
+#     if (theme$latex_add_parenthesis) {
+#         for (xi in seq_along(n_data)) {
+#             n_data[,xi] <- paste0("(", n_data[,xi], ")")
+#         }
+#     }
+#     if (!is.null(theme$latex_adjust)) {
+#         for (xi in seq_along(n_data)) {
+#             n_data[,xi] <- paste0("\\multicolumn{1}{", theme$latex_adjust, "}{", n_data[,xi], "}")
+#         }
+#     }
+# 
+#     if (show_totals){
+#         bottom <- setNames(data.frame(rbind(bottom, "Totals"=c(data[nrow(data),]))), colnames(data))
+#         data <- data[-nrow(data),]
+#     }
+#     bottom <- rbind(bottom, n_data)
+# 
+#     return(list(data=data, bottom=bottom))
+# }
+# 
+# reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE, theme) {
+#     lapply(x, function(var) {
+#         var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
+#             lapply(seq_along(var$crosstabs[[banner_name]]), function(banner_var_ind) {
+#                 banner_var <- banner[[banner_name]][[banner_var_ind]]
+#                 cross_tab_banner_var <- var$crosstabs[[banner_name]][[banner_var_ind]]
+#                 reformatResultsCrossTabBannerVar(cross_tab_banner_var, banner_var, proportions = proportions,
+#                     show_totals = !var$settings$no_totals && !is.null(theme$format_totals_row),
+#                     theme = theme)
+#             })
+#         }, simplify = FALSE)
+#         var
+#     })
+# }
+# 
 
 reformatHypothesisTest <- function(x) {
     sapply(x, function(var) {

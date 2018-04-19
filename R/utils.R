@@ -1,11 +1,12 @@
-directory <- function() ifelse(grepl("unix", .Platform$OS.type), "/", "\\")
+directory <- function() if (grepl("unix", .Platform$OS.type)) { "/" } else { "\\" }
 
 #' @importFrom utils tail
 splitFilePath <- function(filename) {
     dirchar <- directory()
     filename <- unlist(strsplit(filename, dirchar, fixed = TRUE))
-    pathfile <- c(ifelse(length(filename) > 1, paste(filename[-length(filename)],
-        collapse = dirchar), "."), tail(filename, 1))
+    
+    pathfile <- c(if (length(filename) > 1) { paste(filename[-length(filename)], collapse = dirchar) 
+        } else { "." }, tail(filename, 1))
     return(pathfile)
 }
 

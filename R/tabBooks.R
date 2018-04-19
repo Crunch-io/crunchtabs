@@ -33,9 +33,13 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         
         cube_variable <- variables(crunch_cube)[1]
         
-        var_type <- ifelse(length(variables(crunch_cube)) %in% 3, "categorical_array", 
-            ifelse("subvariable_items" %in% types(cube_variable), "multiple_response", types(cube_variable)))
-        # var_type <- type(dataset[[aliases(cube_variable)]])
+        if (length(variables(crunch_cube)) == 3) {
+            var_type <- "categorical_array"
+        } else if (types(cube_variable) %in% "subvariable_items") {
+            var_type <- "multiple_response"
+        } else {
+            var_type <- types(cube_variable)
+        }
         is_array_type <- var_type == "categorical_array"
         is_mr_type <- var_type == "multiple_response"
         cat_type <- var_type %in% c("categorical", "categorical_array")
@@ -50,7 +54,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         
         var_cats <- categories(cube_variable[[1]])#categories(dataset[[getAlias(crunch_cube)]])
         # inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
-        inserts <- if (cat_type) crunch:::collateCats(transforms(cube_variable)$insertions, na.omit(var_cats))
+        inserts <- if (cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
         mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
         # prepare a data structure for every variable (categorical_array variables are sliced)
         tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
@@ -65,7 +69,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             categories = var_cats,
             mean_median = mean_median,
             inserts = sapply(inserts, class),
-            inserts_m = c(sapply(inserts, class), if (mean_median) c("Mean", "Median")),
+            inserts_obj = inserts,
             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
             class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
         
@@ -150,14 +154,14 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                 medians_out <- if (mean_median) {
                     unlist(sapply(colnames(counts_out), function(k) calcTabMedianInsert(counts_out[,k], na.omit(var_cats))))
                 }
-                ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
-                if (!is.null(inserts)){
-                    counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
-                    proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
-                    counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
-                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = inserts %in% "Heading")
-                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = inserts %in% "Heading")
-                }
+                # ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+                # if (!is.null(inserts)){
+                #     counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
+                #     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
+                #     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
+                #     totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = inserts %in% "Heading")
+                #     unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = inserts %in% "Heading")
+                # }
 
                 banner_var_cross <- structure(list(
                     counts = counts_out,
