@@ -6,7 +6,7 @@
     UseMethod("toplineFooter", x)
 }}
 \usage{
-toplineFooterDef(var_summary)
+toplineFooterDef(var)
 }
 \description{
 #' @export
@@ -16,7 +16,7 @@ toplineFooter.default <- function(x) {
 }
 \details{
 #' @export
-toplineFooter.ToplineCategoricalArray <- function(var_summary) {
+toplineFooter.ToplineCategoricalArray <- function(var) {
     toplineFooterDef(is_grid = TRUE)
     
 }

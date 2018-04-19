@@ -5,14 +5,15 @@
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
 writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
-  theme = theme_default(), title = getName(data_summary), subtitle = NULL,
-  table_of_contents = FALSE, n_or_percent = c("percents", "counts"),
-  hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE)
+  theme = theme_excel_default(), title = getName(data_summary),
+  subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents",
+  "counts"), hypothesis_test = FALSE, logging = FALSE,
+  save_workbook = TRUE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
-\item{filename}{character. The name of the output file (without an extension).}
+\item{filename}{character. The name of the output file.}
 
 \item{wb}{An openxlsx Workbook object to add to. Useful for custom front pages.}
 

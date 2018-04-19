@@ -1,12 +1,10 @@
 #' @export
-writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary), proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
-    table_of_contents = FALSE, append_text = NULL,
-    pdf = FALSE, open = FALSE,
-    row_label_width = 1.5,
-    multirowheaderlines = FALSE,
-    clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    theme = theme_default(), logging = FALSE) {
+writeLatex.Crosstabs <- function(data_summary, theme = theme_latex_default(), 
+    filename = getName(data_summary), title = getName(data_summary), 
+    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
+    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
+    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
+    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
     banner <- data_summary$banner
     
@@ -27,7 +25,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary),
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
-            if (clearpage) { "\\clearpage" } else { "" })
+            if (theme$one_per_sheet) { "\\clearpage" } else { "" })
     })
     out <- c(out, append_text)
     out <- c(
@@ -35,7 +33,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary),
         # latexHeadLT(title = title, subtitle = subtitle, theme = theme),
         sapply(seq_along(banner), function (j) {
             longtableHeadFootB(banner[[j]], num = j, coltype= if (theme$digits == 0) { "g" } else { "d" },
-                multirow = multirowheaderlines, page_width = 9, row_label_width = row_label_width, theme = theme)
+                multirow = multirowheaderlines, page_width = 9, row_label_width = theme$format_label_column$col_width, theme = theme)
         }),
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
             font_size = if (theme$font_size < 16) { "small" } else { "large" }, crosstabs = TRUE),
@@ -59,7 +57,7 @@ writeLatex.Crosstabs <- function(data_summary, filename = getName(data_summary),
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
 longtableHeadFootB <- function (banner, num = 1, coltype = "d",
-    multirow = FALSE, page_width = 9, row_label_width = 2, theme) {
+    multirow = FALSE, page_width = 9, row_label_width, theme) {
     headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
     foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
     if (headtext == "tbc") headtext <- "continued from previous page"

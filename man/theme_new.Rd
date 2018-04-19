@@ -4,67 +4,9 @@
 \alias{theme_new}
 \title{Generate Theme for writeExcel}
 \usage{
-theme_new(..., default_theme = theme_default())
+theme_new(..., default_theme = theme_excel_default())
 }
 \arguments{
-\item{format_title}{format_title format_title}
-
-\item{format_subtitle}{format_subtitle format_subtitle}
-
-\item{format_banner_labels}{format_banner_labels format_banner_labels}
-
-\item{format_banner_categories}{format_banner_categories format_banner_categories #XX}
-
-\item{format_var_alias}{format_var_alias format_var_alias}
-
-\item{format_var_name}{format_var_name format_var_name}
-
-\item{format_var_description}{format_var_description format_var_description}
-
-\item{format_var_subname}{format_var_subname format_var_subname}
-
-\item{format_var_filtertext}{format_var_filtertext format_var_filtertext}
-
-\item{format_label_column}{format_label_column format_label_column #XX}
-
-\item{format_subtotals}{format_subtotals format_subtotals}
-
-\item{format_headers}{format_headers format_headers}
-
-\item{format_means}{format_means format_means}
-
-\item{format_medians}{format_medians format_medians}
-
-\item{format_weighted_n}{format_weighted_n format_weighted_n}
-
-\item{format_unweighted_n}{format_unweighted_n format_unweighted_n}
-
-\item{format_totals_row}{format_totals_row format_totals_row}
-
-\item{format_totals_column}{format_totals_column format_totals_column #XX}
-
-\item{format_min_base}{format_min_base format_min_base}
-
-\item{table_border}{table_border table_border}
-
-\item{banner_vars_split}{banner_vars_split banner_vars_split}
-
-\item{show_grid_lines}{show_grid_lines show_grid_lines}
-
-\item{orientation}{orientation orientation}
-
-\item{logo}{logo logo}
-
-\item{freeze_column}{freeze_column freeze_column}
-
-\item{percent_format_data}{percent_format_data percent_format_data}
-
-\item{digits}{digits digits}
-
-\item{digits_final}{digits_final digits_final}
-
-\item{one_per_sheet}{one_per_sheet one_per_sheet}
-
 \item{latex_adjust}{A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**}
 
 \item{latex_add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
@@ -79,9 +21,9 @@ placed at the bottom of continuation tables. 'tbc' is a shortcut for
 'continued from previous page.' **}
 
 \item{latex_round_percentages}{logical. Should percentages be rounded to sum up to 100?
-Defaults to \code{FALSE}. **}
+Defaults to \code{FALSE}. **
 
-\item{page_breaks}{? page_breaks page_breaks}
+More params to be described soon.}
 }
 \description{
 \code{theme_new} produces themes for writeExcel.

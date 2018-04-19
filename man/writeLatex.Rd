@@ -4,24 +4,27 @@
 \alias{writeLatex}
 \title{Generate LaTeX Reports: Toplines and Banners}
 \usage{
-writeLatex(data_summary, filename = NULL, proportions = TRUE,
-  title = getName(data_summary), subtitle = NULL, sample_desc = NULL,
-  field_period = NULL, moe = NULL, table_of_contents = FALSE,
-  append_text = NULL, pdf = FALSE, open = FALSE, row_label_width = 1.5,
-  multirowheaderlines = FALSE, clearpage = TRUE, grid_num_letters = TRUE,
-  custom_numbering = NULL, theme = theme_default())
+writeLatex(data_summary, theme = theme_latex_default(),
+  filename = getName(data_summary), title = getName(data_summary),
+  subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
+  field_period = NULL, moe = NULL, append_text = NULL,
+  proportions = TRUE, pdf = FALSE, open = FALSE,
+  multirowheaderlines = FALSE, grid_num_letters = TRUE,
+  custom_numbering = NULL, logging = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
-\item{filename}{character. The name of the output file (without extension).}
+\item{theme}{}
 
-\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
-if \code{FALSE} the report shows counts.}
+\item{filename}{character. The name of the output file (without extension).}
 
 \item{title}{An optional title. Defaults to the data summary title.}
 
 \item{subtitle}{An optional character subtitle. Defaults to an empty string.}
+
+\item{table_of_contents}{logical. Should a list of tables be included at the start
+of the report Defaults to \code{FALSE}.}
 
 \item{sample_desc}{A character string describing the sample.}
 
@@ -29,30 +32,24 @@ if \code{FALSE} the report shows counts.}
 
 \item{moe}{An optional numeric margin of error.}
 
-\item{table_of_contents}{logical. Should a list of tables be included at the start
-of the report Defaults to \code{FALSE}.}
-
 \item{append_text}{An optional character string that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information. Defaults to an empty string.}
+
+\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
+if \code{FALSE} the report shows counts.}
 
 \item{pdf}{logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
 
-\item{row_label_width}{Width of the row label comuln. Defaults to 1.5in. ***}
-
 \item{multirowheaderlines}{logical. Should banners allow multi-row headlines? **}
-
-\item{clearpage}{logical. Should every banner be on a separete page? **}
 
 \item{grid_num_letters}{logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
 have the same number with consecutive letters appended? Defaults to \code{TRUE}. **}
 
 \item{custom_numbering}{A vector of custom values to be used for numbering banner tables.
 Defaults to \code{NULL} - default numbering scheme is used.}
-
-\item{theme}{}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

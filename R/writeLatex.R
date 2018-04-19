@@ -19,9 +19,7 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param row_label_width Width of the row label comuln. Defaults to 1.5in. ***
 #' @param multirowheaderlines logical. Should banners allow multi-row headlines? **
-#' @param clearpage logical. Should every banner be on a separete page? **
 #' @param grid_num_letters logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
 #' have the same number with consecutive letters appended? Defaults to \code{TRUE}. **
 #' @param custom_numbering A vector of custom values to be used for numbering banner tables.
@@ -41,14 +39,12 @@
 #' writeLatex(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeLatex <- function(data_summary, filename = getName(data_summary), proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
-    table_of_contents = FALSE, append_text = NULL,
-    pdf = FALSE, open = FALSE,
-    row_label_width = 1.5,
-    multirowheaderlines = FALSE,
-    clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    theme = theme_default(), logging = FALSE) {
+writeLatex <- function(data_summary, theme = theme_latex_default(), 
+    filename = getName(data_summary), title = getName(data_summary), 
+    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
+    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
+    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
+    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")

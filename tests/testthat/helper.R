@@ -39,13 +39,13 @@ with_temp_dir <- function(expr) {
     eval.parent(expr)
 }
 
-# Source crunch-test.R when: R CMD check, devtools::test(), make test,
-# crunchdev::test_crunch()
-# Don't source crunch-test.R when: devtools::load_all() (interactively)
-# https://github.com/hadley/devtools/issues/1202
-source_if <- !interactive() || identical(Sys.getenv("NOT_CRAN"), "true")
-# And don't source it when running pkgdown
-source_if <- source_if && !identical(Sys.getenv("DEVTOOLS_LOAD"), "true")
-if (source_if) {
-    source(system.file("crunch-test.R", package="crunch"))
-}
+# # Source crunch-test.R when: R CMD check, devtools::test(), make test,
+# # crunchdev::test_crunch()
+# # Don't source crunch-test.R when: devtools::load_all() (interactively)
+# # https://github.com/hadley/devtools/issues/1202
+# source_if <- !interactive() || identical(Sys.getenv("NOT_CRAN"), "true")
+# # And don't source it when running pkgdown
+# source_if <- source_if && !identical(Sys.getenv("DEVTOOLS_LOAD"), "true")
+# if (source_if) {
+#     source(system.file("crunch-test.R", package="crunch"))
+# }

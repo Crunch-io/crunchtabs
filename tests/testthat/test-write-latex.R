@@ -14,32 +14,30 @@ with_temp_dir({
     
 
     test_that("Write Latex crosstab", {
-        expect_warning(writeLatex(cs))
-        theme <- theme_default(font = "helvet")
+        theme <- theme_latex_default(font = "helvet")
 
-        # writeLatex(cs, theme = theme)
-        # expect_true(file.exists("Example Dataset with Nets.tex"))
-        # expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        # expect_equal(tex[1], "\\documentclass[landscape]{article}")
-        # 
-        # writeLatex(cs, theme = theme, sample_desc = "Adults")
-        # expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        # expect_equal(tex[72], "Sample  &  Adults \\\\ ")
-        # writeLatex(cs, theme = theme, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
-        # 
-        # skip_on_appveyor()
-        # writeLatex(cs, theme = theme, pdf = TRUE)
-        # expect_true(file.exists("Example Dataset with Nets.pdf"))
-        # expect_output(writeLatex(cs, theme = theme, pdf = TRUE, logging = TRUE), "PDF-ing")
-        # writeLatex(cs, theme = theme, subtitle = "something", pdf = TRUE)
-        # writeLatex(cs, theme = theme, sample_desc = "Adults", pdf = TRUE)
-        # writeLatex(cs, theme = theme, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
+        writeLatex(cs, theme = theme)
+        expect_true(file.exists("Example Dataset with Nets.tex"))
+        expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
+        expect_equal(tex[1], "\\documentclass[landscape]{article}")
+
+        writeLatex(cs, theme = theme, sample_desc = "Adults")
+        expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
+        expect_equal(tex[72], "Sample  &  Adults \\\\ ")
+        writeLatex(cs, theme = theme, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
+
+        skip_on_appveyor()
+        writeLatex(cs, theme = theme, pdf = TRUE)
+        expect_true(file.exists("Example Dataset with Nets.pdf"))
+        expect_output(writeLatex(cs, theme = theme, pdf = TRUE, logging = TRUE), "PDF-ing")
+        writeLatex(cs, theme = theme, subtitle = "something", pdf = TRUE)
+        writeLatex(cs, theme = theme, sample_desc = "Adults", pdf = TRUE)
+        writeLatex(cs, theme = theme, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
 
         theme <- theme_new(default_theme = theme, digits = 1)
         writeLatex(cs, theme = theme, pdf = TRUE)
         theme <- theme_new(default_theme = theme, font_size = 20)
         writeLatex(cs, theme = theme, pdf = TRUE)
-        writeLatex(cs, theme = theme, clearpage = FALSE, pdf = TRUE)
         writeLatex(cs, theme = theme, multirowheaderlines = TRUE, pdf = TRUE)
         theme <- theme_new(default_theme = theme, latex_round_percentages = TRUE)
         writeLatex(cs, theme = theme, pdf = TRUE)
@@ -49,16 +47,13 @@ with_temp_dir({
     })
     
     test_that("Write Latex toplines", {
-        expect_warning(writeLatex(ts))
-        theme <- theme_default(font = "helvet")
-        
-        writeLatex(ts, theme = theme)
+        writeLatex(ts)
         expect_true(file.exists("Example Dataset with Nets.tex"))
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
         expect_equal(tex[1], "\\documentclass[12pt]{article}")
     
         skip_on_appveyor()
-        writeLatex(ts, theme = theme, pdf = TRUE)
+        writeLatex(ts, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))
         
     })

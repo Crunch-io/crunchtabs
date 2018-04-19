@@ -2,36 +2,6 @@
 #'
 #' \code{theme_new} produces themes for writeExcel.
 #'
-#' @param format_title  format_title format_title
-#' @param format_subtitle format_subtitle format_subtitle
-#' @param format_banner_labels format_banner_labels format_banner_labels
-#' @param format_banner_categories format_banner_categories format_banner_categories #XX
-#' @param format_var_alias format_var_alias format_var_alias
-#' @param format_var_name format_var_name format_var_name
-#' @param format_var_description format_var_description format_var_description
-#' @param format_var_subname format_var_subname format_var_subname
-#' @param format_var_filtertext format_var_filtertext format_var_filtertext
-#' @param format_label_column format_label_column format_label_column #XX 
-#' @param format_subtotals format_subtotals format_subtotals
-#' @param format_headers format_headers format_headers
-#' @param format_means format_means format_means
-#' @param format_medians format_medians format_medians
-#' @param format_weighted_n format_weighted_n format_weighted_n
-#' @param format_unweighted_n format_unweighted_n format_unweighted_n
-#' @param format_totals_row format_totals_row format_totals_row
-#' @param format_totals_column format_totals_column format_totals_column #XX
-#' @param format_min_base format_min_base format_min_base
-#' @param table_border table_border table_border
-#' @param banner_vars_split banner_vars_split banner_vars_split
-#' @param show_grid_lines show_grid_lines show_grid_lines
-#' @param orientation orientation orientation
-#' @param logo logo logo
-#' @param freeze_column freeze_column freeze_column
-#' @param percent_format_data percent_format_data percent_format_data
-#' @param digits digits digits
-#' @param digits_final digits_final digits_final
-#' @param one_per_sheet one_per_sheet one_per_sheet
-#' 
 #' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**
 #' @param latex_add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
 #' Defaults to \code{TRUE}. **
@@ -44,14 +14,14 @@
 #' @param latex_round_percentages logical. Should percentages be rounded to sum up to 100?
 #' Defaults to \code{FALSE}. **
 #' 
-#' @param page_breaks ? page_breaks page_breaks
+#' More params to be described soon.
 #' 
 #' @examples
 #' \dontrun{
 #' theme stuff
 #' }
 #' @export
-theme_new <- function(..., default_theme = theme_default()){
+theme_new <- function(..., default_theme = theme_excel_default()){
     
     wrong_class_error(default_theme, "Theme", "default_theme")
     
@@ -91,14 +61,14 @@ theme_new <- function(..., default_theme = theme_default()){
 
 #' Generate default Theme for writeExcel
 #'
-#' \code{theme_default} is the default theme. Users can change base options
+#' \code{theme_excel_default} is the default theme. Users can change base options
 #'
 #' @param font font font
 #' @param font_size font_size font_size
 #' @param font_color font_color font_color
 #' @param border_color border_color border_color
 #' @export
-theme_default <- function(font = getOption("font", default = "Calibri"),
+theme_excel_default <- function(font = getOption("font", default = "Calibri"),
     font_size = getOption("font_size", default = 12),
     font_color = getOption("font_color", default = "black"),
     border_color = getOption("border_color", default = "black"),
@@ -129,6 +99,35 @@ theme_default <- function(font = getOption("font", default = "Calibri"),
         percent_format_data = TRUE,
         digits = 0, 
         one_per_sheet = FALSE,
+        latex_add_parenthesis = TRUE,
+        latex_round_percentages = TRUE)
+
+    class(defaults) <- "Theme"
+    
+    return(defaults)
+}
+
+theme_latex_default <- function(font = getOption("font", default = "helvet"),
+    font_size = getOption("font_size", default = 12)){
+
+    norm <- list(font = font, font_size = font_size)
+    defaults <- list(font = font, font_size = font_size,
+        format_banner_categories = list(wrap_text = TRUE), 
+        format_var_description = list(wrap_text = TRUE, include_alias = FALSE, include_q_number = TRUE, repeat_for_subs = TRUE), 
+        format_var_subname = list(wrap_text = TRUE, include_alias = FALSE, include_q_number = FALSE), 
+        format_var_filtertext = list(wrap_text = TRUE, decoration = "italic", include_alias = FALSE, include_q_number = FALSE, repeat_for_subs = TRUE), 
+        format_subtotals = list(wrap_text = TRUE, decoration = "bold"), 
+        format_headers = list(wrap_text = TRUE, decoration = "bold"), 
+        format_unweighted_n = list(wrap_text = TRUE, name = "Unweighted N", position_top = FALSE, position_bottom = TRUE, position_fixed = FALSE), 
+        format_totals_row = list(wrap_text = TRUE, name = "Totals", position_top = FALSE, position_bottom = TRUE), 
+        format_label_column = list(wrap_text = TRUE, col_width = 1.5, extend_borders = TRUE),
+        format_totals_column = list(wrap_text = TRUE),
+        digits = 0, 
+        one_per_sheet = TRUE,
+        percent_format_data = TRUE,
+        show_grid_lines = FALSE,
+        freeze_column = 0,
+        orientation = "portrait",
         latex_adjust = "c",
         latex_round_percentages = FALSE,
         latex_add_parenthesis = FALSE)
@@ -145,6 +144,9 @@ theme_validators <- list(
         if (is.null(value)) { return(NULL) }
         if (is.list(validator)) {
             if ("include" %in% names(validator)) {
+                if (!is.list(value)) {
+                    return(theme_validators$class_error(value, "list", name, as.logical(validator["missing"])))
+                }
                 return(sapply(validator$include, function(nm){
                     return(theme_validators$find_validator(value[[nm]], c(name, nm)))
                 }))
@@ -156,7 +158,7 @@ theme_validators <- list(
         if (validator["class"] %in% "color") { return(theme_validators$color(value, name)) }
         if (class(value) != validator["class"]) { return(theme_validators$class_error(value, validator["class"], name, validator["missing"])) }
     },
-    "class_error" = function(value, expected_class, name, missing){
+    "class_error" = function(value, expected_class, name, missing) {
         return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(missing)) ", if provided,", " must be of class ", expected_class, ", not ", class(value)))
     },
     "null_error" = function(name){
@@ -269,7 +271,8 @@ theme_validator <- function(theme) {
         "format_medians", "format_min_base", "format_subtitle", "format_subtotals", "format_title", "format_totals_column", 
         "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description", 
         "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "freeze_column", "halign", 
-        "header", "latex_add_parenthesis", "latex_adjust", "latex_foottext", "latex_headtext", "latex_round_percentages", "logo", "one_per_sheet", "orientation", "percent_format_data", "show_grid_lines", "table_border", "valign")
+        "header", "latex_add_parenthesis", "latex_adjust", "latex_foottext", "latex_headtext", "latex_round_percentages", 
+        "logo", "one_per_sheet", "orientation", "percent_format_data", "show_grid_lines", "table_border", "valign")
     
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {
@@ -288,7 +291,7 @@ theme_validator <- function(theme) {
 
 #' @export
 political_theme <- function() {
-    theme_new(default_theme = theme_default(font = "Arial", font_size = 8),
+    theme_new(default_theme = theme_excel_default(font = "Arial", font_size = 8),
         format_title=list(font_size = 14),
         format_banner_labels=list(font = "Arial Narrow", font_size = 8),
         format_banner_categories=list(font = "Arial Narrow", font_size = 8),

@@ -1,17 +1,15 @@
 #' @export
-writeLatex.Toplines <- function(data_summary, filename = getName(data_summary), proportions = TRUE, 
-    title = getName(data_summary), subtitle = NULL, sample_desc = NULL, field_period = NULL, moe = NULL,
-    table_of_contents = FALSE, append_text = NULL,
-    pdf = FALSE, open = FALSE,
-    row_label_width = 1.5,
-    multirowheaderlines = FALSE,
-    clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    theme = theme_default(), logging = FALSE) {
+writeLatex.Toplines <- function(data_summary, theme = theme_latex_default(), 
+    filename = getName(data_summary), title = getName(data_summary), 
+    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
+    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
+    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
+    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
     headers <- lapply(seq_along(data_summary$results), function(i) {
-        toplineHeader(data_summary$results[[i]], page_width = 6.5, row_label_width = row_label_width,
+        toplineHeader(data_summary$results[[i]], page_width = 6.5, row_label_width = theme$format_label_column$col_width,
             num = if (!is.null(custom_numbering)) custom_numbering[i] else i, theme = theme)
     })
     
@@ -95,7 +93,6 @@ toplineTableDef <- function(var, page_width, num, tab_definition, header_row, th
         var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
             scriptsize = info_name != names(var_info)[1])
     }
-    print(var_info)
     if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
     return(paste("\\begin{table}[H]
         \\addcontentsline{lot}{table}{", escM(getName(var)), "}
