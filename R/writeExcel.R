@@ -74,23 +74,29 @@ create_styles <- function(theme){
     numFmt <- paste0("0", if (theme$digits > 0) paste0(".", paste0(rep(0, theme$digits), collapse = "")))
     numFmtProp <- paste0(numFmt, if (theme$percent_format_data) "%")
     
-    label_column_border <- if (!theme$format_label_column$extend_borders)"TopBottomLeftRight"
+    borders <- c("border_top", "border_bottom", "border_left", "border_right")
     
     style_list <- sapply(grep("^format_", names(theme), value = TRUE), function(v) {
         if (!is.null(theme[[v]])) {
-            border_style <- if (v %in% "format_label_column" && !theme$format_label_column$extend_borders) { "none" } else { theme[[v]]$border_style }
-            border_where <- if (!is.null(border_style)) if (is.null(theme[[v]]$border_where)) { "TopBottomLeftRight" } else { theme[[v]]$border_where }
+            tv <- theme[[v]]
+            none_border <- v %in% "format_label_column" && !tv$extend_borders
+            border <- any(unlist(tv[borders]))
+            border_style <- if (none_border) { 
+                "none" } else { tv$border_style }
+            border_where <- if (border | none_border) gsub("border", "", borders)[unlist(tv[borders])]
+            # border_style <- if (v %in% "format_label_column" && !theme$format_label_column$extend_borders) { "none" } else { theme[[v]]$border_style }
+            # border_where <- if (!is.null(border_style)) if (is.null(theme[[v]]$border_where)) { "TopBottomLeftRight" } else { theme[[v]]$border_where }
             openxlsx::createStyle(fontName = find_null_or_base(theme, v, "font"), 
                 fontSize = find_null_or_base(theme, v, "font_size"),
                 fontColour = find_null_or_base(theme, v, "font_color"),
                 border = border_where,
-                borderColour = theme[[v]]$border_color,
+                borderColour = tv$border_color,
                 borderStyle = border_style,
-                fgFill = theme[[v]]$background_color,
-                halign = theme[[v]]$halign,
-                valign = theme[[v]]$valign,
-                textDecoration = theme[[v]]$decoration,
-                wrapText = theme[[v]]$wrap_text,
+                fgFill = tv$background_color,
+                halign = tv$halign,
+                valign = tv$valign,
+                textDecoration = tv$decoration,
+                wrapText = if (is.null(tv$wrap_text)) TRUE else tv$wrap_text,
                 numFmt = if (v %in% c("format_weighted_n", "format_unweighted_n")) { "0" } else { "GENERAL" })
         }
     })
