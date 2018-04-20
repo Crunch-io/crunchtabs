@@ -121,6 +121,13 @@ theme_excel_default <- function(font = getOption("font", default = "Calibri"),
     return(defaults)
 }
 
+#' Generate default Theme for writeLatex
+#'
+#' \code{theme_latex_default} is the default theme. Users can change base options
+#'
+#' @param font font font
+#' @param font_size font_size font_size
+#' @export
 theme_latex_default <- function(font = getOption("font", default = "helvet"),
     font_size = getOption("font_size", default = 12)){
 

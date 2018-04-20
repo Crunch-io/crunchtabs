@@ -7,8 +7,6 @@
 theme_excel_default(font = getOption("font", default = "Calibri"),
   font_size = getOption("font_size", default = 12),
   font_color = getOption("font_color", default = "black"),
-  border_color = getOption("border_color", default = "black"),
-  halign = getOption("halign", default = "center"),
   valign = getOption("valign", default = "center"))
 }
 \arguments{
