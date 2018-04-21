@@ -5,7 +5,6 @@ Description: This package provides functions for report generation:
     - Toplines (one-way frequency tables),
     - Banners (cross tabulations).
 Version: 0.4.0
-Date: 2017-10-01
 Authors@R: person("Kamil", "Sedrowicz", role=c("aut", "cre"), email="kamil.sedrowicz@yougov.com")
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
