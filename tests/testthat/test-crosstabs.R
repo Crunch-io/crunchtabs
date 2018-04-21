@@ -32,7 +32,7 @@ with_test_authentication({
         crosstabs_data <- crosstabs(ds, vars = c("allpets", "favpet", "petloc"))
         expect_s3_class(crosstabs_data, "Toplines")
         expect_named(crosstabs_data, c("metadata", "results", "banner"))
-        expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
+        expect_named(crosstabs_data$metadata, c("title", "weight"))
         expect_null(crosstabs_data$banner)
         expect_identical(getName(crosstabs_data), "Testing Dataset")
         expect_null(crosstabs_data$metadata$weight)
@@ -60,7 +60,7 @@ with_test_authentication({
     test_that("Crosstabs", {
         expect_s3_class(crosstabs_data, "Crosstabs")
         expect_named(crosstabs_data, c("metadata", "results", "banner"))
-        expect_named(crosstabs_data$metadata, c("title", "date", "weight"))
+        expect_named(crosstabs_data$metadata, c("title", "weight"))
         expect_s3_class(crosstabs_data$banner, "Banner") # NOTE: check expectation
         expect_identical(getName(crosstabs_data), "Testing Dataset")
         expect_null(crosstabs_data$metadata$weight)

@@ -1,7 +1,7 @@
 #' Create an object of class \code{Banner}
 #'
 #' @param dataset A Crunch dataset.
-#' @param vars A named list of vectors of aliases of the variables that shoulds constitute the banner object.
+#' @param vars A named list of vectors of aliases of the variables that should constitute the banner object.
 #' These should be categorical (and typically hidden) variables present in the \code{dataset}.
 #' @param labels An optional named list of labels, where names are variables' aliases
 #' (present in the \code{vars} parameter) and values are the labels that should be used in the report.

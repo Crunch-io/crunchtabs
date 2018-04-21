@@ -12,9 +12,6 @@
 #' @param banner An optional object of class \code{Banner} that should be used to generate
 #' a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.
 #' @param codebook If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.
-#' @param title An optional title. Defaults to the name of the dataset.
-#' @param date An optional date. Defaults to the current date.
-#' @param metadata An optional list with additional metadata that should be added to the summary.
 #' @return A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
 #' summary of the input dataset.
 #' @examples
@@ -27,7 +24,7 @@
 #' @importFrom methods is
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE,
-    title = name(dataset), date = Sys.Date(), metadata = NULL) {
+    metadata = NULL) {
     
     wrong_class_error(dataset, "CrunchDataset", "dataset")
     
@@ -85,7 +82,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
         class(banner) <- 'Banner'
     }
     
-    summary_data <- list(metadata = c(list(title = title, date = date, weight = weight), metadata),
+    summary_data <- list(metadata = c(list(title = name(dataset), weight = weight)),
         results = results, banner = banner)
     class(summary_data) <- res_class
     
