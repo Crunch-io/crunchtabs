@@ -9,18 +9,18 @@ banner(dataset, vars, labels = NULL, recodes = NULL)
 \arguments{
 \item{dataset}{A Crunch dataset.}
 
-\item{vars}{A named list of vectors of aliases of the variables that shoulds constitute the banner object.
+\item{vars}{A named list of vectors of aliases of the variables that should constitute the banner object.
 These should be categorical (and typically hidden) variables present in the \code{dataset}.}
 
 \item{labels}{An optional named list of labels, where names are variables' aliases
 (present in the \code{vars} parameter) and values are the labels that should be used in the report.
-Defaults to NULL - variables names are used.}
+Defaults to \code{NULL} - variables names are used.}
 
 \item{recodes}{An optional named list of categories recodes (the syntax is similar
 to the one used in the \code{recode} function in the R \code{car} package). Use \code{NA} to
 exclude categories. Not listed categories will be left unchanged.
 Use \code{else} to replace all not listed categories. See examples for details.
-Defaults to NULL - categories are not modified.}
+Defaults to \code{NULL} - categories are not modified.}
 }
 \value{
 An object of class \code{Banner}.

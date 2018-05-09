@@ -13,6 +13,19 @@ The pre-release version of the package can be pulled from GitHub using the [devt
 
     # install.packages("devtools")
     devtools::install_github("Crunch-io/crunchtabs")
+    
+## Getting started
+
+    library(crunchtabs)
+    
+    login()
+    ds <- loadDataset("My survey")
+    crossbreaks <- banner(ds, list(
+        Demographics=c("gender", "age4", "education"),
+        Results=c("q4", "segmentation") 
+    ))
+    crosstabs <- crosstabs(ds, banner=crossbreaks)
+    writeExcel(crosstabs, filename="my-tab-book.xlsx")
 
 ## For developers
 

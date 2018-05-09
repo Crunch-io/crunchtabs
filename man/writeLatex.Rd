@@ -4,35 +4,27 @@
 \alias{writeLatex}
 \title{Generate LaTeX Reports: Toplines and Banners}
 \usage{
-writeLatex(data_summary, filename = NULL, proportions = TRUE, digits = 0,
-  title = getName(data_summary), subtitle = NULL, sample_desc = "",
-  field_period = "", moe = NULL, table_of_contents = FALSE,
-  returndata = FALSE, append_text = "", pdf = FALSE,
-  path.to.pdflatex = Sys.which("pdflatex"), open = FALSE, headtext = "",
-  foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-  tableonly = FALSE, landscape = FALSE, font = "helvet",
-  font_size = NULL, page_width = ifelse(landscape, 9, 6.5),
-  row_label_width = 1.5, margin = list(top = 0.6, bottom = 0.6, left = 1,
-  right = 1), min_cell_size = NULL, min_cell_label = NULL,
-  show_totals = TRUE, weighted_n = FALSE, add_parenthesis = FALSE,
-  dc = c(3.2, 4.1), multirowheaderlines = FALSE, latex_adjust = "c",
-  clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-  round_percentages = FALSE)
+writeLatex(data_summary, theme = themeDefaultLatex(),
+  filename = getName(data_summary), title = getName(data_summary),
+  subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
+  field_period = NULL, moe = NULL, append_text = NULL,
+  proportions = TRUE, pdf = FALSE, open = FALSE,
+  multirowheaderlines = FALSE, grid_num_letters = TRUE,
+  custom_numbering = NULL, logging = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
+\item{theme}{}
+
 \item{filename}{character. The name of the output file (without extension).}
-
-\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
-if \code{FALSE} the report shows counts.}
-
-\item{digits}{integer. Number of decimal digits to use for rounding.
-Defaults to 0.}
 
 \item{title}{An optional title. Defaults to the data summary title.}
 
 \item{subtitle}{An optional character subtitle. Defaults to an empty string.}
+
+\item{table_of_contents}{logical. Should a list of tables be included at the start
+of the report Defaults to \code{FALSE}.}
 
 \item{sample_desc}{A character string describing the sample.}
 
@@ -40,93 +32,24 @@ Defaults to 0.}
 
 \item{moe}{An optional numeric margin of error.}
 
-\item{table_of_contents}{logical. Should a list of tables be included at the start
-of the report Defaults to \code{FALSE}.}
-
-\item{returndata}{logical. If \code{TRUE}, a processed data that was used to produce
-the report is returned.}
-
 \item{append_text}{An optional character string that, if supplied, will be appended after
 the final table. Useful for adding in disclosure information. Defaults to an empty string.}
 
-\item{pdf}{logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.}
+\item{proportions}{logical. If \code{TRUE} the output report shows proportions,
+if \code{FALSE} the report shows counts.}
 
-\item{path.to.pdflatex}{Character path to pdflatex.}
+\item{pdf}{logical. Compile LaTeX using pdflatex? Implemented only on MacOS/Linux.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
 
-\item{headtext}{An optional character string indicating what text should be
-placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-continued.'}
-
-\item{foottext}{An optional character string indicating what text should be
-placed at the bottom of continuation tables. 'tbc' is a shortcut for
-'continued from previous page.'}
-
-\item{graphicspath}{character. The path to the folder with graphics files, e.g. logo.
-Defaults to \code{NULL} - LaTeX output directory is used.}
-
-\item{logo}{character. The name of the logo file.
-Defaults to \code{NULL} - no logo is used.}
-
-\item{longtablewrap}{logical. Should LaTeX longtables be allowed to wrap to
-a new page? If \code{TRUE}, inserts the 'continued on the next page' breaks.
-Defaults to \code{TRUE}.}
-
-\item{tableonly}{logical. If \code{TRUE}, function writes out only the LaTeX
-content within the \code{table} environments.}
-
-\item{landscape}{logical. If \code{TRUE}, generate pages in the landscape
-mode. Defaults to \code{TRUE} for Banners and \code{FALSE} for Toplines.}
-
-\item{font}{A character string specifying the font package to use in LaTeX.}
-
-\item{font_size}{Font size points for toplines and fontsize name for banners.
-Defaults to '12' pt font for toplines and 'small' for banners}
-
-\item{page_width}{Page width.
-Defaults to 9in for banners and 6.5in for toplines.}
-
-\item{row_label_width}{Width of the row label comuln. Defaults to 1.5in.}
-
-\item{margin}{An optional argument to pass to the LaTeX package
-\code{geometry}. Default is 'top=.6in, bottom=.6in, left=.5in, right=.5in,
-includeheadfoot' for Banners and 'top=.6in, bottom=.6in, left=1in,
-right=1in, includeheadfoot' for Toplines.}
-
-\item{min_cell_size}{integer. Minimum number of responses for a cross tabulated
-category to be displayed in details in a banner report.}
-
-\item{min_cell_label}{character. If a number of responses for a
-cross tabulated category is less than \code{min_cell_size} then this string is
-used to mask out the results.}
-
-\item{show_totals}{logical. If \code{TRUE} a 'Totals' row with column sums is displayed.
-Defaults to \code{TRUE}.}
-
-\item{weighted_n}{logical. Should the total number of responses be weighted?
-Defaults to \code{FALSE}.}
-
-\item{add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
-Defaults to \code{TRUE}.}
-
-\item{dc}{Width of new column types for banners.}
-
-\item{multirowheaderlines}{logical. Should banners allow multi-row headlines?}
-
-\item{latex_adjust}{A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.}
-
-\item{clearpage}{logical. Should every banner be on a separete page?}
+\item{multirowheaderlines}{logical. Should banners allow multi-row headlines? **}
 
 \item{grid_num_letters}{logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
-have the same number with consecutive letters appended? Defaults to \code{TRUE}.}
+have the same number with consecutive letters appended? Defaults to \code{TRUE}. **}
 
 \item{custom_numbering}{A vector of custom values to be used for numbering banner tables.
 Defaults to \code{NULL} - default numbering scheme is used.}
-
-\item{round_percentages}{logical. Should percentages be rounded to sum up to 100?
-Defaults to \code{FALSE}.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

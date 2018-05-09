@@ -4,9 +4,8 @@
 \alias{crosstabs}
 \title{Toplines and Crosstabs Summaries}
 \usage{
-crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
-  codebook = FALSE, title = name(dataset), date = Sys.Date(),
-  metadata = NULL)
+crosstabs(dataset, vars = names(dataset), weight = crunch::weight(dataset),
+  banner = NULL, codebook = FALSE, metadata = NULL)
 }
 \arguments{
 \item{dataset}{A Crunch dataset.}
@@ -15,18 +14,12 @@ crosstabs(dataset, vars = names(dataset), weight = NULL, banner = NULL,
 Defaults to all non-hidden variables.}
 
 \item{weight}{The alias of a numeric variable that should be used for data weighting.
-Defaults to NULL - data is not weighted.}
+Defaults to current weight variable. For unweighted, set to \code{NULL}}
 
 \item{banner}{An optional object of class \code{Banner} that should be used to generate
-a Crosstabs summary. Defaults to NULL - a Toplines summary is produced and returned.}
+a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.}
 
 \item{codebook}{If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.}
-
-\item{title}{An optional title. Defaults to the name of the dataset.}
-
-\item{date}{An optional date. Defaults to the current date.}
-
-\item{metadata}{An optional list with additional metadata that should be added to the summary.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)

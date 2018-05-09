@@ -51,8 +51,7 @@ writeCodebook <- function(data_summary, filename = NULL, digits = 0, title = get
     clearpage = TRUE, round_percentages = FALSE, concatenate_categories = FALSE) {
     
     if (!is(data_summary, "Codebook")) {
-        stop(paste0("writeCodebook doesn't support objects of class '",
-            paste0(class(data_summary), collapse = " "), "'"))
+        wrong_class_error(data_summary, "Codebook", "data_summary")
     }
     
     data_summary$results <- lapply(data_summary$results, function(x) {
@@ -233,7 +232,7 @@ generateCodebookVarTable <- function(x, proportions = FALSE, weight = NULL, capt
         if (!is.null(col_names)) c(
             tab_def,
             "\\endhead\n"),
-        latexTable.body(res, autorownames = autorownames),
+        latexTable.body(res, autorownames = autorownames, crosstabs = FALSE),
         "\\hline\n",
         "\\end{longtabu}\n"), collapse = "")
 }
@@ -245,7 +244,7 @@ generateCodebookVarResults <- function(x, weight = NULL, concatenate_categories 
 
 #' @export
 generateCodebookVarResults.default <- function(x, weight = NULL, concatenate_categories = FALSE) {
-    warning(paste("generateCodebookVarResults doesn't support objects of class", class(x)))
+    warning("generateCodebookVarResults doesn't support objects of class ", class(x))
     NULL
 }
 
@@ -335,7 +334,7 @@ matchCategoriesConcatenate <- function(categories, data_names, prefix = NULL, su
 }
 
 latexHeadCb <- function(surveyhead, font_size, margin, font, landscape=FALSE, subhead=NULL, graphicspath = NULL, logo = NULL){
-    paste("\\documentclass[", font_size, "pt", ifelse(landscape, ', landscape', ''), "]",
+    paste("\\documentclass[", font_size, "pt", if (landscape) ', landscape', "]",
         "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }"),

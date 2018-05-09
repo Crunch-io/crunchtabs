@@ -1,139 +1,67 @@
-
 #' @export
-writeLatex.Crosstabs <- function(data_summary, filename = NULL, proportions = TRUE, digits = 0,
-    title = getName(data_summary), subtitle = NULL, sample_desc = "", field_period = "", moe = NULL,
-    table_of_contents = FALSE, returndata = FALSE, append_text = "",
-    pdf = FALSE, path.to.pdflatex = Sys.which("pdflatex"), open = FALSE,
-    headtext = "", foottext = "", graphicspath = NULL, logo = NULL, longtablewrap = TRUE,
-    tableonly = FALSE, landscape = TRUE, font = "helvet", font_size = "small",
-    page_width = ifelse(landscape, 9, 6.5), row_label_width = 1.5,
-    margin = list(top = .6, bottom = .6, left = .5, right = .5),
-    min_cell_size = NULL, min_cell_label = NULL,
-    show_totals = TRUE, weighted_n = FALSE, add_parenthesis = TRUE,
-    dc = c(3.2, 4.1), multirowheaderlines = FALSE,
-    latex_adjust = 'c', clearpage = TRUE, grid_num_letters = TRUE, custom_numbering = NULL,
-    round_percentages = FALSE) {
+writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(), 
+    filename = getName(data_summary), title = getName(data_summary), 
+    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
+    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
+    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
+    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
-    # reformat results for LaTeX output
     banner <- data_summary$banner
-
-    data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, digits = digits, add_parenthesis = add_parenthesis,
-        show_totals = show_totals, weighted_n = weighted_n, latex_adjust = latex_adjust,
-        min_cell_size = min_cell_size, min_cell_label = min_cell_label, reformat = TRUE,
-        round_percentages = round_percentages)
     
-    parbox_width <- ifelse(landscape,"8.5in","6in")
+    # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
+    results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
+    
     hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
-    headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width,
+    headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width = "8.5in",
         if (!is.null(custom_numbering)) custom_numbering[i]
         else if (grid_num_letters) hinfo[[i]]$number
         else i))
-    
-    bodies <- lapply(data_summary$results, function (x) {
-        sapply(x$crosstabs, function (y) {
-            latexTable.body(y, longtablewrap = longtablewrap, autorownames = TRUE, summary.midrule = TRUE,
-                show_totals = !x$settings$no_totals & show_totals)
+
+    bodies <- lapply(results, function (x) {
+        sapply(x, function (y) {
+            latexTable.body(y, autorownames = TRUE, crosstabs = TRUE)
         })
     })
-    
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
-            ifelse(clearpage, "\\clearpage", ""))
+            if (theme$one_per_sheet) { "\\clearpage" } else { "" })
     })
-    
     out <- c(out, append_text)
-    
-    if (!tableonly) {
-        out <- c(
-            latexHeadLT(title = title, landscape = landscape, margin = margin, dc = dc, subtitle = subtitle, font = font, graphicspath = graphicspath, logo = logo),
-            sapply(seq_along(banner), function (j) {
-                longtableHeadFootB(banner[[j]], headtext = headtext, foottext = foottext, num = j, coltype=ifelse(digits==0, "g", "d"),
-                    multirow = multirowheaderlines, page_width = page_width, row_label_width = row_label_width)
-            }),
-            latexStartLT(table_of_contents = table_of_contents, font_size = font_size),
-            out,
-            latexFootLT()
-        )
-    }
-    
+    out <- c(
+        latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = TRUE),
+        # latexHeadLT(title = title, subtitle = subtitle, theme = theme),
+        sapply(seq_along(banner), function (j) {
+            longtableHeadFootB(banner[[j]], num = j, coltype= if (theme$digits == 0) { "g" } else { "d" },
+                multirow = multirowheaderlines, page_width = 9, row_label_width = theme$format_label_column$col_width, theme = theme)
+        }),
+        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
+            font_size = if (theme$font_size < 16) { "small" } else { "large" }, crosstabs = TRUE),
+        out,
+        latexFootLT()
+    )
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
         if (pdf) {
-            pdflatex(filename, open, path.to.pdflatex = path.to.pdflatex)
+            if (logging) { print("PDF-ing") }
+            pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
         }
     }
-    if (returndata) {
-        return(data_summary)
-    }
+    return(invisible(data_summary))
 }
-
-latexHeadLT <- function (title="", landscape=FALSE, margin=NULL, dc=c("3.2", "5.0"), subtitle=NULL, font="helvet", graphicspath = NULL, logo = NULL) {
-    dc <- rep(dc, length=2)
-    paste("\\documentclass[", ifelse(landscape, "landscape", ""),"]",
-        "{article}\n",
-        "\\usepackage[pdftex]{graphicx}\n",
-        if (!is.null(graphicspath)) paste0("\\graphicspath{ {", graphicspath,"/} }\n"),
-        "\\usepackage[utf8]{inputenc}\n",
-        "\\usepackage{fancyhdr}\n",
-        "\\usepackage{sfmath}\n",
-        "\\usepackage[T1]{fontenc}\n",
-        '\\usepackage[pdftex=true,
-        pdftoolbar=true,
-        pdfmenubar=true,
-        pdfauthor = {},
-        pdfcreator = {PDFLaTeX},
-        pdftitle = {},
-        colorlinks=true,
-        urlcolor=blue,
-        linkcolor=blue,
-        citecolor=blue,
-        implicit=true,
-        hypertexnames=false]{hyperref}\n',
-        "\\usepackage[scaled]{", font, "}\n",
-        "\\renewcommand*\\familydefault{\\sfdefault}\n",
-        "\\usepackage{booktabs, dcolumn, longtable}\n",
-        "\\usepackage[",
-        ifelse(!is.null(margin),
-            paste("top=", margin$t, "in, bottom=", margin$b, "in, left=", margin$l, "in, right=", margin$r, "in, includeheadfoot", sep=""),
-            "top=.6in,bottom=.6in,left=.5in,right=.5in,includeheadfoot"),
-        "]{geometry}\n",
-        "\\usepackage{array}\n",
-        "\\usepackage[english]{babel}\n",
-        "\\setlength{\\parindent}{0pt}",
-        "\\usepackage[dvipsnames]{color}\n",
-        "\\definecolor{gray}{gray}{0.85}\n\n",
-        "\\pagestyle{fancy}\n",
-        "\\renewcommand{\\headrulewidth}{0pt}\n",
-        "\\renewcommand{\\footrulewidth}{0pt}\n",
-        "\\fancyhead{}\n",
-        "\\fancyhead[L]{{\\Large {\\bf ",
-        ifelse(is.null(title), "", escM(title)), "}}",
-        ifelse(is.null(subtitle), "", paste(" \\\\", escM(subtitle))),
-        "}\n",
-        if (!is.null(logo)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n"),
-        "\\fancyfoot{}\n",
-        "\\fancyfoot[R]{\\thepage}\n\n",
-        "\\newcolumntype{d}{D{.}{.}{", dc[1],"}}\n\n",
-        "\\newcolumntype{g}{D{\\%}{\\%}{", dc[2], "}}\n\n",
-        "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
-        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
-        "\\#1\\let\\",
-        "\\=\\temp}\n",
-        "\\let\\PBS=\\PreserveBackslash\n\n", sep="")
-}
-
 
 # Long table header and footer creation.
 # Generates two macros for the preamble
 # \bannera{} that takes one argument (first column label)
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
-longtableHeadFootB <- function (banner, headtext = "tbc", foottext = "tbc", num = 1, coltype = "d",
-    multirow = FALSE, page_width = 9, row_label_width = 2) {
-    if (headtext == "tbc") headtext="continued from previous page"
-    if (foottext == "tbc") foottext="continued on the next page \\dots"
+longtableHeadFootB <- function (banner, num = 1, coltype = "d",
+    multirow = FALSE, page_width = 9, row_label_width, theme) {
+    headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
+    foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
+    if (headtext == "tbc") headtext <- "continued from previous page"
+    if (foottext == "tbc") foottext <- "continued on the next page \\dots"
     
     binfo <- lapply(banner, function(x) {list(getName(x), getNames(x))})
     col_num_sum <- sum(sapply(binfo, function (binfo.i) length(binfo.i[[2]]))) # excludes rownames column, as before
@@ -158,15 +86,15 @@ getMulticolumnWidth <- function(binfo.i) {
     return(c(length(binfo.i[[2]]), length(binfo.i[[1]])))
 }
 
-latexStartLT <- function(table_of_contents, font_size){
-    paste0("\\begin{document}\n",
-        ifelse(table_of_contents, "\\listoftables\n\\newpage\n\n", "\n\n"),
-        "{\\", font_size, "\n",
-        "\\setlength{\\LTleft}{0pt}\n",
-        "\\setlength{\\LTright}{\\fill}\n",
-        "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
-        "%% here's where individual input starts %%\n\n\n")
-}
+# latexStartLT <- function(table_of_contents, font_size){
+#     paste0("\\begin{document}\n",
+#         ifelse(table_of_contents, "\\listoftables\n\\newpage\n\n", "\n\n"),
+#         "{\\", font_size, "\n",
+#         "\\setlength{\\LTleft}{0pt}\n",
+#         "\\setlength{\\LTright}{\\fill}\n",
+#         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
+#         "%% here's where individual input starts %%\n\n\n")
+# }
 
 
 tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
@@ -182,9 +110,9 @@ tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
 # appears on the top one).
 # Assumes that \banner[a-z]{} macros are defined in the preamble
 longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
-    paste(ifelse(title, "", "\\vspace{-.25in}"),
+    paste(if (title) { "" } else { "\\vspace{-.25in}" },
         "\\tbltop", letters[num], "\n",
-        ifelse(title, latexTableHeadTitle(hinfo, table_num, parbox_width), ""),
+        if (title) { latexTableHeadTitle(hinfo, table_num, parbox_width) } else { "" },
         "\\addlinespace \n",
         "\\banner", letters[num],"{} \n\n", sep="")
 }
@@ -201,9 +129,7 @@ makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
         binfo.i[[1]] <- paste0("\\bf ",binfo.i[[1]])
     }
     binfo.i <- lapply(seq_along(binfo.i), function(i) {paste0("\\multicolumn{", cps[i],
-        ifelse(!multirow | cps[i]>1,
-            "}{c}{",
-            paste0("}{m{", width,"in}}{\\centering ")),
+        if (!multirow | cps[i]>1) { "}{c}{" } else { paste0("}{m{", width,"in}}{\\centering ") },
         escM(binfo.i[[i]]),
         "}",
         collapse=" & ")})
@@ -228,7 +154,7 @@ makeLatexBanner <- function (binfo, multirow=FALSE, width=NULL,
     return(paste(ban, collapse="\n"))
 }
 
-getBannerInfo <- function(banner) lapply(banner, function(x) {list(label = getName(x), wording = getNames(x))})
+# getBannerInfo <- function(banner) lapply(banner, function(x) {list(label = getName(x), wording = getNames(x))})
 
 getTableHeader <- function (ds_var) {
     description <- paste(getDescription(ds_var), getFilterText(ds_var))
@@ -238,4 +164,3 @@ getTableHeader <- function (ds_var) {
 tableFootLT <- function() "\n \\end{longtable}\n\n"
 
 latexFootLT <- function() "}\\end{document}\n"
-
