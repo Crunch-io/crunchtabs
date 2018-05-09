@@ -34,7 +34,7 @@
 #' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = themeDefaultExcel(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
-    hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
+    hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE) {
     
     if (is.null(filename) && !save_workbook) {
         stop("No filename provided. If save_workbook is true, a filename must be provided.")
@@ -62,6 +62,7 @@ writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL
 
 create_styles <- function(theme){
     
+    
     get_format_info <- function(format_data, info_name, elem) {
         if (!is.null(format_data) && info_name %in% names(format_data)) format_data[[info_name]][[elem]]
     }
@@ -76,20 +77,22 @@ create_styles <- function(theme){
     
     borders <- c("border_top", "border_bottom", "border_left", "border_right")
     
+    if (!theme$format_label_column$extend_borders) {
+        theme$format_label_column$border_style <- "none"
+        theme$format_label_column[borders] <- TRUE
+    }
+        
     style_list <- sapply(grep("^format_", names(theme), value = TRUE), function(v) {
         if (!is.null(theme[[v]])) {
             tv <- theme[[v]]
-            none_border <- v %in% "format_label_column" && !tv$extend_borders
             border <- any(unlist(tv[borders])) && !is.null(tv$border_style)
-            border_style <- if (none_border) { 
-                "none" } else { tv$border_style }
-            border_where <- if (border | none_border) gsub("border_", "", borders)[unlist(tv[borders])]
+            border_where <- if (border) gsub("border_", "", borders)[unlist(tv[borders])]
             openxlsx::createStyle(fontName = find_null_or_base(theme, v, "font"), 
                 fontSize = find_null_or_base(theme, v, "font_size"),
                 fontColour = find_null_or_base(theme, v, "font_color"),
                 border = border_where,
                 borderColour = tv$border_color,
-                borderStyle = border_style,
+                borderStyle = tv$border_style,
                 fgFill = tv$background_color,
                 halign = tv$halign,
                 valign = tv$valign,
@@ -427,17 +430,16 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         start.time <- Sys.time()
         print(paste(start.time, "-- workbook save -- start"))
     }
+    
     if (!endsWith(filename, ".xlsx")) { filename <- paste0(filename, ".xlsx") }
     openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
+    
     if (logging) {
         end.time <- Sys.time()
         print(paste(end.time, "-- workbook save -- end -- elapsed: ", round(difftime(end.time, start.time, units = "mins"), 2), "mins"))
+        print(paste(end.time, "-- workbook generation -- end -- elapsed: ", round(difftime(end.time, start.time.wb, units = "mins"), 2), "mins"))
     }
     
-    if (logging) {
-        end.time.wb <- Sys.time()
-        print(paste(end.time.wb, "-- workbook generation -- end -- elapsed: ", round(difftime(end.time.wb, start.time.wb, units = "mins"), 2), "mins"))
-    }
     return(invisible(data_summary))
 }
 
