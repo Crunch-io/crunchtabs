@@ -157,18 +157,18 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
 
 var_header <- function(var, theme) {
     if_there <- function(str) { if (!(is.null(str) || is.na(str) || str == "")) return(str) }
-    var_info <- list(format_var_alias = if_there(getAlias(var)),
-        format_var_name = if_there(getName(var)),
-        format_var_description = if_there(getDescription(var)),
-        format_var_filtertext = if_there(getNotes(var)),
+    var_info <- list(format_var_alias = if_there(var$alias),
+        format_var_name = if_there(var$name),
+        format_var_description = if_there(var$description),
+        format_var_filtertext = if_there(var$notes),
         format_var_subname = if_there(var$subname))
     number <- if_there(var$settings$number)
     var_info2 <- list()
     for (info_name in intersect(names(theme), names(var_info))) {
-        if (!is.null(theme[[info_name]]) &&
+        if (!is.null(theme[[info_name]]) && (var$type != "categorical_array" ||
                 (is.null(theme[[info_name]]$repeat_for_subs) || 
                         theme[[info_name]]$repeat_for_subs || 
-                        var$subnumber %in% 1)) {
+                        var$subnumber %in% 1))) {
             var_info2[[info_name]] <- var_info[[info_name]]
             if (!is.null(theme[[info_name]]$include_alias) && theme[[info_name]]$include_alias){
                 var_info2[[info_name]] <- paste0(c(var_info$format_var_alias, var_info2[[info_name]]), collapse = " -- ")

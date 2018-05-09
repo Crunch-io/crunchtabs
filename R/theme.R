@@ -52,6 +52,7 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
     }
     
     theme <- modifyList(default_theme, dots, keep.null = TRUE)
+    theme <- theme[union(names(dots), names(default_theme))]
     
     theme_validator(theme)
 
@@ -145,7 +146,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
             latex_add_parenthesis = FALSE, latex_adjust = "c"), 
         format_totals_row = c(norm, name = "Totals", 
             position_top = FALSE, position_bottom = TRUE), 
-        format_label_column = c(norm, col_width = 1.5, extend_borders = TRUE),
+        format_label_column = c(norm, col_width = 1.5, extend_borders = FALSE),
         format_totals_column = norm,
         digits = 0, 
         one_per_sheet = TRUE,
@@ -345,23 +346,31 @@ theme_validator <- function(theme) {
 themeUKPolitical <- function() {
     themeNew(default_theme = themeDefaultExcel(font = "Arial", font_size = 8),
         format_title=list(font_size = 14),
-        format_banner_labels=list(font = "Arial Narrow", font_size = 8),
-        format_banner_categories=list(font = "Arial Narrow", font_size = 8),
-        format_var_alias=NULL,
-        format_var_name=NULL,
-        format_var_description=list(repeat_for_subs=FALSE),
-        format_var_filtertext=list(repeat_for_subs=FALSE),
-        format_label_column=list(halign = "right", col_width = 80),
+        format_banner_labels=list(font = "Arial Narrow", font_size = 8,
+            border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
+        format_banner_categories=list(font = "Arial Narrow", font_size = 8,
+            border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
+        format_var_alias = NULL,
+        format_var_name = NULL,
+        format_var_description = list(repeat_for_subs=FALSE, decoration = "bold",
+            font_color = "black"),
+        format_var_filtertext = list(repeat_for_subs=FALSE),
+        format_var_subname = list(decoration = "bold", font_color = "black"),
+        format_label_column=list(halign = "right", col_width = 80, extend_borders = FALSE),
         format_subtotals=list(background_color = "#b8cce4"),
         format_headers=list(background_color = "#b8cce4"),
         format_weighted_n=list(name = "Weighted Sample", 
-            border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
-            position_bottom = FALSE, position_fixed = TRUE, halign="center"),
+            border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE, 
+            border_style = "thin", border_color = "black", position_bottom = FALSE, 
+            position_fixed = TRUE, halign="center"),
         format_unweighted_n=list(name = "Unweighted Sample", font_color = "#969696", 
             border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
             position_bottom = FALSE, position_fixed = TRUE),
+        format_totals_column = list(decoration = "bold"),
+        format_means = NULL,
+        format_medians = NULL,
         format_totals_row=NULL,
-        format_min_base=list(min_base = 50, mask = NULL, decoration = "italic"),
+        format_min_base = list(min_base = 50, mask = NULL, decoration = "italic"),
         freeze_column=2,
         digits_final=0,
         percent_format_data=FALSE)
