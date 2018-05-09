@@ -9,7 +9,7 @@ banner(dataset, vars, labels = NULL, recodes = NULL)
 \arguments{
 \item{dataset}{A Crunch dataset.}
 
-\item{vars}{A named list of vectors of aliases of the variables that shoulds constitute the banner object.
+\item{vars}{A named list of vectors of aliases of the variables that should constitute the banner object.
 These should be categorical (and typically hidden) variables present in the \code{dataset}.}
 
 \item{labels}{An optional named list of labels, where names are variables' aliases

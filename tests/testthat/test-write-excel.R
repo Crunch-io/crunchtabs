@@ -16,7 +16,10 @@ with_temp_dir({
         expect_equal(getSheetNames("Example Dataset with Nets.xlsx"), 
             c("TOC", "RESULTS_P", "RESULTS_C", "R2_P", "R2_C"))
 
-        theme <- theme_new(one_per_sheet = TRUE)
+        theme <- themeUKPolitical()
+        writeExcel(cs, theme = theme, table_of_contents = TRUE, n_or_percent = "percents")
+        
+        theme <- themeNew(one_per_sheet = TRUE)
         writeExcel(cs, theme = theme, table_of_contents = TRUE, n_or_percent = "percents")
         expect_equal(getSheetNames("Example Dataset with Nets.xlsx"), 
             c("TOC", "allpets_1", "favpet_1","petloc_home_1", "petloc_work_1","ndogs_1", "ndogs_a_1", "ndogs_b_1","country_1", 

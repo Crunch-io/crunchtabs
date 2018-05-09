@@ -63,6 +63,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
             empty_col = banner_info$empty_col && !latex, round = FALSE)
         if (all(is.na(data))) { return(NULL) }
         if (is.vector(data)) data <- t(data)
+        theme_dt <- theme[[paste0("format_", dt)]]
         
         if (prop_v && proportions && (latex || !theme$percent_format_data)) {
             data[] <- data * 100
@@ -91,8 +92,8 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         if (weight_v && nrow(data) == 2 && as.character(data[1, ]) == as.character(data[2, ])) {
             data <- matrix(data[1, ], nrow = 1, dimnames = list(c(), colnames(data)))
         }
-        if (!is.null(theme[[paste0("format_", dt)]]$name)) {
-            rownames(data) <- paste0(theme[[paste0("format_", dt)]]$name, 
+        if (!is.null(theme_dt$name)) {
+            rownames(data) <- paste0(theme_dt$name, 
                 if (weight_v && !is.null(dim(data)) && nrow(data) == 2) c(": Min", ": Max"))
         }
         if (latex && prop_v) {
@@ -103,11 +104,11 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         }
         if (latex && weight_v) {
             data[] <- trimws(format(data, big.mark=","))
-            if (theme$latex_add_parenthesis) {
+            if (theme_dt$latex_add_parenthesis) {
                 data[] <- apply(data, 2, paste_around, "(", ")")
             }
-            if (!is.null(theme$latex_adjust)) {
-                data[] <- apply(data, 2, paste_around, paste0("\\multicolumn{1}{", theme$latex_adjust, "}{"), "}")
+            if (!is.null(theme_dt$latex_adjust)) {
+                data[] <- apply(data, 2, paste_around, paste0("\\multicolumn{1}{", theme_dt$latex_adjust, "}{"), "}")
             }
         }
         

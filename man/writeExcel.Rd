@@ -5,7 +5,7 @@
 \title{Generate Excel Reports: Toplines and Banners}
 \usage{
 writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
-  theme = theme_excel_default(), title = getName(data_summary),
+  theme = themeDefaultExcel(), title = getName(data_summary),
   subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents",
   "counts"), hypothesis_test = FALSE, logging = FALSE,
   save_workbook = TRUE)

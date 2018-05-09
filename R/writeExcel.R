@@ -32,7 +32,7 @@
 #' writeExcel(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = theme_excel_default(), 
+writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = themeDefaultExcel(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
     hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
     
@@ -80,12 +80,10 @@ create_styles <- function(theme){
         if (!is.null(theme[[v]])) {
             tv <- theme[[v]]
             none_border <- v %in% "format_label_column" && !tv$extend_borders
-            border <- any(unlist(tv[borders]))
+            border <- any(unlist(tv[borders])) && !is.null(tv$border_style)
             border_style <- if (none_border) { 
                 "none" } else { tv$border_style }
-            border_where <- if (border | none_border) gsub("border", "", borders)[unlist(tv[borders])]
-            # border_style <- if (v %in% "format_label_column" && !theme$format_label_column$extend_borders) { "none" } else { theme[[v]]$border_style }
-            # border_where <- if (!is.null(border_style)) if (is.null(theme[[v]]$border_where)) { "TopBottomLeftRight" } else { theme[[v]]$border_where }
+            border_where <- if (border | none_border) gsub("border_", "", borders)[unlist(tv[borders])]
             openxlsx::createStyle(fontName = find_null_or_base(theme, v, "font"), 
                 fontSize = find_null_or_base(theme, v, "font_size"),
                 fontColour = find_null_or_base(theme, v, "font_color"),

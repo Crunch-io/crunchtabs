@@ -1,5 +1,5 @@
 #' @export
-writeLatex.Crosstabs <- function(data_summary, theme = theme_latex_default(), 
+writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(), 
     filename = getName(data_summary), title = getName(data_summary), 
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
