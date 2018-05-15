@@ -2,7 +2,7 @@ get_banner_info <- function(banner, theme){
     if (is.null(banner)) return(list(empty_col = FALSE, multicols = NA, multicols_csum = NA, 
         format_cols = 2, border_columns = NULL))
     
-    empty_col <- !is.null(theme$banner_vars_split) && theme$banner_vars_split$empty_col
+    empty_col <- !is.null(theme$format_banner_split) && theme$format_banner_split$empty_col
     banner_cols_pos <- cumsum(sapply(banner, function(x) length(x$categories))) + 1
     multicols <- sapply(banner, getNames)
     multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
@@ -65,13 +65,13 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         if (is.vector(data)) data <- t(data)
         theme_dt <- theme[[paste0("format_", dt)]]
         
-        if (prop_v && proportions && (latex || !theme$percent_format_data)) {
+        if (prop_v && proportions && (latex || !theme$excel_percent_sign)) {
             data[] <- data * 100
         }
         
         if (!proportions && prop_v || weight_v) { rdig <- 0 } 
         else if (latex) { rdig <- theme$digits }
-        else if (!is.null(theme$digits_final)) { rdig <- theme$digits_final + (proportions && theme$percent_format_data && prop_v)*2 }
+        else if (!is.null(theme$digits_final)) { rdig <- theme$digits_final + (proportions && theme$excel_percent_sign && prop_v)*2 }
         else { rdig <- Inf }
         if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
             data[] <- apply(data, 2, roundPropCategorical, theme$digits)

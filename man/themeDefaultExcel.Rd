@@ -9,15 +9,6 @@ themeDefaultExcel(font = getOption("font", default = "Calibri"),
   font_color = getOption("font_color", default = "black"),
   valign = getOption("valign", default = "center"))
 }
-\arguments{
-\item{font}{font font}
-
-\item{font_size}{font_size font_size}
-
-\item{font_color}{font_color font_color}
-
-\item{border_color}{border_color border_color}
-}
 \description{
 \code{themeDefaultExcel} is the default theme. Users can change base options
 }

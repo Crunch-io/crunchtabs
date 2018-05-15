@@ -1,3 +1,4 @@
+# TODO: remove unnessesary ones
 
 getResults <- function(x, proportions = FALSE, details = FALSE) {
     UseMethod("getResults", x)
@@ -378,7 +379,4 @@ getSubAliases <- function(x) {
     sapply(x@.Data[[1]]$dimensions[[1]]$references$subreferences, function(xi) xi$alias)
 }
 
-collapse_items <- function(x){
-    paste(x, collapse = ", ")
-}
 

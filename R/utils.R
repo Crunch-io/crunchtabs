@@ -81,3 +81,7 @@ wrong_class_error <- function(value, expected_class, name, null = FALSE){
 }
 
 paste_around <- function(str, before, after) { paste0(before, str, after) }
+
+collapse_items <- function(x){
+    paste(x, collapse = ", ")
+}

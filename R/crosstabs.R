@@ -26,6 +26,7 @@
 crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE,
     metadata = NULL) {
     
+    # TODO: open ends
     wrong_class_error(dataset, "CrunchDataset", "dataset")
     
     error_if_items(setdiff(vars, aliases(allVariables(dataset))), 
