@@ -7,11 +7,6 @@
 themeDefaultLatex(font = getOption("font", default = "helvet"),
   font_size = getOption("font_size", default = 12))
 }
-\arguments{
-\item{font}{font font}
-
-\item{font_size}{font_size font_size}
-}
 \description{
 \code{themeDefaultLatex} is the default theme. Users can change base options
 }

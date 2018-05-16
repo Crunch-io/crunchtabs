@@ -34,7 +34,7 @@
 #' @export
 writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL, theme = themeDefaultExcel(), 
     title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents", "counts"), 
-    hypothesis_test = FALSE, logging = TRUE, save_workbook = TRUE) {
+    hypothesis_test = FALSE, logging = FALSE, save_workbook = TRUE) {
     
     if (is.null(filename) && !save_workbook) {
         stop("No filename provided. If save_workbook is true, a filename must be provided.")
@@ -62,10 +62,6 @@ writeExcel <- function(data_summary, filename = getName(data_summary), wb = NULL
 
 create_styles <- function(theme){
     
-    
-    get_format_info <- function(format_data, info_name, elem) {
-        if (!is.null(format_data) && info_name %in% names(format_data)) format_data[[info_name]][[elem]]
-    }
     find_null_or_base <- function(theme, info_name, elem){
         x <- if (info_name %in% names(theme)) theme[[info_name]][[elem]]
         if (is.null(x) || (!is.null(theme[[elem]]) && x %in% theme[[elem]])) return(NULL)
@@ -73,7 +69,7 @@ create_styles <- function(theme){
     }
 
     numFmt <- paste0("0", if (theme$digits > 0) paste0(".", paste0(rep(0, theme$digits), collapse = "")))
-    numFmtProp <- paste0(numFmt, if (theme$percent_format_data) "%")
+    numFmtProp <- paste0(numFmt, if (theme$excel_percent_sign) "%")
     
     borders <- c("border_top", "border_bottom", "border_left", "border_right")
     
@@ -104,9 +100,9 @@ create_styles <- function(theme){
     
     style_list$body_counts <- openxlsx::createStyle(numFmt = numFmt, halign = theme$halign, valign = theme$valign)
     style_list$body_proportions <- openxlsx::createStyle(numFmt = numFmtProp, halign = theme$halign, valign = theme$valign)
-    style_list$split_border <- openxlsx::createStyle(border = if (!is.null(theme$banner_vars_split$empty_col) && theme$banner_vars_split$empty_col) "LeftRight" else "left",
-        borderStyle = if (!is.null(get_format_info(theme, "banner_vars_split", "border_style"))) get_format_info(theme, "banner_vars_split", "border_style") else "None",
-        borderColour = get_format_info(theme, "banner_vars_split", "border_color"))
+    style_list$split_border <- openxlsx::createStyle(border = if (!is.null(theme$format_banner_split$empty_col) && theme$format_banner_split$empty_col) "LeftRight" else "left",
+        borderStyle = if (!is.null(theme$format_banner_split$border_style)) theme$format_banner_split$border_style else "None",
+        borderColour = theme$format_banner_split$border_color)
 
     return(style_list)
 }
@@ -152,11 +148,11 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
         title = title, subtitle = subtitle)
     
     if (!is.null(banner)){
-        if (!is.null(theme$format_banner_labels)){
+        if (!is.null(theme$format_banner_names)){
             data <- unlist(sapply(seq_along(banner), function(bv) {
                 c(getName(banner[[bv]]), rep("", times = length(banner_info$multicols[[bv]]) - 1 + banner_info$empty_col))
             }))
-            start_row <- write_and_style(wb, ws, data = data, style = styles$format_banner_labels, start_row = start_row, cols = banner_info$format_cols, write_as_rows = FALSE)
+            start_row <- write_and_style(wb, ws, data = data, style = styles$format_banner_names, start_row = start_row, cols = banner_info$format_cols, write_as_rows = FALSE)
             lapply(setdiff(seq_along(banner_info$multicols), 1), function(bv) {
                 openxlsx::mergeCells(wb, ws, cols = banner_info$multicols_csum[bv]:(banner_info$multicols_csum[bv + 1] -
                         1 - banner_info$empty_col), rows = start_row - 1)
@@ -187,7 +183,7 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
     openxlsx::addStyle(wb, ws, styles$format_label_column, rows = sr:(start_row - 1), cols = 1, gridExpand = FALSE, stack = TRUE)
     
     openxlsx::pageSetup(wb, ws, printTitleRows = (1 + if (!is.null(theme$format_title)) { length(title) } else { 0 }):start_row)
-    openxlsx::freezePane(wb, ws, firstActiveRow = start_row, firstActiveCol = theme$freeze_column + 1)
+    openxlsx::freezePane(wb, ws, firstActiveRow = start_row, firstActiveCol = theme$excel_freeze_column + 1)
     
     return(start_row)
 }
@@ -240,9 +236,9 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
 
     openxlsx::writeData(wb = wb, sheet = ws, x = all_data, startCol = 2, startRow = start_row, colNames = topline_array,
         headerStyle = styles$format_banner_categories,
-        borders = if (!is.null(theme$table_border$border_style)) { "surrounding" } else { "none" }, 
-        borderColour = theme$table_border$border_color,
-        borderStyle = if (!is.null(theme$table_border$border_style)) { theme$table_border$border_style } else { "thin" })
+        borders = if (!is.null(theme$excel_table_border$border_style)) { "surrounding" } else { "none" }, 
+        borderColour = theme$excel_table_border$border_color,
+        borderStyle = if (!is.null(theme$excel_table_border$border_style)) { theme$excel_table_border$border_style } else { "thin" })
     start_row <- sr <- start_row + topline_array
 
     style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, cols = 2)
@@ -339,7 +335,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
     }
     
     if (is.null(banner)){
-        theme$freeze_column <- 1
+        theme$excel_freeze_column <- 1
     }
     
     if (logging) {
@@ -355,7 +351,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
     toc_col <- toc_row <- toc_start_row <- if (table_of_contents) 1
     toc_sheet <- if (table_of_contents) "TOC"
     if (table_of_contents) {
-        openxlsx::addWorksheet(wb, toc_sheet, gridLines = theme$show_grid_lines, header = theme$header, footer = theme$footer, orientation = theme$orientation)
+        openxlsx::addWorksheet(wb, toc_sheet, gridLines = theme$excel_show_grid_lines, header = theme$excel_header, footer = theme$excel_footer, orientation = theme$excel_orientation)
         toc_row <- toc_start_row <- write_report_desc(wb = wb, ws = toc_sheet, theme = theme, styles = styles, 
             title = title, subtitle = subtitle)
         openxlsx::freezePane(wb, toc_sheet, firstActiveRow = toc_row + 1)
@@ -372,7 +368,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
     }, simplify = FALSE)
     make_worksheets <- sapply(unlist(worksheet_names), function(x) paste0(x, ws_subtitles))
     for (worksheet_name in make_worksheets){
-        openxlsx::addWorksheet(wb, worksheet_name, gridLines = theme$show_grid_lines, header = theme$header, footer = theme$footer, orientation = theme$orientation)
+        openxlsx::addWorksheet(wb, worksheet_name, gridLines = theme$excel_show_grid_lines, header = theme$excel_header, footer = theme$excel_footer, orientation = theme$excel_orientation)
         openxlsx::setColWidths(wb, worksheet_name, cols = 1, theme$format_label_column$col_width)
     }
     
@@ -394,7 +390,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
             worksheet_name <- paste0(worksheet_names[[banner_name]], bna)
             last_row_used <- write_banner_panel(wb = wb, ws = worksheet_name, theme = theme, styles = styles, 
                     banner = banner[[banner_name]], title = title, subtitle = subtitle, 
-                    banner_info = banner_info, percent_row = !theme$percent_format_data & proportions)
+                    banner_info = banner_info, percent_row = !theme$excel_percent_sign & proportions)
         }
         
         for (vidx in seq_along(data_summary$results)) {
@@ -403,7 +399,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
                 worksheet_name <- paste0(worksheet_names[[banner_name]][[vidx]], bna)
                 last_row_used <- write_banner_panel(wb = wb, ws = worksheet_name, theme = theme, styles = styles, 
                     banner = banner[[banner_name]], title = title, subtitle = subtitle, 
-                    banner_info = banner_info, percent_row = !theme$percent_format_data & proportions)
+                    banner_info = banner_info, percent_row = !theme$excel_percent_sign & proportions)
             }
             last_row_used <- writeExcelVar(wb = wb, ws = worksheet_name, var = data_summary$results[[vidx]], theme = theme, 
                 styles = styles, banner_name = banner_name, banner_info = banner_info,

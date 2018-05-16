@@ -77,11 +77,11 @@ roundPropCrosstabs <- function(data, digits) {
 
 # reformatResultsCrossTabBannerVar <- function(x, banner_var = NULL, proportions = TRUE,
 #     show_totals = TRUE, theme) {
-# 
+#
 #     data <- getResults(x, proportions = proportions)
 #     data[is.nan(data)] <- 0
 #     bottom <- NULL
-# 
+#
 #     n_data <- NULL
 #     if (!is.null(theme$format_weighted_n)) {
 #         weighted_n_data <- clean_data(x$totals_counts, data)
@@ -93,7 +93,7 @@ roundPropCrosstabs <- function(data, digits) {
 #         rownames(unweighted_n_data) <- paste0(theme$format_unweighted_n$name, if (nrow(unweighted_n_data) == 2) c(": Min", ": Max"))
 #         n_data <- rbind(n_data, unweighted_n_data)
 #     }
-# 
+#
 #     if (theme$digits > -1) {
 #         if (!proportions || !theme$latex_round_percentages || is(var, "MultipleResponseCrossTabVar")) {
 #             data[] <- round(data * if (proportions) 100 else 1, theme$digits)
@@ -106,7 +106,7 @@ roundPropCrosstabs <- function(data, digits) {
 #         data <- rbind(data, if (proportions) colSums(data) else x$totals_counts)
 #         rownames(data)[nrow(data)] <- "Totals"
 #     }
-# 
+#
 #     if (theme$digits > -1) {
 #         data[] <- format(data, nsmall=theme$digits, big.mark=",")
 #         n_data[] <- round(n_data, 0)
@@ -119,7 +119,7 @@ roundPropCrosstabs <- function(data, digits) {
 #     for (xi in which(colSums(min_cell_mask) != 0)) {
 #         data[min_cell_mask[,xi], xi] <- theme$format_min_base$mask
 #     }
-# 
+#
 #     if (theme$latex_add_parenthesis) {
 #         for (xi in seq_along(n_data)) {
 #             n_data[,xi] <- paste0("(", n_data[,xi], ")")
@@ -130,16 +130,16 @@ roundPropCrosstabs <- function(data, digits) {
 #             n_data[,xi] <- paste0("\\multicolumn{1}{", theme$latex_adjust, "}{", n_data[,xi], "}")
 #         }
 #     }
-# 
+#
 #     if (show_totals){
 #         bottom <- setNames(data.frame(rbind(bottom, "Totals"=c(data[nrow(data),]))), colnames(data))
 #         data <- data[-nrow(data),]
 #     }
 #     bottom <- rbind(bottom, n_data)
-# 
+#
 #     return(list(data=data, bottom=bottom))
 # }
-# 
+#
 # reformatCrosstabsResults <- function(x, banner = NULL, proportions = TRUE, theme) {
 #     lapply(x, function(var) {
 #         var$crosstabs <- sapply(names(var$crosstabs), function(banner_name) {
@@ -154,7 +154,7 @@ roundPropCrosstabs <- function(data, digits) {
 #         var
 #     })
 # }
-# 
+#
 
 reformatHypothesisTest <- function(x) {
     sapply(x, function(var) {
@@ -210,16 +210,25 @@ mergeBanner <- function(x, banner_name = NULL) {
 }
 
 
+# bannerDataRecode <- function(b_table, b_recode) {
+#     # if (is.null(dim(b_table))) b_table <- matrix(b_table, nrow=1, dimnames = list(c(), names(b_table))) ##  -- added 20180123
+#     names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
+#     b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
+#         drop = FALSE]
+#     colnames(b_table) <- b_recode$categories_out[names_mask]
+#     # b_table <- sapply(b_recode$categories, function(x) {
+#     #   rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
+#     # })
+#     b_table
+# }
+
 bannerDataRecode <- function(b_table, b_recode) {
-    # if (is.null(dim(b_table))) b_table <- matrix(b_table, nrow=1, dimnames = list(c(), names(b_table))) ##  -- added 20180123
-    names_mask <- (b_recode$old_categories %in% colnames(b_table)) & !is.na(b_recode$categories_out)
-    b_table <- b_table[, colnames(b_table) %in% b_recode$old_categories[names_mask],
-        drop = FALSE]
+    names_mask <- (b_recode$old_categories %in% dimnames(b_table)[[b_recode$alias]]) & 
+        !is.na(b_recode$categories_out)
+    b_table <- if (length(dim(b_table)) == 3) { b_table[, names_mask, , drop = FALSE]
+        } else { b_table[, names_mask, drop = FALSE] }    
     colnames(b_table) <- b_recode$categories_out[names_mask]
-    # b_table <- sapply(b_recode$categories, function(x) {
-    #   rowSums(b_table[, colnames(b_table) == x, drop = FALSE])
-    # })
-    b_table
+    return(b_table)
 }
 
 
@@ -241,7 +250,7 @@ reformatCodebookResults.ToplineCategoricalGeneral <- function(x, digits = 0, ref
     x <- setResults(x, reformatResultsGen(x, proportions = FALSE, digits = digits, reformat = reformat,
         round_percentages = round_percentages, details = details),
         proportions = FALSE, details = details)
-    
+
     x <- setResults(x, reformatResultsGen(x, proportions = TRUE, digits = digits, reformat = reformat,
         round_percentages = round_percentages, details = details),
         proportions = TRUE, details = details)
@@ -265,12 +274,12 @@ reformatCodebookResults.ToplineBase <- function(x, digits = 0, reformat = FALSE,
 reformatLatexResults <- function(data_summary, proportions, theme) {
     banner <- data_summary$banner
     banner_names <- if (is.null(banner)) "Results" else names(banner)
-    banner_info <- sapply(banner_names, function(bn) get_banner_info(banner[[bn]], theme = theme), 
+    banner_info <- sapply(banner_names, function(bn) get_banner_info(banner[[bn]], theme = theme),
         simplify = FALSE)
-    
+
     return(lapply(data_summary$results, function(x)
-        sapply(banner_names, function(bn) 
-            munge_var(var = x, banner_name = bn, theme = theme, proportions = proportions, 
+        sapply(banner_names, function(bn)
+            munge_var(var = x, banner_name = bn, theme = theme, proportions = proportions,
                 banner_info = banner_info[[bn]], latex = TRUE), simplify = FALSE)))
 }
 

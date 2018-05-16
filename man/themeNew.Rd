@@ -2,31 +2,138 @@
 % Please edit documentation in R/theme.R
 \name{themeNew}
 \alias{themeNew}
-\title{Generate Theme for writeExcel or writeLatex}
+\title{Arguments}
 \usage{
 themeNew(..., default_theme = themeDefaultExcel())
 }
 \arguments{
-\item{latex_adjust}{A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**}
+\item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
 
-\item{latex_add_parenthesis}{logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
-Defaults to \code{TRUE}. **}
+\item{digits_final}{In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?}
 
-\item{latex_headtext}{An optional character string indicating what text should be
-placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-continued.' **}
+\item{excel_footer}{In Excel, an optional character vector of length 3.  The footer text of the file.}
 
-\item{latex_foottext}{An optional character string indicating what text should be
-placed at the bottom of continuation tables. 'tbc' is a shortcut for
-'continued from previous page.' **}
+\item{excel_freeze_column}{In Excel, a numeric. What column should be the last frozen column? Defaults to 1.}
 
-\item{latex_round_percentages}{logical. Should percentages be rounded to sum up to 100?
-Defaults to \code{FALSE}. **
+\item{excel_header}{In Excel, An optional character vector of length 3. The header text of the file.}
 
-More params to be described soon.}
+\item{excel_orientation}{In Excel, a character. The orientation of the page if printed. Valid options are: "landscape", and "portrait". Defaults to "landscape".}
+
+\item{excel_percent_sign}{In Excel, a logical. Should "\%" be pasted in each cell that contains a proportion? Defaults to FALSE.}
+
+\item{excel_show_grid_lines}{In Excel, a logical. Should the default grid lines of the file show? Defaults to FALSE.}
+
+\item{excel_table_border}{In Excel, an optional list. The formatting of the border around each downbreak. Includes: border_color, and border_style.}
+
+\item{font}{An optional character. The font to be used.}
+
+\item{font_color}{In Excel, an optional color. The color of the font.}
+
+\item{font_size}{An optional numeric. The size of the font.}
+
+\item{format_banner_categories}{In Excel, a list. How the banner/crossbreak response options should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_banner_names}{In Excel, an optional list. How the banner/crossbreak variable names should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_banner_split}{In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style 
+\describe{
+     \item{empty_col}{In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
+}}
+
+\item{format_headers}{An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text,
+\describe{
+      \item{col_width}{A numeric. Width of the label column. Defaults to 40.}
+      \item{extend_borders}{In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
+}}
+
+\item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+
+\item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+
+\item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text 
+\describe{
+     \item{mask}{An optional character to be used to mark cells with base below the min_base.}
+     \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
+}}
+
+\item{format_subtitle}{In Excel, an optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_subtotals}{An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_title}{In Excel, an optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_totals_column}{In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+
+\item{format_totals_row}{An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+
+\item{format_var_alias}{An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.}
+
+\item{format_var_description}{An optional list. How downbreak variable descriptions should be formatted. If `NULL` downbreak variable descriptions will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+
+\item{format_var_filtertext}{An optional list. How downbreak variable filtertext/notes should be formatted. If `NULL` downbreak variable filtertext/notes will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+
+\item{format_var_name}{An optional list. How downbreak variable names should be formatted. If `NULL` downbreak variable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+
+\item{format_var_subname}{An optional list. How downbreak subvariable names should be formatted. If `NULL` downbreak subvariable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, valign, and wrap_text.}
+
+\item{format_unweighted_n}{An optional list. How unweighted Ns should be formatted. If `NULL` unweighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
+
+\item{format_weighted_n}{An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
+
+\item{latex_foottext}{In Latex, an optional character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+
+\item{latex_headtext}{In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+
+\item{latex_round_percentages}{In Latex, a logical. Should the percentages be rounded so they do not add up to more than 100? Defaults to FALSE.}
+
+\item{logo}{An optional list. Information about the logo to be included in the tables. Includes: 
+\describe{
+    \item{file}{An optional character path to the file that should be used for the logo.}
+    \item{dpi}{In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
+    \item{height}{In Excel, a numeric. The height of the logo. Defaults to 2.}
+    \item{width}{In Excel, a numeric. The width of the logo. Defaults to 4.}
+    \item{startCol}{In Excel, a numeric. The column coordinate of upper left corner of the logo. Defaults to 1.}
+    \item{startRow}{In Excel, a numeric. The row coordinate of upper left corner of the logo. Defaults to 1.}
+    \item{units}{In Excel, a character. Units of width and height. Valid options are: "cm", "in", and "px." Defaults to "in".}
+}}
+
+\item{one_per_sheet}{A logical. Should each question be on its own sheet/page? Defaults to FALSE.}
 }
 \description{
+Generate Theme for writeExcel or writeLatex
+}
+\details{
 \code{themeNew} produces themes for writeExcel.
+}
+\note{
+Subarguments
+\describe{
+\item{background_color}{In Excel, an optional color. Cell background color.}
+\item{border_bottom}{In Excel, an optional logical. Should there be a border on the bottom? }
+\item{border_color}{In Excel, an optional color. The border color of the relevant cells.}
+\item{border_left}{In Excel, an optional logical. Should there be a border on the left of the relevant cells? }
+\item{border_right}{In Excel, an optional logical. Should there be a border on the right of the relevant cells? }
+\item{border_style}{In Excel, an optional character. The style of the border of the relevant cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
+\item{border_top}{In Excel, an optional logical. Should there be a border on the top of the relevant cells? }
+\item{decoration}{An optional character vector. Text decorations to be applied to relevant cells. Valid options are: "bold", "italic", "strikeout", "underline", and "underline2".}
+\item{font}{An optional character. The font to be used.}
+\item{font_color}{In Excel, an optional color. The color of the font.}
+\item{font_size}{An optional numeric. The size of the font.}
+\item{halign}{In Excel, an optional character. The horizontal alignment of the text. Valid options are: "center", "left", and "right".}
+\item{include_alias}{A logical. Should the alias of the variable be included with the other information? Defaults to FALSE.}
+\item{include_q_number}{A logical. Should the question number be included with the other information? Defaults to FALSE.}
+\item{latex_add_parenthesis}{In Latex, a logical. Should parenthesis be added surrounding the values? Defaults to FALSE.}
+\item{latex_adjust}{In Latex, an optional character. How should the values be adjusted? Can be missing.}
+\item{name}{A character. The name to be used for the relevant row(s).}
+\item{position_bottom}{In Excel, a logical. Should the relevant row(s) be at the bottom of each table? Defaults to TRUE.}
+\item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
+\item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
+\item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+\item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
+\item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
+}
 }
 \examples{
 \dontrun{

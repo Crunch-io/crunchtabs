@@ -2,19 +2,91 @@
 #'
 #' \code{themeNew} produces themes for writeExcel.
 #'
-#' @param latex_adjust A LaTeX column adjustoment setting for banner's 'Weighted / Unweighted N' values.**
-#' @param latex_add_parenthesis logical. Should 'Weighted / Unweighted N' values in banners be parenthesised?
-#' Defaults to \code{TRUE}. **
-#' @param latex_headtext An optional character string indicating what text should be
-#' placed at the top of continuation tables. 'tbc' is a shortcut for 'to be
-#' continued.' **
-#' @param latex_foottext An optional character string indicating what text should be
-#' placed at the bottom of continuation tables. 'tbc' is a shortcut for
-#' 'continued from previous page.' **
-#' @param latex_round_percentages logical. Should percentages be rounded to sum up to 100?
-#' Defaults to \code{FALSE}. **
+#' @title Arguments
+#' @param digits A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.
+#' @param digits_final In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel? 
+#' @param excel_footer In Excel, an optional character vector of length 3.  The footer text of the file.
+#' @param excel_freeze_column In Excel, a numeric. What column should be the last frozen column? Defaults to 1.
+#' @param excel_header In Excel, An optional character vector of length 3. The header text of the file.
+#' @param excel_orientation In Excel, a character. The orientation of the page if printed. Valid options are: "landscape", and "portrait". Defaults to "landscape".
+#' @param excel_percent_sign In Excel, a logical. Should "\%" be pasted in each cell that contains a proportion? Defaults to FALSE.
+#' @param excel_show_grid_lines In Excel, a logical. Should the default grid lines of the file show? Defaults to FALSE.
+#' @param excel_table_border In Excel, an optional list. The formatting of the border around each downbreak. Includes: border_color, and border_style.
+#' @param font An optional character. The font to be used.
+#' @param font_color In Excel, an optional color. The color of the font.
+#' @param font_size An optional numeric. The size of the font.
+#' @param format_banner_categories In Excel, a list. How the banner/crossbreak response options should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_banner_names In Excel, an optional list. How the banner/crossbreak variable names should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_banner_split In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style 
+#' \describe{
+#'      \item{empty_col}{In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
+#' }
+#' @param format_headers An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_label_column In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text,
+#' \describe{
+#'       \item{col_width}{A numeric. Width of the label column. Defaults to 40.}
+#'       \item{extend_borders}{In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
+#' }
+#' @param format_means An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
+#' @param format_medians An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
+#' @param format_min_base An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text 
+#' \describe{
+#'      \item{mask}{An optional character to be used to mark cells with base below the min_base.}
+#'      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
+#' }
+#' @param format_subtitle In Excel, an optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_subtotals An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_title In Excel, an optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_totals_column In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_totals_row An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
+#' @param format_var_alias An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.
+#' @param format_var_description An optional list. How downbreak variable descriptions should be formatted. If `NULL` downbreak variable descriptions will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
+#' @param format_var_filtertext An optional list. How downbreak variable filtertext/notes should be formatted. If `NULL` downbreak variable filtertext/notes will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
+#' @param format_var_name An optional list. How downbreak variable names should be formatted. If `NULL` downbreak variable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
+#' @param format_var_subname An optional list. How downbreak subvariable names should be formatted. If `NULL` downbreak subvariable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, valign, and wrap_text.
+#' @param format_unweighted_n An optional list. How unweighted Ns should be formatted. If `NULL` unweighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.
+#' @param format_weighted_n An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.
+#' @param latex_foottext In Latex, an optional character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'
+#' @param latex_headtext In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'
+#' @param latex_round_percentages In Latex, a logical. Should the percentages be rounded so they do not add up to more than 100? Defaults to FALSE.
+#' @param logo An optional list. Information about the logo to be included in the tables. Includes: 
+#' \describe{
+#'     \item{file}{An optional character path to the file that should be used for the logo.}
+#'     \item{dpi}{In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
+#'     \item{height}{In Excel, a numeric. The height of the logo. Defaults to 2.}
+#'     \item{width}{In Excel, a numeric. The width of the logo. Defaults to 4.}
+#'     \item{startCol}{In Excel, a numeric. The column coordinate of upper left corner of the logo. Defaults to 1.}
+#'     \item{startRow}{In Excel, a numeric. The row coordinate of upper left corner of the logo. Defaults to 1.}
+#'     \item{units}{In Excel, a character. Units of width and height. Valid options are: "cm", "in", and "px." Defaults to "in".}
+#' }
+#' @param one_per_sheet A logical. Should each question be on its own sheet/page? Defaults to FALSE.
 #' 
-#' More params to be described soon.
+#' @note Subarguments
+#' \describe{
+#' \item{background_color}{In Excel, an optional color. Cell background color.}
+#' \item{border_bottom}{In Excel, an optional logical. Should there be a border on the bottom? }
+#' \item{border_color}{In Excel, an optional color. The border color of the relevant cells.}
+#' \item{border_left}{In Excel, an optional logical. Should there be a border on the left of the relevant cells? }
+#' \item{border_right}{In Excel, an optional logical. Should there be a border on the right of the relevant cells? }
+#' \item{border_style}{In Excel, an optional character. The style of the border of the relevant cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
+#' \item{border_top}{In Excel, an optional logical. Should there be a border on the top of the relevant cells? }
+#' \item{decoration}{An optional character vector. Text decorations to be applied to relevant cells. Valid options are: "bold", "italic", "strikeout", "underline", and "underline2".}
+#' \item{font}{An optional character. The font to be used.}
+#' \item{font_color}{In Excel, an optional color. The color of the font.}
+#' \item{font_size}{An optional numeric. The size of the font.}
+#' \item{halign}{In Excel, an optional character. The horizontal alignment of the text. Valid options are: "center", "left", and "right".}
+#' \item{include_alias}{A logical. Should the alias of the variable be included with the other information? Defaults to FALSE.}
+#' \item{include_q_number}{A logical. Should the question number be included with the other information? Defaults to FALSE.}
+#' \item{latex_add_parenthesis}{In Latex, a logical. Should parenthesis be added surrounding the values? Defaults to FALSE.}
+#' \item{latex_adjust}{In Latex, an optional character. How should the values be adjusted? Can be missing.}
+#' \item{name}{A character. The name to be used for the relevant row(s).}
+#' \item{position_bottom}{In Excel, a logical. Should the relevant row(s) be at the bottom of each table? Defaults to TRUE.}
+#' \item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
+#' \item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
+#' \item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+#' \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
+#' \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
+#' }
 #' 
 #' @examples
 #' \dontrun{
@@ -64,10 +136,6 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
 #'
 #' \code{themeDefaultExcel} is the default theme. Users can change base options
 #'
-#' @param font font font
-#' @param font_size font_size font_size
-#' @param font_color font_color font_color
-#' @param border_color border_color border_color
 #' @export
 themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
     font_size = getOption("font_size", default = 12),
@@ -94,7 +162,7 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
     defaults <- list(font = font, font_size = fs, font_color = font_color, valign = valign, halign = "center", 
         format_title = norm_maker(font_size = fs + 4, decoration = "bold"), 
         format_subtitle = norm_maker(font_size = fs + 2, decoration = "bold"),
-        format_banner_labels = c(norm_maker(border_bottom = TRUE, decoration = "bold"), halign = "center"), 
+        format_banner_names = c(norm_maker(border_bottom = TRUE, decoration = "bold"), halign = "center"), 
         format_banner_categories = c(norm_maker(decoration = "bold"), halign = "center"), 
         format_var_name = c(norm_maker(decoration = "bold"), var_incl(include_q_number = TRUE), halign = "left"), 
         format_var_subname = c(norm_maker(decoration = "bold"), unlist(var_incl(repeat_for_subs = NULL)), halign = "left"), 
@@ -108,10 +176,10 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
         format_unweighted_n = c(name = "Unweighted N", norm_maker(decoration = "bold"), position_list, position_fixed = FALSE, halign = "center", latex_add_parenthesis = TRUE), 
         format_totals_row = c(name = "Totals", norm_maker(border_top = TRUE, decoration = "bold"), position_list, halign = "center"), 
         format_totals_column = norm_maker(), 
-        show_grid_lines = FALSE,
-        orientation = "portrait",
-        freeze_column = 1,
-        percent_format_data = TRUE,
+        excel_show_grid_lines = FALSE,
+        excel_orientation = "portrait",
+        excel_freeze_column = 1,
+        excel_percent_sign = TRUE,
         digits = 0, 
         one_per_sheet = FALSE,
         latex_round_percentages = TRUE)
@@ -125,8 +193,6 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
 #'
 #' \code{themeDefaultLatex} is the default theme. Users can change base options
 #'
-#' @param font font font
-#' @param font_size font_size font_size
 #' @export
 themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     font_size = getOption("font_size", default = 12)){
@@ -150,10 +216,10 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         format_totals_column = norm,
         digits = 0, 
         one_per_sheet = TRUE,
-        percent_format_data = TRUE,
-        show_grid_lines = FALSE,
-        freeze_column = 0,
-        orientation = "portrait",
+        excel_percent_sign = TRUE,
+        excel_show_grid_lines = FALSE,
+        excel_freeze_column = 0,
+        excel_orientation = "portrait",
         latex_round_percentages = FALSE
         )
 
@@ -232,7 +298,7 @@ norm <- list("font", "font_size", "font_color", "background_color", "valign",
     "border_color", "border_top", "border_bottom", "border_left", "border_right")
 validators_to_use <- list(
     background_color = c(class = "color", len = 1, missing = TRUE),
-    banner_vars_split = list(missing = TRUE, 
+    format_banner_split = list(missing = TRUE, 
         include = list("border_style", "border_color", "empty_col")),
     border_color = c(class = "color", len = 1, missing = TRUE),
     border_style = list(mult = FALSE, missing = TRUE, 
@@ -255,9 +321,9 @@ validators_to_use <- list(
     font = c(class = "character", len = 1, missing = TRUE),
     font_color = c(class = "color", len = 1, missing = TRUE),
     font_size = c(class = "numeric", len = 1, missing = TRUE),
-    footer = c(class = "character", len = 3, missing = TRUE),
+    excel_footer = c(class = "character", len = 3, missing = TRUE),
     format_banner_categories = list(missing = FALSE, include = norm), 
-    format_banner_labels = list(missing = TRUE, include = norm), 
+    format_banner_names = list(missing = TRUE, include = norm), 
     format_title = list(missing = TRUE, include = norm), 
     format_headers = list(missing = TRUE, include = norm), 
     format_label_column = list(missing = FALSE, 
@@ -285,9 +351,9 @@ validators_to_use <- list(
         include = c(norm, "include_alias", "repeat_for_subs", "include_q_number")), 
     format_weighted_n = list(missing = TRUE, 
         include = c("name", norm, "position_top", "position_bottom", "position_fixed")), 
-    freeze_column = c(class = "numeric", len = 1, missing = FALSE, default = 1),
+    excel_freeze_column = c(class = "numeric", len = 1, missing = FALSE, default = 1),
     halign = list(mult = FALSE, missing = TRUE, valid = list("left", "right", "center")),
-    header = c(class = "character", len = 3, missing = TRUE),
+    excel_header = c(class = "character", len = 3, missing = TRUE),
     height = c(class = "numeric", len = 1, missing = FALSE, default = 2),
     include_alias = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     include_q_number = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
@@ -302,30 +368,30 @@ validators_to_use <- list(
     min_base = c(class = "numeric", len = 1, missing = TRUE),
     name = c(class = "character", len = 1, missing = FALSE),
     one_per_sheet = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
-    orientation = list(mult = FALSE, missing = FALSE, 
+    excel_orientation = list(mult = FALSE, missing = FALSE, 
         valid = list("portrait", "landscape"), default = "landscape"), 
-    percent_format_data = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+    excel_percent_sign = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     position_bottom = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
     position_fixed = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     position_top = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     repeat_for_subs = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
-    show_grid_lines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+    excel_show_grid_lines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     startCol = c(class = "numeric", len = 1, missing = FALSE, default = 1),
     startRow = c(class = "numeric", len = 1, missing = FALSE, default = 1),
-    table_border = list(missing = TRUE, include = list("border_style", "border_color")), 
+    excel_table_border = list(missing = TRUE, include = list("border_style", "border_color")), 
     units = list(mult = FALSE, missing = FALSE, valid = list("in", "cm", "px"), default = "in"),
     valign = list(mult = FALSE, missing = TRUE, valid = list("top", "bottom", "center")),
     width = c(class = "numeric", len = 1, missing = FALSE, default = 4),
     wrap_text = c(class = "logical", len = 1, missing = TRUE, default = TRUE))
 
 theme_validator <- function(theme) {
-    theme_required <- c("banner_vars_split", "digits", "digits_final", "font", "font_color", "font_size", "footer", 
-        "format_banner_categories", "format_banner_labels", "format_headers", "format_label_column", "format_means", 
+    theme_required <- c("format_banner_split", "digits", "digits_final", "font", "font_color", "font_size", "excel_footer", 
+        "format_banner_categories", "format_banner_names", "format_headers", "format_label_column", "format_means", 
         "format_medians", "format_min_base", "format_subtitle", "format_subtotals", "format_title", "format_totals_column", 
         "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description", 
-        "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "freeze_column", "halign", 
-        "header", "latex_foottext", "latex_headtext", "latex_round_percentages", 
-        "logo", "one_per_sheet", "orientation", "percent_format_data", "show_grid_lines", "table_border", "valign")
+        "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "excel_freeze_column", "halign", 
+        "excel_header", "latex_foottext", "latex_headtext", "latex_round_percentages", 
+        "logo", "one_per_sheet", "excel_orientation", "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", "valign")
     
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {
@@ -346,7 +412,7 @@ theme_validator <- function(theme) {
 themeUKPolitical <- function() {
     themeNew(default_theme = themeDefaultExcel(font = "Arial", font_size = 8),
         format_title=list(font_size = 14),
-        format_banner_labels=list(font = "Arial Narrow", font_size = 8,
+        format_banner_names=list(font = "Arial Narrow", font_size = 8,
             border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
         format_banner_categories=list(font = "Arial Narrow", font_size = 8,
             border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
@@ -371,7 +437,7 @@ themeUKPolitical <- function() {
         format_medians = NULL,
         format_totals_row=NULL,
         format_min_base = list(min_base = 50, mask = NULL, decoration = "italic"),
-        freeze_column=2,
+        excel_freeze_column = 2,
         digits_final=0,
-        percent_format_data=FALSE)
+        excel_percent_sign=FALSE)
 }
