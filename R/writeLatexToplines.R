@@ -89,6 +89,7 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
 
 toplineTableDef <- function(var, page_width, num, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
+    var_info$format_var_subname <- NULL
     for (info_name in names(var_info)) {
         var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
             scriptsize = info_name != names(var_info)[1])
