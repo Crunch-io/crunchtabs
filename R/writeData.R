@@ -32,17 +32,21 @@ get_data <- function(data, item_name, empty_col, round){
         if (!is.vector(dt) && !empty_col) return(dt)
     })
     if (is.null(unlist(tmp_data))) return(NULL)
-    if (!is.null(dim(tmp_data[[1]])) && (nrow(tmp_data[[1]]) != 1 || ncol(tmp_data[[1]]) != 1)) { return(do.call(cbind, tmp_data)) }
+    if (!is.null(dim(tmp_data[[1]])) && length(dim(tmp_data[[1]])) == 2) { return(do.call(cbind, tmp_data)) }
     return(unlist(tmp_data))
 }
 
 munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) {
     possible <- c("weighted_n", "unweighted_n", "totals_row", "means", "medians")
-    if (var$settings$no_totals) possible <- setdiff(possible, "totals_row")
+    if (var$no_totals) possible <- setdiff(possible, "totals_row")
     if (!var$mean_median) { possible <- setdiff(possible, c("means", "medians")) }
     top <- unlist(sapply(possible, function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_top) return(p)))
     bottom <- unlist(sapply(rev(possible), function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_bottom) return(p)))
     data_order <- c(top, "body", bottom)
+    piece_names <- list("body" = ifelse(proportions, "proportions", "counts"), 
+        "totals_row" = ifelse(proportions, "proportions", "counts"), 
+        "weighted_n" = "weighted_base", "unweighted_n" = "base", "means" = "mean", 
+        "medians" = "median")
     
     if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")) {
         var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Subtotal"]
@@ -57,8 +61,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         prop_v <- gsub("_row", "", dt) %in% c("body", "totals")
         weight_v <- dt %in% c("unweighted_n", "weighted_n")
         mm_v <- dt %in% c("means", "medians")
-        dx <- if (prop_v) { paste0("body", ifelse(proportions, "_proportions", "_counts")) 
-            } else { dt }
+        dx <- piece_names[[dt]]
         data <- get_data(data = var$crosstabs[[banner_name]], item_name = dx, 
             empty_col = banner_info$empty_col && !latex, round = FALSE)
         if (all(is.na(data))) { return(NULL) }
@@ -80,17 +83,19 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         }
         
         if (dt %in% "totals_row") { 
-            data_tmp <- if (proportions) { colSums(data) } else { get_data(data = var$crosstabs[[banner_name]], item_name = "totals_counts", 
+            data_tmp <- if (proportions) { colSums(data) } else { get_data(data = var$crosstabs[[banner_name]], item_name = "weighted_base", 
                     empty_col = banner_info$empty_col && !latex, round = FALSE) }
             data <- matrix(data_tmp, nrow = 1, ncol = ncol(data),
                 dimnames = list(c(theme$format_totals_row$name), colnames(data)))
         }
-        if (var$type %in% c("categorical", "categorical_array") && dt %in% "body" && any(var$inserts %in% c("Heading", "Subtotal"))) {
+        if (var$type %in% c("categorical", "categorical_array") && dt %in% "body" && 
+                any(var$inserts %in% c("Heading", "Subtotal"))) {
             data <- as.matrix(calcTabInsertions(data, var$inserts_obj, var$categories))
         }
         
-        if (weight_v && nrow(data) == 2 && as.character(data[1, ]) == as.character(data[2, ])) {
-            data <- matrix(data[1, ], nrow = 1, dimnames = list(c(), colnames(data)))
+        if (weight_v && nrow(data) > 1) {
+            data <- rbind(apply(data, 2, min), apply(data, 2, max))
+            if (all(data[1, ] == data[2, ])) data <- data[1, , drop = FALSE]
         }
         if (!is.null(theme_dt$name)) {
             rownames(data) <- paste0(theme_dt$name, 
@@ -118,7 +123,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         return(data)
     }, simplify = FALSE)
     
-    unweighted_n <- get_data(var$crosstabs[[banner_name]], "unweighted_n_all", 
+    unweighted_n <- get_data(var$crosstabs[[banner_name]], "base", 
         empty_col = banner_info$empty_col && !latex, round = FALSE)
     if (any(var$inserts %in% c("Heading", "Subtotal"))){
         unweighted_n <- as.matrix(unweighted_n[rep(1, length(var$inserts)), ], nrow = length(var$inserts),
@@ -142,7 +147,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         }
         data_list$body[min_cell] <- theme$format_min_base$mask
     }
-
+    
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
@@ -162,7 +167,7 @@ var_header <- function(var, theme) {
         format_var_description = if_there(var$description),
         format_var_filtertext = if_there(var$notes),
         format_var_subname = if_there(var$subname))
-    number <- if_there(var$settings$number)
+    number <- if_there(var$number)
     var_info2 <- list()
     for (info_name in intersect(names(theme), names(var_info))) {
         if (!is.null(theme[[info_name]]) && (var$type != "categorical_array" ||

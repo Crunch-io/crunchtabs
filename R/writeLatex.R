@@ -54,7 +54,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         stop("The length of `custom_numbering` provided (", length(custom_numbering),
             ") is not equal to the length of the results (", length(data_summary$results), ").")
     }
-    
+
     theme_validator(theme)
     
     UseMethod("writeLatex", data_summary)
@@ -116,9 +116,10 @@ getFilterText <- function(var_summary) {
 latexHead <- function (theme, title, subtitle, crosstabs) {
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
         "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
-    if (is.null(theme$font) || !theme$font %in% poss_fonts) {
+    if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
-        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), ". It has been set to `helvet`.")
+        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
+            ". It has been set to `helvet`.", .call = FALSE)
     }
     
     paste0("\\documentclass[", if (crosstabs) { "landscape" } else { paste0(theme$font_size, "pt") }, "]{article}\n",

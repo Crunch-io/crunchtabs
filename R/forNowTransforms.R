@@ -31,8 +31,8 @@ calcTabInsertions <- function (vec, elements, var_cats) {
             combos <- element$categories
             which.cats <- names(var_cats)[ids(var_cats) %in% combos]
             if (any(is.na(var_cats)[ids(var_cats) %in% combos])) return(NA)
-            if (dim(vec)[2] == 1) return(sum(vec[which.cats,]))
-            return(colSums(vec[which.cats,]))
+            if (dim(vec)[2] == 1) return(sum(vec[which.cats, ]))
+            return(colSums(vec[which.cats, , drop = FALSE]))
         }
         
     })))
@@ -43,6 +43,23 @@ calcTabInsertions <- function (vec, elements, var_cats) {
     rownames(vec_out) <- names(elements)
     
     return(vec_out)
+}
+
+applyInsert <- function(vec, var_cats, a_func) {
+    dim_name <- gsub("calcTab|Insert", "", deparse(substitute(a_func)))
+    if (length(dim(vec)) == 3) {
+        dt <- do.call(cbind, sapply(dimnames(vec)[[3]], function(xi) {
+            apply(vec[ , , xi, drop = FALSE], 2, a_func, 
+                na.omit(var_cats))
+        }, simplify = FALSE))
+        dimnames(dt) <- dimnames(vec)[2:length(dim(vec))]
+    } else { 
+        dt <- matrix(apply(vec, 2, a_func, na.omit(var_cats)),
+            nrow = 1, dimnames = 
+                setNames(list("", 
+                    dimnames(vec)[[2]]), names(dimnames(vec))))
+    }
+    return(dt)
 }
 
 
