@@ -7,15 +7,17 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
     grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
     banner <- data_summary$banner
-    
+
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
-    hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
-    headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width = "8.5in",
-        if (!is.null(custom_numbering)) custom_numbering[i]
-        else if (grid_num_letters) hinfo[[i]]$number
-        else i))
+    headers <- lapply(data_summary$results, function(x) longtableHeader(x, theme))
+    
+    # hinfo <- lapply(data_summary$results, function (x) lapply(getTableHeader(x), escM))
+    # headers <- lapply(seq_along(hinfo), function(i) tabreportHeader(hinfo[[i]], length(banner), parbox_width = "8.5in",
+    #     if (!is.null(custom_numbering)) custom_numbering[i]
+    #     else if (grid_num_letters) hinfo[[i]]$number
+    #     else i))
 
     bodies <- lapply(results, function (x) {
         sapply(x, function (y) {
@@ -97,11 +99,36 @@ getMulticolumnWidth <- function(binfo.i) {
 # }
 
 
-tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
-    return(sapply(1:nbanners, function (k) {
-        longtableHeader(num=k, hinfo, table_num = table_num, parbox_width = parbox_width,
-            title=I(k==1))
-    }))
+# tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
+#     return(sapply(1:nbanners, function (k) {
+#         longtableHeader(num=k, hinfo, table_num = table_num, parbox_width = parbox_width,
+#             title=I(k==1))
+#     }))
+# }
+
+longtableHeader <- function(var, theme) {
+    sapply(seq_along(var$crosstabs), function(bi){
+        paste(if (bi != 1) "\\vspace{-.25in}" ,
+            "\\tbltop", letters[bi], "\n",
+            if (bi == 1) latexTableHeadTitle(var, theme),
+            "\\addlinespace \n",
+            "\\banner", letters[bi],"{} \n\n", sep="")
+        
+    })
+}
+
+latexTableHeadTitle <- function (var, theme) {
+    var_info <- var_header(var, theme)
+    if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
+        var_info[[1]] <- paste0(var_info[[1]], if (!is.null(var_info$format_var_subname))
+            paste0(" — ", var_info$format_var_subname))
+        var_info$format_var_subname <- NULL
+    }
+    paste("\\addcontentsline{lot}{table}{ ", var_info[[1]], "}\n",
+        "\\hangindent=0em \\parbox{8.5in}{", " \n",
+        paste(sapply(names(var_info), function(info_name)
+            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
+                scriptsize = FALSE)), collapse = "\\\\ \n"), "} \\\\", sep="")
 }
 
 # Header for LongTable with Banner.
@@ -109,19 +136,19 @@ tabreportHeader <- function(hinfo, nbanners, parbox_width, table_num) {
 # case of multiple banners displayed underneath each other, the title only
 # appears on the top one).
 # Assumes that \banner[a-z]{} macros are defined in the preamble
-longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
-    paste(if (title) { "" } else { "\\vspace{-.25in}" },
-        "\\tbltop", letters[num], "\n",
-        if (title) { latexTableHeadTitle(hinfo, table_num, parbox_width) } else { "" },
-        "\\addlinespace \n",
-        "\\banner", letters[num],"{} \n\n", sep="")
-}
+# longtableHeader <- function (num, hinfo, table_num, parbox_width, title=TRUE) {
+#     paste(if (title) { "" } else { "\\vspace{-.25in}" },
+#         "\\tbltop", letters[num], "\n",
+#         if (title) { latexTableHeadTitle(hinfo, table_num, parbox_width) } else { "" },
+#         "\\addlinespace \n",
+#         "\\banner", letters[num],"{} \n\n", sep="")
+# }
 
-latexTableHeadTitle <- function (hinfo, table_num, parbox_width) {
-    paste("\\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}\n",
-        "\\hangindent=0em \\parbox{", parbox_width, "}{{\\bf ", table_num, ". ", hinfo$label, "} \\\\ \n",
-        hinfo$wording, "} \\\\", sep="")
-}
+# latexTableHeadTitle <- function (hinfo, table_num, parbox_width) {
+#     paste("\\addcontentsline{lot}{table}{ ", table_num, ". ", hinfo$label, "}\n",
+#         "\\hangindent=0em \\parbox{", parbox_width, "}{{\\bf ", table_num, ". ", hinfo$label, "} \\\\ \n",
+#         hinfo$wording, "} \\\\", sep="")
+# }
 
 makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
     cps <- getMulticolumnWidth(binfo.i)
@@ -158,7 +185,7 @@ makeLatexBanner <- function (binfo, multirow=FALSE, width=NULL,
 
 getTableHeader <- function (ds_var) {
     description <- paste(getDescription(ds_var), getFilterText(ds_var))
-    list(label=getName(ds_var), wording=description, number=ds_var$settings$number)
+    list(label=getName(ds_var), wording=description, number=ds_var$number)
 }
 
 tableFootLT <- function() "\n \\end{longtable}\n\n"

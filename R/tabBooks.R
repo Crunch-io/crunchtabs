@@ -1,214 +1,336 @@
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
-    tabs_data <- list()
+    # tabs_data <- list()
     
-    weighted <- !is.null(weight)
+    banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], 
+        function(bv) bv$alias))
+    banner_flatten <- flattenBanner(banner)
+    banner_use <- banner
+    if (topline) { banner_use$Results[[2]] <- NULL }
     
     multitable <- getMultitable(banner, dataset)
     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
     
-    banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
-    banner_flatten <- flattenBanner(banner)
+    banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
+        aliases(variables(book[[1]][[ix]]))[2] })
+    banner_var_names[1] <- "___total___"
+    var_nums <- match(vars, aliases(book))
     
-    get_topline_array_data <- function(tabs_data, valiases, name){
-        tmp <- data.frame(lapply(valiases, function(vxi) c(tabs_data[[vxi]]$crosstabs$Results$Total[[name]])))
-        if (any(dim(tmp) %in% 0)) return(NULL)
-        tmp <- setNames(tmp, subnames)
-        if (!is.null(rownames(tabs_data[[valiases[1]]]$crosstabs$Results$Total[[name]]))) {
-            rownames(tmp) <- rownames(tabs_data[[valiases[1]]]$crosstabs$Results$Total[[name]])
-        }
-        return(tmp)
-    }
-    
-    totals_matrix <- function(data, formatted_data, na_rows){
-        dt <- matrix(data, nrow=nrow(formatted_data), ncol=ncol(formatted_data), byrow = TRUE, dimnames=list(rownames(formatted_data), colnames(formatted_data)))
-        dt[na_rows, ] <- NA
-        return(dt)
-    }
-    
-    # for every variable in the book
-    for (vi in seq_along(book)) {
+    structure(unlist(lapply(var_nums, function(vi) {
         crunch_cube <- book[[vi]][[1]]
         
+        ## Metadata
         cube_variable <- variables(crunch_cube)[1]
+        alias <- aliases(cube_variable)
+        var_type <- type(dataset[[aliases(cube_variable)]])
         
-        if (length(variables(crunch_cube)) == 3) {
-            var_type <- "categorical_array"
-        } else if (types(cube_variable) %in% "subvariable_items") {
-            var_type <- "multiple_response"
-        } else {
-            var_type <- types(cube_variable)
-        }
-        is_array_type <- var_type == "categorical_array"
         is_mr_type <- var_type == "multiple_response"
-        cat_type <- var_type %in% c("categorical", "categorical_array")
-        topline_array <- is_array_type && topline
+        is_cat_type <- var_type %in% c("categorical", "categorical_array")
+        is_array_type <- var_type == "categorical_array"
+        is_toplines_array <- is_array_type && topline
+        is_crosstabs_array <- is_array_type && !topline
         
-        # generate new names and aliases for categorical_array variables by combining variable's names/aliases
-        # with subvariables' names/aliases
-        # vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
-        valiases <- if (is_array_type) getSubAliases(crunch_cube) else aliases(cube_variable)
-        subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
-        dvaliases <- c(if (topline_array) aliases(cube_variable), valiases)
+        valiases <- if (is_crosstabs_array) { getSubAliases(crunch_cube) 
+            } else { aliases(cube_variable) }
+        subnames <- if (is_array_type) getSubNames(crunch_cube)
         
-        var_cats <- categories(cube_variable[[1]])#categories(dataset[[getAlias(crunch_cube)]])
-        # inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
-        inserts <- if (cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
-        mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
-        # prepare a data structure for every variable (categorical_array variables are sliced)
-        tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
-            structure(list(alias = dvaliases[vai], 
-            type = var_type,
-            name = names(cube_variable), #vnames[vai], 
-            subnames = if (topline_array) subnames else subnames[vai],
-            subnumber = if (is_array_type) vai else NA,
-            description = descriptions(cube_variable), 
-            notes = notes(cube_variable), 
-            settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1 && !topline_array) get_grid_number(vai), collapse = "")), 
-            categories = var_cats,
-            mean_median = mean_median,
-            inserts = sapply(inserts, class),
-            inserts_obj = inserts,
-            crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
-            class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
+        var_cats <- categories(cube_variable[[1]])
+        inserts <- if (is_cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
+        show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
         
-        seq_num <- if (topline) 1 else seq_along(book[[vi]])
-        # for every "column" variable
-        for (vbi in seq_num) {
-            crunch_cube <- book[[vi]][[vbi]]
-            crunch_cube@useNA <- "no"
-            margin <- if (is_array_type) c(2, 3) else 2
-            
-            banner_counts <- as.array(crunch_cube)
-            banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
-            banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
-            banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
-            banner_unweighted_n <- crunch::bases(crunch_cube, margin = margin)#if (is.null(weight)) banner_totals_counts else crunch::bases(crunch_cube, margin = margin)
-            banner_counts_unweighted <- crunch::bases(crunch_cube, margin = 0)#if (is.null(weight)) banner_counts else crunch::bases(crunch_cube, margin = 0)
-
-            banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
-            banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
-            banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
-            banner_proportions[banner_proportions %in% c(NULL, NaN)] <- 0
-            banner_counts[banner_counts %in% c(NULL, NaN)] <- 0
-            banner_counts_unweighted[banner_counts_unweighted %in% c(NULL, NaN)] <- 0
-            
-            banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
-            
-            ## TODO: Cat array tabbook
-            for (ri in seq_along(valiases)) {
-                counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
-                proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
-                totals_counts_out <- as.matrix(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
-                totals_proportions_out <- as.matrix(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
-                unweighted_n_out <- as.matrix(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
-                counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
-
-                if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
-                    col_names <- dimnames(banner_counts)[[2]]
-                    colnames(counts_unweighted_out) <- colnames(counts_out) <- colnames(proportions_out) <- col_names
-                    colnames(totals_counts_out) <- colnames(totals_proportions_out) <- colnames(unweighted_n_out) <- col_names
-                }
-                
-                if (vbi == 1) {
-                    colnames(counts_out) <- "Total"
-                    colnames(proportions_out) <- "Total"
-                    colnames(totals_counts_out) <- "Total"
-                    colnames(totals_proportions_out) <- "Total"
-                    colnames(unweighted_n_out) <- "Total"
-                    colnames(counts_unweighted_out) <- "Total"
-                }
-
-                ## conditional transpose to flip totals and unweighted Ns -- added 20171207
-                ## min and max on MR -- added 20180212
-                if (is_mr_type) {
-                    totals_counts_all_out <- totals_counts_out
-                    totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
-                    unweighted_n_all_out <- unweighted_n_out
-                    unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
-                } else {
-                    totals_counts_out <- t(totals_counts_out)
-                    totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = NULL)
-                    unweighted_n_out <- t(unweighted_n_out)
-                    unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = NULL)
-                    totals_proportions_out <- t(totals_proportions_out)
-                }
-
-                banner_var <- banner_flatten[[banner_var_alias]]
-                if (banner_var_alias != "___total___" &&
-                        !identical(banner_var$old_categories, banner_var$categories)) {
-                    counts_out <- bannerDataRecode(counts_out, banner_var)
-                    proportions_out <- bannerDataRecode(proportions_out, banner_var)
-                    totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
-                    totals_counts_all_out <- bannerDataRecode(totals_counts_all_out, banner_var)
-                    totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
-                    unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
-                    unweighted_n_all_out <- bannerDataRecode(unweighted_n_all_out, banner_var)
-                    counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
-                }
-                
-                means_out <- if (mean_median) {
-                    unlist(sapply(colnames(counts_out), function(k) calcTabMeanInsert(counts_out[,k], na.omit(var_cats))))
-                }
-                medians_out <- if (mean_median) {
-                    unlist(sapply(colnames(counts_out), function(k) calcTabMedianInsert(counts_out[,k], na.omit(var_cats))))
-                }
-                # ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
-                # if (!is.null(inserts)){
-                #     counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
-                #     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
-                #     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
-                #     totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = inserts %in% "Heading")
-                #     unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = inserts %in% "Heading")
-                # }
-
-                banner_var_cross <- structure(list(
-                    counts = counts_out,
-                    proportions = proportions_out,
-                    totals_counts = totals_counts_out,
-                    totals_counts_all = totals_counts_all_out,
-                    totals_proportions = c(totals_proportions_out),
-                    unweighted_n = unweighted_n_out,
-                    unweighted_n_all = unweighted_n_all_out,
-                    counts_unweighted = counts_unweighted_out,
-                    total = c(unweighted_n_out),
-                    mean = c(means_out),
-                    median = c(medians_out),
-                    
-                    weighted_n = if (weighted) totals_counts_out,
-                    body_counts = counts_out,
-                    body_proportions = proportions_out,
-                    means = c(means_out),
-                    medians = c(medians_out),
-                    
-                    pvals_col = NULL#crunch::rstandard(crunch_cube)
-                ), class = c("CrossTabBannerVar", "list"))
-
-                for (bi in seq_along(banner_map)) {
-                    for (bij in seq_along(banner_map[[bi]])) {
-                        if (banner_var_alias == banner_map[[bi]][bij]) {
-                            tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[bij]] <- banner_var_cross
-                            names(tabs_data[[valiases[ri]]][['crosstabs']][[bi]])[bij] <- if (banner_var_alias == "___total___") "Total" else banner_var_alias
-                        }
-                    }
-                }
+        metadata <- #structure(
+            list(type = var_type,
+                name = names(cube_variable), 
+                description = descriptions(cube_variable), 
+                notes = notes(cube_variable), 
+                no_totals = is_mr_type, 
+                mean_median = show_mean_median,
+                subnames = subnames,
+                categories = var_cats,
+                inserts = sapply(inserts, class),
+                inserts_obj = inserts#,
+                # crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
+            )#,
+        # class = c(if (is_mr_type) "MultipleResponseCrossTabVar", 
+        #     if (is_topline_array) "ToplineCategoricalArray", "CrossTabVar"))
+        
+        pbook <- lapply(seq_along(book[[vi]]), function(vix) {
+            crunch::prop.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
+        })
+        bbook <- crunch::bases(book[[vi]], margin = c(2, if (is_array_type) 3))
+        cbook <- as.array(book[[vi]])
+        wbbook <- lapply(seq_along(book[[vi]]), function(bi) 
+            crunch::margin.table(book[[vi]][[bi]], margin = c(2, if (is_array_type) 3)))
+        
+        names(pbook) <- names(bbook) <- names(cbook) <- names(wbbook) <- banner_var_names
+        
+        for (bi in banner_var_names) {
+            if (!identical(banner_flatten[[bi]]$categories_out, banner_flatten[[bi]]$categories)) {
+                pbook[[bi]] <- bannerDataRecode(pbook[[bi]], banner_flatten[[bi]])
+                bbook[[bi]] <- bannerDataRecode(bbook[[bi]], banner_flatten[[bi]])
+                cbook[[bi]] <- bannerDataRecode(cbook[[bi]], banner_flatten[[bi]])
+                wbbook[[bi]] <- bannerDataRecode(wbbook[[bi]], banner_flatten[[bi]])
             }
-            
-            if (topline_array) {
-                tabs_data[[dvaliases[1]]]$subname <- NA
-                for (name in setdiff(names(tabs_data[[dvaliases[2]]]$crosstabs$Results$Total), names(tabs_data[[dvaliases[1]]]$crosstabs$Results$Total))) {
-                    tabs_data[[dvaliases[1]]]$crosstabs$Results$Total[[name]] <- get_topline_array_data(tabs_data, valiases, name)
-                }
-                class(tabs_data[[dvaliases[1]]]$crosstabs$Results$Total) <- c("CrossTabBannerVar", "list")
-                tabs_data[valiases] <- NULL
-            }
-            
         }
-    }
-    class(tabs_data) <- c("CrosstabsResults", class(tabs_data))
-    return(tabs_data)
+        
+        sapply(valiases, function(valias) {
+            ri <- which(valiases %in% valias)
+            
+            pdata <- row_data(pbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
+            cdata <- row_data(cbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
+            bdata <- row_data(bbook, ri, is_crosstabs_array, is_toplines_array, TRUE)
+            wbdata <- row_data(wbbook, ri, is_crosstabs_array, is_toplines_array, TRUE)
+            mndata <- lapply(cdata, function(mbook) {
+                if (show_mean_median) { applyInsert(mbook, var_cats, calcTabMeanInsert) }
+            })
+            mddata <- lapply(cdata, function(mbook) {
+                if (show_mean_median) { applyInsert(mbook, var_cats, calcTabMedianInsert) }
+            })
+            
+            if (!is_mr_type) {
+                bdata <- lapply(bdata, function(xi) {
+                    matrix(xi, nrow = nrow(pdata[[2]]), ncol = length(xi), byrow = TRUE,
+                        dimnames=list(rownames(pdata[[2]]), names(xi)))
+                })
+            }
+
+            structure(c(metadata, 
+                alias = valias, 
+                subnumber = ri,
+                subname = subnames[ri],
+                number = paste0(which(var_nums %in% vi), if (is_crosstabs_array) 
+                    get_grid_number(ri), collapse = ""),
+                crosstabs = list(sapply(banner_use, function(bu) {
+                    sapply(bu, function(bux) {
+                        structure(list(
+                            counts = cdata[[bux$alias]],
+                            proportions = pdata[[bux$alias]],
+                            base = bdata[[bux$alias]],
+                            weighted_base = wbdata[[bux$alias]],
+                            mean = mndata[[bux$alias]],
+                            median = mddata[[bux$alias]],
+                            pvals_col = NULL
+                        ), class = c("CrossTabBannerVar", "list"))
+                    }, simplify = FALSE, USE.NAMES = TRUE)
+                }, simplify = FALSE, USE.NAMES = TRUE))),
+                class = c(if (is_mr_type) "MultipleResponseCrossTabVar", 
+                    if (is_toplines_array) "ToplineCategoricalArray", "CrossTabVar"))
+        }, simplify = FALSE)
+    }), recursive = FALSE), class = c("CrosstabsResults", "list"))
 }
+
+#' #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
+#' #' @importFrom digest digest
+#' tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
+#'     tabs_data <- list()
+#'     
+#'     weighted <- !is.null(weight)
+#'     
+#'     multitable <- getMultitable(banner, dataset)
+#'     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
+#'     
+#'     banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], function(bv) bv$alias))
+#'     banner_flatten <- flattenBanner(banner)
+#'     
+#'     get_topline_array_data <- function(tabs_data, valiases, name){
+#'         tmp <- data.frame(lapply(valiases, function(vxi) c(tabs_data[[vxi]]$crosstabs$Results$Total[[name]])))
+#'         if (any(dim(tmp) %in% 0)) return(NULL)
+#'         tmp <- setNames(tmp, subnames)
+#'         if (!is.null(rownames(tabs_data[[valiases[1]]]$crosstabs$Results$Total[[name]]))) {
+#'             rownames(tmp) <- rownames(tabs_data[[valiases[1]]]$crosstabs$Results$Total[[name]])
+#'         }
+#'         return(tmp)
+#'     }
+#'     
+#'     totals_matrix <- function(data, formatted_data, na_rows){
+#'         dt <- matrix(data, nrow=nrow(formatted_data), ncol=ncol(formatted_data), byrow = TRUE, dimnames=list(rownames(formatted_data), colnames(formatted_data)))
+#'         dt[na_rows, ] <- NA
+#'         return(dt)
+#'     }
+#'     
+#'     # for every variable in the book
+#'     for (vi in seq_along(book)) {
+#'         crunch_cube <- book[[vi]][[1]]
+#'         
+#'         cube_variable <- variables(crunch_cube)[1]
+#'         
+#'         if (length(variables(crunch_cube)) == 3) {
+#'             var_type <- "categorical_array"
+#'         } else if (types(cube_variable) %in% "subvariable_items") {
+#'             var_type <- "multiple_response"
+#'         } else {
+#'             var_type <- types(cube_variable)
+#'         }
+#'         is_array_type <- var_type == "categorical_array"
+#'         is_mr_type <- var_type == "multiple_response"
+#'         cat_type <- var_type %in% c("categorical", "categorical_array")
+#'         topline_array <- is_array_type && topline
+#'         
+#'         # generate new names and aliases for categorical_array variables by combining variable's names/aliases
+#'         # with subvariables' names/aliases
+#'         # vnames <- if (is_array_type) paste(getName(crunch_cube), getSubNames(crunch_cube), sep = " - ") else getName(crunch_cube)
+#'         valiases <- if (is_array_type) getSubAliases(crunch_cube) else aliases(cube_variable)
+#'         subnames <- if (is_array_type) getSubNames(crunch_cube) else NA
+#'         dvaliases <- c(if (topline_array) aliases(cube_variable), valiases)
+#'         
+#'         var_cats <- categories(cube_variable[[1]])#categories(dataset[[getAlias(crunch_cube)]])
+#'         # inserts <- if (!is.null(var_cats) && !is.null(transforms(crunch_cube)[[1]]$insertions)) crunch:::collateCats(transforms(crunch_cube)[[1]]$insertions, na.omit(var_cats))
+#'         inserts <- if (cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
+#'         mean_median <- cat_type && any(!is.na(values(na.omit(var_cats))))
+#'         # prepare a data structure for every variable (categorical_array variables are sliced)
+#'         tabs_data[dvaliases] <- lapply(seq_along(dvaliases), function(vai)
+#'             structure(list(alias = dvaliases[vai], 
+#'             type = var_type,
+#'             name = names(cube_variable), #vnames[vai], 
+#'             subnames = if (topline_array) subnames else subnames[vai],
+#'             subnumber = if (is_array_type) vai else NA,
+#'             description = descriptions(cube_variable), 
+#'             notes = notes(cube_variable), 
+#'             settings = list(no_totals = is_mr_type, number = paste0(vi, if (length(dvaliases) > 1 && !topline_array) get_grid_number(vai), collapse = "")), 
+#'             categories = var_cats,
+#'             mean_median = mean_median,
+#'             inserts = sapply(inserts, class),
+#'             inserts_obj = inserts,
+#'             crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)),
+#'             class = c(if (is_mr_type) "MultipleResponseCrossTabVar", if (topline_array) "ToplineCategoricalArray", "CrossTabVar")))
+#'         
+#'         seq_num <- if (topline) 1 else seq_along(book[[vi]])
+#'         # for every "column" variable
+#'         for (vbi in seq_num) {
+#'             crunch_cube <- book[[vi]][[vbi]]
+#'             crunch_cube@useNA <- "no"
+#'             margin <- if (is_array_type) c(2, 3) else 2
+#'             
+#'             banner_counts <- as.array(crunch_cube)
+#'             banner_proportions <- crunch::prop.table(noTransforms(crunch_cube), margin = margin)
+#'             banner_totals_counts <- crunch::margin.table(crunch_cube, margin = margin)
+#'             banner_totals_proportions <- crunch::margin.table(banner_proportions, margin = margin)
+#'             banner_unweighted_n <- crunch::bases(crunch_cube, margin = margin)#if (is.null(weight)) banner_totals_counts else crunch::bases(crunch_cube, margin = margin)
+#'             banner_counts_unweighted <- crunch::bases(crunch_cube, margin = 0)#if (is.null(weight)) banner_counts else crunch::bases(crunch_cube, margin = 0)
+#' 
+#'             banner_totals_counts[banner_totals_counts %in% c(NULL, NaN)] <- 0
+#'             banner_totals_proportions[banner_totals_proportions %in% c(NULL, NaN)] <- 0
+#'             banner_unweighted_n[banner_unweighted_n %in% c(NULL, NaN)] <- 0
+#'             banner_proportions[banner_proportions %in% c(NULL, NaN)] <- 0
+#'             banner_counts[banner_counts %in% c(NULL, NaN)] <- 0
+#'             banner_counts_unweighted[banner_counts_unweighted %in% c(NULL, NaN)] <- 0
+#'             
+#'             banner_var_alias <- if (vbi == 1) "___total___" else aliases(crunch_cube)[2]
+#'             
+#'             ## TODO: Cat array tabbook
+#'             for (ri in seq_along(valiases)) {
+#'                 counts_out <- as.matrix(if (is_array_type) banner_counts[,,ri] else banner_counts)
+#'                 proportions_out <- as.matrix(if (is_array_type) banner_proportions[,,ri] else banner_proportions)
+#'                 totals_counts_out <- as.matrix(if (is_array_type) banner_totals_counts[,ri] else banner_totals_counts)
+#'                 totals_proportions_out <- as.matrix(if (is_array_type) banner_totals_proportions[,ri] else banner_totals_proportions)
+#'                 unweighted_n_out <- as.matrix(if (is_array_type) banner_unweighted_n[,ri] else banner_unweighted_n)
+#'                 counts_unweighted_out <- as.matrix(if (is_array_type) banner_counts_unweighted[,,ri] else banner_counts_unweighted)
+#' 
+#'                 if (is_array_type && ncol(counts_out) == 1 && vbi > 1) {
+#'                     col_names <- dimnames(banner_counts)[[2]]
+#'                     colnames(counts_unweighted_out) <- colnames(counts_out) <- colnames(proportions_out) <- col_names
+#'                     colnames(totals_counts_out) <- colnames(totals_proportions_out) <- colnames(unweighted_n_out) <- col_names
+#'                 }
+#'                 
+#'                 if (vbi == 1) {
+#'                     colnames(counts_out) <- "Total"
+#'                     colnames(proportions_out) <- "Total"
+#'                     colnames(totals_counts_out) <- "Total"
+#'                     colnames(totals_proportions_out) <- "Total"
+#'                     colnames(unweighted_n_out) <- "Total"
+#'                     colnames(counts_unweighted_out) <- "Total"
+#'                 }
+#' 
+#'                 ## conditional transpose to flip totals and unweighted Ns -- added 20171207
+#'                 ## min and max on MR -- added 20180212
+#'                 if (is_mr_type) {
+#'                     totals_counts_all_out <- totals_counts_out
+#'                     totals_counts_out <- rbind(Min=apply(totals_counts_out, 2, min), Max=apply(totals_counts_out, 2, max))
+#'                     unweighted_n_all_out <- unweighted_n_out
+#'                     unweighted_n_out <- rbind(Min=apply(unweighted_n_out, 2, min), Max=apply(unweighted_n_out, 2, max))
+#'                 } else {
+#'                     totals_counts_out <- t(totals_counts_out)
+#'                     totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = NULL)
+#'                     unweighted_n_out <- t(unweighted_n_out)
+#'                     unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = NULL)
+#'                     totals_proportions_out <- t(totals_proportions_out)
+#'                 }
+#' 
+#'                 banner_var <- banner_flatten[[banner_var_alias]]
+#'                 if (banner_var_alias != "___total___" &&
+#'                         !identical(banner_var$old_categories, banner_var$categories)) {
+#'                     counts_out <- bannerDataRecode(counts_out, banner_var)
+#'                     proportions_out <- bannerDataRecode(proportions_out, banner_var)
+#'                     totals_counts_out <- bannerDataRecode(totals_counts_out, banner_var)
+#'                     totals_counts_all_out <- bannerDataRecode(totals_counts_all_out, banner_var)
+#'                     totals_proportions_out <- bannerDataRecode(totals_proportions_out, banner_var)
+#'                     unweighted_n_out <- bannerDataRecode(unweighted_n_out, banner_var)
+#'                     unweighted_n_all_out <- bannerDataRecode(unweighted_n_all_out, banner_var)
+#'                     counts_unweighted_out <- bannerDataRecode(counts_unweighted_out, banner_var)
+#'                 }
+#'                 
+#'                 means_out <- if (mean_median) {
+#'                     unlist(sapply(colnames(counts_out), function(k) calcTabMeanInsert(counts_out[,k], na.omit(var_cats))))
+#'                 }
+#'                 medians_out <- if (mean_median) {
+#'                     unlist(sapply(colnames(counts_out), function(k) calcTabMedianInsert(counts_out[,k], na.omit(var_cats))))
+#'                 }
+#'                 # ### THIS IS JUST FOR NOW. THIS NEEDS TO BE CHANGED WHEN NETS ARE UPDATED!!!
+#'                 # if (!is.null(inserts)){
+#'                 #     counts_out <- as.matrix(calcTabInsertions(counts_out, inserts, var_cats))
+#'                 #     proportions_out <- as.matrix(calcTabInsertions(proportions_out, inserts, var_cats))
+#'                 #     counts_unweighted_out <- as.matrix(calcTabInsertions(counts_unweighted_out, inserts, var_cats))
+#'                 #     totals_counts_all_out <- totals_matrix(totals_counts_out, proportions_out, na_rows = inserts %in% "Heading")
+#'                 #     unweighted_n_all_out <- totals_matrix(unweighted_n_out, proportions_out, na_rows = inserts %in% "Heading")
+#'                 # }
+#' 
+#'                 banner_var_cross <- structure(list(
+#'                     counts = counts_out,
+#'                     proportions = proportions_out,
+#'                     totals_counts = totals_counts_out,
+#'                     totals_counts_all = totals_counts_all_out,
+#'                     totals_proportions = c(totals_proportions_out),
+#'                     unweighted_n = unweighted_n_out,
+#'                     unweighted_n_all = unweighted_n_all_out,
+#'                     counts_unweighted = counts_unweighted_out,
+#'                     total = c(unweighted_n_out),
+#'                     mean = c(means_out),
+#'                     median = c(medians_out),
+#'                     
+#'                     weighted_n = if (weighted) totals_counts_out,
+#'                     body_counts = counts_out,
+#'                     body_proportions = proportions_out,
+#'                     means = c(means_out),
+#'                     medians = c(medians_out),
+#'                     
+#'                     pvals_col = NULL#crunch::rstandard(crunch_cube)
+#'                 ), class = c("CrossTabBannerVar", "list"))
+#' 
+#'                 for (bi in seq_along(banner_map)) {
+#'                     for (bij in seq_along(banner_map[[bi]])) {
+#'                         if (banner_var_alias == banner_map[[bi]][bij]) {
+#'                             tabs_data[[valiases[ri]]][['crosstabs']][[bi]][[bij]] <- banner_var_cross
+#'                             names(tabs_data[[valiases[ri]]][['crosstabs']][[bi]])[bij] <- if (banner_var_alias == "___total___") "Total" else banner_var_alias
+#'                         }
+#'                     }
+#'                 }
+#'             }
+#'             
+#'             if (topline_array) {
+#'                 tabs_data[[dvaliases[1]]]$subname <- NA
+#'                 for (name in setdiff(names(tabs_data[[dvaliases[2]]]$crosstabs$Results$Total), names(tabs_data[[dvaliases[1]]]$crosstabs$Results$Total))) {
+#'                     tabs_data[[dvaliases[1]]]$crosstabs$Results$Total[[name]] <- get_topline_array_data(tabs_data, valiases, name)
+#'                 }
+#'                 class(tabs_data[[dvaliases[1]]]$crosstabs$Results$Total) <- c("CrossTabBannerVar", "list")
+#'                 tabs_data[valiases] <- NULL
+#'             }
+#'             
+#'         }
+#'     }
+#'     class(tabs_data) <- c("CrosstabsResults", class(tabs_data))
+#'     return(tabs_data)
+#' }
 
 getMultitable <- function (banner, dataset) {
     ## Given a Banner object and a dataset, find/create the Crunch multitable that corresponds
@@ -265,3 +387,42 @@ get_grid_number <- function(n) {
     }
     paste0(out, collapse = "")
 }
+
+row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) {
+    dimnames(data$`___total___`)$total <- "Total"
+    data <- lapply(data, function(dt){
+        names(dimnames(dt)) <- NULL
+        return(dt)
+    })
+    
+    if (is_crosstabs_array) { 
+        data <- lapply(data, function(xi) {
+            if (length(dim(xi)) == 3) { 
+                dt <- xi[ , , row, drop = FALSE]
+            } else { 
+                dt <- xi[, row, drop = FALSE] 
+            }
+            if (is_base) {
+                dt <- t(dt)
+                dim(dt) <- dim(dt)[2]
+                dimnames(dt)[1] <- dimnames(xi)[1]
+            } else {
+                dim(dt) <- dim(dt)[1:2]
+                dimnames(dt) <- dimnames(xi)[1:2]
+            }
+            return(dt)
+        })
+    } else if (is_toplines_array) {
+        dt <- data$`___total___`
+        if (is_base) {
+            dim(dt) <- dim(dt)[2]
+            dimnames(dt)[1] <- dimnames(data$`___total___`)[2]
+        } else {
+            dim(dt) <- dim(dt)[c(1,3)]
+            dimnames(dt) <- dimnames(data$`___total___`)[c(1,3)]
+        }
+        data$`___total___` <- dt
+    }
+    return(data)
+}
+

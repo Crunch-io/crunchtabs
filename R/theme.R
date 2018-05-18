@@ -262,7 +262,7 @@ theme_validators <- list(
     "class_error" = function(value, expected_class, name, missing) {
         return(paste0("`", paste0(name, collapse = ":"), "`", 
             if (as.logical(missing)) ", if provided,", " must be of class ", 
-            expected_class, ", not ", class(value)))
+            expected_class, ", not ", collapse_items(class(value)), "."))
     },
     "null_error" = function(name){
         return(paste0("`", paste0(name, collapse = ":"), 
@@ -271,7 +271,7 @@ theme_validators <- list(
     "length_error" = function(value, len, name, missing){
         return(paste0("`", paste0(name, collapse = ":"), "`", 
             if (as.logical(missing)) ", if provided,", " must have length ", 
-            len, ", not ", length(value))) 
+            len, ", not ", length(value), ".")) 
     },
     "valid_values" = function(value, name, validator){
         if (!validator$mult && length(value) != 1) { 
@@ -281,7 +281,9 @@ theme_validators <- list(
         }else if (!all(tolower(value) %in% tolower(validator$valid))){
             vals <- paste0("'", validator$valid, "'", collapse = ", ")
             if (nchar(vals) > 100) vals <- paste0(substr(vals, 1, 100), "...")
-            return(paste0("`", paste0(name, collapse = ":"), "`", if (as.logical(validator["missing"])) ", if provided,", " must be in ", vals, ", not ", paste0("'", value, "'", collapse = ', ')))
+            return(paste0("`", paste0(name, collapse = ":"), "`", 
+                if (as.logical(validator["missing"])) ", if provided,", " must be in ", 
+                vals, ", not ", paste0("'", value, "'", collapse = ', '), "."))
         }
     },
     "color" = function(value, name){
@@ -401,6 +403,7 @@ theme_validator <- function(theme) {
     errors <- unlist(sapply(theme_required, function(name) {
         theme_validators$find_validator(theme[[name]], name)
     }))
+    if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors, "`digits` must be less than 20.")
     if (length(errors) != 0){
         if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"), "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)
         stop("\n", paste0(errors, collapse = "\n"), call. = FALSE)

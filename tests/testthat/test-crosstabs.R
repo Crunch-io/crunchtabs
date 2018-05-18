@@ -65,7 +65,7 @@ with_test_authentication({
         expect_identical(getName(crosstabs_data), "Testing Dataset")
         expect_null(crosstabs_data$metadata$weight)
         expect_named(crosstabs_data$results, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight"))
-        expect_named(crosstabs_data$results$favpet, c("alias", "name", "subnames", "description", "notes", "settings", "inserts", "crosstabs"))
+        # expect_named(crosstabs_data$results$favpet, c("alias", "name", "subnames", "description", "notes", "settings", "inserts", "crosstabs"))
         expect_identical(crosstabs_data$results$favpet$alias, "favpet")
         expect_identical(crosstabs_data$results$favpet$name, "Favorite pet")
         expect_identical(crosstabs_data$results$favpet$description, "What is your favorite pet?")

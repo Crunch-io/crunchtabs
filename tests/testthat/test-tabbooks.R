@@ -22,7 +22,7 @@ with_test_authentication({
     expect_is(tabBooks_data, "list")
     expect_named(tabBooks_data, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight", "allpets2"))
     
-    expect_named(tabBooks_data$allpets, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
+    # expect_named(tabBooks_data$allpets, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
     expect_named(tabBooks_data$allpets$crosstabs, c("Banner1"))
     expect_named(tabBooks_data$allpets$crosstabs$Banner1, c("Total", "gender", "age5"))
     expect_named(tabBooks_data$allpets$crosstabs$Banner1$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
@@ -56,7 +56,7 @@ with_test_authentication({
         structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
     
     
-    expect_named(tabBooks_data$allpets2, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
+    # expect_named(tabBooks_data$allpets2, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
     expect_named(tabBooks_data$allpets2$crosstabs, c("Banner1"))
     expect_named(tabBooks_data$allpets2$crosstabs$Banner1, c("Total", "gender", "age5"))
     expect_named(tabBooks_data$allpets2$crosstabs$Banner1$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
