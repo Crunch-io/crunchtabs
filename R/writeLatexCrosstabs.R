@@ -8,6 +8,8 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
     
     banner <- data_summary$banner
 
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    
     # data_summary$results <- reformatCrosstabsResults(data_summary$results, banner, proportions = proportions, theme = theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     

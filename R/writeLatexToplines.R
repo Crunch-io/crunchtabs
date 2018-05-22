@@ -6,6 +6,8 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
     grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
     
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
     headers <- lapply(seq_along(data_summary$results), function(i) {
@@ -55,7 +57,7 @@ toplineHeader.default <- function(var, page_width, num = NULL, row_label_width =
 toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE, theme) {
     header_row <- "\n"
     col_names <- sapply(var$inserts_obj, name)
-    if (is.null(theme$format_headers)) { col_names <- col_names[-c(which(var$inserts %in% "Heading"))] }
+    # if (is.null(theme$format_headers)) { col_names <- col_names[-c(which(var$inserts %in% "Heading"))] }
     if (is.null(theme$format_subtotals)) { col_names <- col_names[-c(which(var$inserts %in% "Subtotal"))] }
     col_names_len <- length(col_names)
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")

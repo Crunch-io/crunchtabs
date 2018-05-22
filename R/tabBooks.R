@@ -48,7 +48,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                 mean_median = show_mean_median,
                 subnames = subnames,
                 categories = var_cats,
-                inserts = sapply(inserts, class),
                 inserts_obj = inserts#,
                 # crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
             )#,

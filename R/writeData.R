@@ -48,14 +48,14 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         "weighted_n" = "weighted_base", "unweighted_n" = "base", "means" = "mean", 
         "medians" = "median")
     
-    if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")) {
-        var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Subtotal"]
-        var$inserts <- var$inserts[!var$inserts %in% "Subtotal"]
-    }
-    if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")) {
-        var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Heading"]
-        var$inserts <- var$inserts[!var$inserts %in% "Heading"]
-    }
+    # if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")) {
+    #     var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Subtotal"]
+    #     var$inserts <- var$inserts[!var$inserts %in% "Subtotal"]
+    # }
+    # if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")) {
+    #     var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Heading"]
+    #     var$inserts <- var$inserts[!var$inserts %in% "Heading"]
+    # }
     
     data_list <- sapply(unique(data_order), function(dt) {
         prop_v <- gsub("_row", "", dt) %in% c("body", "totals")
@@ -185,5 +185,21 @@ var_header <- function(var, theme) {
     }
     return(var_info2)
 }
+
+
+rm_inserts <- function(var, theme) {
+    if (!is.null(var$inserts_obj)) {
+        if (is.null(theme$format_subtotals)) {
+            var$inserts_obj <- var$inserts_obj[sapply(var$inserts_obj, class) != "Subtotal"]
+        }
+        if (is.null(theme$format_headers)) {
+            var$inserts_obj <- var$inserts_obj[sapply(var$inserts_obj, class) != "Headers"]
+        }
+        var$inserts <- sapply(var$inserts_obj, class)
+    }
+    
+    return(var)
+}
+
 
 
