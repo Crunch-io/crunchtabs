@@ -48,7 +48,6 @@ toplineHeader <- function(x, page_width, num = NULL, row_label_width = 1.5, padd
 
 #' @export
 toplineHeader.default <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
-    # tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
     tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
     toplineTableDef(var, page_width, num, tab_definition, header_row = "\n", theme = theme)
 }
@@ -57,8 +56,6 @@ toplineHeader.default <- function(var, page_width, num = NULL, row_label_width =
 toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE, theme) {
     header_row <- "\n"
     col_names <- sapply(var$inserts_obj, name)
-    # if (is.null(theme$format_headers)) { col_names <- col_names[-c(which(var$inserts %in% "Heading"))] }
-    if (is.null(theme$format_subtotals)) { col_names <- col_names[-c(which(var$inserts %in% "Subtotal"))] }
     col_names_len <- length(col_names)
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
     # use heuristic for scale questions
@@ -81,12 +78,9 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
             col_width <- paste(round((page_width - padding - 0.75 - row_label_width)/col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-    # header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
     header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), "\\\n")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
-    # tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
-    #     "in}", col.header, "}")
     tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", row_label_width,
         "in}", col.header, "}")
     
@@ -95,23 +89,12 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
 
 toplineTableDef <- function(var, page_width, num, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
-    # for (info_name in names(var_info)) {
-    #     var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
-    #         scriptsize = info_name != names(var_info)[1])
-    # }    
     if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
     is_array <- is(var, "ToplineCategoricalArray")
     headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
     foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
     if (headtext %in% "tbc") headtext <- "continued from previous page"
     if (foottext %in% "tbc") foottext <- "continued on the next page \\dots"
-    # return(paste("\\begin{table}[H]
-    #     \\addcontentsline{lot}{table}{", escM(getName(var)), "}
-    #     \\colorbox{gray}{
-    #     \\parbox{",
-    #     page_width, "in}{", paste0(unlist(var_info), collapse = ""), "}}
-    #     \\begin{center}", tab_definition,
-    #     "\n", header_row, "\n", sep = ""))    
     return(paste("\\begin{center}\n",
         tab_definition, "\n",
         "\t\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
@@ -121,47 +104,19 @@ toplineTableDef <- function(var, page_width, num, tab_definition, header_row, th
                 scriptsize = FALSE)), collapse = "\\\\ \n\t"), "}}\\\\\\",
         header_row,
         "\\endfirsthead\n",
-        if (is_array) { " \\multicolumn{4}{r}{" } else { "\\centerline{" },
+        "\\multicolumn{", if (is_array) { nrow(var$crosstabs$Results$`___total___`$base) + 2 
+            } else { 2 }, "}{c}{",
         "\\textit{", headtext, "}} \\\\",
         header_row,
         "\\endhead\n",
-        if (is_array) { "\\multicolumn{4}{r}{" } else { "\\centerline{" },
+        "\\multicolumn{", if (is_array) { nrow(var$crosstabs$Results$`___total___`$base) + 2 
+            } else { 2 }, "}{c}{",
         "\\textit{", foottext, "}} \\\\ \n",
         "\\endfoot\n",
         "\\endlastfoot\n", sep = ""))
 }
 
-latexDecoration <- function(item, item_theme, scriptsize) {
-    if (!is.null(item_theme$decoration)) { 
-        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
-        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
-        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
-    }
-    if (scriptsize) {
-        item <- paste0("\\\\ \n \\scriptsize{", item, "}")
-    }
-    return(item)
-}
-
-#' toplineFooter <- function(x) {
-#'     UseMethod("toplineFooter", x)
-#' }
-#' 
-#' #' @export
-#' toplineFooter.default <- function(x) {
-#'     toplineFooterDef(is_grid = FALSE)
-#' }
-#' 
-#' #' @export
-#' toplineFooter.ToplineCategoricalArray <- function(var) {
-#'     toplineFooterDef(is_grid = TRUE)
-#'     
-#' }
-
 toplineFooterDef <- function(var) {
-    # paste0("\\end{", paste0("tabular", if (is(var, "ToplineCategoricalArray")) { "*" } else { "" }), "}
-    #     \\end{center}
-    #     \\end{table}")
     return(paste0(
         "\\end{longtable}\n",
         "\\end{center}"))
@@ -170,28 +125,5 @@ toplineFooterDef <- function(var) {
 
 latexFootT <- function() return("\\end{hyphenrules} \n \\end{document}\n")
 
-# latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
-#     moe_text <- ""
-#     if (!is.null(sample_desc))
-#         sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
-#     if (!is.null(moe))
-#         moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
-#             "\\%$ \\\\ \n")
-#     if (!is.null(field_period))
-#         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
-#     paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
-#         sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents,
-#             "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
-#         sep = "")
-# }
 
-ltranspose <- function(l, use_names) {
-    if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length.")
-    if (use_names && !is.null(names(l[[1]]))) {
-        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]]), simplify = FALSE))
-    } else {
-        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-    }
-}
 

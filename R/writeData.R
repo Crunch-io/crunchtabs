@@ -3,17 +3,21 @@ get_banner_info <- function(banner, theme){
         format_cols = 2, border_columns = NULL))
     
     empty_col <- !is.null(theme$format_banner_split) && theme$format_banner_split$empty_col
-    banner_cols_pos <- cumsum(sapply(banner, function(x) length(x$categories))) + 1
+    len <- sapply(banner, function(x) length(x$categories))
+    banner_cols_pos <- cumsum(len) + 1
     multicols <- sapply(banner, getNames)
     multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
     format_cols <- if (empty_col) { unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
     } else { multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1 - empty_col) }
     
+    names <- sapply(banner, getName)
+        
     border_columns <- if (empty_col) { multicols_csum[2:(length(multicols_csum)-1)]-1 
     } else { multicols_csum[2:(length(multicols_csum)-1)] }
     
-    list(empty_col = empty_col, multicols = multicols, multicols_csum = multicols_csum, 
-        format_cols = format_cols, border_columns = border_columns)
+    list(empty_col = empty_col, len = len, multicols = multicols, 
+        multicols_csum = multicols_csum, format_cols = format_cols, 
+        border_columns = border_columns, names = names)
 }
 
 # clean_data <- function(y, data) {

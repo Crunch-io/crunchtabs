@@ -151,26 +151,16 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         if (is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) },
         "}\n",
         if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
-        #if (crosstabs) 
-        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
-        #if (crosstabs) 
-        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", ##
-        #if (!crosstabs) 
-        "\\usepackage{float}\n", ##
-        #if (!crosstabs) 
-        "\\usepackage{marginnote}\n", ##
-        #if (!crosstabs) 
-        "\\setlength\\extrarowheight{2pt}\n", ##
-        #if (!crosstabs) 
-        "\\newlength\\mywidth\n", ##
-        #if (!crosstabs) 
-        "\\setlength\\mywidth{3.5in}\n", ##
-        #if (!crosstabs) 
-        "\\usepackage{caption}\n", ##
-        #if (!crosstabs) 
-        "\\captionsetup[table]{labelformat=empty}\n", ##
-        #if (!crosstabs) 
-        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", ##
+        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #crosstabs
+        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #crosstabs
+        "\\usepackage{float}\n", #!crosstabs
+        "\\usepackage{marginnote}\n", #!crosstabs
+        "\\setlength\\extrarowheight{2pt}\n", #!crosstabs
+        "\\newlength\\mywidth\n", #!crosstabs
+        "\\setlength\\mywidth{3.5in}\n", #!crosstabs
+        "\\usepackage{caption}\n", #!crosstabs
+        "\\captionsetup[table]{labelformat=empty}\n", #!crosstabs
+        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #!crosstabs
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
@@ -195,5 +185,17 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         "\\setlength{\\LTright}{\\fill}\n",
         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
         "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
+}
+
+latexDecoration <- function(item, item_theme, scriptsize) {
+    if (!is.null(item_theme$decoration)) { 
+        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
+        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
+        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
+    }
+    if (scriptsize) {
+        item <- paste0("\\\\ \n \\scriptsize{", item, "}")
+    }
+    return(item)
 }
 
