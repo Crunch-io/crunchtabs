@@ -88,7 +88,7 @@ latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
     collapsestring <- "\\\\\n"
     
     sepstring <- if (!crosstabs && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
-    if (!crosstabs && ncol(body) == 2) body[[1]] <- paste0("\\hspace*{0.5in}", body[[1]])
+    if (!crosstabs) body[[1]] <- paste0(" & ", body[[1]])
     if (!crosstabs) {
         return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))
@@ -151,16 +151,26 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         if (is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) },
         "}\n",
         if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
-        if (crosstabs) "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
-        if (crosstabs) "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", ##
-        if (!crosstabs) "\\usepackage{float}\n", ##
-        if (!crosstabs) "\\usepackage{marginnote}\n", ##
-        if (!crosstabs) "\\setlength\\extrarowheight{2pt}\n", ##
-        if (!crosstabs) "\\newlength\\mywidth\n", ##
-        if (!crosstabs) "\\setlength\\mywidth{3.5in}\n", ##
-        if (!crosstabs) "\\usepackage{caption}\n", ##
-        if (!crosstabs) "\\captionsetup[table]{labelformat=empty}\n", ##
-        if (!crosstabs) "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", ##
+        #if (crosstabs) 
+        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
+        #if (crosstabs) 
+        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", ##
+        #if (!crosstabs) 
+        "\\usepackage{float}\n", ##
+        #if (!crosstabs) 
+        "\\usepackage{marginnote}\n", ##
+        #if (!crosstabs) 
+        "\\setlength\\extrarowheight{2pt}\n", ##
+        #if (!crosstabs) 
+        "\\newlength\\mywidth\n", ##
+        #if (!crosstabs) 
+        "\\setlength\\mywidth{3.5in}\n", ##
+        #if (!crosstabs) 
+        "\\usepackage{caption}\n", ##
+        #if (!crosstabs) 
+        "\\captionsetup[table]{labelformat=empty}\n", ##
+        #if (!crosstabs) 
+        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", ##
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",

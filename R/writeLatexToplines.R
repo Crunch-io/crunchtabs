@@ -49,7 +49,7 @@ toplineHeader <- function(x, page_width, num = NULL, row_label_width = 1.5, padd
 #' @export
 toplineHeader.default <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
     # tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
-    tab_definition <- paste0("\\begin{longtable}{p{6in}}")
+    tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
     toplineTableDef(var, page_width, num, tab_definition, header_row = "\n", theme = theme)
 }
 
@@ -82,12 +82,12 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
         }
     }
     # header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
-    header_row <- paste("\\\\", header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
+    header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), "\\\n")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
     # tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
     #     "in}", col.header, "}")
-    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
+    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", row_label_width,
         "in}", col.header, "}")
     
     toplineTableDef(var, page_width, num, tab_definition, header_row, theme)
