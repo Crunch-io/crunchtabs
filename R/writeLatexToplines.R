@@ -26,7 +26,7 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     latexHeadData <- latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = FALSE)
     # latexHeadData <- latexHeadT(title = title, font_size = font_size, theme = theme, subtitle = subtitle)
     latexStartData <- latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
-        font_size = NULL, crosstabs = FALSE)
+        font_size = NULL)
     latexFootData <- latexFootT()
     out <- c(latexHeadData, latexStartData, out, latexFootData)
     
@@ -90,7 +90,9 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
 toplineTableDef <- function(var, page_width, num, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
     if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
-    is_array <- is(var, "ToplineCategoricalArray")
+    col_num_sum <- if (is(var, "ToplineCategoricalArray")) {
+        nrow(var$crosstabs$Results$`___total___`$base) + 2 
+    } else { 2 }
     headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
     foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
     if (headtext %in% "tbc") headtext <- "continued from previous page"
@@ -104,26 +106,19 @@ toplineTableDef <- function(var, page_width, num, tab_definition, header_row, th
                 scriptsize = FALSE)), collapse = "\\\\ \n\t"), "}}\\\\\\",
         header_row,
         "\\endfirsthead\n",
-        "\\multicolumn{", if (is_array) { nrow(var$crosstabs$Results$`___total___`$base) + 2 
-            } else { 2 }, "}{c}{",
+        "\\multicolumn{", col_num_sum, "}{c}{",
         "\\textit{", headtext, "}} \\\\",
         header_row,
         "\\endhead\n",
-        "\\multicolumn{", if (is_array) { nrow(var$crosstabs$Results$`___total___`$base) + 2 
-            } else { 2 }, "}{c}{",
+        "\\multicolumn{", col_num_sum, "}{c}{",
         "\\textit{", foottext, "}} \\\\ \n",
         "\\endfoot\n",
         "\\endlastfoot\n", sep = ""))
 }
 
-toplineFooterDef <- function(var) {
-    return(paste0(
-        "\\end{longtable}\n",
-        "\\end{center}"))
-}
+toplineFooterDef <- function(var) return("\\end{longtable}\n\\end{center}")
 
-
-latexFootT <- function() return("\\end{hyphenrules} \n \\end{document}\n")
+latexFootT <- function() return("\\end{document}\n")
 
 
 

@@ -32,7 +32,7 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
                 multirow = multirowheaderlines, page_width = 9, row_label_width = theme$format_label_column$col_width, theme = theme)
         }),
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
-            font_size = if (theme$font_size < 16) { "small" } else { "large" }, crosstabs = TRUE),
+            font_size = if (theme$font_size < 16) { "small" } else { "large" }),
         out,
         latexFootLT()
     )
@@ -64,7 +64,8 @@ longtableHeadFootB <- function (banner, num = 1, coltype = "d",
     
     banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
     
-    banner_def_body <- rep(makeLatexBanner(banner, binfo, multirow, width=round((page_width - row_label_width)/col_num_sum-.1,2)), 2)
+    banner_def_body <- rep(makeLatexBanner(banner, multirow, 
+        width=round((page_width - row_label_width)/col_num_sum-.1,2), theme = theme), 2)
     banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", headtext, "} \\\\ ", banner_def_body[2])
     banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", collapse="\\endfirsthead \n")
     
@@ -112,44 +113,56 @@ latexTableHeadTitle <- function (var, theme) {
                 scriptsize = FALSE)), collapse = "\\\\ \n"), "} \\\\", sep="")
 }
 
-makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
-    cps <- getMulticolumnWidth(binfo.i)
-    if (nchar(binfo.i[1]) > 0) {
-        binfo.i[[1]] <- paste0("\\bf ",binfo.i[[1]])
-    }
-    print(cps)
-    binfo.i <- lapply(seq_along(binfo.i), function(i) {paste0("\\multicolumn{", cps[i],
-        if (!multirow | cps[i]>1) { "}{c}{" } else { paste0("}{m{", width,"in}}{\\centering ") },
-        escM(binfo.i[[i]]),
-        "}",
-        collapse=" & ")})
-    
-    return(unlist(binfo.i))
+# makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
+#     cps <- getMulticolumnWidth(binfo.i)
+#     if (nchar(binfo.i[1]) > 0) {
+#         binfo.i[[1]] <- paste0("\\bf ",binfo.i[[1]])
+#     }
+#     binfo.i <- lapply(seq_along(binfo.i), function(i) {paste0("\\multicolumn{", cps[i],
+#         if (!multirow | cps[i]>1) { "}{c}{" } else { paste0("}{m{", width,"in}}{\\centering ") },
+#         escM(binfo.i[[i]]),
+#         "}",
+#         collapse=" & ")})
+#     
+#     return(unlist(binfo.i))
+# }
+
+makeLatexBanner <- function (banner, multirow=FALSE, width=NULL, theme) {
+    binfo <- get_banner_info(banner, theme)
+    m_split <- paste0("}{m{", width,"in}}{\\centering ")
+    br <- ifelse(!multirow | binfo$len > 1, "}{c}{", m_split)
+    ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, br, "\\bf ",
+        escM(binfo$names), "}", collapse = "", sep = ""),
+        paste(" & \\multicolumn{1", ifelse(!multirow, "}{c}{", m_split),
+            escM(unlist(binfo$multicols)), "}", collapse = "", sep = "")),
+        " \\\\")
+    ban[2] <- paste("{\\bf #1}", ban[2])
+
+    ban[1] <- paste0(ban[1], paste0(" \\cmidrule(lr{.75em}){",
+        binfo$multicols_csum[2:(length(binfo$multicols_csum)-1)], "-",
+        binfo$multicols_csum[3:length(binfo$multicols_csum)] - 1, "}", collapse = ""))
+    return(paste(c(ban, "\\midrule \n"), collapse = "\n"))
 }
 
-makeLatexBanner <- function (banner, binfo, multirow=FALSE, width=NULL,
-    tabreport=TRUE) {
-    binfo2 <- get_banner_info(banner, theme)
-    ban2 <- c(paste(" & \\multicolumn{", binfo2$len, "}{c}{\\bf ", 
-        escM(binfo2$names), "}", collapse = "", sep = ""),
-        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo2$multicols)), "}", 
-            collapse = "", sep = ""))
-    ban <- paste("&",apply(as.data.frame(lapply(binfo, makeLatexBanner.internal,
-        multirow, width), stringsAsFactors=FALSE), 1, paste, collapse= " & "),"\\\\", sep=" ")
-    # browser()
-    ban[2] <- paste("{\\bf #1}", ban[2])
-    
-    multicols <- c(1, sapply(binfo, function(x) length(x[[2]])))
-    notempty <- c(FALSE, sapply(binfo, function(x) nchar(x[[1]]) > 0))
-    multicols_csum <- cumsum(multicols)
-    for (j in seq_along(multicols))
-        if (multicols[j] > 1 && notempty[j]) {
-            ban[1] <- paste0(ban[1], " \\cmidrule(lr{.75em}){", 1+multicols_csum[j-1], "-", multicols_csum[j], "}")
-        }
-    
-    ban <- c(ban, "\\midrule \n")
-    return(paste(ban, collapse="\n"))
-}
+# makeLatexBanner <- function (banner, binfo, multirow=FALSE, width=NULL,
+#     tabreport=TRUE) {
+#     binfo2 <- get_banner_info(banner, theme)
+#     ban <- paste("&",apply(as.data.frame(lapply(binfo, makeLatexBanner.internal,
+#         multirow, width), stringsAsFactors=FALSE), 1, paste, collapse= " & "),"\\\\", sep=" ")
+#     ban[2] <- paste("{\\bf #1}", ban[2])
+#     
+#     multicols <- c(1, sapply(binfo, function(x) length(x[[2]])))
+#     notempty <- c(FALSE, sapply(binfo, function(x) nchar(x[[1]]) > 0))
+#     multicols_csum <- cumsum(multicols)
+#     for (j in seq_along(multicols))
+#         if (multicols[j] > 1 && notempty[j]) {
+#             ban[1] <- paste0(ban[1], " \\cmidrule(lr{.75em}){", 1+multicols_csum[j-1], "-", multicols_csum[j], "}")
+#         }
+#     
+#     ban <- c(ban, "\\midrule \n")
+#     browser()
+#     return(paste(ban, collapse="\n"))
+# }
 
 tableFootLT <- function() "\n \\end{longtable}\n\n"
 

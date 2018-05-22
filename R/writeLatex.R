@@ -169,13 +169,12 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\let\\PBS=\\PreserveBackslash\n")
 }
 
-latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size, crosstabs) {
+latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
     if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
     if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
     if (!is.null(font_size)) { font_size <- paste0("{\\", font_size, "\n") }
     return(paste0("\\begin{document}\n", 
-        if (!crosstabs) "\\begin{hyphenrules}{nohyphenation}\n", 
         "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe, 
         "\\end{tabular}\n", 
