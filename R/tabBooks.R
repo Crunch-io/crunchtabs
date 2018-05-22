@@ -98,7 +98,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             structure(c(metadata, 
                 alias = valias, 
                 subnumber = ri,
-                subname = subnames[ri],
+                subname = if (!is_toplines_array) subnames[ri],
                 number = paste0(which(var_nums %in% vi), if (is_crosstabs_array) 
                     get_grid_number(ri), collapse = ""),
                 crosstabs = list(sapply(banner_use, function(bu) {

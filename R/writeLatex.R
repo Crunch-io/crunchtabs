@@ -88,6 +88,7 @@ latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
     collapsestring <- "\\\\\n"
     
     sepstring <- if (!crosstabs && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
+    if (!crosstabs && ncol(body) == 2) body[[1]] <- paste0("\\hspace*{0.5in}", body[[1]])
     if (!crosstabs) {
         return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))

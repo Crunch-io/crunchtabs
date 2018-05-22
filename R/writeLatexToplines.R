@@ -17,8 +17,8 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     bodies <- lapply(results, function(x) 
         latexTable.body(x$Results, autorownames = TRUE, crosstabs = FALSE))
     
-    tables <- sapply(ltranspose(list(headers, bodies, footers), use_names = TRUE), function(x) paste(x, collapse = "\n"))
-    
+    tables <- sapply(ltranspose(list(headers, bodies, footers), use_names = TRUE), 
+        function(x) paste(c(x, if (theme$one_per_sheet) { "\\clearpage" }), collapse = "\n"))
     out <- c(tables, append_text)
     
     latexHeadData <- latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = FALSE)
@@ -46,7 +46,8 @@ toplineHeader <- function(x, page_width, num = NULL, row_label_width = 1.5, padd
 
 #' @export
 toplineHeader.default <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
-    tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
+    # tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
+    tab_definition <- paste0("\\begin{longtable}{p{6in}}")
     toplineTableDef(var, page_width, num, tab_definition, header_row = "\n", theme = theme)
 }
 
@@ -78,10 +79,13 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
             col_width <- paste(round((page_width - padding - 0.75 - row_label_width)/col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-    header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
+    # header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
+    header_row <- paste("\\\\", header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
-    tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
+    # tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
+    #     "in}", col.header, "}")
+    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
         "in}", col.header, "}")
     
     toplineTableDef(var, page_width, num, tab_definition, header_row, theme)
@@ -89,19 +93,40 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
 
 toplineTableDef <- function(var, page_width, num, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
-    var_info$format_var_subname <- NULL
-    for (info_name in names(var_info)) {
-        var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
-            scriptsize = info_name != names(var_info)[1])
-    }
+    # for (info_name in names(var_info)) {
+    #     var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
+    #         scriptsize = info_name != names(var_info)[1])
+    # }    
     if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
-    return(paste("\\begin{table}[H]
-        \\addcontentsline{lot}{table}{", escM(getName(var)), "}
-        \\colorbox{gray}{
-        \\parbox{",
-        page_width, "in}{", paste0(unlist(var_info), collapse = ""), "}}
-        \\begin{center}", tab_definition,
-        "\n", header_row, "\n", sep = ""))
+    is_array <- is(var, "ToplineCategoricalArray")
+    headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
+    foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
+    if (headtext %in% "tbc") headtext <- "continued from previous page"
+    if (foottext %in% "tbc") foottext <- "continued on the next page \\dots"
+    # return(paste("\\begin{table}[H]
+    #     \\addcontentsline{lot}{table}{", escM(getName(var)), "}
+    #     \\colorbox{gray}{
+    #     \\parbox{",
+    #     page_width, "in}{", paste0(unlist(var_info), collapse = ""), "}}
+    #     \\begin{center}", tab_definition,
+    #     "\n", header_row, "\n", sep = ""))    
+    return(paste("\\begin{center}\n",
+        tab_definition, "\n",
+        "\t\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
+        "\t\\colorbox{gray}{\n",
+        "\t\\parbox{6.5in}{", paste(sapply(names(var_info), function(info_name)
+            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
+                scriptsize = FALSE)), collapse = "\\\\ \n\t"), "}}\\\\\\",
+        header_row,
+        "\\endfirsthead\n",
+        if (is_array) { " \\multicolumn{4}{r}{" } else { "\\centerline{" },
+        "\\textit{", headtext, "}} \\\\",
+        header_row,
+        "\\endhead\n",
+        if (is_array) { "\\multicolumn{4}{r}{" } else { "\\centerline{" },
+        "\\textit{", foottext, "}} \\\\ \n",
+        "\\endfoot\n",
+        "\\endlastfoot\n", sep = ""))
 }
 
 latexDecoration <- function(item, item_theme, scriptsize) {
@@ -132,13 +157,16 @@ latexDecoration <- function(item, item_theme, scriptsize) {
 #' }
 
 toplineFooterDef <- function(var) {
-    paste0("\\end{", paste0("tabular", if (is(var, "ToplineCategoricalArray")) { "*" } else { "" }), "}
-        \\end{center}
-        \\end{table}")
+    # paste0("\\end{", paste0("tabular", if (is(var, "ToplineCategoricalArray")) { "*" } else { "" }), "}
+    #     \\end{center}
+    #     \\end{table}")
+    return(paste0(
+        "\\end{longtable}\n",
+        "\\end{center}"))
 }
 
 
-latexFootT <- function() "\\end{hyphenrules} \n \\end{document}\n"
+latexFootT <- function() return("\\end{hyphenrules} \n \\end{document}\n")
 
 # latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
 #     moe_text <- ""

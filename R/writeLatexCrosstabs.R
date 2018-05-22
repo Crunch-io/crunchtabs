@@ -27,7 +27,7 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
     out <- sapply(seq_along(data_summary$results), function(i) {
         c(paste(headers[[i]], bodies[[i]], tableFootLT(),
             sep="\n", collapse="\n"),
-            if (theme$one_per_sheet) { "\\clearpage" } else { "" })
+            if (theme$one_per_sheet) { "\\clearpage" })
     })
     out <- c(out, append_text)
     out <- c(

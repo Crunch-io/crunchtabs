@@ -151,7 +151,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
-            colnames(x) <- var$subnames
+            colnames(x) <- var[["subnames"]]
             t(x)
         })
     }
@@ -162,12 +162,12 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
 
 var_header <- function(var, theme) {
     if_there <- function(str) { if (!(is.null(str) || is.na(str) || str == "")) return(str) }
-    var_info <- list(format_var_alias = if_there(var$alias),
-        format_var_name = if_there(var$name),
-        format_var_description = if_there(var$description),
-        format_var_filtertext = if_there(var$notes),
-        format_var_subname = if_there(var$subname))
-    number <- if_there(var$number)
+    var_info <- list(format_var_alias = if_there(var[["alias"]]),
+        format_var_name = if_there(var[["name"]]),
+        format_var_description = if_there(var[["description"]]),
+        format_var_filtertext = if_there(var[["notes"]]),
+        format_var_subname = if_there(var[["subname"]]))
+    number <- if_there(var[["number"]])
     var_info2 <- list()
     for (info_name in intersect(names(theme), names(var_info))) {
         if (!is.null(theme[[info_name]]) && (var$type != "categorical_array" ||
