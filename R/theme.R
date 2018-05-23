@@ -126,6 +126,9 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
     theme <- modifyList(default_theme, dots, keep.null = TRUE)
     theme <- theme[union(names(dots), names(default_theme))]
     
+    if (theme$latex_headtext %in% "tbc") theme$latex_headtext <- "continued from previous page"
+    if (theme$latex_foottext %in% "tbc") theme$latex_foottext <- "continued on the next page \\dots"
+    
     theme_validator(theme)
 
     class(theme) <- "Theme"
@@ -182,7 +185,9 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
         excel_percent_sign = TRUE,
         digits = 0, 
         one_per_sheet = FALSE,
-        latex_round_percentages = TRUE)
+        latex_round_percentages = TRUE,
+        latex_headtext = "",
+        latex_foottext = "")
 
     class(defaults) <- "Theme"
     
@@ -220,7 +225,9 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         excel_show_grid_lines = FALSE,
         excel_freeze_column = 0,
         excel_orientation = "portrait",
-        latex_round_percentages = FALSE
+        latex_round_percentages = FALSE,
+        latex_headtext = "",
+        latex_foottext = ""
         )
 
     class(defaults) <- "Theme"
@@ -361,8 +368,8 @@ validators_to_use <- list(
     include_q_number = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_add_parenthesis = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_adjust = c(class = "character", len = 1, missing = TRUE),
-    latex_foottext = c(class = "character", len = 1, missing = TRUE),
-    latex_headtext = c(class = "character", len = 1, missing = TRUE),
+    latex_foottext = c(class = "character", len = 1, missing = FALSE, default = ""),
+    latex_headtext = c(class = "character", len = 1, missing = FALSE, default = ""),
     latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     logo = list(missing = TRUE, include = list("file", "startRow", "startCol", 
         "width", "height", "units", "dpi")),
@@ -442,5 +449,7 @@ themeUKPolitical <- function() {
         format_min_base = list(min_base = 50, mask = NULL, decoration = "italic"),
         excel_freeze_column = 2,
         digits_final=0,
-        excel_percent_sign=FALSE)
+        excel_percent_sign=FALSE,
+        latex_headtext = "",
+        latex_foottext = "")
 }

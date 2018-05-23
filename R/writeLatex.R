@@ -20,10 +20,6 @@
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
 #' @param multirowheaderlines logical. Should banners allow multi-row headlines? **
-#' @param grid_num_letters logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
-#' have the same number with consecutive letters appended? Defaults to \code{TRUE}. **
-#' @param custom_numbering A vector of custom values to be used for numbering banner tables.
-#' Defaults to \code{NULL} - default numbering scheme is used.
 #' 
 #' @param theme
 #' 
@@ -44,17 +40,12 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
     pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
+    logging = FALSE) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
     
-    if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
-        stop("The length of `custom_numbering` provided (", length(custom_numbering),
-            ") is not equal to the length of the results (", length(data_summary$results), ").")
-    }
-
     theme_validator(theme)
     
     UseMethod("writeLatex", data_summary)
@@ -67,7 +58,7 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
+latexTable.body <- function(df, crosstabs) {
     
     body <- df$data_list$body
     if (!crosstabs || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
@@ -78,10 +69,8 @@ latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
         }))
     }
 
-    if (autorownames) {
-        if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
-        if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
-    }
+    if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
+    if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
     for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
     if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
 
@@ -106,12 +95,12 @@ escM <- function(str) {
     str
 }
 
-getFilterText <- function(var_summary) {
-    filtertext <- getNotes(var_summary)
-    if (!is.na(filtertext) && filtertext != "") {
-        return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
-    }
-}
+# getFilterText <- function(var_summary) {
+#     filtertext <- getNotes(var_summary)
+#     if (!is.na(filtertext) && filtertext != "") {
+#         return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
+#     }
+# }
 
 
 latexHead <- function (theme, title, subtitle, crosstabs) {
@@ -123,6 +112,13 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
             ". It has been set to `helvet`.", .call = FALSE)
     }
     
+    title <- if (is.null(theme$format_title) || is.null(title)) { "" } else { escM(title) }
+    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) }
+    
+    bdr <- if (crosstabs) { 0.5 } else { 1 }
+    
+    logo <- if (!is.null(theme$logo$file)) { paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
+    
     paste0("\\documentclass[", if (crosstabs) { "landscape" } else { paste0(theme$font_size, "pt") }, "]{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         "\\usepackage[utf8]{inputenc}\n",
@@ -130,12 +126,14 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\usepackage{sfmath}\n",
         "\\usepackage{comment}\n",
         "\\usepackage[T1]{fontenc}\n",
-        "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
+        "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {},",
+            "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,", 
+            "linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
         "\\usepackage[scaled]{", theme$font, "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
         "\\usepackage{booktabs, dcolumn, longtable}\n",
-        "\\usepackage[top=0.6in, bottom=0.6in, left=", if (crosstabs) { 0.5 } else { 1 }, 
-            "in, right=", if (crosstabs) { 0.5 } else { 1 }, "in, includeheadfoot]{geometry}\n",
+        "\\usepackage[top=0.6in, bottom=0.6in, left=", bdr, 
+            "in, right=", bdr, "in, includeheadfoot]{geometry}\n",
         "\\usepackage{array}\n",
         "\\usepackage[english]{babel}\n",
         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
@@ -146,11 +144,8 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\renewcommand{\\headrulewidth}{0pt}\n",
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
-        "\\fancyhead[L]{{\\Large {\\bf ",
-        if (is.null(title)) { "" } else { escM(title) }, "}}",
-        if (is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) },
-        "}\n",
-        if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
+        "\\fancyhead[L]{{\\Large {\\bf ", title, "}}", subtitle, "}\n",
+        logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #crosstabs
         "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #crosstabs
         "\\usepackage{float}\n", #!crosstabs
@@ -160,12 +155,10 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\setlength\\mywidth{3.5in}\n", #!crosstabs
         "\\usepackage{caption}\n", #!crosstabs
         "\\captionsetup[table]{labelformat=empty}\n", #!crosstabs
-        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #!crosstabs
+        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}\n", #!crosstabs
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
-        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
-        "\\#1\\let\\",
-        "\\=\\temp}\n",
+        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}\n",
         "\\let\\PBS=\\PreserveBackslash\n")
 }
 

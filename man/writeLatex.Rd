@@ -9,8 +9,7 @@ writeLatex(data_summary, theme = themeDefaultLatex(),
   subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
   field_period = NULL, moe = NULL, append_text = NULL,
   proportions = TRUE, pdf = FALSE, open = FALSE,
-  multirowheaderlines = FALSE, grid_num_letters = TRUE,
-  custom_numbering = NULL, logging = FALSE)
+  multirowheaderlines = FALSE, logging = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -44,12 +43,6 @@ if \code{FALSE} the report shows counts.}
 the default application? Only implemented for MacOS.}
 
 \item{multirowheaderlines}{logical. Should banners allow multi-row headlines? **}
-
-\item{grid_num_letters}{logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
-have the same number with consecutive letters appended? Defaults to \code{TRUE}. **}
-
-\item{custom_numbering}{A vector of custom values to be used for numbering banner tables.
-Defaults to \code{NULL} - default numbering scheme is used.}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

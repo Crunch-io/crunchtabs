@@ -6,7 +6,6 @@ ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
 
 with_temp_dir({
     test_that("Write Latex error handling", {
-        expect_error(writeLatex(cs, custom_numbering = c(letters[1:5])))
         expect_error(writeLatex("stuff"))
         skip_on_appveyor()
         expect_error(writeLatex(cs, filename = NULL, pdf = TRUE))
@@ -22,7 +21,7 @@ with_temp_dir({
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        expect_equal(tex[72], "Sample  &  Adults \\\\ ")
+        expect_equal(tex[81], "Sample  &  Adults \\\\ ")
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
         skip_on_appveyor()

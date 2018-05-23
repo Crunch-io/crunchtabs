@@ -4,37 +4,34 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
     pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
+    logging = FALSE) {
     
-    banner <- data_summary$banner
-
     data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    
+    headers <- lapply(data_summary$results, longtableHeader, theme) # dif
     
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     
-    headers <- lapply(data_summary$results, longtableHeader, theme)
+    bodies <- lapply(results, function (x) 
+        sapply(x, latexTable.body, crosstabs = is(data_summary, "Crosstabs")))
     
-    bodies <- lapply(results, function (x) {
-        sapply(x, function (y) {
-            latexTable.body(y, autorownames = TRUE, crosstabs = TRUE)
-        })
-    })
     out <- sapply(seq_along(data_summary$results), function(i) {
-        c(paste(headers[[i]], bodies[[i]], tableFootLT(),
+        c(paste(headers[[i]], bodies[[i]], tableFootLT(), # dif
             sep="\n", collapse="\n"),
             if (theme$one_per_sheet) { "\\clearpage" })
     })
     out <- c(out, append_text)
     out <- c(
-        latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = TRUE),
-        sapply(seq_along(banner), function (j) {
-            longtableHeadFootB(banner[[j]], num = j, coltype= if (theme$digits == 0) { "g" } else { "d" },
-                multirow = multirowheaderlines, page_width = 9, row_label_width = theme$format_label_column$col_width, theme = theme)
+        latexHead(theme = theme, title = title, subtitle = subtitle, 
+            crosstabs = is(data_summary, "Crosstabs")),
+        sapply(seq_along(data_summary$banner), function (j) {
+            longtableHeadFootB(data_summary$banner[[j]], num = j, coltype= if (theme$digits == 0) { "g" } else { "d" },
+                multirow = multirowheaderlines, page_width = 9, theme = theme)
         }),
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
-            font_size = if (theme$font_size < 16) { "small" } else { "large" }),
+            font_size = if (theme$font_size < 16) { "small" } else { "large" }), # dif
         out,
-        latexFootLT()
+        latexFootLT() # dif
     )
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
@@ -52,36 +49,32 @@ writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(),
 # \bannera{} that takes one argument (first column label)
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
-longtableHeadFootB <- function (banner, num = 1, coltype = "d",
-    multirow = FALSE, page_width = 9, row_label_width, theme) {
-    headtext <- if (is.null(theme$latex_headtext)) "" else theme$latex_headtext
-    foottext <- if (is.null(theme$latex_foottext)) "" else theme$latex_foottext
-    if (headtext == "tbc") headtext <- "continued from previous page"
-    if (foottext == "tbc") foottext <- "continued on the next page \\dots"
-    
+longtableHeadFootB <- function (banner, num, coltype = "d",
+    multirow = FALSE, page_width = 9, theme) {
+
     binfo <- lapply(banner, function(x) {list(getName(x), getNames(x))})
     col_num_sum <- sum(sapply(binfo, function (binfo.i) length(binfo.i[[2]]))) # excludes rownames column, as before
     
     banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
     
     banner_def_body <- rep(makeLatexBanner(banner, multirow, 
-        width=round((page_width - row_label_width)/col_num_sum-.1,2), theme = theme), 2)
-    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", headtext, "} \\\\ ", banner_def_body[2])
+        width=round((page_width - theme$format_label_column$col_width)/col_num_sum-.1,2), theme = theme), 2)
+    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", theme$latex_headtext, "} \\\\ ", banner_def_body[2])
     banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", collapse="\\endfirsthead \n")
     
-    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{", col_num_sum, "}{c}{", foottext, "} \\\\ \n",
+    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{", col_num_sum, "}{c}{", theme$latex_foottext, "} \\\\ \n",
         "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
     
     table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
-        "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}b{", row_label_width, "in}*{", col_num_sum,
+        "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width, "in}*{", col_num_sum,
         "}{", coltype, "}}}\n")
     
     return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
 }
 
-getMulticolumnWidth <- function(binfo.i) {
-    return(c(length(binfo.i[[2]]), length(binfo.i[[1]])))
-}
+# getMulticolumnWidth <- function(binfo.i) {
+#     return(c(length(binfo.i[[2]]), length(binfo.i[[1]])))
+# }
 
 # Header for LongTable with Banner.
 # Title indicates whether the title should be displayed, or not (as in the
