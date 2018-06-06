@@ -3,31 +3,29 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     filename = getName(data_summary), title = getName(data_summary), 
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    logging = FALSE) {
+    pdf = FALSE, open = FALSE, logging = FALSE) {
     
-    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    topline <- is(data_summary, "Toplines")
+    if (is.null(theme$font_size)) { theme$font_size <- 12 }
     
     headers <- lapply(data_summary$results, toplineHeader, theme = theme) # dif
     
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
-    
     bodies <- lapply(results, function (x) 
-        sapply(x, latexTable.body, crosstabs = is(data_summary, "Crosstabs")))
+        sapply(x, latexTable.body, topline = topline))
     
-    out <- sapply(seq_along(data_summary$results), function(i) {
-        c(paste(headers[[i]], bodies[[i]], toplineFooterDef(), # dif
-            sep="\n", collapse="\n"),
-            if (theme$one_per_sheet) { "\\clearpage" })
-    })
-    out <- c(out, append_text)
     out <- c(
-        latexHead(theme = theme, title = title, subtitle = subtitle, 
-            crosstabs = is(data_summary, "Crosstabs")),
+        latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
-            field_period = field_period, moe = moe, font_size = NULL), # dif
-        out,
-        latexFootT() # dif
+            field_period = field_period, moe = moe, font_size = theme$font_size),
+        sapply(seq_along(data_summary$results), function(i) {
+            c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline), # dif
+                sep="\n", collapse="\n"),
+                if (theme$one_per_sheet) { "\\clearpage" })
+        }),
+        append_text,
+        latexDocFoot()
     )
     
     if (!is.null(filename)) {
@@ -49,7 +47,7 @@ toplineHeader <- function(x, theme) {
 #' @export
 toplineHeader.default <- function(var, theme) {
     tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
-    toplineTableDef(var, tab_definition, header_row = "\n", theme = theme)
+    toplineTableDef(var, tab_definition, header_row = "\\longtablesep\n", theme = theme)
 }
 
 #' @export
@@ -80,6 +78,11 @@ toplineHeader.ToplineCategoricalArray <- function(var, theme) {
         }
     }
     header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), "\\\n")
+    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{", 
+        col_names_len + 2, "}{c}{\\textit{", theme$latex_headtext, "}} \\\\",
+        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2, 
+        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n", 
+        sep = "")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
     tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", 
@@ -99,23 +102,24 @@ toplineTableDef <- function(var, tab_definition, header_row, theme) {
         "\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
         "\\colorbox{gray}{\n",
         "\\parbox{6.5in}{", paste(sapply(names(var_info), function(info_name)
-            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
-                scriptsize = FALSE)), collapse = "\\\\ \n\t"), "}}\\\\\\",
+            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]])), 
+            collapse = "\\\\ \n\t"), "}}\\\\\\ \n",
         header_row,
-        "\\endfirsthead\n",
-        "\\multicolumn{", col_num_sum, "}{c}{",
-        "\\textit{", theme$latex_headtext, "}} \\\\",
-        header_row,
-        "\\endhead\n",
-        "\\multicolumn{", col_num_sum, "}{c}{",
-        "\\textit{", theme$latex_foottext, "}} \\\\ \n",
-        "\\endfoot\n",
-        "\\endlastfoot\n", sep = ""))
+        # "\\endfirsthead\n",
+        # "\\multicolumn{", col_num_sum, "}{c}{",
+        # "\\textit{", theme$latex_headtext, "}} \\\\",
+        # header_row,
+        # "\\endhead\n",
+        # "\\multicolumn{", col_num_sum, "}{c}{",
+        # "\\textit{", theme$latex_foottext, "}} \\\\ \n",
+        # "\\endfoot\n",
+        # "\\endlastfoot\n", 
+        sep = ""))
 }
 
-toplineFooterDef <- function() return("\\end{longtable}\n\\end{center}")
+# toplineFooterDef <- function() return("\\end{longtable}\n\\end{center}")
 
-latexFootT <- function() return("\\end{document}\n")
+# latexFootT <- function() return("\\end{document}\n")
 
 
 

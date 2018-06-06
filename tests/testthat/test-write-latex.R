@@ -36,7 +36,6 @@ with_temp_dir({
         writeLatex(cs, theme = theme, pdf = TRUE)
         theme <- themeNew(default_theme = theme, font_size = 20)
         writeLatex(cs, theme = theme, pdf = TRUE)
-        writeLatex(cs, theme = theme, multirowheaderlines = TRUE, pdf = TRUE)
         theme <- themeNew(default_theme = theme, format_unweighted_n=list(latex_round_percentages = TRUE))
         writeLatex(cs, theme = theme, pdf = TRUE)
         theme <- themeNew(default_theme = theme, format_weighted_n=list(latex_add_parenthesis = TRUE))

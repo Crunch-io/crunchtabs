@@ -19,7 +19,6 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param multirowheaderlines logical. Should banners allow multi-row headlines? **
 #' 
 #' @param theme
 #' 
@@ -39,8 +38,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     filename = getName(data_summary), title = getName(data_summary), 
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    logging = FALSE) {
+    pdf = FALSE, open = FALSE, logging = FALSE) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
@@ -58,10 +56,10 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-latexTable.body <- function(df, crosstabs) {
+latexTable.body <- function(df, topline) {
     
     body <- df$data_list$body
-    if (!crosstabs || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
+    if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
         summary <- NULL 
     } else { 
         summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
@@ -76,9 +74,9 @@ latexTable.body <- function(df, crosstabs) {
 
     collapsestring <- "\\\\\n"
     
-    sepstring <- if (!crosstabs && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
-    if (!crosstabs) body[[1]] <- paste0(" & ", body[[1]])
-    if (!crosstabs) {
+    sepstring <- if (topline && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
+    if (topline) body[[1]] <- paste0(" & ", body[[1]])
+    if (topline) {
         return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))
     } else {
@@ -103,7 +101,7 @@ escM <- function(str) {
 # }
 
 
-latexHead <- function (theme, title, subtitle, crosstabs) {
+latexDocHead <- function (theme, title, subtitle, topline) {
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
         "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
@@ -115,11 +113,10 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
     title <- if (is.null(theme$format_title) || is.null(title)) { "" } else { escM(title) }
     subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) }
     
-    bdr <- if (crosstabs) { 0.5 } else { 1 }
-    
+    bdr <- if (topline) { 1 } else { 0.5 }
     logo <- if (!is.null(theme$logo$file)) { paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
-    
-    paste0("\\documentclass[", if (crosstabs) { "landscape" } else { paste0(theme$font_size, "pt") }, "]{article}\n",
+
+    paste0("\\documentclass[", if (!topline) { "landscape" }, "]{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
@@ -146,48 +143,68 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\fancyhead{}\n",
         "\\fancyhead[L]{{\\Large {\\bf ", title, "}}", subtitle, "}\n",
         logo,
-        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #crosstabs
-        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #crosstabs
-        "\\usepackage{float}\n", #!crosstabs
-        "\\usepackage{marginnote}\n", #!crosstabs
-        "\\setlength\\extrarowheight{2pt}\n", #!crosstabs
-        "\\newlength\\mywidth\n", #!crosstabs
-        "\\setlength\\mywidth{3.5in}\n", #!crosstabs
-        "\\usepackage{caption}\n", #!crosstabs
-        "\\captionsetup[table]{labelformat=empty}\n", #!crosstabs
-        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}\n", #!crosstabs
+        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #!topline
+        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #!topline
+        "\\usepackage{float}\n", #topline
+        "\\usepackage{marginnote}\n", #topline
+        "\\setlength\\extrarowheight{2pt}\n", #topline
+        "\\newlength\\mywidth\n", #topline
+        "\\setlength\\mywidth{3.5in}\n", #topline
+        "\\usepackage{caption}\n", #topline
+        "\\captionsetup[table]{labelformat=empty}\n", #topline
+        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}\n", #topline
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}\n",
-        "\\let\\PBS=\\PreserveBackslash\n")
+        "\\let\\PBS=\\PreserveBackslash\n",
+        "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{", 
+            escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{", 
+            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", #TODO: make this work
+        "\\usepackage[titles]{tocloft}\n", #TODO: make this work
+        "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
+        "\\newcommand{\\descriptionfont}{", 
+            fontLine(theme$format_var_description$font_size), "}", #TODO: make this work
+        "\n\n\n\n\n")
 }
+
+fontLine <- function(size) { paste0("\\fontsize{", size, "}{", size * 1.5, "}") }
 
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
     if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
     if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
-    if (!is.null(font_size)) { font_size <- paste0("{\\", font_size, "\n") }
     return(paste0("\\begin{document}\n", 
         "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe, 
         "\\end{tabular}\n", 
         if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" }, 
-        font_size,
+        "{", #fontLine(font_size), "\n", #TODO: make this work
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
         "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
 }
 
-latexDecoration <- function(item, item_theme, scriptsize) {
+latexDecoration <- function(item, item_theme) {
     if (!is.null(item_theme$decoration)) { 
         if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
         if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
         if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
     }
-    if (scriptsize) {
-        item <- paste0("\\\\ \n \\scriptsize{", item, "}")
+    if (!is.null(item_theme$font_size)) {
+        item <- paste0("{\\fontsize{", item_theme$font_size, "}{12}", item, "}")
     }
     return(item)
 }
 
+latexTableFoot <- function(topline) {
+    if (topline) { 
+        return("\n\\end{longtable}\n\\end{center}\n\n")
+    } else {
+        return("\n\\end{longtable}\n\n")
+    }
+}
+
+latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
+    
+    

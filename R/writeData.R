@@ -72,6 +72,10 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         if (is.vector(data)) data <- t(data)
         theme_dt <- theme[[paste0("format_", dt)]]
         
+        if (prop_v) {
+            data[is.na(data)] <- 0
+        }
+        
         if (prop_v && proportions && (latex || !theme$excel_percent_sign)) {
             data[] <- data * 100
         }
