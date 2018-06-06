@@ -102,19 +102,23 @@ escM <- function(str) {
 
 
 latexDocHead <- function (theme, title, subtitle, topline) {
-    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
-        "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
+    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
+        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
+        "tgschola","tgtermes","times","utopia")
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
             ". It has been set to `helvet`.", .call = FALSE)
     }
     
-    title <- if (is.null(theme$format_title) || is.null(title)) { "" } else { escM(title) }
-    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) }
+    title <- if (is.null(theme$format_title) || is.null(title)) { "" 
+        } else { escM(title) }
+    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" 
+        } else { paste(" \\\\", escM(subtitle)) }
     
     bdr <- if (topline) { 1 } else { 0.5 }
-    logo <- if (!is.null(theme$logo$file)) { paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
+    logo <- if (!is.null(theme$logo$file)) { 
+        paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
 
     paste0("\\documentclass[", if (!topline) { "landscape" }, "]{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
@@ -159,11 +163,14 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\let\\PBS=\\PreserveBackslash\n",
         "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{", 
             escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{", 
-            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", #TODO: make this work
+            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", 
         "\\usepackage[titles]{tocloft}\n", #TODO: make this work
         "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
-        "\\newcommand{\\descriptionfont}{", 
-            fontLine(theme$format_var_description$font_size), "}", #TODO: make this work
+        latexDecoration("format_var_description", theme$format_var_description),
+        latexDecoration("format_var_name", theme$format_var_name),
+        latexDecoration("format_var_alias", theme$format_var_alias),
+        latexDecoration("format_var_filtertext", theme$format_var_filtertext),
+        latexDecoration("format_var_subname", theme$format_var_subname),
         "\n\n\n\n\n")
 }
 
@@ -185,16 +192,17 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
 }
 
-latexDecoration <- function(item, item_theme) {
+latexDecoration <- function(item_name, item_theme) {
+    item <- "#1"
     if (!is.null(item_theme$decoration)) { 
-        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
         if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
         if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
+        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
     }
     if (!is.null(item_theme$font_size)) {
-        item <- paste0("{\\fontsize{", item_theme$font_size, "}{12}", item, "}")
+        item <- paste0(fontLine(item_theme$font_size), item)
     }
-    return(item)
+    return(paste0("\\newcommand{\\", gsub("_", "", item_name), "}[1]{", item, "}\n"))
 }
 
 latexTableFoot <- function(topline) {

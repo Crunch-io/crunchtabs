@@ -119,7 +119,7 @@ latexTableHeadTitle <- function (var, theme) {
     paste("\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
         "\\hangindent=0em \\parbox{8.5in}{", " \n",
         paste(sapply(names(var_info), function(info_name)
-            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]])), 
+            paste0("\\", gsub("_", "", info_name), "{", escM(var_info[[info_name]]), "}")), 
             collapse = "\\\\ \n"), "} \\\\", sep="")
 }
 

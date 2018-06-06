@@ -93,27 +93,15 @@ toplineHeader.ToplineCategoricalArray <- function(var, theme) {
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
-    if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
-    col_num_sum <- if (is(var, "ToplineCategoricalArray")) {
-        nrow(var$crosstabs$Results$`___total___`$base) + 2 
-    } else { 2 }
+    if (length(var_info) == 0) var_info <- list(format_var_name = "\\color{gray}{404}")
     return(paste("\\begin{center}\n",
         tab_definition, "\n",
         "\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
         "\\colorbox{gray}{\n",
         "\\parbox{6.5in}{", paste(sapply(names(var_info), function(info_name)
-            latexDecoration(escM(var_info[[info_name]]), theme[[info_name]])), 
-            collapse = "\\\\ \n\t"), "}}\\\\\\ \n",
+            paste0("\\", gsub("_", "", info_name), "{", escM(var_info[[info_name]]), "}")), 
+            collapse = "\\\\ \n"), "}}\\\\\\ \n",
         header_row,
-        # "\\endfirsthead\n",
-        # "\\multicolumn{", col_num_sum, "}{c}{",
-        # "\\textit{", theme$latex_headtext, "}} \\\\",
-        # header_row,
-        # "\\endhead\n",
-        # "\\multicolumn{", col_num_sum, "}{c}{",
-        # "\\textit{", theme$latex_foottext, "}} \\\\ \n",
-        # "\\endfoot\n",
-        # "\\endlastfoot\n", 
         sep = ""))
 }
 
