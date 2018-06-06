@@ -21,7 +21,8 @@ with_temp_dir({
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        expect_equal(tex[81], "Sample  &  Adults \\\\ ")
+        # print(which(tex == "Sample  &  Adults \\\\ "))
+        expect_equal(tex[94], "Sample  &  Adults \\\\ ")
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
         skip_on_appveyor()
@@ -47,7 +48,7 @@ with_temp_dir({
         writeLatex(ts)
         expect_true(file.exists("Example Dataset with Nets.tex"))
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        expect_equal(tex[1], "\\documentclass[12pt]{article}")
+        expect_equal(tex[1], "\\documentclass{article}")
     
         skip_on_appveyor()
         writeLatex(ts, pdf = TRUE)

@@ -120,7 +120,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     logo <- if (!is.null(theme$logo$file)) { 
         paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
 
-    paste0("\\documentclass[", if (!topline) { "landscape" }, "]{article}\n",
+    paste0("\\documentclass", if (!topline) { "[landscape]" }, "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
