@@ -19,11 +19,6 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param multirowheaderlines logical. Should banners allow multi-row headlines? **
-#' @param grid_num_letters logical. Should each layer of a \code{categorical_array} variable (a "grid" question)
-#' have the same number with consecutive letters appended? Defaults to \code{TRUE}. **
-#' @param custom_numbering A vector of custom values to be used for numbering banner tables.
-#' Defaults to \code{NULL} - default numbering scheme is used.
 #' 
 #' @param theme
 #' 
@@ -43,18 +38,12 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     filename = getName(data_summary), title = getName(data_summary), 
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
+    pdf = FALSE, open = FALSE, logging = FALSE) {
     
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
     
-    if (!is.null(custom_numbering) && length(custom_numbering) != length(data_summary$results)) {
-        stop("The length of `custom_numbering` provided (", length(custom_numbering),
-            ") is not equal to the length of the results (", length(data_summary$results), ").")
-    }
-
     theme_validator(theme)
     
     UseMethod("writeLatex", data_summary)
@@ -67,10 +56,10 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
+latexTable.body <- function(df, topline) {
     
     body <- df$data_list$body
-    if (!crosstabs || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
+    if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
         summary <- NULL 
     } else { 
         summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
@@ -78,17 +67,16 @@ latexTable.body <- function(df, autorownames = FALSE, crosstabs) {
         }))
     }
 
-    if (autorownames) {
-        if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
-        if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
-    }
+    if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
+    if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
     for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
     if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
 
     collapsestring <- "\\\\\n"
     
-    sepstring <- if (!crosstabs && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
-    if (!crosstabs) {
+    sepstring <- if (topline && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
+    if (topline) body[[1]] <- paste0(" & ", body[[1]])
+    if (topline) {
         return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
             collapsestring))
     } else {
@@ -105,35 +93,48 @@ escM <- function(str) {
     str
 }
 
-getFilterText <- function(var_summary) {
-    filtertext <- getNotes(var_summary)
-    if (!is.na(filtertext) && filtertext != "") {
-        return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
-    }
-}
+# getFilterText <- function(var_summary) {
+#     filtertext <- getNotes(var_summary)
+#     if (!is.na(filtertext) && filtertext != "") {
+#         return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
+#     }
+# }
 
 
-latexHead <- function (theme, title, subtitle, crosstabs) {
-    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern","lmr","palatino","tgadventor",
-        "tgbonum","tgcursor","tgheros","tgpagella","tgschola","tgtermes","times","utopia")
+latexDocHead <- function (theme, title, subtitle, topline) {
+    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
+        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
+        "tgschola","tgtermes","times","utopia")
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
             ". It has been set to `helvet`.", .call = FALSE)
     }
     
-    paste0("\\documentclass[", if (crosstabs) { "landscape" } else { paste0(theme$font_size, "pt") }, "]{article}\n",
+    title <- if (is.null(theme$format_title) || is.null(title)) { "" 
+        } else { escM(title) }
+    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" 
+        } else { paste(" \\\\", escM(subtitle)) }
+    
+    bdr <- if (topline) { 1 } else { 0.5 }
+    logo <- if (!is.null(theme$logo$file)) { 
+        paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
+
+    paste0("\\documentclass", if (!topline) { "[landscape]" }, "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
         "\\usepackage[utf8]{inputenc}\n",
         "\\usepackage{fancyhdr}\n",
         "\\usepackage{sfmath}\n",
+        "\\usepackage{comment}\n",
         "\\usepackage[T1]{fontenc}\n",
-        "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
+        "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {},",
+            "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,", 
+            "linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
         "\\usepackage[scaled]{", theme$font, "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
-        "\\usepackage{booktabs, ", if (crosstabs) "dcolumn, ", "longtable}\n",
-        "\\usepackage[top=0.6in, bottom=0.6in, left=", if (crosstabs) { 0.5 } else { 1 }, 
-            "in, right=", if (crosstabs) { 0.5 } else { 1 }, "in, includeheadfoot]{geometry}\n",
+        "\\usepackage{booktabs, dcolumn, longtable}\n",
+        "\\usepackage[top=0.6in, bottom=0.6in, left=", bdr, 
+            "in, right=", bdr, "in, includeheadfoot]{geometry}\n",
         "\\usepackage{array}\n",
         "\\usepackage[english]{babel}\n",
         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}\n",
@@ -144,44 +145,74 @@ latexHead <- function (theme, title, subtitle, crosstabs) {
         "\\renewcommand{\\headrulewidth}{0pt}\n",
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
-        "\\fancyhead[L]{{\\Large {\\bf ",
-        if (is.null(title)) { "" } else { escM(title) }, "}}",
-        if (is.null(subtitle)) { "" } else { paste(" \\\\", escM(subtitle)) },
-        "}\n",
-        if (!is.null(theme$logo$file)) paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n"),
-        if (crosstabs) "\\newcolumntype{d}{D{.}{.}{3.2}}\n", ##
-        if (crosstabs) "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", ##
-        if (!crosstabs) "\\usepackage{float}\n", ##
-        if (!crosstabs) "\\usepackage{marginnote}\n", ##
-        if (!crosstabs) "\\setlength\\extrarowheight{2pt}\n", ##
-        if (!crosstabs) "\\newlength\\mywidth\n", ##
-        if (!crosstabs) "\\setlength\\mywidth{3.5in}\n", ##
-        if (!crosstabs) "\\usepackage{caption}\n", ##
-        if (!crosstabs) "\\captionsetup[table]{labelformat=empty}\n", ##
-        if (!crosstabs) "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", ##
+        "\\fancyhead[L]{{", latexDecoration(title, theme$format_title), "}", 
+            latexDecoration(subtitle, theme$format_subtitle), "}\n",
+        logo,
+        "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #!topline
+        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #!topline
+        "\\usepackage{float}\n", #topline
+        "\\usepackage{marginnote}\n", #topline
+        "\\setlength\\extrarowheight{2pt}\n", #topline
+        "\\newlength\\mywidth\n", #topline
+        "\\setlength\\mywidth{3.5in}\n", #topline
+        "\\usepackage{caption}\n", #topline
+        "\\captionsetup[table]{labelformat=empty}\n", #topline
+        "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}\n", #topline
         "\\fancyfoot{}\n",
         "\\fancyfoot[R]{\\thepage}\n",
-        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\",
-        "\\#1\\let\\",
-        "\\=\\temp}\n",
-        "\\let\\PBS=\\PreserveBackslash\n")
+        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}\n",
+        "\\let\\PBS=\\PreserveBackslash\n",
+        "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{", 
+            escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{", 
+            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", 
+        "\\usepackage[titles]{tocloft}\n",
+        "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
+        "\\newcommand{\\formatvardescription}[1]{", latexDecoration("#1", theme$format_var_description), "}\n",
+        "\\newcommand{\\formatvarname}[1]{", latexDecoration("#1", theme$format_var_name), "}\n",
+        "\\newcommand{\\formatvaralias}[1]{", latexDecoration("#1", theme$format_var_alias), "}\n",
+        "\\newcommand{\\formatvarfiltertext}[1]{", latexDecoration("#1", theme$format_var_filtertext), "}\n",
+        "\\newcommand{\\formatvarsubname}[1]{", latexDecoration("#1", theme$format_var_subname), "}\n",
+        "\n\n\n\n\n")
 }
 
-latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size, crosstabs) {
+fontLine <- function(size) { paste0("\\fontsize{", size, "}{", size * 1.5, "}") }
+
+latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
     if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
     if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
-    if (!is.null(font_size)) { font_size <- paste0("{\\", font_size, "\n") }
     return(paste0("\\begin{document}\n", 
-        if (!crosstabs) "\\begin{hyphenrules}{nohyphenation}\n", 
         "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe, 
         "\\end{tabular}\n", 
         if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" }, 
-        font_size,
+        "{", #fontLine(font_size), "\n", #TODO: make this work
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
         "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
 }
 
+latexDecoration <- function(item, item_theme) {
+    if (!is.null(item_theme$decoration)) { 
+        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
+        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
+        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
+    }
+    if (!is.null(item_theme$font_size)) {
+        item <- paste0(fontLine(item_theme$font_size), item)
+    }
+    return(item)
+}
+
+latexTableFoot <- function(topline) {
+    if (topline) { 
+        return("\n\\end{longtable}\n\\end{center}\n\n")
+    } else {
+        return("\n\\end{longtable}\n\n")
+    }
+}
+
+latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
+    
+    

@@ -3,30 +3,30 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     filename = getName(data_summary), title = getName(data_summary), 
     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-    pdf = FALSE, open = FALSE, multirowheaderlines = FALSE, 
-    grid_num_letters = TRUE, custom_numbering = NULL, logging = FALSE) {
+    pdf = FALSE, open = FALSE, logging = FALSE) {
     
+    topline <- is(data_summary, "Toplines")
+    if (is.null(theme$font_size)) { theme$font_size <- 12 }
+    
+    headers <- lapply(data_summary$results, toplineHeader, theme = theme) # dif
+    
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
+    bodies <- lapply(results, function (x) 
+        sapply(x, latexTable.body, topline = topline))
     
-    headers <- lapply(seq_along(data_summary$results), function(i) {
-        toplineHeader(data_summary$results[[i]], page_width = 6.5, row_label_width = theme$format_label_column$col_width,
-            num = if (!is.null(custom_numbering)) custom_numbering[i] else i, theme = theme)
-    })
-    
-    footers <- lapply(data_summary$results, toplineFooterDef)
-    bodies <- lapply(results, function(x) 
-        latexTable.body(x$Results, autorownames = TRUE, crosstabs = FALSE))
-    
-    tables <- sapply(ltranspose(list(headers, bodies, footers), use_names = TRUE), function(x) paste(x, collapse = "\n"))
-    
-    out <- c(tables, append_text)
-    
-    latexHeadData <- latexHead(theme = theme, title = title, subtitle = subtitle, crosstabs = FALSE)
-    # latexHeadData <- latexHeadT(title = title, font_size = font_size, theme = theme, subtitle = subtitle)
-    latexStartData <- latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, field_period = field_period, moe = moe,
-        font_size = NULL, crosstabs = FALSE)
-    latexFootData <- latexFootT()
-    out <- c(latexHeadData, latexStartData, out, latexFootData)
+    out <- c(
+        latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
+        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
+            field_period = field_period, moe = moe, font_size = theme$font_size),
+        sapply(seq_along(data_summary$results), function(i) {
+            c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline), # dif
+                sep="\n", collapse="\n"),
+                if (theme$one_per_sheet) { "\\clearpage" })
+        }),
+        append_text,
+        latexDocFoot()
+    )
     
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
@@ -40,26 +40,24 @@ writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(),
     return(invisible(data_summary))
 }
 
-toplineHeader <- function(x, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
+toplineHeader <- function(x, theme) {
     UseMethod("toplineHeader", x)
 }
 
 #' @export
-toplineHeader.default <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 1, use_heuristic = TRUE, theme) {
-    tab_definition <- paste0("\\begin{tabular}{p{", page_width - padding, "in}}")
-    toplineTableDef(var, page_width, num, tab_definition, header_row = "\n", theme = theme)
+toplineHeader.default <- function(var, theme) {
+    tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
+    toplineTableDef(var, tab_definition, header_row = "\\longtablesep\n", theme = theme)
 }
 
 #' @export
-toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, row_label_width = 1.5, padding = 0.25, use_heuristic = TRUE, theme) {
+toplineHeader.ToplineCategoricalArray <- function(var, theme) {
     header_row <- "\n"
     col_names <- sapply(var$inserts_obj, name)
-    if (is.null(theme$format_headers)) { col_names <- col_names[-c(which(var$inserts %in% "Heading"))] }
-    if (is.null(theme$format_subtotals)) { col_names <- col_names[-c(which(var$inserts %in% "Subtotal"))] }
     col_names_len <- length(col_names)
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
     # use heuristic for scale questions
-    if (use_heuristic && col_names_len >= 10) {
+    if (col_names_len >= 10) {
         which.split <- grep("^[0-9]+ - ", col_names)
         if (length(which.split) == 2) {
             labs <- escM(sub("^[0-9]+ - (.*)$", "\\1", col_names[which.split]))
@@ -75,93 +73,41 @@ toplineHeader.ToplineCategoricalArray <- function(var, page_width, num = NULL, r
             thisrow <- paste(scalestart, labs[1], scalemid, labs[2], scaleend, "\\\\")
             header_row <- paste(header_row, thisrow, "\n")
             col_names <- sub("^([0-9]+) - .*$", "\\1", col_names)
-            col_width <- paste(round((page_width - padding - 0.75 - row_label_width)/col_names_len - 0.11, 3), "in", sep = "")
+            col_width <- paste(round((5.5 - theme$format_label_column$col_width)/
+                    col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-    header_row <- paste(header_row, "&", paste(escM(col_names), collapse = " & "), "\\\\\n")
+    header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), "\\\n")
+    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{", 
+        col_names_len + 2, "}{c}{\\textit{", theme$latex_headtext, "}} \\\\",
+        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2, 
+        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n", 
+        sep = "")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len), collapse = "")
-    tab_definition <- paste0("\\begin{tabular*}{", page_width - padding, "in}{@{\\extracolsep{\\fill}}B{\\raggedright}{", row_label_width,
-        "in}", col.header, "}")
+    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", 
+        theme$format_label_column$col_width, "in}", col.header, "}")
     
-    toplineTableDef(var, page_width, num, tab_definition, header_row, theme)
+    toplineTableDef(var, tab_definition, header_row, theme)
 }
 
-toplineTableDef <- function(var, page_width, num, tab_definition, header_row, theme) {
+toplineTableDef <- function(var, tab_definition, header_row, theme) {
     var_info <- var_header(var, theme)
-    var_info$format_var_subname <- NULL
-    for (info_name in names(var_info)) {
-        var_info[[info_name]] <- latexDecoration(escM(var_info[[info_name]]), theme[[info_name]],
-            scriptsize = info_name != names(var_info)[1])
-    }
-    if (length(var_info) == 0) var_info <- "\\color{gray}{404}"
-    return(paste("\\begin{table}[H]
-        \\addcontentsline{lot}{table}{", escM(getName(var)), "}
-        \\colorbox{gray}{
-        \\parbox{",
-        page_width, "in}{", paste0(unlist(var_info), collapse = ""), "}}
-        \\begin{center}", tab_definition,
-        "\n", header_row, "\n", sep = ""))
+    if (length(var_info) == 0) var_info <- list(format_var_name = "\\color{gray}{404}")
+    return(paste("\\begin{center}\n",
+        tab_definition, "\n",
+        "\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
+        "\\colorbox{gray}{\n",
+        "\\parbox{6.5in}{", paste(sapply(names(var_info), function(info_name)
+            paste0("\\", gsub("_", "", info_name), "{", escM(var_info[[info_name]]), "}")), 
+            collapse = "\\\\ \n"), "}}\\\\\\ \n",
+        header_row,
+        sep = ""))
 }
 
-latexDecoration <- function(item, item_theme, scriptsize) {
-    if (!is.null(item_theme$decoration)) { 
-        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
-        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
-        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
-    }
-    if (scriptsize) {
-        item <- paste0("\\\\ \n \\scriptsize{", item, "}")
-    }
-    return(item)
-}
+# toplineFooterDef <- function() return("\\end{longtable}\n\\end{center}")
 
-#' toplineFooter <- function(x) {
-#'     UseMethod("toplineFooter", x)
-#' }
-#' 
-#' #' @export
-#' toplineFooter.default <- function(x) {
-#'     toplineFooterDef(is_grid = FALSE)
-#' }
-#' 
-#' #' @export
-#' toplineFooter.ToplineCategoricalArray <- function(var) {
-#'     toplineFooterDef(is_grid = TRUE)
-#'     
-#' }
-
-toplineFooterDef <- function(var) {
-    paste0("\\end{", paste0("tabular", if (is(var, "ToplineCategoricalArray")) { "*" } else { "" }), "}
-        \\end{center}
-        \\end{table}")
-}
+# latexFootT <- function() return("\\end{document}\n")
 
 
-latexFootT <- function() "\\end{hyphenrules} \n \\end{document}\n"
-
-# latexStartT <- function(table_of_contents, sample_desc, field_period, moe) {
-#     moe_text <- ""
-#     if (!is.null(sample_desc))
-#         sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
-#     if (!is.null(moe))
-#         moe_text <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1),
-#             "\\%$ \\\\ \n")
-#     if (!is.null(field_period))
-#         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
-#     paste("\\begin{document}\n", "\\begin{hyphenrules}{nohyphenation}\n", "\\begin{tabular}{ll}\n",
-#         sample_desc, field_period, moe_text, "\\end{tabular}\n", ifelse(table_of_contents,
-#             "\\listoftables\n\n\n", "\n\n"), "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n",
-#         sep = "")
-# }
-
-ltranspose <- function(l, use_names) {
-    if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length.")
-    if (use_names && !is.null(names(l[[1]]))) {
-        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]]), simplify = FALSE))
-    } else {
-        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-    }
-}
 

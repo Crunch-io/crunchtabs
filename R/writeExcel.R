@@ -338,6 +338,8 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         theme$excel_freeze_column <- 1
     }
     
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    
     if (logging) {
         start.time.wb <- Sys.time()
         print(paste(start.time.wb, "-- workbook generation -- start"))
