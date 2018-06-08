@@ -58,11 +58,11 @@ themeNew(..., default_theme = themeDefaultExcel())
      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
 }}
 
-\item{format_subtitle}{In Excel, an optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+\item{format_subtitle}{An optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
 
 \item{format_subtotals}{An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
 
-\item{format_title}{In Excel, an optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+\item{format_title}{An optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
 
 \item{format_totals_column}{In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
 
@@ -86,7 +86,9 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \item{latex_headtext}{In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 
-\item{latex_round_percentages}{In Latex, a logical. Should the percentages be rounded so they do not add up to more than 100? Defaults to FALSE.}
+\item{latex_headtext}{In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+
+\item{latex_multirowheaderlines}{In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.}
 
 \item{logo}{An optional list. Information about the logo to be included in the tables. Includes: 
 \describe{

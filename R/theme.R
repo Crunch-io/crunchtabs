@@ -34,9 +34,9 @@
 #'      \item{mask}{An optional character to be used to mark cells with base below the min_base.}
 #'      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
 #' }
-#' @param format_subtitle In Excel, an optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_subtitle An optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_subtotals An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_title In Excel, an optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_title An optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_totals_column In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_totals_row An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
 #' @param format_var_alias An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.
@@ -48,7 +48,8 @@
 #' @param format_weighted_n An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.
 #' @param latex_foottext In Latex, an optional character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'
 #' @param latex_headtext In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'
-#' @param latex_round_percentages In Latex, a logical. Should the percentages be rounded so they do not add up to more than 100? Defaults to FALSE.
+#' @param latex_headtext In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'
+#' @param latex_multirowheaderlines In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.
 #' @param logo An optional list. Information about the logo to be included in the tables. Includes: 
 #' \describe{
 #'     \item{file}{An optional character path to the file that should be used for the logo.}
@@ -126,6 +127,9 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
     theme <- modifyList(default_theme, dots, keep.null = TRUE)
     theme <- theme[union(names(dots), names(default_theme))]
     
+    if (theme$latex_headtext %in% "tbc") theme$latex_headtext <- "continued from previous page"
+    if (theme$latex_foottext %in% "tbc") theme$latex_foottext <- "continued on the next page \\dots"
+    
     theme_validator(theme)
 
     class(theme) <- "Theme"
@@ -182,7 +186,10 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
         excel_percent_sign = TRUE,
         digits = 0, 
         one_per_sheet = FALSE,
-        latex_round_percentages = TRUE)
+        latex_round_percentages = TRUE,
+        latex_headtext = "",
+        latex_foottext = "",
+        latex_multirowheaderlines = TRUE)
 
     class(defaults) <- "Theme"
     
@@ -199,11 +206,13 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
 
     norm <- list(font = font, font_size = font_size)
     defaults <- list(font = font, font_size = font_size,
+        format_title = list(font_size = font_size + 4, decoration = "bold"),
+        format_subtitle = list(font_size = font_size, decoration = "bold"),
         format_banner_categories = norm, 
         format_var_description = c(norm, include_alias = FALSE, 
             include_q_number = TRUE, repeat_for_subs = TRUE), 
         format_var_subname = c(norm, include_alias = FALSE, include_q_number = FALSE), 
-        format_var_filtertext = c(norm, decoration = "italic", 
+        format_var_filtertext = list(font_size = font_size - 4, decoration = "italic", 
             include_alias = FALSE, include_q_number = FALSE, repeat_for_subs = TRUE), 
         format_subtotals = c(norm, decoration = "bold"), 
         format_headers = c(norm, decoration = "bold"), 
@@ -220,7 +229,10 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         excel_show_grid_lines = FALSE,
         excel_freeze_column = 0,
         excel_orientation = "portrait",
-        latex_round_percentages = FALSE
+        latex_round_percentages = FALSE,
+        latex_headtext = "",
+        latex_foottext = "",
+        latex_multirowheaderlines = TRUE
         )
 
     class(defaults) <- "Theme"
@@ -361,8 +373,9 @@ validators_to_use <- list(
     include_q_number = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_add_parenthesis = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_adjust = c(class = "character", len = 1, missing = TRUE),
-    latex_foottext = c(class = "character", len = 1, missing = TRUE),
-    latex_headtext = c(class = "character", len = 1, missing = TRUE),
+    latex_foottext = c(class = "character", len = 1, missing = FALSE, default = ""),
+    latex_headtext = c(class = "character", len = 1, missing = FALSE, default = ""),
+    latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     logo = list(missing = TRUE, include = list("file", "startRow", "startCol", 
         "width", "height", "units", "dpi")),
@@ -392,7 +405,7 @@ theme_validator <- function(theme) {
         "format_medians", "format_min_base", "format_subtitle", "format_subtotals", "format_title", "format_totals_column", 
         "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description", 
         "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "excel_freeze_column", "halign", 
-        "excel_header", "latex_foottext", "latex_headtext", "latex_round_percentages", 
+        "excel_header", "latex_foottext", "latex_headtext", "latex_multirowheaderlines", "latex_round_percentages",
         "logo", "one_per_sheet", "excel_orientation", "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", "valign")
     
     ignore <- setdiff(names(theme), theme_required)
@@ -442,5 +455,8 @@ themeUKPolitical <- function() {
         format_min_base = list(min_base = 50, mask = NULL, decoration = "italic"),
         excel_freeze_column = 2,
         digits_final=0,
-        excel_percent_sign=FALSE)
+        excel_percent_sign=FALSE,
+        latex_headtext = "",
+        latex_foottext = "",
+        latex_multirowheaderlines = FALSE)
 }

@@ -85,3 +85,13 @@ paste_around <- function(str, before, after) { paste0(before, str, after) }
 collapse_items <- function(x){
     paste(x, collapse = ", ")
 }
+
+ltranspose <- function(l, use_names) {
+    if (length(unique(sapply(l, length))) > 1)
+        stop("All nested lists must be of equal length.")
+    if (use_names && !is.null(names(l[[1]]))) {
+        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]]), simplify = FALSE))
+    } else {
+        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
+    }
+}

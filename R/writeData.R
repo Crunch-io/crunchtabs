@@ -3,17 +3,21 @@ get_banner_info <- function(banner, theme){
         format_cols = 2, border_columns = NULL))
     
     empty_col <- !is.null(theme$format_banner_split) && theme$format_banner_split$empty_col
-    banner_cols_pos <- cumsum(sapply(banner, function(x) length(x$categories))) + 1
+    len <- sapply(banner, function(x) length(x$categories))
+    banner_cols_pos <- cumsum(len) + 1
     multicols <- sapply(banner, getNames)
     multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
     format_cols <- if (empty_col) { unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
     } else { multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1 - empty_col) }
     
+    names <- sapply(banner, getName)
+        
     border_columns <- if (empty_col) { multicols_csum[2:(length(multicols_csum)-1)]-1 
     } else { multicols_csum[2:(length(multicols_csum)-1)] }
     
-    list(empty_col = empty_col, multicols = multicols, multicols_csum = multicols_csum, 
-        format_cols = format_cols, border_columns = border_columns)
+    list(empty_col = empty_col, len = len, multicols = multicols, 
+        multicols_csum = multicols_csum, format_cols = format_cols, 
+        border_columns = border_columns, names = names)
 }
 
 # clean_data <- function(y, data) {
@@ -48,14 +52,14 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         "weighted_n" = "weighted_base", "unweighted_n" = "base", "means" = "mean", 
         "medians" = "median")
     
-    if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")) {
-        var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Subtotal"]
-        var$inserts <- var$inserts[!var$inserts %in% "Subtotal"]
-    }
-    if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")) {
-        var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Heading"]
-        var$inserts <- var$inserts[!var$inserts %in% "Heading"]
-    }
+    # if (is.null(theme$format_subtotals) && any(var$inserts %in% "Subtotal")) {
+    #     var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Subtotal"]
+    #     var$inserts <- var$inserts[!var$inserts %in% "Subtotal"]
+    # }
+    # if (is.null(theme$format_headers) && any(var$inserts %in% "Heading")) {
+    #     var$inserts_obj <- var$inserts_obj[!var$inserts %in% "Heading"]
+    #     var$inserts <- var$inserts[!var$inserts %in% "Heading"]
+    # }
     
     data_list <- sapply(unique(data_order), function(dt) {
         prop_v <- gsub("_row", "", dt) %in% c("body", "totals")
@@ -67,6 +71,10 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         if (all(is.na(data))) { return(NULL) }
         if (is.vector(data)) data <- t(data)
         theme_dt <- theme[[paste0("format_", dt)]]
+        
+        if (prop_v) {
+            data[is.na(data)] <- 0
+        }
         
         if (prop_v && proportions && (latex || !theme$excel_percent_sign)) {
             data[] <- data * 100
@@ -151,7 +159,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
-            colnames(x) <- var$subnames
+            colnames(x) <- var[["subnames"]]
             t(x)
         })
     }
@@ -162,12 +170,12 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
 
 var_header <- function(var, theme) {
     if_there <- function(str) { if (!(is.null(str) || is.na(str) || str == "")) return(str) }
-    var_info <- list(format_var_alias = if_there(var$alias),
-        format_var_name = if_there(var$name),
-        format_var_description = if_there(var$description),
-        format_var_filtertext = if_there(var$notes),
-        format_var_subname = if_there(var$subname))
-    number <- if_there(var$number)
+    var_info <- list(format_var_alias = if_there(var[["alias"]]),
+        format_var_name = if_there(var[["name"]]),
+        format_var_description = if_there(var[["description"]]),
+        format_var_filtertext = if_there(var[["notes"]]),
+        format_var_subname = if_there(var[["subname"]]))
+    number <- if_there(var[["number"]])
     var_info2 <- list()
     for (info_name in intersect(names(theme), names(var_info))) {
         if (!is.null(theme[[info_name]]) && (var$type != "categorical_array" ||
@@ -185,5 +193,21 @@ var_header <- function(var, theme) {
     }
     return(var_info2)
 }
+
+
+rm_inserts <- function(var, theme) {
+    if (!is.null(var$inserts_obj)) {
+        if (is.null(theme$format_subtotals)) {
+            var$inserts_obj <- var$inserts_obj[sapply(var$inserts_obj, class) != "Subtotal"]
+        }
+        if (is.null(theme$format_headers)) {
+            var$inserts_obj <- var$inserts_obj[sapply(var$inserts_obj, class) != "Headers"]
+        }
+        var$inserts <- sapply(var$inserts_obj, class)
+    }
+    
+    return(var)
+}
+
 
 
