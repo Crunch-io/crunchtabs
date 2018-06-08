@@ -189,7 +189,7 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
         latex_round_percentages = TRUE,
         latex_headtext = "",
         latex_foottext = "",
-        latex_multirowheaderlines = FALSE)
+        latex_multirowheaderlines = TRUE)
 
     class(defaults) <- "Theme"
     
@@ -232,7 +232,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         latex_round_percentages = FALSE,
         latex_headtext = "",
         latex_foottext = "",
-        latex_multirowheaderlines = FALSE
+        latex_multirowheaderlines = TRUE
         )
 
     class(defaults) <- "Theme"

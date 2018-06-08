@@ -75,11 +75,10 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
 
 makeLatexBanner <- function (binfo, width=NULL, theme) {
     m_split <- paste0("}{m{", width,"in}}{\\centering ")
-    br <- ifelse(!theme$latex_multirowheaderlines | binfo$len > 1, "}{c}{", m_split)
-    ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, br, "\\bf ",
-        escM(binfo$names), "}", collapse = "", sep = ""),
-        paste(" & \\multicolumn{1", ifelse(!theme$latex_multirowheaderlines, "}{c}{", m_split),
-            escM(unlist(binfo$multicols)), "}", collapse = "", sep = "")),
+    ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, "}{c}{\\bf ",
+            escM(binfo$names), "}", collapse = "", sep = ""),
+        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo$multicols)), "}", 
+            collapse = "", sep = "")),
         " \\\\")
     ban[2] <- paste("{\\bf #1}", ban[2])
     
