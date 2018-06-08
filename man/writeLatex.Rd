@@ -8,8 +8,7 @@ writeLatex(data_summary, theme = themeDefaultLatex(),
   filename = getName(data_summary), title = getName(data_summary),
   subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
   field_period = NULL, moe = NULL, append_text = NULL,
-  proportions = TRUE, pdf = FALSE, open = FALSE,
-  multirowheaderlines = FALSE, logging = FALSE)
+  proportions = TRUE, pdf = FALSE, open = FALSE, logging = FALSE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -41,8 +40,6 @@ if \code{FALSE} the report shows counts.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
-
-\item{multirowheaderlines}{logical. Should banners allow multi-row headlines? **}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

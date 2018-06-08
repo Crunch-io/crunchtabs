@@ -145,7 +145,8 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\renewcommand{\\headrulewidth}{0pt}\n",
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
-        "\\fancyhead[L]{{\\Large {\\bf ", title, "}}", subtitle, "}\n",
+        "\\fancyhead[L]{{", latexDecoration(title, theme$format_title), "}", 
+            latexDecoration(subtitle, theme$format_subtitle), "}\n",
         logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #!topline
         "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #!topline
@@ -164,13 +165,13 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{", 
             escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{", 
             escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", 
-        "\\usepackage[titles]{tocloft}\n", #TODO: make this work
+        "\\usepackage[titles]{tocloft}\n",
         "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
-        latexDecoration("format_var_description", theme$format_var_description),
-        latexDecoration("format_var_name", theme$format_var_name),
-        latexDecoration("format_var_alias", theme$format_var_alias),
-        latexDecoration("format_var_filtertext", theme$format_var_filtertext),
-        latexDecoration("format_var_subname", theme$format_var_subname),
+        "\\newcommand{\\formatvardescription}[1]{", latexDecoration("#1", theme$format_var_description), "}\n",
+        "\\newcommand{\\formatvarname}[1]{", latexDecoration("#1", theme$format_var_name), "}\n",
+        "\\newcommand{\\formatvaralias}[1]{", latexDecoration("#1", theme$format_var_alias), "}\n",
+        "\\newcommand{\\formatvarfiltertext}[1]{", latexDecoration("#1", theme$format_var_filtertext), "}\n",
+        "\\newcommand{\\formatvarsubname}[1]{", latexDecoration("#1", theme$format_var_subname), "}\n",
         "\n\n\n\n\n")
 }
 
@@ -192,8 +193,7 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
 }
 
-latexDecoration <- function(item_name, item_theme) {
-    item <- "#1"
+latexDecoration <- function(item, item_theme) {
     if (!is.null(item_theme$decoration)) { 
         if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
         if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
@@ -202,7 +202,7 @@ latexDecoration <- function(item_name, item_theme) {
     if (!is.null(item_theme$font_size)) {
         item <- paste0(fontLine(item_theme$font_size), item)
     }
-    return(paste0("\\newcommand{\\", gsub("_", "", item_name), "}[1]{", item, "}\n"))
+    return(item)
 }
 
 latexTableFoot <- function(topline) {

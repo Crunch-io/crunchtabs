@@ -34,9 +34,9 @@
 #'      \item{mask}{An optional character to be used to mark cells with base below the min_base.}
 #'      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
 #' }
-#' @param format_subtitle In Excel, an optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_subtitle An optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_subtotals An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_title In Excel, an optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
+#' @param format_title An optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_totals_column In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
 #' @param format_totals_row An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
 #' @param format_var_alias An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.
@@ -206,11 +206,13 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
 
     norm <- list(font = font, font_size = font_size)
     defaults <- list(font = font, font_size = font_size,
+        format_title = list(font_size = font_size + 4, decoration = "bold"),
+        format_subtitle = list(font_size = font_size, decoration = "bold"),
         format_banner_categories = norm, 
         format_var_description = c(norm, include_alias = FALSE, 
             include_q_number = TRUE, repeat_for_subs = TRUE), 
         format_var_subname = c(norm, include_alias = FALSE, include_q_number = FALSE), 
-        format_var_filtertext = c(norm, decoration = "italic", 
+        format_var_filtertext = list(font_size = font_size - 4, decoration = "italic", 
             include_alias = FALSE, include_q_number = FALSE, repeat_for_subs = TRUE), 
         format_subtotals = c(norm, decoration = "bold"), 
         format_headers = c(norm, decoration = "bold"), 

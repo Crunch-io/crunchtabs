@@ -117,7 +117,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                     if (is_toplines_array) "ToplineCategoricalArray",
                     if (topline) "ToplineVar", "CrossTabVar"))
         }, simplify = FALSE)
-    }), recursive = FALSE), class = c("CrosstabsResults", "list"))
+    }), recursive = FALSE), class = c(if (topline) "ToplineResults", "CrosstabsResults", "list"))
 }
 
 
