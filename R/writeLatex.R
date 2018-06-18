@@ -43,10 +43,49 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
-    
     theme_validator(theme)
     
-    UseMethod("writeLatex", data_summary)
+    wrong_class_error(data_summary, "CrunchTabs", "data_summary")
+    if (!any(c("Toplines", "Crosstabs") %in% class(data_summary))) {
+        stop("The expected class for `data_summary` is either Toplines, CrunchTabs or Crosstabs CrunchTabs, not ", collapse_items(class(data_summary)))
+    }
+    
+    topline <- is(data_summary, "Toplines")
+    if (is.null(theme$font_size)) { theme$font_size <- 12 }
+    theme$proportions <- proportions
+    
+    headers <- lapply(data_summary$results, tableHeader, theme = theme)
+    
+    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
+    bodies <- lapply(results, function (x) 
+        sapply(x, latexTable.body, theme = theme, topline = topline))
+    
+    out <- c(
+        latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
+        if (!topline) sapply(seq_along(data_summary$banner), function (j) {
+            longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9, 
+                theme = theme)
+        }),
+        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
+            field_period = field_period, moe = moe, font_size = theme$font_size),
+        sapply(seq_along(data_summary$results), function(i) {
+            c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline),
+                sep="\n", collapse="\n"),
+                if (theme$one_per_sheet) { "\\clearpage" })
+        }),
+        append_text,
+        latexDocFoot()
+    )
+    if (!is.null(filename)) {
+        filename <- paste0(filename, ".tex")
+        cat(out, sep = "\n", file = filename)
+        if (pdf) {
+            if (logging) { print("PDF-ing") }
+            pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
+        }
+    }
+    return(invisible(data_summary))
 }
 
 
@@ -56,34 +95,98 @@ writeLatex.default <- function(data_summary, ...) {
         collapse_items(class(data_summary)), "'.")
 }
 
-latexTable.body <- function(df, topline) {
+latexTable.body <- function(df, theme, topline) {
     
-    body <- df$data_list$body
-    if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom))) == 0) { 
-        summary <- NULL 
-    } else { 
-        summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), c(df$top, df$bottom)), function(x) {
-            df$data_list[[x]]
-        }))
+    data <- df$data_list
+    for (nm in intersect(c("body", "totals_row"), names(data))) {
+        data[[nm]][] <- round(data[[nm]], theme$digits)
+        data[[nm]][] <- format(data[[nm]], nsmall=theme$digits, big.mark=",")
+        data[[nm]][] <- apply(data[[nm]], 2, trimws)
+        if (theme$proportions) { data[[nm]][] <- apply(data[[nm]], 2, paste0, "%") }
     }
-
-    if (!is.null(rownames(body))) body <- data.frame(rownames(body), body, stringsAsFactors = FALSE)
-    if (!is.null(rownames(summary))) summary <- data.frame(rownames(summary), summary, stringsAsFactors = FALSE)
-    for (j in 1:ncol(body)) body[, j] <- escM(body[, j])
-    if (!is.null(summary)) for (j in 1:ncol(summary)) summary[, j] <- escM(summary[, j])
-
+    for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
+        nm2 <- paste0("format_", nm)
+        data[[nm]][] <- trimws(format(data[[nm]], big.mark=","))
+        if (theme[[nm2]]$latex_add_parenthesis) {
+            data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
+        }
+        if (!is.null(theme[[nm2]]$latex_adjust)) {
+            data[[nm]][] <- apply(data[[nm]], 2, paste_around, 
+                paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
+        }
+    }
+    
+    mask_vars <- c("totals_row", "means", "medians")
+    if (any(df$min_cell_body)) {
+        if (!is.null(theme$format_min_base$mask)) {
+            data$body[df$min_cell_body] <- theme$format_min_base$mask
+            for (nm in intersect(mask_vars, names(data))) {
+                data[[nm]][, df$min_cell] <- theme$format_min_base$mask
+            }
+        }
+        for (i in which(colSums(df$min_cell_body) != 0)) {
+            data$body[df$min_cell_body[,i], i] <- latexDecoration(data$body[df$min_cell_body[,i], i], theme$format_min_base)
+            for (nm in intersect(mask_vars, names(data))) {
+                data[[nm]][, df$min_cell] <- latexDecoration(data[[nm]][, df$min_cell], theme$format_min_base)
+            }
+        }
+    }
+    
+    data <- lapply(data, function(dt) {
+        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, escM), 
+            nrow = nrow(dt))
+    })
+    
+    for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
+        data[[nm]][] <- apply(data[[nm]], 2, latexDecoration, theme[[paste0("format_", nm)]])
+    }
+    
+    for (i in which(df$inserts %in% c("Heading"))) {
+        data$body[i, 2:ncol(data$body)] <- ""
+        data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_headers)
+    }
+    for (i in which(df$inserts %in% c("Subtotal"))) {
+        data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_subtotals)
+    }
+    
+    # body <- data$body
+    # summary <- do.call(rbind, data[intersect(c("means", "totals_row", "unweighted_n", "weighted_n"), df$data_order)])
+    # # if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), df$data_order)) == 0) {
+    # #     summary <- NULL
+    # # } else {
+    # #     summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), df$data_order), function(x) {
+    # #         data[[x]]
+    # #     }))
+    # # }
+    
     collapsestring <- "\\\\\n"
     
-    sepstring <- if (topline && ncol(body) == 2) { " \\hspace*{0.15em} \\dotfill " } else { " & " }
-    if (topline) body[[1]] <- paste0(" & ", body[[1]])
-    if (topline) {
-        return(paste(paste(apply(rbind(body, summary), 1, paste, collapse = sepstring), collapse = collapsestring),
-            collapsestring))
-    } else {
-        body <- paste(paste(apply(body, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-        summary <- paste(paste(apply(summary, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-        return(paste(body, "\\midrule", summary))
-    }
+    sepstring <- if (topline && ncol(data$body) == 2) { 
+        " \\hspace*{0.15em} \\dotfill " 
+    } else { " & " }
+    
+    data <- lapply(data, function(dt) {
+        paste(paste(paste0(if (topline) " & ", apply(dt, 1, paste, collapse = sepstring)),
+            collapse = collapsestring), collapsestring)
+    })
+    
+    if (is(df, "ToplineCategoricalArray")) df$data_order <- "body"
+    a <- paste(paste0(data[intersect(c("body", "medians", "means"), df$data_order)], 
+        collapse = ""), if (!topline) "\\midrule",
+        paste0(data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)], 
+            collapse = ""))
+    # 
+    # if (topline) {
+    #     bod <- do.call(rbind, list(body, if (!is(df, "ToplineCategoricalArray")) summary))
+    #     bod[,1] <- paste0(" & ", bod[,1])
+    #     b <- (paste(paste(apply(bod, 1, paste, collapse = sepstring), collapse = collapsestring),
+    #         collapsestring))
+    # } else {
+    #     body <- paste(paste(apply(body, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
+    #     if (!is.null(summary)) summary <- paste(paste(apply(summary, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
+    #     b <- (paste(body, "\\midrule", summary))
+    # }
+    return(a)
 }
 
 
@@ -205,12 +308,33 @@ latexDecoration <- function(item, item_theme) {
     return(item)
 }
 
+tableHeader <- function(x, theme) {
+    UseMethod("tableHeader", x)
+}
+
 latexTableFoot <- function(topline) {
     if (topline) { 
         return("\n\\end{longtable}\n\\end{center}\n\n")
     } else {
         return("\n\\end{longtable}\n\n")
     }
+}
+
+latexTableName <- function(var, theme) {
+    var_info <- var_header(var, theme)
+    col <- if (is.null(theme[[names(var_info)[[1]]]]$background_color)) { "white" 
+        } else { theme[[names(var_info)[[1]]]]$background_color }
+    if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
+        var_info[[1]] <- paste0(var_info[[1]], if (!is.null(var_info$format_var_subname))
+            paste0(" — ", var_info$format_var_subname))
+        var_info$format_var_subname <- NULL
+    }
+    if (length(var_info) == 0) var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
+    paste("\\colorbox{", col, "}{\n",
+        "\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
+        "\\parbox{", if (is(var, "ToplineVar")) { "6.5" } else { "9" }, "in}{\n",
+        paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
+        "}} \\\\", sep="")
 }
 
 latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
