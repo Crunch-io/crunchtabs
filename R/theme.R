@@ -460,3 +460,34 @@ themeUKPolitical <- function() {
         latex_foottext = "",
         latex_multirowheaderlines = FALSE)
 }
+
+#' @export
+themeHuffPoToplines <- function(logo = NULL) {
+    themeNew(default_theme = themeDefaultLatex(),
+        logo = logo,
+        format_title = list(decoration = "bold"),
+        format_var_description = list(include_q_number = TRUE, decoration = "bold",
+            background_color = "gray"), 
+        format_var_filtertext = list(decoration = "italic", font_size = 8),
+        format_totals_row = NULL,
+        format_unweighted_n = NULL,
+        latex_headtext = "tbc", 
+        latex_foottext = "tbc", 
+        one_per_sheet = FALSE)
+}
+#' @export
+themeHuffPoCrosstabs <- function(logo = NULL) {
+    themeNew(default_theme = themeDefaultLatex(),
+        logo = logo,
+        format_title = list(decoration = "bold"),
+        format_subtitle = list(decoration = "bold"),
+        format_min_base = list(min_base = 30, mask = "*"), 
+        format_var_name = list(include_q_number = TRUE, decoration = "bold"),
+        format_var_description = list(include_q_number = FALSE), 
+        format_var_filtertext = list(decoration = "italic", font_size = 8),
+        format_unweighted_n = list(latex_add_parenthesis = TRUE),
+        latex_headtext = "tbc",
+        latex_foottext = "tbc", 
+        one_per_sheet = TRUE)
+}
+

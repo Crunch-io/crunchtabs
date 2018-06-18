@@ -124,6 +124,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         unweighted_n[var$inserts %in% "Heading", ] <- NA
     }
 
+    # if (is.null(theme$format_min_base$min_base)) theme$format_min_base$min_base <- 0
     mask_vars <- c("totals_row", "means", "medians")
     min_cell <-  matrix(suppressWarnings(as.numeric(as.character(unweighted_n))) < 
             theme$format_min_base$min_base, nrow = nrow(unweighted_n), ncol = ncol(unweighted_n))

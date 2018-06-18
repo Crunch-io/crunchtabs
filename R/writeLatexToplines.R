@@ -90,8 +90,8 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 }
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
-    var_info <- var_header(var, theme)
-    if (length(var_info) == 0) var_info <- list(format_var_name = "\\color{gray}{404}")
+    # var_info <- var_header(var, theme)
+    # if (length(var_info) == 0) var_info <- list(format_var_name = "\\color{gray}{404}")
     return(paste("\\begin{center}\n",
         tab_definition, "\n",
         latexTableName(var, theme),

@@ -110,14 +110,14 @@ latexTable.body <- function(df, theme, topline) {
         if (theme[[nm2]]$latex_add_parenthesis) {
             data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
         }
-        if (!is.null(theme[[nm2]]$latex_adjust)) {
+        if (!is.null(theme[[nm2]]$latex_adjust) && !topline) {
             data[[nm]][] <- apply(data[[nm]], 2, paste_around, 
                 paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
         }
     }
     
     mask_vars <- c("totals_row", "means", "medians")
-    if (any(df$min_cell_body)) {
+    if (!is.null(theme$format_min_base$min_base) && any(df$min_cell_body)) {
         if (!is.null(theme$format_min_base$mask)) {
             data$body[df$min_cell_body] <- theme$format_min_base$mask
             for (nm in intersect(mask_vars, names(data))) {
@@ -304,6 +304,9 @@ latexDecoration <- function(item, item_theme) {
     }
     if (!is.null(item_theme$font_size)) {
         item <- paste0(fontLine(item_theme$font_size), item)
+    }
+    if (!is.null(item_theme$font_color)) {
+        item <- paste0("\\color{", item_theme$font_color, "}", item)
     }
     return(item)
 }
