@@ -109,22 +109,7 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
             rownames(data) <- paste0(theme_dt$name, 
                 if (weight_v && !is.null(dim(data)) && nrow(data) == 2) c(": Min", ": Max"))
         }
-        if (latex && prop_v) {
-            data[] <- round(data, rdig)
-            data[] <- format(data, nsmall=theme$digits, big.mark=",")
-            data[] <- apply(data, 2, trimws)
-            if (proportions) { data[] <- apply(data, 2, paste0, "%") }
-        }
-        if (latex && weight_v) {
-            data[] <- trimws(format(data, big.mark=","))
-            if (theme_dt$latex_add_parenthesis) {
-                data[] <- apply(data, 2, paste_around, "(", ")")
-            }
-            if (!is.null(theme_dt$latex_adjust)) {
-                data[] <- apply(data, 2, paste_around, paste0("\\multicolumn{1}{", theme_dt$latex_adjust, "}{"), "}")
-            }
-        }
-        
+
         data <- setNames(as.data.frame(data, stringsAsFactors = FALSE),
             unlist(lapply(banner_info$multicols, function(x) c(x, if (banner_info$empty_col && !latex) "empty"))))
         
@@ -137,25 +122,18 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         unweighted_n <- as.matrix(unweighted_n[rep(1, length(var$inserts)), ], nrow = length(var$inserts),
             ncol = ncol(unweighted_n), byrow = TRUE)
         unweighted_n[var$inserts %in% "Heading", ] <- NA
-        if (latex) {
-            data_list$body[var$inserts %in% "Heading", ] <- ""
-        }
     }
 
+    # if (is.null(theme$format_min_base$min_base)) theme$format_min_base$min_base <- 0
     mask_vars <- c("totals_row", "means", "medians")
-    min_cell <-  matrix(suppressWarnings(as.numeric(as.character(unweighted_n))) < theme$format_min_base$min_base, nrow = nrow(unweighted_n), ncol = ncol(unweighted_n))
-    min_cell_rep <- suppressWarnings(as.numeric(as.character(apply(unweighted_n, 2, min, na.rm=TRUE)))) < theme$format_min_base$min_base
+    min_cell <-  matrix(suppressWarnings(as.numeric(as.character(unweighted_n))) < 
+            theme$format_min_base$min_base, nrow = nrow(unweighted_n), ncol = ncol(unweighted_n))
+    min_cell_rep <- colSums(min_cell, na.rm = TRUE) > 0
     top_sub <- mask_vars %in% top
     min_cell_top <- if (any(top_sub)) matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n))
     bottom_sub <- mask_vars %in% bottom
     min_cell_bottom <- if (any(bottom_sub)) matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n))
-    if (latex && !is.null(theme$format_min_base$mask)) {
-        for (x in intersect(data_order, mask_vars)) {
-            data_list[[x]][,min_cell_rep] <- theme$format_min_base$mask
-        }
-        data_list$body[min_cell] <- theme$format_min_base$mask
-    }
-    
+
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
@@ -164,8 +142,10 @@ munge_var <- function(var, banner_name, theme, proportions, banner_info, latex) 
         })
     }
     
-    return(list(top = top, bottom = bottom, data_order = data_order, inserts = var$inserts, data_list = data_list, 
-        min_cell_top = min_cell_top, min_cell_body = min_cell, min_cell_bottom = min_cell_bottom))
+    return(structure(list(top = top, bottom = bottom, data_order = data_order, 
+        inserts = var$inserts, data_list = data_list, min_cell_top = min_cell_top, 
+        min_cell_body = min_cell, min_cell_bottom = min_cell_bottom, 
+        min_cell = min_cell_rep), class = class(var)))
 }
 
 var_header <- function(var, theme) {

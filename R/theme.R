@@ -108,10 +108,10 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
         if (length(unlist(validators_to_use[[nm]]["include"])) > 1) {
             default_theme[[nm]] <- list()
             for (incl in setdiff(validators_to_use[[nm]]$include, dots[[nm]])) {
-                if (incl %in% names(default_theme)) {
-                    default_theme[[nm]][[incl]] <- default_theme[[incl]]
-                } else if (as.logical(validators_to_use[[incl]]["missing"])) { 
+                if (as.logical(validators_to_use[[incl]]["missing"])) { 
                     next 
+                } else if (incl %in% names(default_theme)) {
+                    default_theme[[nm]][[incl]] <- default_theme[[incl]]
                 } else if (!is.null(validators_to_use[[incl]]["default"]) && !is.na(validators_to_use[[incl]]["default"])) {
                     rsp <- unlist(validators_to_use[[incl]]["default"])
                     if (validators_to_use[[incl]]["class"] %in% "logical") { default_theme[[nm]][[incl]] <- as.logical(rsp) }
@@ -204,7 +204,7 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
 themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     font_size = getOption("font_size", default = 12)){
 
-    norm <- list(font = font, font_size = font_size)
+    norm <- list(font = font, font_size = NULL)
     defaults <- list(font = font, font_size = font_size,
         format_title = list(font_size = font_size + 4, decoration = "bold"),
         format_subtitle = list(font_size = font_size, decoration = "bold"),
@@ -460,3 +460,34 @@ themeUKPolitical <- function() {
         latex_foottext = "",
         latex_multirowheaderlines = FALSE)
 }
+
+#' @export
+themeHuffPoToplines <- function(logo = NULL) {
+    themeNew(default_theme = themeDefaultLatex(),
+        logo = logo,
+        format_title = list(decoration = "bold"),
+        format_var_description = list(include_q_number = TRUE, decoration = "bold",
+            background_color = "gray"), 
+        format_var_filtertext = list(decoration = "italic", font_size = 8),
+        format_totals_row = NULL,
+        format_unweighted_n = NULL,
+        latex_headtext = "tbc", 
+        latex_foottext = "tbc", 
+        one_per_sheet = FALSE)
+}
+#' @export
+themeHuffPoCrosstabs <- function(logo = NULL) {
+    themeNew(default_theme = themeDefaultLatex(),
+        logo = logo,
+        format_title = list(decoration = "bold"),
+        format_subtitle = list(decoration = "bold"),
+        format_min_base = list(min_base = 30, mask = "*"), 
+        format_var_name = list(include_q_number = TRUE, decoration = "bold"),
+        format_var_description = list(include_q_number = FALSE), 
+        format_var_filtertext = list(decoration = "italic", font_size = 8),
+        format_unweighted_n = list(latex_add_parenthesis = TRUE),
+        latex_headtext = "tbc",
+        latex_foottext = "tbc", 
+        one_per_sheet = TRUE)
+}
+
