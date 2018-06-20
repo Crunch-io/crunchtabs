@@ -28,7 +28,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     wrong_class_error(dataset, "CrunchDataset", "dataset")
     
     if (!(is.vector(vars) && is.recursive(vars))) {
-        stop("`vars` must be a list of vectors.")
+        stop("`vars` must be a list of vectors.", call. = FALSE)
     }
     if (is.null(names(vars))) {
         names(vars) <- paste0("Banner", seq_along(vars))
@@ -40,7 +40,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
 
     vars_vec <- unique(unlist(vars))
     if (length(vars_vec) == 0) {
-        stop("`vars` must have a length greater than 0.")
+        stop("`vars` must have a length greater than 0.", call. = FALSE)
     }
     error_if_items(names(vars)[sapply(vars, length) == 0],
         "No variables found in {items} in `vars`. {items} will be ignored.", 
@@ -50,13 +50,13 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
         "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for {items}.",
         and = TRUE, quotes = TRUE)
     if (!is.null(labels) && is.null(names(labels))) {
-        stop("`labels` must be a named list or vector.")
+        stop("`labels` must be a named list or vector.", call. = FALSE)
     } 
     error_if_items(setdiff(names(labels), vars_vec), 
         "Variables in `labels` must be included in `vars`. This is not true for {items}.",
         and = TRUE, quotes = TRUE)
     if (!is.null(recodes) && is.null(names(recodes))) {
-        stop("`recodes` must be a named list of lists.")
+        stop("`recodes` must be a named list of lists.", call. = FALSE)
     }
     error_if_items(setdiff(names(recodes), vars_vec), 
         "Variables in `recodes` must be included in `vars`. This is not true for {items}.",
