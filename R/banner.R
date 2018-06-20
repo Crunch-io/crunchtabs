@@ -49,14 +49,14 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     error_if_items(setdiff(vars_vec, aliases(allVariables(dataset))), 
         "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for {items}.",
         and = TRUE, quotes = TRUE)
-    if (!is.null(labels) && is.null(names(labels))) { # TODO: add test
+    if (!is.null(labels) && is.null(names(labels))) {
         stop("`labels` must be a named list or vector.")
     } 
     error_if_items(setdiff(names(labels), vars_vec), 
         "Variables in `labels` must be included in `vars`. This is not true for {items}.",
         and = TRUE, quotes = TRUE)
-    if (!is.null(recodes) && is.null(names(recodes))) { # TODO: add test
-        stop("`recodes` must be a named list.")
+    if (!is.null(recodes) && is.null(names(recodes))) {
+        stop("`recodes` must be a named list of lists.")
     }
     error_if_items(setdiff(names(recodes), vars_vec), 
         "Variables in `recodes` must be included in `vars`. This is not true for {items}.",

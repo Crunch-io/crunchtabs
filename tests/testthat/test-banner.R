@@ -7,8 +7,6 @@ test_that("Error handling - not a dataset", {
 
 with_test_authentication({
     ds <- loadDataset("https://app.crunch.io/api/datasets/868e8b3e01834c45b73e56e80160d3c3/")
-    # "allpets"="art3", "petloc"="tv4", "ndogs"="movies5", "age2"="age4", "favpet"="art2",
-    # "petname"="movies3"
     test_that("Error handling - banner", {
         expect_error(banner(ds, "a"),
             "`vars` must be a list of vectors.")
@@ -22,14 +20,20 @@ with_test_authentication({
             "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.")
         expect_error(banner(ds, list(Results = c("art3", "a", "tv4", "b", "movies5"))),
             "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.")
+        expect_error(banner(ds, list(Results = c("art2")), labels = list("Doggy")),
+            "`labels` must be a named list or vector.")
         expect_error(banner(ds, list(Results = c("art3")), labels = c(allpets1 = "All Pets")),
             "Variables in `labels` must be included in `vars`. This is not true for 'allpets1'.")
         expect_error(banner(ds, list(Results = c("art3", "age4")), labels = c(allpets1 = "All Pets", age4 = "Age (2 categories")),
             "Variables in `labels` must be included in `vars`. This is not true for 'allpets1'.")
+        expect_error(banner(ds, list(Results = c("art2")), recodes = list(list("Dog" = "Doggy"))),
+            "`recodes` must be a named list.")
         expect_error(banner(ds, list(Results = c("art2")), recodes = list(favpet1 = list("Dog" = "Doggy"))),
             "Variables in `recodes` must be included in `vars`. This is not true for 'favpet1'.")
         expect_error(banner(ds, list(Results = c("art2", "age4")), recodes = list(age4 = list("16 to 34" = "<= 34"), favpet1 = list("Dog" = "Doggy"))),
             "Variables in `recodes` must be included in `vars`. This is not true for 'favpet1'.")
+        expect_error(banner(ds, list(Results = c("art2")), recodes = list("art2"=c("Dog" = "Doggy"))),
+            "`recodes` must be a list of lists. This is not true for art2.")
         expect_error(banner(ds, list(Results = c("movies5"))),
             "Variables in `vars` must be of type categorical or multiple_response. This is not true for 'movies5'.")
         expect_error(banner(ds, list(Results = c("movies5", "tv4", "movies3", "age"))),
