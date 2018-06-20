@@ -7,9 +7,9 @@
 #' (present in the \code{vars} parameter) and values are the labels that should be used in the report.
 #' Defaults to \code{NULL} - variables names are used.
 #' @param recodes An optional named list of categories recodes (the syntax is similar
-#' to the one used in the \code{recode} function in the R \code{car} package). Use \code{NA} to
+#' to the one used in the \code{recode} function in the R \code{dplyr} package). Use \code{NA} to
 #' exclude categories. Not listed categories will be left unchanged.
-#' Use \code{else} to replace all not listed categories. See examples for details.
+#' Use \code{.default} to replace all not listed categories. See examples for details.
 #' Defaults to \code{NULL} - categories are not modified.
 #' @return An object of class \code{Banner}.
 #' @examples
@@ -18,8 +18,8 @@
 #'     vars = list(subBanner1 = c('alias1', 'alias2'), subBanner2 = c('alias3')),
 #'     labels = c(alias1 = 'var1 label', alias2 = 'var2 label'),
 #'     recodes = list(
-#'         alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
-#'         alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
+#'         alias1 = list(cat1a = 'new cat1a', cat1b = NA),
+#'         alias2 = list(cat2a = 'new cat2a', cat2b = 'new cat2b', .default = NA))
 #' }
 #' @importFrom crunch alias allVariables types categories subvariables is.dataset
 #' @export
@@ -30,114 +30,83 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     if (!(is.vector(vars) && is.recursive(vars))) {
         stop("`vars` must be a list of vectors.")
     }
-    vars_vec <- unlist(vars)
+    if (is.null(names(vars))) {
+        names(vars) <- paste0("Banner", seq_along(vars))
+    }
+    names(vars)[names(vars) == ""] <- paste0("Banner", which(names(vars) == ""))
+    dups <- names(vars)[duplicated(names(vars))]
+    names(vars)[duplicated(names(vars))] <- paste0(dups, 
+        as.numeric(ave(dups, dups, FUN = seq_along)) + 1)
+
+    vars_vec <- unique(unlist(vars))
     if (length(vars_vec) == 0) {
         stop("`vars` must have a length greater than 0.")
     }
-    
-    error_if_items(names(vars)[duplicated(names(vars))], 
-        "Banner name {items} is duplicated.")
-
+    error_if_items(names(vars)[sapply(vars, length) == 0],
+        "No variables found in {items} in `vars`. {items} will be ignored.", 
+        error = FALSE, and = TRUE, quotes = TRUE)
+    vars <- vars[sapply(vars, length) != 0]
     error_if_items(setdiff(vars_vec, aliases(allVariables(dataset))), 
-        "{items} listed in `vars` must be valid aliases in aliases(allVariables(dataset)).")
-
+        "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for {items}.",
+        and = TRUE, quotes = TRUE)
+    if (!is.null(labels) && is.null(names(labels))) { # TODO: add test
+        stop("`labels` must be a named list or vector.")
+    } 
+    error_if_items(setdiff(names(labels), vars_vec), 
+        "Variables in `labels` must be included in `vars`. This is not true for {items}.",
+        and = TRUE, quotes = TRUE)
+    if (!is.null(recodes) && is.null(names(recodes))) { # TODO: add test
+        stop("`recodes` must be a named list.")
+    }
+    error_if_items(setdiff(names(recodes), vars_vec), 
+        "Variables in `recodes` must be included in `vars`. This is not true for {items}.",
+        and = TRUE, quotes = TRUE)
+    error_if_items(names(recodes)[!sapply(recodes, is, "list")],
+        "`recodes` must be a list of lists. This is not true for {items}.")
+    
     ds_vars <- allVariables(dataset[vars_vec])
     
     error_if_items(aliases(ds_vars)[!(types(ds_vars) %in% c("categorical", "multiple_response"))], 
-        "All banner variables must be categorical or multiple response. This is not true for {items}.")
+        "Variables in `vars` must be of type categorical or multiple_response. This is not true for {items}.",
+        and = TRUE, quotes = TRUE)
 
-    error_if_items(setdiff(names(labels), vars_vec), 
-        "Aliases used in `labels` must be included in `vars`. This is not true for {items}")
-
-    error_if_items(setdiff(names(recodes), vars_vec), 
-        "Aliases used in `recodes` must be included in `vars`. This is not true for {items}")
-
-    ret_data <- list(alias = aliases(ds_vars), name = replace(names(ds_vars), match(names(labels),
-        (aliases(ds_vars))), labels), type = types(ds_vars), old_categories = lapply(vars_vec, function(x) {
-            cat_fun <- if (type(dataset[[x]]) == "multiple_response") {
-                names(subvariables(dataset[[x]]))
-            } else {
-                names(na.omit(categories(dataset[[x]])))
-            }}))
-    ret_data$categories_out <- ret_data$old_categories
+    variables <- setNames(lapply(ds_vars, function(var) {
+        alias <- alias(var)
+        name <- if (is.null(labels[[alias]])) { name(var) } else { labels[[alias]] }
+        type <- type(var)
+        responses <- if (type %in% "multiple_response") { subvariables(dataset[[alias]])
+            } else { na.omit(categories(dataset[[alias]])) }
+        structure(c(alias = alias, name = name, type = type, 
+            recode_categories(alias, responses, recodes[[alias]])),
+            class = "BannerVar")
+    }), aliases(ds_vars))
     
-    # ret_data <- lstranspose(ret_data)
-    ret_data <- ltranspose(ret_data, use_names = FALSE)
-    names(ret_data) <- vars_vec
-    categories_ordered <- list()
+    total <- structure(list(alias = "___total___", name = "", type = "Total", 
+        old_categories = "Total", categories_out = "Total", categories = "Total"),
+        class = "BannerVar")
     
-    for (var_name in names(recodes)) {
-        var_recodes <- recodes[[var_name]]
-        var_recodes <- gsub("\n|\t", " ", var_recodes)
-        recode_list <- rev(strsplit(var_recodes, ";")[[1]])
-        used_list <- c()
-        else_target <- NULL
-        for (term in recode_list) {
-            if (grepl("^else=", gsub(" *", "", term))) {
-                target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
-                if (class(target) == "try-error") {
-                    stop("\n  in recode term: ", term, "\n  message: ", target)
-                }
-                else_target <- target
-            } else {
-                set <- try(eval(parse(text = strsplit(term, "=")[[1]][1])), silent = TRUE)
-                if (class(set) == "try-error") {
-                    stop("\n  in recode term: ", term, "\n  message: ", set)
-                }
-                for (ccat in set)
-                    if (!ccat %in% ret_data[[var_name]][["old_categories"]]) {
-                        stop("No category with name '", ccat, "' in '", var_name, "'.")
-                    }
-                target <- try(eval(parse(text = strsplit(term, "=")[[1]][2])), silent = TRUE)
-                if (class(target) == "try-error") {
-                    stop("\n  in recode term: ", term, "\n  message: ", target)
-                }
-                ret_data[[var_name]][["categories_out"]][ret_data[[var_name]][["old_categories"]] %in%
-                        set] <- target
-                if (!is.na(target))
-                    categories_ordered[[var_name]] <- c(target, categories_ordered[[var_name]])
-                used_list <- c(set, used_list)
-            }
-        }
-        if (!is.null(else_target)) {
-            ret_data[[var_name]][["categories_out"]][!(ret_data[[var_name]][["old_categories"]] %in%
-                    used_list)] <- else_target
-            if (!is.na(target))
-                categories_ordered[[var_name]] <- c(else_target, categories_ordered[[var_name]])
-        }
-    }
-    
-    ret <- lapply(vars, function(ban) sapply(ban, function(v) {
-        ret_val <- ret_data[[v]]
-        categories <- unique(ret_val$categories_out[!is.na(ret_val$categories_out)])
-        if (length(categories) != length(ret_val$categories_out[!is.na(ret_val$categories_out)])) {
-            stop("Combining categories is not supported.")
-        }
-        ret_val$categories <- if (length(categories) == length(categories_ordered[[v]]))
-            categories_ordered[[v]] else categories
-        class(ret_val) <- c("BannerVar", class(ret_val))
-        ret_val
-    }, simplify = FALSE))
-    
-    total <- list(alias = "___total___", name = "", type = "Total", old_categories = "Total",
-        categories_out = "Total", categories = "Total")
-    class(total) <- "BannerVar"
-    
-    # Add the 'Total' column at the beginning of each subbanner
-    ret <- lapply(ret, function(banner) {
-        sapply(c("___total___", names(banner)), function(bi) {
-            if (bi == "___total___")
-                total else banner[[bi]]
-        }, simplify = FALSE)
-    })
-    
-    names(ret) <- if (is.null(names(vars))) paste0("Banner", seq_along(ret)) else names(vars)
-    class(ret) <- "Banner"
-    ret
+    structure(sapply(vars, function(var) {
+        c("___total___"=list(total), variables[var])
+    }, simplify = FALSE), class = "Banner")
 }
 
-# lstranspose <- function(l) {
-#     if (length(unique(sapply(l, length))) > 1)
-#         stop("All nested lists must be of equal length.")
-#     return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-# }
+recode_categories <- function(alias, responses, recodes) {
+    error_if_items(setdiff(names(recodes), c(names(responses), ".default")),
+        paste0("Responses in `recodes` must be included in variable responses. This is not true for {items} in '", alias, "'."), 
+        quotes = TRUE, and = TRUE)
+    
+    if ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
+            (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))])))) {
+        stop("Combining categories is not currently supported. Please check '", alias, "' recodes.", call. = FALSE)
+    }
+    if (!is.null(recodes[[".default"]])) {
+        recodes[setdiff(names(responses), names(recodes))] <- recodes[[".default"]]
+        recodes[[".default"]] <- NULL
+    }
+    recodes[setdiff(names(responses), names(recodes))] <- setdiff(names(responses), names(recodes))
+    recodes <- recodes[names(responses)]
+    return(list(old_categories = names(recodes), 
+        categories_out = setNames(unlist(recodes, use.names = FALSE), NULL),
+        categories = setdiff(unlist(recodes, use.names = FALSE), NA)))
+}
+
