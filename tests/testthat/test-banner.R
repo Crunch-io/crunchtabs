@@ -17,9 +17,11 @@ with_test_authentication({
         expect_warning(banner(ds, list(c(), "A"="art3")),
             "No variables found in 'Banner1' in `vars`. 'Banner1' will be ignored.")
         expect_error(banner(ds, list(Results = c("a", "b"))),
-            "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.")
+            "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.",
+            fixed = TRUE)
         expect_error(banner(ds, list(Results = c("art3", "a", "tv4", "b", "movies5"))),
-            "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.")
+            "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.",
+            fixed = TRUE)
         expect_error(banner(ds, list(Results = c("art2")), labels = list("Doggy")),
             "`labels` must be a named list or vector.")
         expect_error(banner(ds, list(Results = c("art3")), labels = c(allpets1 = "All Pets")),
@@ -86,9 +88,9 @@ with_test_authentication({
         expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
-        expect_identical(banner_data[["Results"]][["art3"]][["old_categories"]], c('Painting', 'Sculpture', 'Dance', 'Music', 'Poetry'))
-        expect_identical(banner_data[["Results"]][["art3"]][["categories_out"]], c('Painting', 'Sculpture', 'Dance', 'Music', 'Poetry'))
-        expect_identical(banner_data[["Results"]][["art3"]][["categories"]], c('Painting', 'Sculpture', 'Dance', 'Music', 'Poetry'))
+        expect_identical(banner_data[["Results"]][["art3"]][["old_categories"]], c("Painting", "Sculpture", "Dance", "Music", "Poetry"))
+        expect_identical(banner_data[["Results"]][["art3"]][["categories_out"]], c("Painting", "Sculpture", "Dance", "Music", "Poetry"))
+        expect_identical(banner_data[["Results"]][["art3"]][["categories"]], c("Painting", "Sculpture", "Dance", "Music", "Poetry"))
     })
     
     banner_data <- banner(ds, vars = list(Results1 = c("age5"), Results2 = c("art3")))
@@ -108,23 +110,23 @@ with_test_authentication({
     })
     
     banner_data <- banner(ds, vars = list(Results = c("age5")),
-        recodes = list(age5 = list('16 to 24' = 'Under 25', '55+' = 'Over 54')))
+        recodes = list(age5 = list("16 to 24" = "Under 25", "55+" = "Over 54")))
     test_that("Single banner with one variable, recodes - categories rename", {
         expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]], c("Under 25", "25 to 34", "35 to 44", "45 to 54", "Over 54"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories"]], c("Under 25", "25 to 34", "35 to 44", "45 to 54", "Over 54"))
     })
     
-    banner_data <- banner(ds, vars = list(Results = c('age5')),
-        recodes = list(age5 = list('16 to 24' = 'Under 25', '45 to 54' = NA, '55+' = NA)))
+    banner_data <- banner(ds, vars = list(Results = c("age5")),
+        recodes = list(age5 = list("16 to 24" = "Under 25", "45 to 54" = NA, "55+" = NA)))
     test_that("Single banner with one variable, recodes - categories rename, hiding", {
         expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]], c("Under 25", "25 to 34", "35 to 44", NA, NA))
         expect_identical(banner_data[["Results"]][["age5"]][["categories"]], c("Under 25", "25 to 34", "35 to 44"))
     })
     
-    banner_data <- banner(ds, vars = list(Results = c('age5')),
-        recodes = list(age5 = list('16 to 24' = 'Under 25', '55+' = 'Over 54', .default = NA)))
+    banner_data <- banner(ds, vars = list(Results = c("age5")),
+        recodes = list(age5 = list("16 to 24" = "Under 25", "55+" = "Over 54", .default = NA)))
     test_that("Single banner with one variable, recodes - categories rename, else", {
         expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]], c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
         expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]], c("Under 25", NA, NA, NA, "Over 54"))

@@ -30,15 +30,16 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     wrong_class_error(dataset, "CrunchDataset", "dataset")
     
     error_if_items(setdiff(vars, aliases(allVariables(dataset))), 
-        "{items} listed in `vars` must be valid aliases in aliases(allVariables(dataset)).")
+        "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for {items}.",
+        and = TRUE, quotes = TRUE)
     
     if (!is.null(weight)) {
         if (is.variable(weight)) { weight <- alias(weight) }
         if (!weight %in% aliases(allVariables(dataset))) {
-            stop("`weight`, if provided, must be a valid variable in `dataset`. ", weight, " is not found.")
+            stop("`weight`, if provided, must be a valid variable in `dataset`. '", weight, "' is not found.")
         }
         if (!weight %in% weightVariables(dataset)) {
-            stop("`weight`, if provided, must be a valid weight variable in `dataset`. ", weight, " is not a weight variable.")
+            stop("`weight`, if provided, must be a valid weight variable in `dataset`. '", weight, "' is not a weight variable.")
         }
     }
     if (!is.null(banner) && !is(banner, "Banner")) {
@@ -50,8 +51,9 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     vars_out <- if (codebook) { vars } else {
         intersect(vars, aliases(allVariables(dataset))[types(allVariables(dataset)) %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
     
-    error_if_items(collapse_items(unique(types(allVariables(dataset[setdiff(vars, vars_out)])))), 
-        "`vars` of type(s) {items} are not supported and have been skipped.", error = FALSE)
+    error_if_items(unique(types(allVariables(dataset[setdiff(vars, vars_out)]))), 
+        "`vars` of type(s) {items} are not supported and have been skipped.", 
+        and = TRUE, error = FALSE)
     
     if (length(vars_out) == 0){
         stop("No variables provided.")

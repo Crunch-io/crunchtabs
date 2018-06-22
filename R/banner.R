@@ -61,7 +61,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     error_if_items(setdiff(names(recodes), vars_vec), 
         "Variables in `recodes` must be included in `vars`. This is not true for {items}.",
         and = TRUE, quotes = TRUE)
-    error_if_items(names(recodes)[!sapply(recodes, is, "list")],
+    error_if_items(if (!is.null(recodes)) names(recodes)[!sapply(recodes, is, "list")],
         "`recodes` must be a list of lists. This is not true for {items}.")
     
     ds_vars <- allVariables(dataset[vars_vec])
@@ -95,8 +95,9 @@ recode_categories <- function(alias, responses, recodes) {
         paste0("Responses in `recodes` must be included in variable responses. This is not true for {items} in '", alias, "'."), 
         quotes = TRUE, and = TRUE)
     
-    if ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
-            (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))])))) {
+    if (!is.null(recodes) && 
+            ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
+            (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))]))))) {
         stop("Combining categories is not currently supported. Please check '", alias, "' recodes.", call. = FALSE)
     }
     if (!is.null(recodes[[".default"]])) {

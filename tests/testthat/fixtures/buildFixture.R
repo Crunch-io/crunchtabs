@@ -8,6 +8,7 @@ user <- "persephone.tsebelis"
 # dataset.
 url <- paste0("https://crunch-upload.uat.yougov.net/upload/crunchtabs_example/?share_with=", 
     user, "@yougov.com&segment=monkeys&starttime_from=", Sys.Date())
+url
 
 # Once the dataset has been uploaded, load it here:
 ds <- unlock(loadDataset(paste0("YouGov crunchtabs_example monkeys (starttime: from ", Sys.Date(), ")")))
