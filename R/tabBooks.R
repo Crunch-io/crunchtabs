@@ -1,15 +1,12 @@
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
-    # tabs_data <- list()
-    
-    banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], 
-        function(bv) bv$alias))
+
     banner_flatten <- flattenBanner(banner)
     banner_use <- banner
     if (topline) { banner_use$Results[[2]] <- NULL }
     
-    multitable <- getMultitable(banner, dataset)
+    multitable <- getMultitable(banner_flatten, dataset)
     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
     
     banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
@@ -32,27 +29,24 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         is_crosstabs_array <- is_array_type && !topline
         
         valiases <- if (is_crosstabs_array) { getSubAliases(crunch_cube) 
-            } else { aliases(cube_variable) }
+        } else { aliases(cube_variable) }
         subnames <- if (is_array_type) getSubNames(crunch_cube)
         
         var_cats <- categories(cube_variable[[1]])
         inserts <- if (is_cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
         show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
         
-        metadata <- #structure(
-            list(type = var_type,
-                name = names(cube_variable), 
-                description = descriptions(cube_variable), 
-                notes = notes(cube_variable), 
-                no_totals = is_mr_type, 
-                mean_median = show_mean_median,
-                subnames = subnames,
-                categories = var_cats,
-                inserts_obj = inserts#,
-                # crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
-            )#,
-        # class = c(if (is_mr_type) "MultipleResponseCrossTabVar", 
-        #     if (is_topline_array) "ToplineCategoricalArray", "CrossTabVar"))
+        metadata <- list(
+            name = names(cube_variable), 
+            description = descriptions(cube_variable), 
+            notes = notes(cube_variable), 
+            type = var_type,
+            no_totals = is_mr_type, 
+            mean_median = show_mean_median,
+            subnames = subnames,
+            categories = var_cats,
+            inserts_obj = inserts
+        )
         
         pbook <- lapply(seq_along(book[[vi]]), function(vix) {
             crunch::prop.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
@@ -93,9 +87,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                         dimnames=list(rownames(pdata[[2]]), names(xi)))
                 })
             }
-
-            structure(c(metadata, 
-                alias = valias, 
+            
+            structure(c(alias = valias,
+                metadata, 
                 subnumber = ri,
                 subname = if (!is_toplines_array) subnames[ri],
                 number = paste0(which(var_nums %in% vi), if (is_crosstabs_array) 
@@ -121,9 +115,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 }
 
 
-getMultitable <- function (banner, dataset) {
+getMultitable <- function (banner_flatten, dataset) {
     ## Given a Banner object and a dataset, find/create the Crunch multitable that corresponds
-    mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
+    mtvars <- paste0("`", setdiff(names(banner_flatten), "___total___"), "`")
     mt_name <- digest(sort(mtvars), "md5")
     multitable <- multitables(dataset)[[mt_name]]
     if (is.null(multitable)) {
