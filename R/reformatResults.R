@@ -16,7 +16,6 @@ getBannerInfo <- function(banner, theme){
     empty_col <- !is.null(theme$format_banner_split) && theme$format_banner_split$empty_col
     len <- sapply(banner, function(x) length(x$categories))
     banner_cols_pos <- cumsum(len) + 1
-    browser()
     multicols <- sapply(banner, function(x) x$categories[!is.na(x$categories)])
     multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
     format_cols <- if (empty_col) { unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
