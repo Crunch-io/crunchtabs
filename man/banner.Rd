@@ -17,9 +17,9 @@ These should be categorical (and typically hidden) variables present in the \cod
 Defaults to \code{NULL} - variables names are used.}
 
 \item{recodes}{An optional named list of categories recodes (the syntax is similar
-to the one used in the \code{recode} function in the R \code{car} package). Use \code{NA} to
+to the one used in the \code{recode} function in the R \code{dplyr} package). Use \code{NA} to
 exclude categories. Not listed categories will be left unchanged.
-Use \code{else} to replace all not listed categories. See examples for details.
+Use \code{.default} to replace all not listed categories. See examples for details.
 Defaults to \code{NULL} - categories are not modified.}
 }
 \value{
@@ -34,7 +34,7 @@ banner_data <- banner(crunch_dataset,
     vars = list(subBanner1 = c('alias1', 'alias2'), subBanner2 = c('alias3')),
     labels = c(alias1 = 'var1 label', alias2 = 'var2 label'),
     recodes = list(
-        alias1 = "'cat1a' = 'new cat1a'; 'cat1b' = NA",
-        alias2 = "'cat2a' = 'new cat2a'; 'cat2b' = 'new cat2b'; else = NA"))
+        alias1 = list(cat1a = 'new cat1a', cat1b = NA),
+        alias2 = list(cat2a = 'new cat2a', cat2b = 'new cat2b', .default = NA))
 }
 }
