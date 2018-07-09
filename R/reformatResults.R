@@ -31,7 +31,7 @@ getBannerInfo <- function(banner, theme){
         border_columns = border_columns, names = names)
 }
 
-getItemDatat <- function(data, item_name, empty_col, round){
+getItemData <- function(data, item_name, empty_col, round){
     tmp_data <- lapply(seq_along(data), function(bv) {
         dt <- if (round) round(data[[bv]][[item_name]]) else data[[bv]][[item_name]]
         if (is.vector(dt)) return(c(dt, if (empty_col) as.numeric(NA)))
@@ -60,7 +60,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         weight_v <- dt %in% c("unweighted_n", "weighted_n")
         mm_v <- dt %in% c("means", "medians")
         dx <- piece_names[[dt]]
-        data <- getItemDatat(data = var$crosstabs[[banner_name]], item_name = dx, 
+        data <- getItemData(data = var$crosstabs[[banner_name]], item_name = dx, 
             empty_col = banner_info$empty_col && !latex, round = FALSE)
         if (all(is.na(data))) { return(NULL) }
         if (is.vector(data)) data <- t(data)
@@ -85,7 +85,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         }
         
         if (dt %in% "totals_row") { 
-            data_tmp <- if (proportions) { colSums(data) } else { getItemDatat(data = var$crosstabs[[banner_name]], item_name = "weighted_base", 
+            data_tmp <- if (proportions) { colSums(data) } else { getItemData(data = var$crosstabs[[banner_name]], item_name = "weighted_base", 
                 empty_col = banner_info$empty_col && !latex, round = FALSE) }
             data <- matrix(data_tmp, nrow = 1, ncol = ncol(data),
                 dimnames = list(c(theme$format_totals_row$name), colnames(data)))
@@ -96,7 +96,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         }
         
         if (weight_v && nrow(data) > 1) {
-            data <- rbind(apply(data, 2, min), apply(data, 2, max))
+            data <- rbind(apply(data, 2, min, na.rm = TRUE), apply(data, 2, max, na.rm = TRUE))
             if (all(data[1, ] == data[2, ])) data <- data[1, , drop = FALSE]
         }
         if (!is.null(theme_dt$name)) {
@@ -110,7 +110,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         return(data)
     }, simplify = FALSE)
     
-    unweighted_n <- getItemDatat(var$crosstabs[[banner_name]], "base", 
+    unweighted_n <- getItemData(var$crosstabs[[banner_name]], "base", 
         empty_col = banner_info$empty_col && !latex, round = FALSE)
     if (any(var$inserts %in% c("Heading", "Subtotal"))){
         unweighted_n <- as.matrix(unweighted_n[rep(1, length(var$inserts)), ], nrow = length(var$inserts),

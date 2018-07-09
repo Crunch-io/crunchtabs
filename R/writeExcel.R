@@ -158,14 +158,14 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
                         1 - banner_info$empty_col), rows = start_row - 1)
             })
         }
-        start_row <- write_and_style(wb, ws, data = getItemDatat(banner, "categories", banner_info$empty_col, round = FALSE), 
+        start_row <- write_and_style(wb, ws, data = getItemData(banner, "categories", banner_info$empty_col, round = FALSE), 
             style = styles$format_banner_categories, start_row = start_row, cols = banner_info$format_cols, write_as_rows = FALSE)
         if (!is.null(theme$format_weighted_n) && theme$format_weighted_n$position_fixed) {
-            start_row <- write_and_style(wb, ws, data = c(theme$format_weighted_n$name, getItemDatat(banner, "weighted_n", banner_info$empty_col, round = TRUE)), 
+            start_row <- write_and_style(wb, ws, data = c(theme$format_weighted_n$name, getItemData(banner, "weighted_n", banner_info$empty_col, round = TRUE)), 
                 style = styles$format_weighted_n, start_row = start_row, cols = c(1, banner_info$format_cols), write_as_rows = FALSE)
         }
         if (!is.null(theme$format_unweighted_n) && theme$format_unweighted_n$position_fixed) {
-            start_row <- write_and_style(wb, ws, data = c(theme$format_unweighted_n$name, getItemDatat(banner, "unweighted_n", banner_info$empty_col, round = TRUE)), 
+            start_row <- write_and_style(wb, ws, data = c(theme$format_unweighted_n$name, getItemData(banner, "unweighted_n", banner_info$empty_col, round = TRUE)), 
                 style = styles$format_unweighted_n, start_row = start_row, cols = c(1, banner_info$format_cols), write_as_rows = FALSE)
         }
         if (percent_row) {
