@@ -49,6 +49,7 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     error_if_items(setdiff(vars_vec, aliases(allVariables(dataset))), 
         "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for {items}.",
         and = TRUE, quotes = TRUE)
+    if (!is.null(labels)) labels <- lapply(labels, function(l) return(l))
     if (!is.null(labels) && is.null(names(labels))) {
         stop("`labels` must be a named list or vector.", call. = FALSE)
     } 
@@ -94,9 +95,9 @@ recode_categories <- function(alias, responses, recodes) {
     error_if_items(setdiff(names(recodes), c(names(responses), ".default")),
         paste0("Responses in `recodes` must be included in variable responses. This is not true for {items} in '", alias, "'."), 
         quotes = TRUE, and = TRUE)
+    if (!is.null(recodes)) recodes <- lapply(recodes, function(r) return(r))
     
-    if (!is.null(recodes) && 
-            ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
+    if (!is.null(recodes) && ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
             (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))]))))) {
         stop("Combining categories is not currently supported. Please check '", alias, "' recodes.", call. = FALSE)
     }

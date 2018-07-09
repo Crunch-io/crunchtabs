@@ -2,7 +2,8 @@
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 
-    banner_flatten <- flattenBanner(banner)
+    banner_flatten <- unique(unlist(banner, recursive = FALSE))
+    names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
     banner_use <- banner
     if (topline) { banner_use$Results[[2]] <- NULL }
     
@@ -13,7 +14,6 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         aliases(variables(book[[1]][[ix]]))[2] })
     banner_var_names[1] <- "___total___"
     var_nums <- match(vars, aliases(book))
-    
     structure(unlist(lapply(var_nums, function(vi) {
         crunch_cube <- book[[vi]][[1]]
         
@@ -126,6 +126,30 @@ getMultitable <- function (banner_flatten, dataset) {
     return(multitable)
 }
 
+
+bannerDataRecode <- function(b_table, b_recode) {
+    names_mask <- (b_recode$old_categories %in% dimnames(b_table)[[b_recode$alias]]) &
+        !is.na(b_recode$categories_out)
+    n_dim <- length(dim(b_table))
+    dim_num <- which(names(dimnames(b_table)) == b_recode$alias)
+    if (length(dim_num) > 1) dim_num <- dim_num[2]
+    t_table <- b_table
+    if (n_dim < 3) { 
+        dim(t_table) <- c(dim(t_table), rep(1, 3-n_dim)) 
+        dimnames(t_table) <- dimnames(b_table)
+    }
+    t_table <- t_table[if (dim_num == 1) names_mask else TRUE, 
+        if (dim_num == 2) names_mask else TRUE, 
+        if (dim_num == 3) names_mask else TRUE, drop = FALSE]
+    dimnames(t_table)[[dim_num]] <- b_recode$categories_out[names_mask]
+    if (n_dim < 3) {
+        d_names <- dimnames(t_table)
+        dim(t_table) <- dim(t_table)[1:n_dim]
+        dimnames(t_table) <- d_names[1:n_dim]
+    }
+    return(t_table)
+}
+
 # This function computes p-values for column hypothesis testing only.
 #' @importFrom stats pnorm
 compute_pvals <- function(counts, counts_unweighted) {
@@ -208,4 +232,5 @@ row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) 
     }
     return(data)
 }
+
 

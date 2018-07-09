@@ -1,46 +1,3 @@
-#' #' @export
-#' writeLatex.Toplines <- function(data_summary, theme = themeDefaultLatex(), 
-#'     filename = getName(data_summary), title = getName(data_summary), 
-#'     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
-#'     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-#'     pdf = FALSE, open = FALSE, logging = FALSE) {
-#'     
-#'     topline <- is(data_summary, "Toplines")
-#'     if (is.null(theme$font_size)) { theme$font_size <- 12 }
-#'     
-#'     headers <- lapply(data_summary$results, tableHeader, theme = theme)
-#'     
-#'     data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
-#'     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
-#'     bodies <- lapply(results, function (x) 
-#'         sapply(x, latexTable.body, topline = topline))
-#'     
-#'     out <- c(
-#'         latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
-#'         if (!topline) sapply(seq_along(data_summary$banner), function (j) {
-#'             longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9, 
-#'                 theme = theme)
-#'         }),
-#'         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
-#'             field_period = field_period, moe = moe, font_size = theme$font_size),
-#'         sapply(seq_along(data_summary$results), function(i) {
-#'             c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline),
-#'                 sep="\n", collapse="\n"),
-#'                 if (theme$one_per_sheet) { "\\clearpage" })
-#'         }),
-#'         append_text,
-#'         latexDocFoot()
-#'     )
-#'     if (!is.null(filename)) {
-#'         filename <- paste0(filename, ".tex")
-#'         cat(out, sep = "\n", file = filename)
-#'         if (pdf) {
-#'             if (logging) { print("PDF-ing") }
-#'             pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
-#'         }
-#'     }
-#'     return(invisible(data_summary))
-#' }
 
 #' @export
 tableHeader.ToplineVar <- function(var, theme) {
@@ -90,23 +47,12 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 }
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
-    # var_info <- var_header(var, theme)
-    # if (length(var_info) == 0) var_info <- list(format_var_name = "\\color{gray}{404}")
     return(paste("\\begin{center}\n",
         tab_definition, "\n",
         latexTableName(var, theme),
-        # "\\colorbox{gray}{\n",
-        # "\\addcontentsline{lot}{table}{", escM(var_info[[1]]), "}\n",
-        # "\\parbox{6.5in}{\n", 
-        # paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
-        # "}}\\\\\\ \n",
         header_row,
         sep = ""))
 }
-
-# toplineFooterDef <- function() return("\\end{longtable}\n\\end{center}")
-
-# latexFootT <- function() return("\\end{document}\n")
 
 
 

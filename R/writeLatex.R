@@ -56,7 +56,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     
     headers <- lapply(data_summary$results, tableHeader, theme = theme)
     
-    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     bodies <- lapply(results, function (x) 
         sapply(x, latexTable.body, theme = theme, topline = topline))
@@ -324,7 +324,7 @@ latexTableFoot <- function(topline) {
 }
 
 latexTableName <- function(var, theme) {
-    var_info <- var_header(var, theme)
+    var_info <- getVarInfo(var, theme)
     col <- if (is.null(theme[[names(var_info)[[1]]]]$background_color)) { "white" 
         } else { theme[[names(var_info)[[1]]]]$background_color }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {

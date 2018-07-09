@@ -1,46 +1,3 @@
-#' #' @export
-#' writeLatex.Crosstabs <- function(data_summary, theme = themeDefaultLatex(), 
-#'     filename = getName(data_summary), title = getName(data_summary), 
-#'     subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
-#'     field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
-#'     pdf = FALSE, open = FALSE, logging = FALSE) {
-#'     
-#'     topline <- is(data_summary, "Toplines")
-#'     if (is.null(theme$font_size)) { theme$font_size <- 12 }
-#'     
-#'     headers <- lapply(data_summary$results, tableHeader, theme = theme)
-#'     
-#'     data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
-#'     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
-#'     bodies <- lapply(results, function (x) 
-#'         sapply(x, latexTable.body, topline = topline))
-#'     
-#'     out <- c(
-#'         latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
-#'         if (!topline) sapply(seq_along(data_summary$banner), function (j) {
-#'             longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9, 
-#'                 theme = theme)
-#'         }),
-#'         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
-#'             field_period = field_period, moe = moe, font_size = theme$font_size),
-#'         sapply(seq_along(data_summary$results), function(i) {
-#'             c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline),
-#'                 sep="\n", collapse="\n"),
-#'                 if (theme$one_per_sheet) { "\\clearpage" })
-#'         }),
-#'         append_text,
-#'         latexDocFoot()
-#'     )
-#'     if (!is.null(filename)) {
-#'         filename <- paste0(filename, ".tex")
-#'         cat(out, sep = "\n", file = filename)
-#'         if (pdf) {
-#'             if (logging) { print("PDF-ing") }
-#'             pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
-#'         }
-#'     }
-#'     return(invisible(data_summary))
-#' }
 
 # Long table header and footer creation.
 # Generates two macros for the preamble
@@ -49,7 +6,7 @@
 # If given multiple banners, \bannerb \tbltopb, etc are created
 longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
 
-    binfo <- get_banner_info(banner, theme)
+    binfo <- getBannerInfo(banner, theme)
     col_num_sum <- length(unlist(binfo$multicols))
     
     banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
@@ -88,10 +45,6 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
     return(paste(c(ban, "\\midrule \n"), collapse = "\n"))
 }
 
-# getMulticolumnWidth <- function(binfo.i) {
-#     return(c(length(binfo.i[[2]]), length(binfo.i[[1]])))
-# }
-
 # Header for LongTable with Banner.
 # Title indicates whether the title should be displayed, or not (as in the
 # case of multiple banners displayed underneath each other, the title only
@@ -107,59 +60,5 @@ tableHeader.CrossTabVar <- function(var, theme) {
     })
 }
 
-# latexTableHeadTitle <- function (var, theme) {
-#     var_info <- var_header(var, theme)
-#     col <- if (is.null(theme[[names(var_info)[[1]]]]$background_color)) { "white"
-#         } else { theme[[names(var_info)[[1]]]]$background_color }
-#     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
-#         var_info[[1]] <- paste0(var_info[[1]], if (!is.null(var_info$format_var_subname))
-#             paste0(" — ", var_info$format_var_subname))
-#         var_info$format_var_subname <- NULL
-#     }
-#     if (length(var_info) == 0) var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
-#     paste("\\colorbox{", col, "}{\n",
-#         "\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
-#         "\\parbox{9.5in}{\n",
-#         paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
-#         "}} \\\\", sep="")
-# }
-
-# makeLatexBanner.internal <- function (binfo.i, multirow=FALSE, width=NULL) {
-#     cps <- getMulticolumnWidth(binfo.i)
-#     if (nchar(binfo.i[1]) > 0) {
-#         binfo.i[[1]] <- paste0("\\bf ",binfo.i[[1]])
-#     }
-#     binfo.i <- lapply(seq_along(binfo.i), function(i) {paste0("\\multicolumn{", cps[i],
-#         if (!multirow | cps[i]>1) { "}{c}{" } else { paste0("}{m{", width,"in}}{\\centering ") },
-#         escM(binfo.i[[i]]),
-#         "}",
-#         collapse=" & ")})
-#     
-#     return(unlist(binfo.i))
-# }
-
-# makeLatexBanner <- function (banner, binfo, multirow=FALSE, width=NULL,
-#     tabreport=TRUE) {
-#     binfo2 <- get_banner_info(banner, theme)
-#     ban <- paste("&",apply(as.data.frame(lapply(binfo, makeLatexBanner.internal,
-#         multirow, width), stringsAsFactors=FALSE), 1, paste, collapse= " & "),"\\\\", sep=" ")
-#     ban[2] <- paste("{\\bf #1}", ban[2])
-#     
-#     multicols <- c(1, sapply(binfo, function(x) length(x[[2]])))
-#     notempty <- c(FALSE, sapply(binfo, function(x) nchar(x[[1]]) > 0))
-#     multicols_csum <- cumsum(multicols)
-#     for (j in seq_along(multicols))
-#         if (multicols[j] > 1 && notempty[j]) {
-#             ban[1] <- paste0(ban[1], " \\cmidrule(lr{.75em}){", 1+multicols_csum[j-1], "-", multicols_csum[j], "}")
-#         }
-#     
-#     ban <- c(ban, "\\midrule \n")
-#     browser()
-#     return(paste(ban, collapse="\n"))
-# }
-
-# tableFootLT <- function() "\n \\end{longtable}\n\n"
-
-# latexFootLT <- function() "}\\end{document}\n"
 
 

@@ -93,12 +93,3 @@ collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
     return(paste0(x, collapse = if (and) { " and " } else if (or) { " or " } else { " " }))
 }
 
-ltranspose <- function(l, use_names) {
-    if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length.")
-    if (use_names && !is.null(names(l[[1]]))) {
-        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]]), simplify = FALSE))
-    } else {
-        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-    }
-}
