@@ -23,8 +23,8 @@
 #' @importFrom crunch name aliases allVariables is.Numeric is.dataset weight alias weightVariables
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE,
-    metadata = NULL) {
+crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), 
+    banner = NULL, codebook = FALSE) {
     
     # TODO: open ends
     wrong_class_error(dataset, "CrunchDataset", "dataset")

@@ -356,6 +356,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         openxlsx::addWorksheet(wb, toc_sheet, gridLines = theme$excel_show_grid_lines, header = theme$excel_header, footer = theme$excel_footer, orientation = theme$excel_orientation)
         toc_row <- toc_start_row <- write_report_desc(wb = wb, ws = toc_sheet, theme = theme, styles = styles, 
             title = title, subtitle = subtitle)
+        openxlsx::setColWidths(wb, toc_sheet, cols = 1, theme$format_label_column$col_width)
         openxlsx::freezePane(wb, toc_sheet, firstActiveRow = toc_row + 1)
     }
     
