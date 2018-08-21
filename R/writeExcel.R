@@ -177,7 +177,7 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
         }
         openxlsx::addStyle(wb, ws, styles$format_totals_column, rows = sr:(start_row - 1), cols = 2, stack = TRUE)
         openxlsx::addStyle(wb, ws, styles$split_border, rows = sr:(start_row - 1), 
-            cols = if (banner_info$empty_col) banner_info$border_columns, gridExpand = TRUE, stack = TRUE)
+            cols = banner_info$border_columns, gridExpand = TRUE, stack = TRUE)
     }
     
     openxlsx::addStyle(wb, ws, styles$format_label_column, rows = sr:(start_row - 1), cols = 1, gridExpand = FALSE, stack = TRUE)
@@ -226,7 +226,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     var_info <- reformatVar(var = var, banner_name = banner_name, theme = theme, 
         proportions = proportions, banner_info = banner_info, latex = FALSE) 
     data_list <- var_info$data_list
-    
+
     all_data <- do.call(rbind, data_list[var_info$data_order])
     topline_array <- is(var, "ToplineCategoricalArray")
     if (topline_array) {
@@ -242,6 +242,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     start_row <- sr <- start_row + topline_array
 
     style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, cols = 2)
+    style_if(TRUE, start_row, styles$split_border, all_data, cols = banner_info$border_columns)
 
     for (dt in c(var_info$top, "body")) {
         start_row <- style_if(TRUE, start_row = start_row, style = list(styles[[paste0("format_", dt)]],

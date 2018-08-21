@@ -211,7 +211,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
-            ". It has been set to `helvet`.", .call = FALSE)
+            ". It has been set to `helvet`.", call. = FALSE)
     }
     
     title <- if (is.null(theme$format_title) || is.null(title)) { "" 
@@ -306,7 +306,12 @@ latexDecoration <- function(item, item_theme) {
         item <- paste0(fontLine(item_theme$font_size), item)
     }
     if (!is.null(item_theme$font_color)) {
-        item <- paste0("\\color{", item_theme$font_color, "}", item)
+        if (grepl("^#[A-z0-9]{6}", item_theme$font_color)) {
+            warning("In Latex, colors must be color names not hex codes. ", item_theme$font_color,
+                " will be ignored.", call. = FALSE)
+        } else {
+            item <- paste0("\\color{", item_theme$font_color, "}", item)
+        }
     }
     return(item)
 }

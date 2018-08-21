@@ -12,7 +12,7 @@
 calcTabInsertions <- function (vec, elements, var_cats) {
 
     # make the actual calculations and insertions
-    vec_out <- data.frame(do.call(rbind, lapply(elements, function (element) {
+    vec_out <- do.call(rbind, lapply(elements, function (element) {
         # if element is a category, simply return the value
         if (inherits(element, "Category")) {
             return(vec[name(element),])
@@ -35,7 +35,7 @@ calcTabInsertions <- function (vec, elements, var_cats) {
             return(colSums(vec[which.cats, , drop = FALSE]))
         }
         
-    })))
+    }))
     
     colnames(vec_out) <- colnames(vec)
     

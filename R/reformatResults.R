@@ -62,7 +62,6 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         dx <- piece_names[[dt]]
         data <- getItemData(data = var$crosstabs[[banner_name]], item_name = dx, 
             empty_col = banner_info$empty_col && !latex, round = FALSE)
-        if (all(is.na(data))) { return(NULL) }
         if (is.vector(data)) data <- t(data)
         theme_dt <- theme[[paste0("format_", dt)]]
         
@@ -127,7 +126,6 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     min_cell_top <- if (any(top_sub)) matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n))
     bottom_sub <- mask_vars %in% bottom
     min_cell_bottom <- if (any(bottom_sub)) matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n))
-    
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
