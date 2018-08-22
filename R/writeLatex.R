@@ -408,6 +408,7 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
 # case of multiple banners displayed underneath each other, the title only
 # appears on the top one).
 # Assumes that \banner[a-z]{} macros are defined in the preamble
+#' @export
 tableHeader.CrossTabVar <- function(var, theme) {
     sapply(seq_along(var$crosstabs), function(num){
         paste(if (num != 1) "\\vspace{-.25in}" ,
