@@ -5,7 +5,7 @@
 \title{Toplines and Crosstabs Summaries}
 \usage{
 crosstabs(dataset, vars = names(dataset), weight = crunch::weight(dataset),
-  banner = NULL, codebook = FALSE, metadata = NULL)
+  banner = NULL, codebook = FALSE)
 }
 \arguments{
 \item{dataset}{A Crunch dataset.}

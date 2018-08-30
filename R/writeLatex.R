@@ -56,7 +56,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     
     headers <- lapply(data_summary$results, tableHeader, theme = theme)
     
-    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     bodies <- lapply(results, function (x) 
         sapply(x, latexTable.body, theme = theme, topline = topline))
@@ -211,7 +211,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
-            ". It has been set to `helvet`.", .call = FALSE)
+            ". It has been set to `helvet`.", call. = FALSE)
     }
     
     title <- if (is.null(theme$format_title) || is.null(title)) { "" 
@@ -306,7 +306,12 @@ latexDecoration <- function(item, item_theme) {
         item <- paste0(fontLine(item_theme$font_size), item)
     }
     if (!is.null(item_theme$font_color)) {
-        item <- paste0("\\color{", item_theme$font_color, "}", item)
+        if (grepl("^#[A-z0-9]{6}", item_theme$font_color)) {
+            warning("In Latex, colors must be color names not hex codes. ", item_theme$font_color,
+                " will be ignored.", call. = FALSE)
+        } else {
+            item <- paste0("\\color{", item_theme$font_color, "}", item)
+        }
     }
     return(item)
 }
@@ -314,6 +319,77 @@ latexDecoration <- function(item, item_theme) {
 tableHeader <- function(x, theme) {
     UseMethod("tableHeader", x)
 }
+
+#' @export
+tableHeader.default <- function(x) {
+    wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "getName")
+}
+
+# Header for LongTable with Banner.
+# Title indicates whether the title should be displayed, or not (as in the
+# case of multiple banners displayed underneath each other, the title only
+# appears on the top one).
+# Assumes that \banner[a-z]{} macros are defined in the preamble
+#' @export
+tableHeader.CrossTabVar <- function(var, theme) {
+    sapply(seq_along(var$crosstabs), function(num){
+        paste(if (num != 1) "\\vspace{-.25in}" ,
+            "\\tbltop", letters[num], "\n",
+            if (num == 1) latexTableName(var, theme),
+            "\\addlinespace \n",
+            "\\banner", letters[num],"{} \n\n", sep="")
+    })
+}
+
+#' @export
+tableHeader.ToplineVar <- function(var, theme) {
+    tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
+    toplineTableDef(var, tab_definition, header_row = "\\longtablesep\n", theme = theme)
+}
+
+#' @export
+tableHeader.ToplineCategoricalArray <- function(var, theme) {
+    header_row <- "\n"
+    col_names <- sapply(var$inserts_obj, name)
+    col_names_len <- length(col_names)
+    col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
+    # use heuristic for scale questions
+    if (col_names_len >= 10) {
+        which.split <- grep("^[0-9]+ - ", col_names)
+        if (length(which.split) == 2) {
+            labs <- escM(sub("^[0-9]+ - (.*)$", "\\1", col_names[which.split]))
+            mcwidth <- (max(which.split) - min(which.split) + 1)/2
+            midgaps <- 1 + ceiling(mcwidth)  ## in case it's an odd number
+            mcwidth <- floor(mcwidth)
+            midgaps <- midgaps - mcwidth
+            labs[1] <- paste("\\multicolumn{", mcwidth, "}{l}{", labs[1], "}", collapse = "")
+            labs[2] <- paste("\\multicolumn{", mcwidth, "}{r}{", labs[2], "}", collapse = "")
+            scalestart <- paste(rep(" &", min(which.split)), collapse = "")
+            scalemid <- paste(rep(" &", midgaps), collapse = "")
+            scaleend <- paste(rep(" &", length(col_names) - max(which.split)), collapse = "")
+            thisrow <- paste(scalestart, labs[1], scalemid, labs[2], scaleend, "\\\\")
+            header_row <- paste(header_row, thisrow, "\n")
+            col_names <- sub("^([0-9]+) - .*$", "\\1", col_names)
+            col_width <- paste(round((5.5 - theme$format_label_column$col_width)/
+                    col_names_len - 0.11, 3), "in", sep = "")
+        }
+    }
+    header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), " & \\\n")
+    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{", 
+        col_names_len + 2, "}{c}{\\textit{", theme$latex_headtext, "}} \\\\",
+        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2, 
+        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n", 
+        sep = "")
+    col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
+    col.header <- paste(rep(col.header, col_names_len+1), collapse = "")
+    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", 
+        theme$format_label_column$col_width, "in}", col.header, "}")
+    
+    toplineTableDef(var, tab_definition, header_row, theme)
+}
+
+
+
 
 latexTableFoot <- function(topline) {
     if (topline) { 
@@ -324,7 +400,7 @@ latexTableFoot <- function(topline) {
 }
 
 latexTableName <- function(var, theme) {
-    var_info <- var_header(var, theme)
+    var_info <- getVarInfo(var, theme)
     col <- if (is.null(theme[[names(var_info)[[1]]]]$background_color)) { "white" 
         } else { theme[[names(var_info)[[1]]]]$background_color }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
@@ -343,3 +419,77 @@ latexTableName <- function(var, theme) {
 latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
     
     
+
+
+
+
+
+
+# Crosstabs ---------------------------------------------------------------
+
+
+# Long table header and footer creation.
+# Generates two macros for the preamble
+# \bannera{} that takes one argument (first column label)
+# \tbltopa that takes no arguments
+# If given multiple banners, \bannerb \tbltopb, etc are created
+longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
+    
+    binfo <- getBannerInfo(banner, theme)
+    col_num_sum <- length(unlist(binfo$multicols))
+    
+    banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
+    
+    banner_def_body <- rep(makeLatexBanner(binfo, 
+        width = round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2), 
+        theme = theme), 2)
+    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", 
+        theme$latex_headtext, "} \\\\ ", banner_def_body[2])
+    banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", 
+        collapse="\\endfirsthead \n")
+    
+    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{", 
+        col_num_sum, "}{c}{", theme$latex_foottext, "} \\\\ \n",
+        "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
+    
+    table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
+        "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
+        "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width, 
+        "in}*{", col_num_sum, "}{r}}}\n")
+    return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
+}
+
+makeLatexBanner <- function (binfo, width=NULL, theme) {
+    m_split <- paste0("}{m{", width,"in}}{\\centering ")
+    ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, "}{c}{\\bf ",
+        escM(binfo$names), "}", collapse = "", sep = ""),
+        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo$multicols)), "}", 
+            collapse = "", sep = "")),
+        " \\\\")
+    ban[2] <- paste("{\\bf #1}", ban[2])
+    
+    ban[1] <- paste0(ban[1], paste0(" \\cmidrule(lr{.75em}){",
+        binfo$multicols_csum[2:(length(binfo$multicols_csum)-1)], "-",
+        binfo$multicols_csum[3:length(binfo$multicols_csum)] - 1, "}", collapse = ""))
+    return(paste(c(ban, "\\midrule \n"), collapse = "\n"))
+}
+
+
+
+
+
+
+# Toplines ----------------------------------------------------------------
+
+
+toplineTableDef <- function(var, tab_definition, header_row, theme) {
+    return(paste("\\begin{center}\n",
+        tab_definition, "\n",
+        latexTableName(var, theme),
+        header_row,
+        sep = ""))
+}
+
+
+
+

@@ -67,31 +67,29 @@ sgrep <- function(strs, ..., simplify = TRUE) {
     return(out)
 }
 
-error_if_items <- function(items, text, error = TRUE){
+error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, quotes = FALSE){
     if (length(items) != 0 && !all(items %in% "")){
-        if (error) { stop(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE) }
-        warning(gsub("\\{items\\}", collapse_items(items), text), call. = FALSE)
+        message <- gsub("\\{items\\}", collapse_items(items, and, or, quotes), text)
+        if (error) { stop(message, call. = FALSE) }
+        warning(message, call. = FALSE)
     }
 }
 
 wrong_class_error <- function(value, expected_class, name, null = FALSE){
     if (length(intersect(class(value), expected_class)) != length(expected_class)){
-        stop("The expected class for `", name, "`", if (null) ", if provided, ", " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), ".", call. = FALSE)
+        stop("The expected class for `", name, "`", if (null) ", if provided, ", 
+            " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), 
+            ".", call. = FALSE)
     }
 }
 
 paste_around <- function(str, before, after) { paste0(before, str, after) }
 
-collapse_items <- function(x){
-    paste(x, collapse = ", ")
+collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
+    if (quotes) { x <- paste0("'", x, "'") }
+    if (length(x) > 2) {
+        x <- c(paste0(x[1:(length(x)-1)], ",", collapse = " "), x[length(x)])
+    }
+    return(paste0(x, collapse = if (and) { " and " } else if (or) { " or " } else { " " }))
 }
 
-ltranspose <- function(l, use_names) {
-    if (length(unique(sapply(l, length))) > 1)
-        stop("All nested lists must be of equal length.")
-    if (use_names && !is.null(names(l[[1]]))) {
-        return(sapply(names(l[[1]]), function(x) lapply(l, function(y) y[[x]]), simplify = FALSE))
-    } else {
-        return(lapply(seq_along(l[[1]]), function(x) sapply(l, function(y) y[[x]], simplify = FALSE)))
-    }
-}

@@ -158,14 +158,14 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
                         1 - banner_info$empty_col), rows = start_row - 1)
             })
         }
-        start_row <- write_and_style(wb, ws, data = get_data(banner, "categories", banner_info$empty_col, round = FALSE), 
+        start_row <- write_and_style(wb, ws, data = getItemData(banner, "categories", banner_info$empty_col, round = FALSE), 
             style = styles$format_banner_categories, start_row = start_row, cols = banner_info$format_cols, write_as_rows = FALSE)
         if (!is.null(theme$format_weighted_n) && theme$format_weighted_n$position_fixed) {
-            start_row <- write_and_style(wb, ws, data = c(theme$format_weighted_n$name, get_data(banner, "weighted_n", banner_info$empty_col, round = TRUE)), 
+            start_row <- write_and_style(wb, ws, data = c(theme$format_weighted_n$name, getItemData(banner, "weighted_n", banner_info$empty_col, round = TRUE)), 
                 style = styles$format_weighted_n, start_row = start_row, cols = c(1, banner_info$format_cols), write_as_rows = FALSE)
         }
         if (!is.null(theme$format_unweighted_n) && theme$format_unweighted_n$position_fixed) {
-            start_row <- write_and_style(wb, ws, data = c(theme$format_unweighted_n$name, get_data(banner, "unweighted_n", banner_info$empty_col, round = TRUE)), 
+            start_row <- write_and_style(wb, ws, data = c(theme$format_unweighted_n$name, getItemData(banner, "unweighted_n", banner_info$empty_col, round = TRUE)), 
                 style = styles$format_unweighted_n, start_row = start_row, cols = c(1, banner_info$format_cols), write_as_rows = FALSE)
         }
         if (percent_row) {
@@ -177,7 +177,7 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
         }
         openxlsx::addStyle(wb, ws, styles$format_totals_column, rows = sr:(start_row - 1), cols = 2, stack = TRUE)
         openxlsx::addStyle(wb, ws, styles$split_border, rows = sr:(start_row - 1), 
-            cols = if (banner_info$empty_col) banner_info$border_columns, gridExpand = TRUE, stack = TRUE)
+            cols = banner_info$border_columns, gridExpand = TRUE, stack = TRUE)
     }
     
     openxlsx::addStyle(wb, ws, styles$format_label_column, rows = sr:(start_row - 1), cols = 1, gridExpand = FALSE, stack = TRUE)
@@ -189,7 +189,7 @@ write_banner_panel <- function(wb, ws, theme, styles, banner, title, subtitle,
 }
 
 write_var_header <- function(wb, ws, var, theme, styles, start_row, toc_sheet, toc_row, toc_col) {
-    var_info <- var_header(var, theme)
+    var_info <- getVarInfo(var, theme)
     if (!is.null(toc_sheet)) {
         openxlsx::writeFormula(wb, toc_sheet, startCol = toc_col, startRow = toc_row, 
             x = openxlsx::makeHyperlinkString(sheet = ws,
@@ -223,10 +223,10 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
         return(start_row)
     }
 
-    var_info <- munge_var(var = var, banner_name = banner_name, theme = theme, 
+    var_info <- reformatVar(var = var, banner_name = banner_name, theme = theme, 
         proportions = proportions, banner_info = banner_info, latex = FALSE) 
     data_list <- var_info$data_list
-    
+
     all_data <- do.call(rbind, data_list[var_info$data_order])
     topline_array <- is(var, "ToplineCategoricalArray")
     if (topline_array) {
@@ -242,6 +242,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
     start_row <- sr <- start_row + topline_array
 
     style_if(!is.null(styles$format_totals_column), start_row, styles$format_totals_column, all_data, cols = 2)
+    style_if(TRUE, start_row, styles$split_border, all_data, cols = banner_info$border_columns)
 
     for (dt in c(var_info$top, "body")) {
         start_row <- style_if(TRUE, start_row = start_row, style = list(styles[[paste0("format_", dt)]],
@@ -338,7 +339,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         theme$excel_freeze_column <- 1
     }
     
-    data_summary$results <- lapply(data_summary$results, rm_inserts, theme)
+    data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     
     if (logging) {
         start.time.wb <- Sys.time()
@@ -356,6 +357,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
         openxlsx::addWorksheet(wb, toc_sheet, gridLines = theme$excel_show_grid_lines, header = theme$excel_header, footer = theme$excel_footer, orientation = theme$excel_orientation)
         toc_row <- toc_start_row <- write_report_desc(wb = wb, ws = toc_sheet, theme = theme, styles = styles, 
             title = title, subtitle = subtitle)
+        openxlsx::setColWidths(wb, toc_sheet, cols = 1, theme$format_label_column$col_width)
         openxlsx::freezePane(wb, toc_sheet, firstActiveRow = toc_row + 1)
     }
     
@@ -384,7 +386,7 @@ writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
             start.time <- Sys.time()
             print(paste0(start.time, " -- banner generation: ", banner_name, bna, " -- start"))
         }
-        banner_info <- get_banner_info(banner = banner[[banner_name]], theme = theme)
+        banner_info <- getBannerInfo(banner = banner[[banner_name]], theme = theme)
         if (table_of_contents) {
             openxlsx::writeData(wb, toc_sheet, paste0(banner_name, bna), startRow = toc_start_row, startCol = toc_col)
         }

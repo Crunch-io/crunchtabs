@@ -1,17 +1,14 @@
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
-    # tabs_data <- list()
-    
-    banner_map <- lapply(seq_along(banner), function(bx) sapply(banner[[bx]], 
-        function(bv) bv$alias))
-    banner_flatten <- flattenBanner(banner)
+
+    banner_flatten <- unique(unlist(banner, recursive = FALSE))
+    names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
     banner_use <- banner
     if (topline) { banner_use$Results[[2]] <- NULL }
     
-    multitable <- getMultitable(banner, dataset)
+    multitable <- getMultitable(banner_flatten, dataset)
     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
-    
     banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
         aliases(variables(book[[1]][[ix]]))[2] })
     banner_var_names[1] <- "___total___"
@@ -34,33 +31,45 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         valiases <- if (is_crosstabs_array) { getSubAliases(crunch_cube) 
             } else { aliases(cube_variable) }
         subnames <- if (is_array_type) getSubNames(crunch_cube)
-        
         var_cats <- categories(cube_variable[[1]])
-        inserts <- if (is_cat_type) crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, na.omit(var_cats))
+        inserts <- if (is_cat_type) {
+            crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, var_cats)
+        }
         show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
+        # responses <- if (is_mr_type) {
+        #     data.frame(id = valiases, name = subnames) } else if (is_cat_type) {
+        #         do.call(rbind, lapply(inserts, function(i) {
+        #             id <- if (!is.null(i$id)) { i$id 
+        #                 } else if (!is.null(i$categories)){ i$categories }
+        #             list(id = id, name = i$name)
+        #         }))
+        #     }
         
-        metadata <- #structure(
-            list(type = var_type,
-                name = names(cube_variable), 
-                description = descriptions(cube_variable), 
-                notes = notes(cube_variable), 
-                no_totals = is_mr_type, 
-                mean_median = show_mean_median,
-                subnames = subnames,
-                categories = var_cats,
-                inserts_obj = inserts#,
-                # crosstabs = sapply(names(banner), function(x) list(), simplify = FALSE, USE.NAMES = TRUE)
-            )#,
-        # class = c(if (is_mr_type) "MultipleResponseCrossTabVar", 
-        #     if (is_topline_array) "ToplineCategoricalArray", "CrossTabVar"))
+        
+        metadata <- list(
+            name = names(cube_variable), 
+            description = descriptions(cube_variable), 
+            notes = notes(cube_variable), 
+            type = var_type,
+            no_totals = is_mr_type, 
+            mean_median = show_mean_median,
+            subnames = subnames,
+            categories = var_cats,
+            inserts_obj = inserts[sapply(inserts, function(x) is.null(x$missing) || !x$missing)]
+        )
         
         pbook <- lapply(seq_along(book[[vi]]), function(vix) {
             crunch::prop.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
         })
-        bbook <- crunch::bases(book[[vi]], margin = c(2, if (is_array_type) 3))
-        cbook <- as.array(book[[vi]])
-        wbbook <- lapply(seq_along(book[[vi]]), function(bi) 
-            crunch::margin.table(book[[vi]][[bi]], margin = c(2, if (is_array_type) 3)))
+        bbook <- lapply(seq_along(book[[vi]]), function(vix) {
+            crunch::bases(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
+        })
+        cbook <- lapply(seq_along(book[[vi]]), function(vix) {
+            as.array(noTransforms(book[[vi]][[vix]]))
+        })
+        wbbook <- lapply(seq_along(book[[vi]]), function(vix) {
+            crunch::margin.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
+        })
         
         names(pbook) <- names(bbook) <- names(cbook) <- names(wbbook) <- banner_var_names
         
@@ -93,9 +102,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                         dimnames=list(rownames(pdata[[2]]), names(xi)))
                 })
             }
-
-            structure(c(metadata, 
-                alias = valias, 
+            
+            structure(c(alias = valias,
+                metadata, 
                 subnumber = ri,
                 subname = if (!is_toplines_array) subnames[ri],
                 number = paste0(which(var_nums %in% vi), if (is_crosstabs_array) 
@@ -121,50 +130,41 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 }
 
 
-getMultitable <- function (banner, dataset) {
+getMultitable <- function (banner_flatten, dataset) {
     ## Given a Banner object and a dataset, find/create the Crunch multitable that corresponds
-    mtvars <- setdiff(sapply(flattenBanner(banner), function(x) paste0("`", getAlias(x), "`")), "`___total___`")
+    mtvars <- paste0("`", setdiff(names(banner_flatten), "___total___"), "`")
     mt_name <- digest(sort(mtvars), "md5")
     multitable <- multitables(dataset)[[mt_name]]
     if (is.null(multitable)) {
-        multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), data = dataset, name = mt_name)
+        multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), 
+            data = dataset, name = mt_name)
     }
     return(multitable)
 }
 
-# This function computes p-values for column hypothesis testing only.
-#' @importFrom stats pnorm
-compute_pvals <- function(counts, counts_unweighted) {
-    shape <- dim(counts)
-    n <- margin.table(counts)
-    bases_adj <- counts_unweighted + 1
-    n_adj <- margin.table(bases_adj)
-    
-    nrows <- nrow(counts)
-    ncols <- ncol(counts)
-    
-    R <- margin.table(counts, 1) / n
-    C_adj <- margin.table(bases_adj, 2) / n_adj
-    Ctbl <- prop.table(counts, margin = 2)
-    Ctbl_adj <- prop.table(bases_adj, margin = 2)
-    
-    observed <- (Ctbl_adj * (1 - Ctbl_adj))
-    expected <- observed %*% C_adj
-    d.c <- (1 - 2 * C_adj) / C_adj
-    se.c <- matrix(nrow = nrows, ncol = ncols)
-    for (i in 1: nrows) {
-        for (j in 1: ncols) {
-            se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
-        }
-    }
-    se.c <- sqrt(se.c / n_adj)
-    Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
-    psign <- sign(Z.c)
-    pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
-    pvals[is.nan(pvals) | psign == 0] <- 1
-    return(pvals)
-}
 
+bannerDataRecode <- function(b_table, b_recode) {
+    names_mask <- (b_recode$old_categories %in% dimnames(b_table)[[b_recode$alias]]) &
+        !is.na(b_recode$categories_out)
+    n_dim <- length(dim(b_table))
+    dim_num <- which(names(dimnames(b_table)) == b_recode$alias)
+    if (length(dim_num) > 1) dim_num <- dim_num[2]
+    t_table <- b_table
+    if (n_dim < 3) { 
+        dim(t_table) <- c(dim(t_table), rep(1, 3-n_dim)) 
+        dimnames(t_table) <- dimnames(b_table)
+    }
+    t_table <- t_table[if (dim_num == 1) names_mask else TRUE, 
+        if (dim_num == 2) names_mask else TRUE, 
+        if (dim_num == 3) names_mask else TRUE, drop = FALSE]
+    dimnames(t_table)[[dim_num]] <- b_recode$categories_out[names_mask]
+    if (n_dim < 3) {
+        d_names <- dimnames(t_table)
+        dim(t_table) <- dim(t_table)[1:n_dim]
+        dimnames(t_table) <- d_names[1:n_dim]
+    }
+    return(t_table)
+}
 
 # Return Excel-style column name.
 get_grid_number <- function(n) {
@@ -215,3 +215,36 @@ row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) 
     return(data)
 }
 
+
+# This function computes p-values for column hypothesis testing only.
+#' @importFrom stats pnorm
+compute_pvals <- function(counts, counts_unweighted) {
+    shape <- dim(counts)
+    n <- margin.table(counts)
+    bases_adj <- counts_unweighted + 1
+    n_adj <- margin.table(bases_adj)
+    
+    nrows <- nrow(counts)
+    ncols <- ncol(counts)
+    
+    R <- margin.table(counts, 1) / n
+    C_adj <- margin.table(bases_adj, 2) / n_adj
+    Ctbl <- prop.table(counts, margin = 2)
+    Ctbl_adj <- prop.table(bases_adj, margin = 2)
+    
+    observed <- (Ctbl_adj * (1 - Ctbl_adj))
+    expected <- observed %*% C_adj
+    d.c <- (1 - 2 * C_adj) / C_adj
+    se.c <- matrix(nrow = nrows, ncol = ncols)
+    for (i in 1: nrows) {
+        for (j in 1: ncols) {
+            se.c[i,j] <- d.c[j] * observed[i,j] + expected[i]
+        }
+    }
+    se.c <- sqrt(se.c / n_adj)
+    Z.c <- (Ctbl - matrix(rep(R, ncols), nrow = nrows)) / se.c
+    psign <- sign(Z.c)
+    pvals <- psign * 2 * pnorm(abs(Z.c), lower.tail = FALSE)
+    pvals[is.nan(pvals) | psign == 0] <- 1
+    return(pvals)
+}
