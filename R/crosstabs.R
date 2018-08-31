@@ -86,8 +86,8 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     }
     
     summary_data <- list(metadata = c(list(title = name(dataset), weight = weight, 
-        start_date = startDate(ds), end_date = endDate(ds), description = description(ds))),
-        results = results, banner = banner)
+        start_date = startDate(dataset), end_date = endDate(dataset), 
+        description = description(dataset))), results = results, banner = banner)
     class(summary_data) <- res_class
     
     return(summary_data)
