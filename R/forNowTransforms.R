@@ -67,7 +67,7 @@ applyInsert <- function(vec, var_cats, a_func) {
 # a list of possible summary statistics to use as an insertion
 calcTabMeanInsert <- function (vec, var_cats) {
     ok <- !is.na(vec) & !is.na(values(var_cats))
-    return(weighted.mean(values(var_cats)[ok], vec[ok]))
+    return(stats::weighted.mean(values(var_cats)[ok], vec[ok]))
 }
 
 calcTabMedianInsert <- function (vec, var_cats) {

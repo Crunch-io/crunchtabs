@@ -204,6 +204,8 @@ write_var_header <- function(wb, ws, var, theme, styles, start_row, toc_sheet, t
 #' @importFrom stats setNames
 writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, start_row, start_col,
     toc_sheet, toc_row, toc_col, hypothesis_test, proportions) {
+    
+    if (getOption("testing_crunchtabs", default = FALSE)) print(var$alias)
     start_row <- sr <- write_var_header(wb = wb, ws = ws, var = var, theme = theme, styles = styles,
         start_row = start_row, toc_sheet = toc_sheet, toc_row = toc_row, toc_col = toc_col)
     body_style <- if (proportions) styles$body_proportions else styles$body_counts
@@ -267,10 +269,10 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info, 
             }
         }
     } else if (!is.null(styles$format_min_base)) {
-        cols <- floor((which(min_cell_mask)-1)/nrow(min_cell_mask)) + 1
+        cols <- floor((which(min_cell_mask)-1)/nrow(min_cell_mask)) + 2
         rows <- which(min_cell_mask) %% nrow(min_cell_mask)
         rows[rows %in% 0] <- nrow(min_cell_mask)
-        rows <- rows + min_row
+        rows <- rows + min_row - 1
         openxlsx::addStyle(wb = wb, sheet = ws, style = styles$format_min_base, rows = rows, cols = cols, stack = TRUE)
     }
 

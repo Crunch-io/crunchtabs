@@ -65,6 +65,8 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         if (is.vector(data)) data <- t(data)
         theme_dt <- theme[[paste0("format_", dt)]]
         
+        data[is.nan(data)] <- NA
+        
         if (prop_v) {
             data[is.na(data)] <- 0
         }
@@ -123,9 +125,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
             theme$format_min_base$min_base, nrow = nrow(unweighted_n), ncol = ncol(unweighted_n))
     min_cell_rep <- colSums(min_cell, na.rm = TRUE) > 0
     top_sub <- mask_vars %in% top
-    min_cell_top <- if (any(top_sub)) matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n))
+    min_cell_top <- if (any(top_sub)) matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n), byrow = TRUE)
     bottom_sub <- mask_vars %in% bottom
-    min_cell_bottom <- if (any(bottom_sub)) matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n))
+    min_cell_bottom <- if (any(bottom_sub)) matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n), byrow = TRUE)
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
