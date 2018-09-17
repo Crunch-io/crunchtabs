@@ -401,19 +401,20 @@ latexTableFoot <- function(topline) {
 
 latexTableName <- function(var, theme) {
     var_info <- getVarInfo(var, theme)
-    col <- if (is.null(theme[[names(var_info)[[1]]]]$background_color)) { "white" 
-        } else { theme[[names(var_info)[[1]]]]$background_color }
+    col <- if (!is.null(theme[[names(var_info)[[1]]]]$background_color)) {
+        paste0("\\colorbox{", theme[[names(var_info)[[1]]]]$background_color, "}{\n") }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
         var_info[[1]] <- paste0(var_info[[1]], if (!is.null(var_info$format_var_subname))
             paste0(" — ", var_info$format_var_subname))
         var_info$format_var_subname <- NULL
     }
     if (length(var_info) == 0) var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
-    paste("\\colorbox{", col, "}{\n",
+    paste(col,
         "\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
-        "\\parbox{", if (is(var, "ToplineVar")) { "6.5" } else { "9" }, "in}{\n",
+        "\\hangindent=0em \\parbox{", if (is(var, "ToplineVar")) { "6.5" } else { "9" }, "in}{\n",
         paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
-        "}} \\\\", sep="")
+        if (!is.null(col)) "}",
+        "} \\\\", sep="")
 }
 
 latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
