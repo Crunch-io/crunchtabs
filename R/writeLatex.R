@@ -456,7 +456,7 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
     table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
         "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
         "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width, 
-        "in}*{", col_num_sum, "}{r}}}\n")
+        "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}}\n")
     return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
 }
 
