@@ -6,9 +6,9 @@
 \usage{
 writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
   theme = themeDefaultExcel(), title = getName(data_summary),
-  subtitle = NULL, table_of_contents = FALSE, n_or_percent = c("percents",
-  "counts"), hypothesis_test = FALSE, logging = FALSE,
-  save_workbook = TRUE)
+  subtitle = NULL, table_of_contents = FALSE,
+  n_or_percent = c("percents", "counts"), hypothesis_test = FALSE,
+  logging = FALSE, save_workbook = TRUE)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
@@ -26,7 +26,7 @@ writeExcel(data_summary, filename = getName(data_summary), wb = NULL,
 \item{table_of_contents}{logical. Should a list of tables be included at the start
 of the report. Defaults to \code{FALSE}.}
 
-\item{n_or_percent}{character vector. Should the data be returned as counts or percents? 
+\item{n_or_percent}{character vector. Should the data be returned as counts or percents?
 Valid values are 'counts', 'percents' or both.}
 
 \item{hypothesis_test}{logical. Should hypothesis testing be shown in the tabs?
@@ -35,7 +35,7 @@ Valid values are 'counts', 'percents' or both.}
 \item{logging}{logical. Should basic information related to the function execution
 be printed? Defaults to \code{FALSE}.}
 
-\item{save_workbook}{logical. Should the Workbook be saved to an excel file or returned for the 
+\item{save_workbook}{logical. Should the Workbook be saved to an excel file or returned for the
 user to continue editing? Defaults to \code{TRUE}.}
 }
 \value{

@@ -77,13 +77,13 @@ error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, q
 
 wrong_class_error <- function(value, expected_class, name, null = FALSE){
     if (length(intersect(class(value), expected_class)) != length(expected_class)){
-        stop("The expected class for `", name, "`", if (null) ", if provided, ", 
-            " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)), 
+        stop("The expected class for `", name, "`", if (null) ", if provided, ",
+            " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)),
             ".", call. = FALSE)
     }
 }
 
-paste_around <- function(str, before, after) { paste0(before, str, after) }
+paste_around <- function(str, before, after) paste0(before, str, after)
 
 collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
     if (quotes) { x <- paste0("'", x, "'") }
@@ -93,3 +93,4 @@ collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
     return(paste0(x, collapse = if (and) { " and " } else if (or) { " or " } else { " " }))
 }
 
+"%||%" <- function(a, b) if (!is.null(a)) a else b

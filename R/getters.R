@@ -1,5 +1,3 @@
-
-
 #' @export
 print.Toplines <- function(x, ...) {
     cat(paste("Data summary for Toplines report.\n",
@@ -45,7 +43,6 @@ getName.CrossTabVar <- function(x) {
 #' @export
 getName.CrunchCube <- function(x) {
     names(variables(x))[1]
-    # x@.Data[[1]]$dimensions[[1]]$references$name
 }
 
 #' @export
@@ -60,5 +57,3 @@ getSubNames <- function(x) {
 getSubAliases <- function(x) {
     sapply(x@.Data[[1]]$dimensions[[1]]$references$subreferences, function(xi) xi$alias)
 }
-
-

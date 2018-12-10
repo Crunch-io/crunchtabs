@@ -17,8 +17,9 @@ Imports:
     digest,
     methods
 Suggests:
+    covr,
     httptest (>= 2.0.0),
     knitr,
     rmarkdown
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

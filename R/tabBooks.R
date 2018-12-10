@@ -6,29 +6,29 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
     banner_use <- banner
     if (topline) { banner_use$Results[[2]] <- NULL }
-    
+
     multitable <- getMultitable(banner_flatten, dataset)
     book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
     banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
         aliases(variables(book[[1]][[ix]]))[2] })
     banner_var_names[1] <- "___total___"
     var_nums <- match(vars, aliases(book))
-    
+
     structure(unlist(lapply(var_nums, function(vi) {
         crunch_cube <- book[[vi]][[1]]
-        
+
         ## Metadata
         cube_variable <- variables(crunch_cube)[1]
         alias <- aliases(cube_variable)
         var_type <- type(dataset[[aliases(cube_variable)]])
-        
+
         is_mr_type <- var_type == "multiple_response"
         is_cat_type <- var_type %in% c("categorical", "categorical_array")
         is_array_type <- var_type == "categorical_array"
         is_toplines_array <- is_array_type && topline
         is_crosstabs_array <- is_array_type && !topline
-        
-        valiases <- if (is_crosstabs_array) { getSubAliases(crunch_cube) 
+
+        valiases <- if (is_crosstabs_array) { getSubAliases(crunch_cube)
             } else { aliases(cube_variable) }
         subnames <- if (is_array_type) getSubNames(crunch_cube)
         var_cats <- categories(cube_variable[[1]])
@@ -36,28 +36,19 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             crunch:::collateCats(transforms(cube_variable)[[1]]$insertions, var_cats)
         }
         show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
-        # responses <- if (is_mr_type) {
-        #     data.frame(id = valiases, name = subnames) } else if (is_cat_type) {
-        #         do.call(rbind, lapply(inserts, function(i) {
-        #             id <- if (!is.null(i$id)) { i$id 
-        #                 } else if (!is.null(i$categories)){ i$categories }
-        #             list(id = id, name = i$name)
-        #         }))
-        #     }
-        
-        
+
         metadata <- list(
-            name = names(cube_variable), 
-            description = descriptions(cube_variable), 
-            notes = notes(cube_variable), 
+            name = names(cube_variable),
+            description = descriptions(cube_variable),
+            notes = notes(cube_variable),
             type = var_type,
-            no_totals = is_mr_type, 
+            no_totals = is_mr_type,
             mean_median = show_mean_median,
             subnames = subnames,
             categories = var_cats,
             inserts_obj = inserts[sapply(inserts, function(x) is.null(x$missing) || !x$missing)]
         )
-        
+
         pbook <- lapply(seq_along(book[[vi]]), function(vix) {
             crunch::prop.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
         })
@@ -70,9 +61,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         wbbook <- lapply(seq_along(book[[vi]]), function(vix) {
             crunch::margin.table(noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
         })
-        
+
         names(pbook) <- names(bbook) <- names(cbook) <- names(wbbook) <- banner_var_names
-        
+
         for (bi in banner_var_names) {
             if (!identical(banner_flatten[[bi]]$categories_out, banner_flatten[[bi]]$categories)) {
                 pbook[[bi]] <- bannerDataRecode(pbook[[bi]], banner_flatten[[bi]])
@@ -81,10 +72,10 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                 wbbook[[bi]] <- bannerDataRecode(wbbook[[bi]], banner_flatten[[bi]])
             }
         }
-        
+
         sapply(valiases, function(valias) {
             ri <- which(valiases %in% valias)
-            
+
             pdata <- row_data(pbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
             cdata <- row_data(cbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
             bdata <- row_data(bbook, ri, is_crosstabs_array, is_toplines_array, TRUE)
@@ -95,19 +86,19 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
             mddata <- lapply(cdata, function(mbook) {
                 if (show_mean_median) { applyInsert(mbook, var_cats, calcTabMedianInsert) }
             })
-            
+
             if (!is_mr_type) {
                 bdata <- lapply(bdata, function(xi) {
                     matrix(xi, nrow = nrow(pdata[[2]]), ncol = length(xi), byrow = TRUE,
                         dimnames=list(rownames(pdata[[2]]), names(xi)))
                 })
             }
-            
+
             structure(c(alias = valias,
-                metadata, 
+                metadata,
                 subnumber = ri,
                 subname = if (!is_toplines_array) subnames[ri],
-                number = paste0(which(var_nums %in% vi), if (is_crosstabs_array) 
+                number = paste0(which(var_nums %in% vi), if (is_crosstabs_array)
                     get_grid_number(ri), collapse = ""),
                 crosstabs = list(sapply(banner_use, function(bu) {
                     sapply(bu, function(bux) {
@@ -122,7 +113,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                         ), class = c("CrossTabBannerVar", "list"))
                     }, simplify = FALSE, USE.NAMES = TRUE)
                 }, simplify = FALSE, USE.NAMES = TRUE))),
-                class = c(if (is_mr_type) "MultipleResponseCrossTabVar", 
+                class = c(if (is_mr_type) "MultipleResponseCrossTabVar",
                     if (is_toplines_array) "ToplineCategoricalArray",
                     if (topline) "ToplineVar", "CrossTabVar"))
         }, simplify = FALSE)
@@ -136,7 +127,7 @@ getMultitable <- function (banner_flatten, dataset) {
     mt_name <- digest::digest(sort(mtvars), "md5")
     multitable <- multitables(dataset)[[mt_name]]
     if (is.null(multitable)) {
-        multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")), 
+        multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")),
             data = dataset, name = mt_name)
     }
     return(multitable)
@@ -150,12 +141,12 @@ bannerDataRecode <- function(b_table, b_recode) {
     dim_num <- which(names(dimnames(b_table)) == b_recode$alias)
     if (length(dim_num) > 1) dim_num <- dim_num[2]
     t_table <- b_table
-    if (n_dim < 3) { 
-        dim(t_table) <- c(dim(t_table), rep(1, 3-n_dim)) 
+    if (n_dim < 3) {
+        dim(t_table) <- c(dim(t_table), rep(1, 3-n_dim))
         dimnames(t_table) <- dimnames(b_table)
     }
-    t_table <- t_table[if (dim_num == 1) names_mask else TRUE, 
-        if (dim_num == 2) names_mask else TRUE, 
+    t_table <- t_table[if (dim_num == 1) names_mask else TRUE,
+        if (dim_num == 2) names_mask else TRUE,
         if (dim_num == 3) names_mask else TRUE, drop = FALSE]
     dimnames(t_table)[[dim_num]] <- b_recode$categories_out[names_mask]
     if (n_dim < 3) {
@@ -183,13 +174,13 @@ row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) 
         names(dimnames(dt)) <- NULL
         return(dt)
     })
-    
-    if (is_crosstabs_array) { 
+
+    if (is_crosstabs_array) {
         data <- lapply(data, function(xi) {
-            if (length(dim(xi)) == 3) { 
+            if (length(dim(xi)) == 3) {
                 dt <- xi[ , , row, drop = FALSE]
-            } else { 
-                dt <- xi[, row, drop = FALSE] 
+            } else {
+                dt <- xi[, row, drop = FALSE]
             }
             if (is_base) {
                 dt <- t(dt)
@@ -223,15 +214,15 @@ compute_pvals <- function(counts, counts_unweighted) {
     n <- margin.table(counts)
     bases_adj <- counts_unweighted + 1
     n_adj <- margin.table(bases_adj)
-    
+
     nrows <- nrow(counts)
     ncols <- ncol(counts)
-    
+
     R <- margin.table(counts, 1) / n
     C_adj <- margin.table(bases_adj, 2) / n_adj
     Ctbl <- prop.table(counts, margin = 2)
     Ctbl_adj <- prop.table(bases_adj, margin = 2)
-    
+
     observed <- (Ctbl_adj * (1 - Ctbl_adj))
     expected <- observed %*% C_adj
     d.c <- (1 - 2 * C_adj) / C_adj

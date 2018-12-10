@@ -19,9 +19,9 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' 
+#'
 #' @param theme
-#' 
+#'
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
 #' @examples
@@ -34,40 +34,40 @@
 #' writeLatex(crosstabs_summary, 'filename')
 #' }
 #' @export
-writeLatex <- function(data_summary, theme = themeDefaultLatex(), 
-    filename = getName(data_summary), title = getName(data_summary), 
-    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL, 
-    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE, 
+writeLatex <- function(data_summary, theme = themeDefaultLatex(),
+    filename = getName(data_summary), title = getName(data_summary),
+    subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
+    field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE,
     pdf = FALSE, open = FALSE, logging = FALSE) {
-    
+
     if (pdf && is.null(filename)) {
         stop("Please provide a file name to generate PDF output.")
     }
     theme_validator(theme)
-    
+
     wrong_class_error(data_summary, "CrunchTabs", "data_summary")
     if (!any(c("Toplines", "Crosstabs") %in% class(data_summary))) {
         stop("The expected class for `data_summary` is either Toplines, CrunchTabs or Crosstabs CrunchTabs, not ", collapse_items(class(data_summary)))
     }
-    
+
     topline <- is(data_summary, "Toplines")
     if (is.null(theme$font_size)) { theme$font_size <- 12 }
     theme$proportions <- proportions
-    
+
     headers <- lapply(data_summary$results, tableHeader, theme = theme)
-    
+
     data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
-    bodies <- lapply(results, function (x) 
+    bodies <- lapply(results, function (x)
         sapply(x, latexTable.body, theme = theme, topline = topline))
-    
+
     out <- c(
         latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
         if (!topline) sapply(seq_along(data_summary$banner), function (j) {
-            longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9, 
+            longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9,
                 theme = theme)
         }),
-        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc, 
+        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc,
             field_period = field_period, moe = moe, font_size = theme$font_size),
         sapply(seq_along(data_summary$results), function(i) {
             c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline),
@@ -96,7 +96,7 @@ writeLatex.default <- function(data_summary, ...) {
 }
 
 latexTable.body <- function(df, theme, topline) {
-    
+
     data <- df$data_list
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         data[[nm]][] <- round(data[[nm]], theme$digits)
@@ -111,11 +111,11 @@ latexTable.body <- function(df, theme, topline) {
             data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
         }
         if (!is.null(theme[[nm2]]$latex_adjust) && !topline) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste_around, 
+            data[[nm]][] <- apply(data[[nm]], 2, paste_around,
                 paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
         }
     }
-    
+
     mask_vars <- c("totals_row", "means", "medians")
     if (!is.null(theme$format_min_base$min_base) && any(df$min_cell_body)) {
         if (!is.null(theme$format_min_base$mask)) {
@@ -131,16 +131,16 @@ latexTable.body <- function(df, theme, topline) {
             }
         }
     }
-    
+
     data <- lapply(data, function(dt) {
-        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, escM), 
+        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, escM),
             nrow = nrow(dt))
     })
-    
+
     for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
         data[[nm]][] <- apply(data[[nm]], 2, latexDecoration, theme[[paste0("format_", nm)]])
     }
-    
+
     for (i in which(df$inserts %in% c("Heading"))) {
         data$body[i, 2:ncol(data$body)] <- ""
         data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_headers)
@@ -148,7 +148,7 @@ latexTable.body <- function(df, theme, topline) {
     for (i in which(df$inserts %in% c("Subtotal"))) {
         data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_subtotals)
     }
-    
+
     # body <- data$body
     # summary <- do.call(rbind, data[intersect(c("means", "totals_row", "unweighted_n", "weighted_n"), df$data_order)])
     # # if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), df$data_order)) == 0) {
@@ -158,24 +158,24 @@ latexTable.body <- function(df, theme, topline) {
     # #         data[[x]]
     # #     }))
     # # }
-    
+
     collapsestring <- "\\\\\n"
-    
-    sepstring <- if (topline && ncol(data$body) == 2) { 
-        " \\hspace*{0.15em} \\dotfill " 
+
+    sepstring <- if (topline && ncol(data$body) == 2) {
+        " \\hspace*{0.15em} \\dotfill "
     } else { " & " }
-    
+
     data <- lapply(data, function(dt) {
         paste(paste(paste0(if (topline) " & ", apply(dt, 1, paste, collapse = sepstring)),
             collapse = collapsestring), collapsestring)
     })
-    
+
     if (is(df, "ToplineCategoricalArray")) df$data_order <- "body"
-    a <- paste(paste0(data[intersect(c("body", "medians", "means"), df$data_order)], 
+    a <- paste(paste0(data[intersect(c("body", "medians", "means"), df$data_order)],
         collapse = ""), if (!topline) "\\midrule",
-        paste0(data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)], 
+        paste0(data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
             collapse = ""))
-    # 
+    #
     # if (topline) {
     #     bod <- do.call(rbind, list(body, if (!is(df, "ToplineCategoricalArray")) summary))
     #     bod[,1] <- paste0(" & ", bod[,1])
@@ -210,17 +210,17 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "tgschola","tgtermes","times","utopia")
     if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
         theme$font <- "helvet"
-        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "), 
+        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
             ". It has been set to `helvet`.", call. = FALSE)
     }
-    
-    title <- if (is.null(theme$format_title) || is.null(title)) { "" 
+
+    title <- if (is.null(theme$format_title) || is.null(title)) { ""
         } else { escM(title) }
-    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { "" 
+    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { ""
         } else { paste(" \\\\", escM(subtitle)) }
-    
+
     bdr <- if (topline) { 1 } else { 0.5 }
-    logo <- if (!is.null(theme$logo$file)) { 
+    logo <- if (!is.null(theme$logo$file)) {
         paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
 
     paste0("\\documentclass", if (!topline) { "[landscape]" }, "{article}\n",
@@ -231,12 +231,12 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\usepackage{comment}\n",
         "\\usepackage[T1]{fontenc}\n",
         "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {},",
-            "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,", 
+            "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,",
             "linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
         "\\usepackage[scaled]{", theme$font, "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
         "\\usepackage{booktabs, dcolumn, longtable}\n",
-        "\\usepackage[top=0.6in, bottom=0.6in, left=", bdr, 
+        "\\usepackage[top=0.6in, bottom=0.6in, left=", bdr,
             "in, right=", bdr, "in, includeheadfoot]{geometry}\n",
         "\\usepackage{array}\n",
         "\\usepackage[english]{babel}\n",
@@ -248,7 +248,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\renewcommand{\\headrulewidth}{0pt}\n",
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
-        "\\fancyhead[L]{{", latexDecoration(title, theme$format_title), "}", 
+        "\\fancyhead[L]{{", latexDecoration(title, theme$format_title), "}",
             latexDecoration(subtitle, theme$format_subtitle), "}\n",
         logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #!topline
@@ -265,9 +265,9 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\fancyfoot[R]{\\thepage}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}\n",
         "\\let\\PBS=\\PreserveBackslash\n",
-        "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{", 
-            escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{", 
-            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n", 
+        "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{",
+            escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{",
+            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n",
         "\\usepackage[titles]{tocloft}\n",
         "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
         "\\newcommand{\\formatvardescription}[1]{", latexDecoration("#1", theme$format_var_description), "}\n",
@@ -284,11 +284,11 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
     if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
     if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
     if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
-    return(paste0("\\begin{document}\n", 
+    return(paste0("\\begin{document}\n",
         "\\begin{tabular}{ll}\n",
-        sample_desc, field_period, moe, 
-        "\\end{tabular}\n", 
-        if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" }, 
+        sample_desc, field_period, moe,
+        "\\end{tabular}\n",
+        if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" },
         "{", #fontLine(font_size), "\n", #TODO: make this work
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
@@ -297,7 +297,7 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
 }
 
 latexDecoration <- function(item, item_theme) {
-    if (!is.null(item_theme$decoration)) { 
+    if (!is.null(item_theme$decoration)) {
         if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
         if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
         if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
@@ -375,24 +375,22 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
         }
     }
     header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), " & \\\n")
-    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{", 
+    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{",
         col_names_len + 2, "}{c}{\\textit{", theme$latex_headtext, "}} \\\\",
-        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2, 
-        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n", 
+        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2,
+        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n",
         sep = "")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len+1), collapse = "")
-    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{", 
+    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{",
         theme$format_label_column$col_width, "in}", col.header, "}")
-    
+
     toplineTableDef(var, tab_definition, header_row, theme)
 }
 
 
-
-
 latexTableFoot <- function(topline) {
-    if (topline) { 
+    if (topline) {
         return("\n\\end{longtable}\n\\end{center}\n\n")
     } else {
         return("\n\\end{longtable}\n\n")
@@ -401,30 +399,35 @@ latexTableFoot <- function(topline) {
 
 latexTableName <- function(var, theme) {
     var_info <- getVarInfo(var, theme)
-    col <- if (!is.null(theme[[names(var_info)[[1]]]]$background_color)) {
-        paste0("\\colorbox{", theme[[names(var_info)[[1]]]]$background_color, "}{\n") }
+    bg_color <- theme[[names(var_info)[[1]]]]$background_color
+    col <- if (!is.null(bg_color)) {
+        paste0("\\colorbox{", bg_color, "}{\n")
+    } else {
+        NULL
+    }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
-        var_info[[1]] <- paste0(var_info[[1]], if (!is.null(var_info$format_var_subname))
-            paste0(" — ", var_info$format_var_subname))
+        var_info[[1]] <- paste0(
+            var_info[[1]],
+            var_info$format_var_subname %||% " --- "
+        )
         var_info$format_var_subname <- NULL
     }
-    if (length(var_info) == 0) var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
-    paste(col,
+    if (length(var_info) == 0) {
+        var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
+    }
+    out <- paste0(
         "\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
-        "\\hangindent=0em \\parbox{", if (is(var, "ToplineVar")) { "6.5" } else { "9" }, "in}{\n",
+        "\\hangindent=0em \\parbox{", ifelse(inherits(var, "ToplineVar"), "6.5", "9"), "in}{\n",
         paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
-        if (!is.null(col)) "}",
-        "} \\\\", sep="")
+        "}"
+    )
+    if (!is.null(col)) {
+        out <- paste0(col, out, "}")
+    }
+    return(paste0(col, "\\\\"))
 }
 
-latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
-    
-    
-
-
-
-
-
+latexDocFoot <- function() "\n}\n\\end{document}\n"
 
 # Crosstabs ---------------------------------------------------------------
 
@@ -435,27 +438,26 @@ latexDocFoot <- function() { return("\n}\n\\end{document}\n") }
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
 longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
-    
     binfo <- getBannerInfo(banner, theme)
     col_num_sum <- length(unlist(binfo$multicols))
-    
+
     banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
-    
-    banner_def_body <- rep(makeLatexBanner(binfo, 
-        width = round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2), 
+
+    banner_def_body <- rep(makeLatexBanner(binfo,
+        width = round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2),
         theme = theme), 2)
-    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{", 
+    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{",
         theme$latex_headtext, "} \\\\ ", banner_def_body[2])
-    banner_def_body <- paste("\\toprule", banner_def_body, sep="\n", 
+    banner_def_body <- paste("\\toprule", banner_def_body, sep="\n",
         collapse="\\endfirsthead \n")
-    
-    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{", 
+
+    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{",
         col_num_sum, "}{c}{", theme$latex_foottext, "} \\\\ \n",
         "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
-    
+
     table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
         "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
-        "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width, 
+        "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
         "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}}\n")
     return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
 }
@@ -464,11 +466,11 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
     m_split <- paste0("}{m{", width,"in}}{\\centering ")
     ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, "}{c}{\\bf ",
         escM(binfo$names), "}", collapse = "", sep = ""),
-        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo$multicols)), "}", 
+        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo$multicols)), "}",
             collapse = "", sep = "")),
         " \\\\")
     ban[2] <- paste("{\\bf #1}", ban[2])
-    
+
     ban[1] <- paste0(ban[1], paste0(" \\cmidrule(lr{.75em}){",
         binfo$multicols_csum[2:(length(binfo$multicols_csum)-1)], "-",
         binfo$multicols_csum[3:length(binfo$multicols_csum)] - 1, "}", collapse = ""))
@@ -476,21 +478,14 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
 }
 
 
-
-
-
-
 # Toplines ----------------------------------------------------------------
 
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
-    return(paste("\\begin{center}\n",
+    paste0(
+        "\\begin{center}\n",
         tab_definition, "\n",
         latexTableName(var, theme),
-        header_row,
-        sep = ""))
+        header_row
+    )
 }
-
-
-
-

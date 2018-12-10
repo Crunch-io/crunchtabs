@@ -35,7 +35,7 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \item{format_banner_names}{In Excel, an optional list. How the banner/crossbreak variable names should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
 
-\item{format_banner_split}{In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style 
+\item{format_banner_split}{In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style
 \describe{
      \item{empty_col}{In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
 }}
@@ -52,7 +52,7 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 
-\item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text 
+\item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text
 \describe{
      \item{mask}{An optional character to be used to mark cells with base below the min_base.}
      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
@@ -82,15 +82,15 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \item{format_weighted_n}{An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
 
-\item{latex_foottext}{In Latex, an optional character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+\item{latex_foottext}{In Latex, a character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 
-\item{latex_headtext}{In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
-
-\item{latex_headtext}{In Latex, n optional character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+\item{latex_headtext}{In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 
 \item{latex_multirowheaderlines}{In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.}
 
-\item{logo}{An optional list. Information about the logo to be included in the tables. Includes: 
+\item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
+
+\item{logo}{An optional list. Information about the logo to be included in the tables. Includes:
 \describe{
     \item{file}{An optional character path to the file that should be used for the logo.}
     \item{dpi}{In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
