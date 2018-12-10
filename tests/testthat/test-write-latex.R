@@ -12,7 +12,6 @@ with_temp_dir({
     })
 
     test_that("Write Latex crosstab", {
-        skip("Debugging")
         writeLatex(cs)
         expect_true(file.exists("Example Dataset with Nets.tex"))
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
@@ -24,6 +23,7 @@ with_temp_dir({
         expect_equal(tex[94], "Sample  &  Adults \\\\ ")
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
+        skip("Debugging")
         skip_on_appveyor()
         writeLatex(cs, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))
@@ -43,12 +43,12 @@ with_temp_dir({
     })
 
     test_that("Write Latex toplines", {
-        skip("Debugging")
         writeLatex(ts)
         expect_true(file.exists("Example Dataset with Nets.tex"))
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
         expect_equal(tex[1], "\\documentclass{article}")
 
+        skip("Debugging")
         skip_on_appveyor()
         writeLatex(ts, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))

@@ -96,7 +96,6 @@ writeLatex.default <- function(data_summary, ...) {
 }
 
 latexTable.body <- function(df, theme, topline) {
-
     data <- df$data_list
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         data[[nm]][] <- round(data[[nm]], theme$digits)
@@ -149,21 +148,12 @@ latexTable.body <- function(df, theme, topline) {
         data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_subtotals)
     }
 
-    # body <- data$body
-    # summary <- do.call(rbind, data[intersect(c("means", "totals_row", "unweighted_n", "weighted_n"), df$data_order)])
-    # # if (topline || length(intersect(c("totals_row", "unweighted_n", "weighted_n"), df$data_order)) == 0) {
-    # #     summary <- NULL
-    # # } else {
-    # #     summary <- do.call(rbind, lapply(intersect(c("totals_row", "unweighted_n", "weighted_n"), df$data_order), function(x) {
-    # #         data[[x]]
-    # #     }))
-    # # }
-
     collapsestring <- "\\\\\n"
 
-    sepstring <- if (topline && ncol(data$body) == 2) {
-        " \\hspace*{0.15em} \\dotfill "
-    } else { " & " }
+    sepstring <- ifelse(topline && ncol(data$body) == 2,
+        " \\hspace*{0.15em} \\dotfill ",
+        " & "
+    )
 
     data <- lapply(data, function(dt) {
         paste(paste(paste0(if (topline) " & ", apply(dt, 1, paste, collapse = sepstring)),
@@ -175,34 +165,14 @@ latexTable.body <- function(df, theme, topline) {
         collapse = ""), if (!topline) "\\midrule",
         paste0(data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
             collapse = ""))
-    #
-    # if (topline) {
-    #     bod <- do.call(rbind, list(body, if (!is(df, "ToplineCategoricalArray")) summary))
-    #     bod[,1] <- paste0(" & ", bod[,1])
-    #     b <- (paste(paste(apply(bod, 1, paste, collapse = sepstring), collapse = collapsestring),
-    #         collapsestring))
-    # } else {
-    #     body <- paste(paste(apply(body, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-    #     if (!is.null(summary)) summary <- paste(paste(apply(summary, 1, paste, collapse = sepstring), collapse = collapsestring), collapsestring)
-    #     b <- (paste(body, "\\midrule", summary))
-    # }
     return(a)
 }
-
 
 escM <- function(str) {
     str <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", gsub("([#$%&_])", "\\\\\\1", str))
     str <- gsub("[\u00A3\uFFE1]", "\\\\pounds", str)
     str
 }
-
-# getFilterText <- function(var_summary) {
-#     filtertext <- getNotes(var_summary)
-#     if (!is.na(filtertext) && filtertext != "") {
-#         return(paste("\\\\ \n \\scriptsize { \\itshape ", escM(filtertext), "}"))
-#     }
-# }
-
 
 latexDocHead <- function (theme, title, subtitle, topline) {
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
@@ -292,23 +262,33 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
     if (!is.null(field_period)) {
         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
     }
-    return(paste0("\\begin{document}\n",
+    return(paste0(
+        "\\begin{document}\n",
         "\\begin{tabular}{ll}\n",
-        sample_desc, field_period, moe,
+        sample_desc,
+        field_period,
+        moe,
         "\\end{tabular}\n",
-        if (table_of_contents) { "\\listoftables\n\\newpage\n\n" } else { "\n\n" },
-        "{", #fontLine(font_size), "\n", #TODO: make this work
+        ifelse(table_of_contents, "\\listoftables\n\\newpage", "" ),
+        "\n\n{", #fontLine(font_size), "\n", #TODO: make this work
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
-        "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"))
+        "%% here's where individual input starts %%\n\n\n \\vspace{.25in} \n\n"
+    ))
 }
 
 latexDecoration <- function(item, item_theme) {
     if (!is.null(item_theme$decoration)) {
-        if (any(c("underline", "underline2") %in% item_theme$decoration)) { item <- paste0("\\underline{", item, "}") }
-        if ("italic" %in% item_theme$decoration) { item <- paste0("\\textit{", item, "}") }
-        if ("bold" %in% item_theme$decoration) { item <- paste0("\\textbf{", item, "}") }
+        if (any(c("underline", "underline2") %in% item_theme$decoration)) {
+            item <- paste0("\\underline{", item, "}")
+        }
+        if ("italic" %in% item_theme$decoration) {
+            item <- paste0("\\textit{", item, "}")
+        }
+        if ("bold" %in% item_theme$decoration) {
+            item <- paste0("\\textbf{", item, "}")
+        }
     }
     if (!is.null(item_theme$font_size)) {
         item <- paste0(fontLine(item_theme$font_size), item)
