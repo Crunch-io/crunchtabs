@@ -39,8 +39,8 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
 
     if (cleanup) {
         files <- dir(path = filepath, pattern = sub("\\.pdf$", "", pdffile))
-        files <- sgrep(c("out$", "log$", "aux$"), files, value = TRUE)
-        if (length(files) > 0) {
+        files <- grep("out$|log$|aux$", files, value = TRUE)
+        if (length(files)) {
             file.remove(file.path(filepath, files))
         }
     }
@@ -58,13 +58,6 @@ file.open <- function(x) {
     if (grepl("mac", .Platform$pkgType)) {
         for (i in x) system(paste("open", shQuote(i)))
     }
-}
-
-sgrep <- function(strs, ..., simplify = TRUE) {
-    out <- sapply(strs, function(x) grep(x, ...), simplify = FALSE)
-    if (simplify)
-        out <- unique(unlist(out))
-    return(out)
 }
 
 error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, quotes = FALSE){

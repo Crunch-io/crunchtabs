@@ -12,8 +12,8 @@ test_that("LaTeX escaping", {
 with_temp_dir({
     test_that("Write Latex error handling", {
         expect_error(writeLatex("stuff"))
-        skip_on_appveyor()
-        expect_error(writeLatex(cs, filename = NULL, pdf = TRUE))
+        expect_error(writeLatex(cs, filename = NULL, pdf = TRUE),
+            "Please provide a file name to generate PDF output.")
     })
 
     test_that("Write Latex crosstab", {

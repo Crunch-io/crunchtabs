@@ -41,7 +41,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     pdf = FALSE, open = FALSE, logging = FALSE) {
 
     if (pdf && is.null(filename)) {
-        stop("Please provide a file name to generate PDF output.")
+        stop("Please provide a file name to generate PDF output.", call.=FALSE)
     }
     theme_validator(theme)
 
