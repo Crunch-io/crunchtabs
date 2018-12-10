@@ -140,6 +140,16 @@ latexTable.body <- function(df, theme, topline) {
         data[[nm]][] <- apply(data[[nm]], 2, latexDecoration, theme[[paste0("format_", nm)]])
     }
 
+    # TODO: this code assumes that categories are along the rows, but for a
+    # topline categorical array with subtotals, they're across the columns
+    # $inserts
+    # [1] "Category" "Category" "Category" "Subtotal"
+    #
+    # $data_list
+    # $data_list$body
+    #      Cat Dog Bird Net: Cat/Dog
+    # Home  49  43    9           92
+    # Work  42  37   21           79
     for (i in which(df$inserts %in% c("Heading"))) {
         data$body[i, 2:ncol(data$body)] <- ""
         data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_headers)
