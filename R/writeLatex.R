@@ -219,9 +219,11 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { ""
         } else { paste(" \\\\", escM(subtitle)) }
 
-    bdr <- if (topline) { 1 } else { 0.5 }
-    logo <- if (!is.null(theme$logo$file)) {
-        paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", theme$logo$file, "}}\n") }
+    bdr <- ifelse(topline, 1, 0.5)
+    logo <- theme$logo$file
+    if (!is.null(logo)) {
+        paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n")
+    }
 
     paste0("\\documentclass", if (!topline) { "[landscape]" }, "{article}\n",
         "\\usepackage[pdftex]{graphicx}\n",
@@ -278,12 +280,18 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\n\n\n\n\n")
 }
 
-fontLine <- function(size) { paste0("\\fontsize{", size, "}{", size * 1.5, "}") }
+fontLine <- function(size) paste0("\\fontsize{", size, "}{", size * 1.5, "}")
 
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
-    if (!is.null(sample_desc)) { sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ") }
-    if (!is.null(moe)) { moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n") }
-    if (!is.null(field_period)) { field_period <- paste("Conducted  & ", field_period, "\\\\ \n") }
+    if (!is.null(sample_desc)) {
+        sample_desc <- paste("Sample  & ", sample_desc, "\\\\ \n ")
+    }
+    if (!is.null(moe)) {
+        moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$ \\\\ \n")
+    }
+    if (!is.null(field_period)) {
+        field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
+    }
     return(paste0("\\begin{document}\n",
         "\\begin{tabular}{ll}\n",
         sample_desc, field_period, moe,
