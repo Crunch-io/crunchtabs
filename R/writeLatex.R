@@ -124,9 +124,9 @@ latexTable.body <- function(df, theme, topline) {
             }
         }
         for (i in which(colSums(df$min_cell_body) != 0)) {
-            data$body[df$min_cell_body[,i], i] <- latexDecoration(data$body[df$min_cell_body[,i], i], theme$format_min_base)
+            data$body[df$min_cell_body[,i], i] <- applyLatexStyle(data$body[df$min_cell_body[,i], i], theme$format_min_base)
             for (nm in intersect(mask_vars, names(data))) {
-                data[[nm]][, df$min_cell] <- latexDecoration(data[[nm]][, df$min_cell], theme$format_min_base)
+                data[[nm]][, df$min_cell] <- applyLatexStyle(data[[nm]][, df$min_cell], theme$format_min_base)
             }
         }
     }
@@ -137,7 +137,7 @@ latexTable.body <- function(df, theme, topline) {
     })
 
     for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
-        data[[nm]][] <- apply(data[[nm]], 2, latexDecoration, theme[[paste0("format_", nm)]])
+        data[[nm]][] <- apply(data[[nm]], 2, applyLatexStyle, theme[[paste0("format_", nm)]])
     }
 
     # TODO: this code assumes that categories are along the rows, but for a
@@ -152,10 +152,10 @@ latexTable.body <- function(df, theme, topline) {
     # Work  42  37   21           79
     for (i in which(df$inserts %in% c("Heading"))) {
         data$body[i, 2:ncol(data$body)] <- ""
-        data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_headers)
+        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_headers)
     }
     for (i in which(df$inserts %in% c("Subtotal"))) {
-        data$body[i, ] <- latexDecoration(data$body[i, ], theme$format_subtotals)
+        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
     }
 
     collapsestring <- "\\\\\n"
@@ -179,25 +179,38 @@ latexTable.body <- function(df, theme, topline) {
 }
 
 escM <- function(str) {
-    str <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", gsub("([#$%&_])", "\\\\\\1", str))
-    str <- gsub("[\u00A3\uFFE1]", "\\\\pounds", str)
-    str
+    if (is.null(str)) {
+        return("")
+    }
+    gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", # IDK what this does
+        gsub("([#$%&_])", "\\\\\\1", # Escape special characters
+            gsub("[\u00A3\uFFE1]", "\\\\pounds", # Handle GBP currency
+                str
+            )
+        )
+    )
 }
 
-latexDocHead <- function (theme, title, subtitle, topline) {
+validLatexFont <- function (theme_font) {
+    # Make sure the theme font is valid; provide a fallback rather than erroring
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
         "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
         "tgschola","tgtermes","times","utopia")
-    if (is.null(theme$font) || !tolower(theme$font) %in% poss_fonts) {
-        theme$font <- "helvet"
+    if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
+        theme_font <- "helvet"
         warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
             ". It has been set to `helvet`.", call. = FALSE)
     }
+    return(theme_font)
+}
 
-    title <- if (is.null(theme$format_title) || is.null(title)) { ""
-        } else { escM(title) }
-    subtitle <- if (is.null(theme$format_subtitle) || is.null(subtitle)) { ""
-        } else { paste(" \\\\", escM(subtitle)) }
+latexDocHead <- function (theme, title, subtitle, topline) {
+    title <- escM(title)
+    subtitle <- escM(subtitle)
+    if (nchar(subtitle)) {
+        # If there is one, precede it by a newline
+        subtitle <- paste(" \\\\", subtitle)
+    }
 
     bdr <- ifelse(topline, 1, 0.5)
     logo <- theme$logo$file
@@ -215,7 +228,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {},",
             "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,",
             "linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}\n",
-        "\\usepackage[scaled]{", theme$font, "}\n",
+        "\\usepackage[scaled]{", validLatexFont(theme$font), "}\n",
         "\\renewcommand*\\familydefault{\\sfdefault}\n",
         "\\usepackage{booktabs, dcolumn, longtable}\n",
         "\\usepackage[top=0.6in, bottom=0.6in, left=", bdr,
@@ -230,8 +243,8 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\renewcommand{\\headrulewidth}{0pt}\n",
         "\\renewcommand{\\footrulewidth}{0pt}\n",
         "\\fancyhead{}\n",
-        "\\fancyhead[L]{{", latexDecoration(title, theme$format_title), "}",
-            latexDecoration(subtitle, theme$format_subtitle), "}\n",
+        "\\fancyhead[L]{{", applyLatexStyle(title, theme$format_title), "}",
+            applyLatexStyle(subtitle, theme$format_subtitle), "}\n",
         logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}\n", #!topline
         "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}\n", #!topline
@@ -252,11 +265,11 @@ latexDocHead <- function (theme, title, subtitle, topline) {
             escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n",
         "\\usepackage[titles]{tocloft}\n",
         "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
-        "\\newcommand{\\formatvardescription}[1]{", latexDecoration("#1", theme$format_var_description), "}\n",
-        "\\newcommand{\\formatvarname}[1]{", latexDecoration("#1", theme$format_var_name), "}\n",
-        "\\newcommand{\\formatvaralias}[1]{", latexDecoration("#1", theme$format_var_alias), "}\n",
-        "\\newcommand{\\formatvarfiltertext}[1]{", latexDecoration("#1", theme$format_var_filtertext), "}\n",
-        "\\newcommand{\\formatvarsubname}[1]{", latexDecoration("#1", theme$format_var_subname), "}\n",
+        "\\newcommand{\\formatvardescription}[1]{", applyLatexStyle("#1", theme$format_var_description), "}\n",
+        "\\newcommand{\\formatvarname}[1]{", applyLatexStyle("#1", theme$format_var_name), "}\n",
+        "\\newcommand{\\formatvaralias}[1]{", applyLatexStyle("#1", theme$format_var_alias), "}\n",
+        "\\newcommand{\\formatvarfiltertext}[1]{", applyLatexStyle("#1", theme$format_var_filtertext), "}\n",
+        "\\newcommand{\\formatvarsubname}[1]{", applyLatexStyle("#1", theme$format_var_subname), "}\n",
         "\n\n\n\n\n")
 }
 
@@ -280,7 +293,7 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         moe,
         "\\end{tabular}\n",
         ifelse(table_of_contents, "\\listoftables\n\\newpage", "" ),
-        "\n\n{", #fontLine(font_size), "\n", #TODO: make this work
+        "\n\n{",
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
         "\\setlength{\\LTcapwidth}{\\textwidth}\n\n\n",
@@ -288,7 +301,11 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
     ))
 }
 
-latexDecoration <- function(item, item_theme) {
+applyLatexStyle <- function(item, item_theme) {
+    if (is.null(item) || identical(item, "")) {
+        # Nothing to style
+        return("")
+    }
     if (!is.null(item_theme$decoration)) {
         if (any(c("underline", "underline2") %in% item_theme$decoration)) {
             item <- paste0("\\underline{", item, "}")
@@ -411,6 +428,7 @@ latexTableName <- function(var, theme) {
         var_info$format_var_subname <- NULL
     }
     if (length(var_info) == 0) {
+        # NPR: I don't see how this makes sense (or valid TeX)
         var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
     }
     out <- paste0(
@@ -420,6 +438,7 @@ latexTableName <- function(var, theme) {
         "}"
     )
     if (!is.null(col)) {
+        # Wrap it in color
         out <- paste0(col, out, "}")
     }
     return(paste0(col, "\\\\"))
