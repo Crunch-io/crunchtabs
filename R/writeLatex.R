@@ -185,7 +185,9 @@ escM <- function(str) {
     gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", # IDK what this does
         gsub("([#$%&_])", "\\\\\\1", # Escape special characters
             gsub("[\u00A3\uFFE1]", "\\\\pounds", # Handle GBP currency
-                str
+                gsub("\n", "\\\\", # Turn newlines into \newlines
+                    str
+                )
             )
         )
     )

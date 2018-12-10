@@ -3,6 +3,11 @@ context("Write Latex")
 cs <- readRDS(test_path("fixtures/crosstab_summary.RDS"))
 ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
 
+test_that("LaTeX escaping", {
+    expect_identical(escM("$"), "\\$")
+    expect_identical(escM(NULL), "")
+    expect_identical(escM("\n"), "\\")
+})
 
 with_temp_dir({
     test_that("Write Latex error handling", {
@@ -19,7 +24,6 @@ with_temp_dir({
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        # print(which(tex == "Sample  &  Adults \\\\ "))
         expect_equal(tex[94], "Sample  &  Adults \\\\ ")
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
