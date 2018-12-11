@@ -58,7 +58,7 @@ file.open <- function(x) {
 }
 
 error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, quotes = FALSE){
-    if (length(items) != 0 && !all(items %in% "")){
+    if (length(items) != 0 && !all(items %in% "")) {
         message <- gsub("\\{items\\}", collapse_items(items, and, or, quotes), text)
         if (error) { stop(message, call. = FALSE) }
         warning(message, call. = FALSE)
@@ -76,7 +76,9 @@ wrong_class_error <- function(value, expected_class, name, null = FALSE){
 paste_around <- function(str, before, after) paste0(before, str, after)
 
 collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
-    if (quotes) { x <- paste0("'", x, "'") }
+    if (quotes) {
+        x <- paste0("'", x, "'")
+    }
     if (length(x) > 2) {
         x <- c(paste0(x[1:(length(x)-1)], ",", collapse = " "), x[length(x)])
     }

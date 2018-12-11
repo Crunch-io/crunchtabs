@@ -423,10 +423,8 @@ latexTableName <- function(var, theme) {
         NULL
     }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
-        var_info[[1]] <- paste0(
-            var_info[[1]],
-            var_info$format_var_subname %||% " --- "
-        )
+        # NPR: Is this dash character valid?
+        var_info[[1]] <- paste0(var_info[[1]], " — ", var_info$format_var_subname)
         var_info$format_var_subname <- NULL
     }
     if (length(var_info) == 0) {
@@ -443,7 +441,7 @@ latexTableName <- function(var, theme) {
         # Wrap it in color
         out <- paste0(col, out, "}")
     }
-    return(paste0(col, "\\\\"))
+    return(paste0(out, " \\\\"))
 }
 
 latexDocFoot <- function() "\n}\n\\end{document}\n"

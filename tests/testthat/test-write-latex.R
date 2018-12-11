@@ -4,6 +4,9 @@ cs <- readRDS(test_path("fixtures/crosstab_summary.RDS"))
 ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
 ts$results$petloc <- NULL # see TODO in writeLatex.R
 
+tabbook_reference <- normalizePath(test_path("ref/tabbook1.tex"))
+topline_reference <- normalizePath(test_path("ref/topline1.tex"))
+
 test_that("LaTeX escaping", {
     expect_identical(escM("$"), "\\$")
     expect_identical(escM(NULL), "")
@@ -20,8 +23,13 @@ with_temp_dir({
     test_that("Write Latex crosstab", {
         writeLatex(cs)
         expect_true(file.exists("Example Dataset with Nets.tex"))
-        expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
+        tex <- readLines("Example Dataset with Nets.tex")
         expect_equal(tex[1], "\\documentclass[landscape]{article}")
+        ref <- readLines(tabbook_reference)
+        expect_identical(tex, ref)
+        if (!identical(tex, ref)) {
+            system(paste("diff", tabbook_reference, shQuote("Example Dataset with Nets.tex")))
+        }
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
@@ -47,10 +55,15 @@ with_temp_dir({
     })
 
     test_that("Write Latex toplines", {
-        writeLatex(ts)
-        expect_true(file.exists("Example Dataset with Nets.tex"))
-        expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
+        writeLatex(ts, file="topline1")
+        expect_true(file.exists("topline1.tex"))
+        tex <- readLines("topline1.tex")
         expect_equal(tex[1], "\\documentclass{article}")
+        ref <- readLines(topline_reference)
+        expect_identical(tex, ref)
+        if (!identical(tex, ref)) {
+            system(paste("diff", topline_reference, "topline1.tex"))
+        }
 
         skip_on_appveyor()
         writeLatex(ts, pdf = TRUE)
