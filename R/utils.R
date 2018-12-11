@@ -1,4 +1,4 @@
-pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, options = "-halt-on-error",
+pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = TRUE, options = "-halt-on-error",
     path.to.pdflatex = Sys.which("pdflatex"), ...) {
 
     filepath <- dirname(texfile)
@@ -16,22 +16,19 @@ pdflatex <- function(texfile, open = TRUE, verbose = FALSE, cleanup = TRUE, opti
         if (nchar(path.to.pdflatex) == 0) {
             path.to.pdflatex <- "/usr/texbin/pdflatex"
         }
-        nullout <- ">/dev/null"
     } else {
         if (nchar(path.to.pdflatex) == 0) {
             path.to.pdflatex <- "pdflatex"
         }
         texfile <- paste(texfile, pdffile)
-        nullout <- ">NUL"
-        open <- FALSE
     }
-    if (verbose)
-        nullout <- ""
 
     texcommand <- paste(path.to.pdflatex, options, "-output-directory", filepath,
-        texfile, nullout)
-    system(texcommand)
-    system(texcommand)
+        texfile)
+    # In case it needs packages/styles you don't have, just keep hitting enter
+    input <- paste0(rep("\n", 100))
+    system(texcommand, input=input, ignore.stdout=!verbose)
+    system(texcommand, input=input, ignore.stdout=!verbose)
 
     pdffile <- sub("^\"", "", sub("\"$", "", pdffile))
     filepath <- sub("^\"", "", sub("\"$", "", filepath))
