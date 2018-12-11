@@ -217,7 +217,7 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     bdr <- ifelse(topline, 1, 0.5)
     logo <- theme$logo$file
     if (!is.null(logo)) {
-        paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n")
+        logo <- paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}\n")
     }
 
     paste0("\\documentclass", if (!topline) { "[landscape]" }, "{article}\n",
