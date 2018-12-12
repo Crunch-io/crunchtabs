@@ -84,26 +84,38 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         table_bodies <- paste0(table_bodies, "\n\\clearpage")
     }
 
-    out <- latexDocHead(
+    head <- latexDocHead(
         theme = theme,
         title = title,
         subtitle = subtitle,
         topline = topline
     )
     if (!topline) {
-        out <- c(out, sapply(seq_along(data_summary$banner), function (j) {
+        # Generate the banner definition macros in the header so they can
+        # be reused on each page
+        head <- c(head, sapply(seq_along(data_summary$banner), function (j) {
             longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9,
                 theme = theme)
         }))
     }
+
     out <- c(
-        out,
-        latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc,
-            field_period = field_period, moe = moe, font_size = theme$font_size),
-        table_bodies,
-        append_text,
-        latexDocFoot()
+        head,
+        document(
+            latexStart(
+                table_of_contents = table_of_contents,
+                sample_desc = sample_desc,
+                field_period = field_period,
+                moe = moe,
+                font_size = theme$font_size
+            ),
+            table_bodies,
+            append_text,
+            "",
+            "}"
+        )
     )
+
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
@@ -115,118 +127,6 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         }
     }
     return(invisible(data_summary))
-}
-
-latexTableBody <- function(df, theme, topline) {
-    data <- df$data_list
-    for (nm in intersect(c("body", "totals_row"), names(data))) {
-        data[[nm]][] <- round(data[[nm]], theme$digits)
-        data[[nm]][] <- format(data[[nm]], nsmall=theme$digits, big.mark=",")
-        data[[nm]][] <- apply(data[[nm]], 2, trimws)
-        if (theme$proportions) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste0, "%")
-        }
-    }
-    for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
-        nm2 <- paste0("format_", nm)
-        data[[nm]][] <- trimws(format(data[[nm]], big.mark=","))
-        if (theme[[nm2]]$latex_add_parenthesis) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
-        }
-        if (!is.null(theme[[nm2]]$latex_adjust) && !topline) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste_around,
-                paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
-        }
-    }
-
-    mask_vars <- c("totals_row", "means", "medians")
-    if (!is.null(theme$format_min_base$min_base) && any(df$min_cell_body)) {
-        if (!is.null(theme$format_min_base$mask)) {
-            data$body[df$min_cell_body] <- theme$format_min_base$mask
-            for (nm in intersect(mask_vars, names(data))) {
-                data[[nm]][, df$min_cell] <- theme$format_min_base$mask
-            }
-        }
-        for (i in which(colSums(df$min_cell_body) != 0)) {
-            data$body[df$min_cell_body[,i], i] <- applyLatexStyle(data$body[df$min_cell_body[,i], i], theme$format_min_base)
-            for (nm in intersect(mask_vars, names(data))) {
-                data[[nm]][, df$min_cell] <- applyLatexStyle(data[[nm]][, df$min_cell], theme$format_min_base)
-            }
-        }
-    }
-
-    data <- lapply(data, function(dt) {
-        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, texEscape),
-            nrow = nrow(dt))
-    })
-
-    for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
-        data[[nm]][] <- apply(data[[nm]], 2, applyLatexStyle, theme[[paste0("format_", nm)]])
-    }
-
-    # TODO: this code assumes that categories are along the rows, but for a
-    # topline categorical array with subtotals, they're across the columns
-    # $inserts
-    # [1] "Category" "Category" "Category" "Subtotal"
-    #
-    # $data_list
-    # $data_list$body
-    #      Cat Dog Bird Net: Cat/Dog
-    # Home  49  43    9           92
-    # Work  42  37   21           79
-    for (i in which(df$inserts %in% c("Heading"))) {
-        data$body[i, 2:ncol(data$body)] <- ""
-        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_headers)
-    }
-    for (i in which(df$inserts %in% c("Subtotal"))) {
-        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
-    }
-
-    collapsestring <- "\\\\\n"
-    if (topline && ncol(data$body) == 2) {
-        sepstring <- " \\hspace*{0.15em} \\dotfill "
-    } else {
-        sepstring <- " & "
-    }
-    data <- lapply(data, function(dt) {
-        paste(
-            paste(
-                paste0(
-                    if (topline) " & ",
-                    apply(dt, 1, paste, collapse = sepstring)
-                ),
-                collapse = collapsestring),
-            collapsestring
-        )
-    })
-
-    if (is(df, "ToplineCategoricalArray")) {
-        df$data_order <- "body"
-    }
-    paste(
-        paste0(
-            data[intersect(c("body", "medians", "means"), df$data_order)],
-            collapse = ""
-        ),
-        if (!topline) "\\midrule",
-        paste0(
-            data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
-            collapse = ""
-        )
-    )
-}
-
-validLatexFont <- function (theme_font) {
-    # Make sure the theme font is valid; provide a fallback rather than erroring
-    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
-        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
-        "tgschola","tgtermes","times","utopia")
-    if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
-        theme_font <- "helvet"
-        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
-            ". It has been set to `helvet`.", call. = FALSE)
-    }
-    return(theme_font)
 }
 
 latexDocHead <- function (theme, title, subtitle, topline) {
@@ -298,6 +198,18 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\n\n\n\n\n")
 }
 
+validLatexFont <- function (theme_font) {
+    # Make sure the theme font is valid; provide a fallback rather than erroring
+    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
+        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
+        "tgschola","tgtermes","times","utopia")
+    if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
+        theme_font <- "helvet"
+        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
+            ". It has been set to `helvet`.", call. = FALSE)
+    }
+    return(theme_font)
+}
 
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     if (!is.null(sample_desc)) {
@@ -310,7 +222,6 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         field_period <- paste("Conducted  & ", field_period, "\\\\ \n")
     }
     return(paste0(
-        "\\begin{document}\n",
         "\\begin{tabular}{ll}\n",
         sample_desc,
         field_period,
@@ -385,8 +296,12 @@ tableHeader.CrossTabVar <- function(var, theme) {
 
 #' @export
 tableHeader.ToplineVar <- function(var, theme) {
-    tab_definition <- "\\begin{longtable}{p{0.3in}p{5.5in}}"
-    toplineTableDef(var, tab_definition, header_row = "\\longtablesep\n", theme = theme)
+    toplineTableDef(
+        var,
+        "\\begin{longtable}{p{0.3in}p{5.5in}}",
+        header_row = "\\longtablesep\n",
+        theme = theme
+    )
 }
 
 #' @export
@@ -429,12 +344,17 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
         "",
         sep = "\n"
     )
-    col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
-    col.header <- paste(rep(col.header, col_names_len+1), collapse = "")
+    col.header <- paste0("B{\\centering}{", col_width, "}")
+    col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
     tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{",
         theme$format_label_column$col_width, "in}", col.header, "}")
 
-    toplineTableDef(var, tab_definition, header_row, theme)
+    toplineTableDef(
+        var,
+        tab_definition,
+        header_row,
+        theme
+    )
 }
 
 
@@ -478,8 +398,6 @@ latexTableName <- function(var, theme) {
     }
     return(paste(out, newline))
 }
-
-latexDocFoot <- function() "\n}\n\\end{document}\n"
 
 # Crosstabs ---------------------------------------------------------------
 

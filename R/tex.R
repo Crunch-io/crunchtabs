@@ -29,6 +29,10 @@ center <- function (...) {
     paste("\\begin{center}", ..., "\\end{center}", sep="\n")
 }
 
+document <- function (...) {
+    c("\\begin{document}", ..., "\\end{document}\n")
+}
+
 italics <- function (...) paste0("\\textit{", ..., "}")
 
 bold <- function (...) paste0("\\textbf{", ..., "}")
