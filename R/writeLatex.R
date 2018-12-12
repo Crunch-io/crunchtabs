@@ -51,7 +51,9 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     }
 
     topline <- is(data_summary, "Toplines")
-    if (is.null(theme$font_size)) { theme$font_size <- 12 }
+    if (is.null(theme$font_size)) {
+        theme$font_size <- 12
+    }
     theme$proportions <- proportions
 
     headers <- lapply(data_summary$results, tableHeader, theme = theme)
@@ -59,20 +61,37 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     bodies <- lapply(results, function (x)
-        sapply(x, latexTable.body, theme = theme, topline = topline))
+        sapply(x, latexTableBody, theme = theme, topline = topline))
+    table_footer <- latexTableFoot(topline)
 
-    out <- c(
-        latexDocHead(theme = theme, title = title, subtitle = subtitle, topline = topline),
-        if (!topline) sapply(seq_along(data_summary$banner), function (j) {
+    out <- latexDocHead(
+        theme = theme,
+        title = title,
+        subtitle = subtitle,
+        topline = topline
+    )
+    if (!topline) {
+        out <- c(out, sapply(seq_along(data_summary$banner), function (j) {
             longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9,
                 theme = theme)
-        }),
+        }))
+    }
+    out <- c(
+        out,
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc,
             field_period = field_period, moe = moe, font_size = theme$font_size),
         sapply(seq_along(data_summary$results), function(i) {
-            c(paste(headers[[i]], bodies[[i]], latexTableFoot(topline = topline),
-                sep="\n", collapse="\n"),
-                if (theme$one_per_sheet) { "\\clearpage" })
+            tbl <- paste(
+                headers[[i]],
+                bodies[[i]],
+                table_footer,
+                sep="\n",
+                collapse="\n"
+            )
+            if (theme$one_per_sheet) {
+                tbl <- c(tbl, "\\clearpage")
+            }
+            return(tbl)
         }),
         append_text,
         latexDocFoot()
@@ -81,27 +100,24 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         filename <- paste0(filename, ".tex")
         cat(out, sep = "\n", file = filename)
         if (pdf) {
-            if (logging) { print("PDF-ing") }
-            pdflatex(filename, open, path.to.pdflatex = Sys.which("pdflatex"))
+            if (logging) {
+                print("PDF-ing")
+            }
+            pdflatex(filename, open)
         }
     }
     return(invisible(data_summary))
 }
 
-
-#' @export
-writeLatex.default <- function(data_summary, ...) {
-    stop("writeLatex doesn't support objects of class '",
-        collapse_items(class(data_summary)), "'.")
-}
-
-latexTable.body <- function(df, theme, topline) {
+latexTableBody <- function(df, theme, topline) {
     data <- df$data_list
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         data[[nm]][] <- round(data[[nm]], theme$digits)
         data[[nm]][] <- format(data[[nm]], nsmall=theme$digits, big.mark=",")
         data[[nm]][] <- apply(data[[nm]], 2, trimws)
-        if (theme$proportions) { data[[nm]][] <- apply(data[[nm]], 2, paste0, "%") }
+        if (theme$proportions) {
+            data[[nm]][] <- apply(data[[nm]], 2, paste0, "%")
+        }
     }
     for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
         nm2 <- paste0("format_", nm)
@@ -159,23 +175,37 @@ latexTable.body <- function(df, theme, topline) {
     }
 
     collapsestring <- "\\\\\n"
-
-    sepstring <- ifelse(topline && ncol(data$body) == 2,
-        " \\hspace*{0.15em} \\dotfill ",
-        " & "
-    )
-
+    if (topline && ncol(data$body) == 2) {
+        sepstring <- " \\hspace*{0.15em} \\dotfill "
+    } else {
+        sepstring <- " & "
+    }
     data <- lapply(data, function(dt) {
-        paste(paste(paste0(if (topline) " & ", apply(dt, 1, paste, collapse = sepstring)),
-            collapse = collapsestring), collapsestring)
+        paste(
+            paste(
+                paste0(
+                    if (topline) " & ",
+                    apply(dt, 1, paste, collapse = sepstring)
+                ),
+                collapse = collapsestring),
+            collapsestring
+        )
     })
 
-    if (is(df, "ToplineCategoricalArray")) df$data_order <- "body"
-    a <- paste(paste0(data[intersect(c("body", "medians", "means"), df$data_order)],
-        collapse = ""), if (!topline) "\\midrule",
-        paste0(data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
-            collapse = ""))
-    return(a)
+    if (is(df, "ToplineCategoricalArray")) {
+        df$data_order <- "body"
+    }
+    paste(
+        paste0(
+            data[intersect(c("body", "medians", "means"), df$data_order)],
+            collapse = ""
+        ),
+        if (!topline) "\\midrule",
+        paste0(
+            data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
+            collapse = ""
+        )
+    )
 }
 
 escM <- function(str) {
@@ -294,7 +324,7 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         field_period,
         moe,
         "\\end{tabular}\n",
-        ifelse(table_of_contents, "\\listoftables\n\\newpage", "" ),
+        ifelse(table_of_contents, "\\listoftables\n\\newpage", ""),
         "\n\n{",
         "\\setlength{\\LTleft}{0pt}\n",
         "\\setlength{\\LTright}{\\fill}\n",
@@ -349,18 +379,21 @@ tableHeader.default <- function(x) {
 # Assumes that \banner[a-z]{} macros are defined in the preamble
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
-    sapply(seq_along(var$crosstabs), function(num){
-        paste(if (num != 1) "\\vspace{-.25in}" ,
+    sapply(seq_along(var$crosstabs), function(num) {
+        paste(
+            if (num != 1) "\\vspace{-.25in}",
             "\\tbltop", letters[num], "\n",
             if (num == 1) latexTableName(var, theme),
             "\\addlinespace \n",
-            "\\banner", letters[num],"{} \n\n", sep="")
+            "\\banner", letters[num],"{} \n\n",
+            sep=""
+        )
     })
 }
 
 #' @export
 tableHeader.ToplineVar <- function(var, theme) {
-    tab_definition <- paste0("\\begin{longtable}{p{0.3in}p{5.5in}}")
+    tab_definition <- "\\begin{longtable}{p{0.3in}p{5.5in}}"
     toplineTableDef(var, tab_definition, header_row = "\\longtablesep\n", theme = theme)
 }
 
@@ -424,7 +457,7 @@ latexTableName <- function(var, theme) {
     }
     if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
         # NPR: Is this dash character valid?
-        var_info[[1]] <- paste0(var_info[[1]], " — ", var_info$format_var_subname)
+        var_info[[1]] <- paste0(var_info[[1]], " \u2014 ", var_info$format_var_subname)
         var_info$format_var_subname <- NULL
     }
     if (length(var_info) == 0) {
@@ -472,7 +505,7 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
         col_num_sum, "}{c}{", theme$latex_foottext, "} \\\\ \n",
         "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
 
-    table_def <- paste0("\\newcommand{\\tbltop",letters[num],"}{\n",
+    table_def <- paste0("\\newcommand{\\tbltop", letters[num], "}{\n",
         "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
         "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
         "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}}\n")
