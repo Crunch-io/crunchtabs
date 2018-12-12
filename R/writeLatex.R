@@ -404,8 +404,8 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
             midgaps <- 1 + ceiling(mcwidth)  ## in case it's an odd number
             mcwidth <- floor(mcwidth)
             midgaps <- midgaps - mcwidth
-            labs[1] <- paste("\\multicolumn{", mcwidth, "}{l}{", labs[1], "}", collapse = "")
-            labs[2] <- paste("\\multicolumn{", mcwidth, "}{r}{", labs[2], "}", collapse = "")
+            labs[1] <- multicolumn(mcwidth, labs[1], align="l")
+            labs[2] <- multicolumn(mcwidth, labs[2], align="r")
             scalestart <- paste(rep(" &", min(which.split)), collapse = "")
             scalemid <- paste(rep(" &", midgaps), collapse = "")
             scaleend <- paste(rep(" &", length(col_names) - max(which.split)), collapse = "")
@@ -417,11 +417,18 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
         }
     }
     header_row <- paste(newline, header_row, "& &", paste(texEscape(col_names), collapse = " & "), " & \\\n")
-    header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{",
-        col_names_len + 2, "}{c}{", italics(theme$latex_headtext), "} \\\\",
-        header_row, "\\endhead\n\\multicolumn{", col_names_len + 2,
-        "}{c}{", italics(theme$latex_foottext), "} \\\\ \n\\endfoot\n\\endlastfoot\n",
-        sep = "")
+    header_row <- paste(
+        header_row,
+        "\\endfirsthead",
+        paste(multicolumn(col_names_len + 2, italics(theme$latex_headtext)), newline),
+        header_row,
+        "\\endhead",
+        paste(multicolumn(col_names_len + 2, italics(theme$latex_foottext)), newline),
+        "\\endfoot",
+        "\\endlastfoot",
+        "",
+        sep = "\n"
+    )
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len+1), collapse = "")
     tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{",
@@ -433,32 +440,43 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 
 latexTableName <- function(var, theme) {
     var_info <- getVarInfo(var, theme)
-    bg_color <- theme[[names(var_info)[[1]]]]$background_color
-    col <- if (!is.null(bg_color)) {
-        paste0("\\colorbox{", bg_color, "}{\n")
+    bg_color <- theme[[names(var_info)[1]]]$background_color
+    if (inherits(var, "ToplineVar")) {
+        page_width <- 6.5
     } else {
-        NULL
+        page_width <- 9
     }
-    if (!is.null(var_info$format_var_subname) && names(var_info)[1] != "format_var_subname") {
-        # NPR: Is this dash character valid?
-        var_info[[1]] <- paste0(var_info[[1]], " \u2014 ", var_info$format_var_subname)
-        var_info$format_var_subname <- NULL
+
+    # Munge var_info names to match the macros defined in the .tex file
+    names(var_info) <- gsub("_", "", names(var_info))
+    if (!is.null(var_info$formatvarsubname) && names(var_info)[1] != "formatvarsubname") {
+        # That's an em-dash
+        var_info[[1]] <- paste0(var_info[[1]], " \u2014 ", var_info$formatvarsubname)
+        var_info$formatvarsubname <- NULL
     }
     if (length(var_info) == 0) {
-        # NPR: I don't see how this makes sense (or valid TeX)
-        var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
+        # NPR: I guess this is a fallback to print 404 if there's no variable
+        # metadata? Is this likely even valid TeX?
+        var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
     }
     out <- paste0(
         "\\addcontentsline{lot}{table}{ ", texEscape(var_info[[1]]), "}\n",
-        "\\hangindent=0em \\parbox{", ifelse(inherits(var, "ToplineVar"), "6.5", "9"), "in}{\n",
-        paste0("\\", gsub("_", "", names(var_info)), "{", texEscape(var_info), "}", collapse = "\\\\ \n"),
+        "\\hangindent=0em \\parbox{", page_width, "in}{\n",
+        paste0(
+            "\\", names(var_info), "{", texEscape(var_info), "}",
+            collapse = "\\\\ \n"
+        ),
         "}"
     )
-    if (!is.null(col)) {
-        # Wrap it in color
-        out <- paste0(col, out, "}")
+    if (!is.null(bg_color)) {
+        # Wrap it in a colorbox
+        out <- paste0(
+            "\\colorbox{", bg_color, "}{\n",
+            out,
+            "}" # Should put a \n before this
+        )
     }
-    return(paste0(out, " \\\\"))
+    return(paste(out, newline))
 }
 
 latexDocFoot <- function() "\n}\n\\end{document}\n"
@@ -475,35 +493,56 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
     binfo <- getBannerInfo(banner, theme)
     col_num_sum <- length(unlist(binfo$multicols))
 
-    banner_def_head <- paste0("\\newcommand{\\banner", letters[num],"}[1]{")
-
-    banner_def_body <- rep(makeLatexBanner(binfo,
-        width = round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2),
-        theme = theme), 2)
-    banner_def_body[2] <- paste(
+    banner_width <- round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2)
+    banner_def_body1 <- makeLatexBanner(binfo, width = banner_width)
+    banner_def_body2 <- paste(
         "&",
         multicolumn(col_num_sum, theme$latex_headtext),
         newline,
-        banner_def_body[2]
+        banner_def_body1
     )
-    banner_def_body <- paste("\\toprule", banner_def_body, sep="\n",
-        collapse="\\endfirsthead \n")
 
-    banner_def_foot <- paste0("\\endhead \n\\midrule \n& \\multicolumn{",
-        col_num_sum, "}{c}{", theme$latex_foottext, "} \\\\ \n",
-        "\\bottomrule \n\\endfoot \n\\bottomrule \n\\endlastfoot \n}\n")
-
-    table_def <- paste0("\\newcommand{\\tbltop", letters[num], "}{\n",
-        "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
-        "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
-        "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}}\n")
-    return(paste0(banner_def_head, banner_def_body, banner_def_foot, table_def))
+    return(paste(
+        # Here is \bannera
+        paste0(
+            "\\newcommand{\\banner", letters[num],"}[1]",
+            "{",
+            "\\toprule"
+        ),
+            banner_def_body1,
+            "\\midrule ",
+            "\\endfirsthead ",
+            "\\toprule",
+            banner_def_body2,
+            "\\midrule ",
+            "\\endhead ",
+            "\\midrule ",
+            paste("&", multicolumn(col_num_sum, theme$latex_foottext), newline, ""),
+            "\\bottomrule ",
+            "\\endfoot ",
+            "\\bottomrule ",
+            "\\endlastfoot ",
+        "}",
+        # Here is \tbltopa
+        paste0(
+            "\\newcommand{\\tbltop", letters[num], "}",
+            "{"
+        ),
+            # Indendation here just to show what is inside the {} of newcommand
+            paste0(
+                "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
+                "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
+                "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}",
+            "}"),
+        "",
+        sep="\n"
+    ))
 }
 
-makeLatexBanner <- function (binfo, width=NULL, theme) {
+makeLatexBanner <- function (binfo, width=NULL) {
     # NPR: This is not used in the function, but maybe it should be, given
     # vague bug reports. Keep it here until we sort that out.
-    # m_split <- paste0("}{m{", width,"in}}{\\centering ")
+    # m_split <- paste0("}{m{", width, "in}}{\\centering ")
 
     # The top row are the variable names
     first_row <- paste(
@@ -533,10 +572,12 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
     # table of contents?) and end with a newline
     second_row <- paste("{\\bf #1}", second_row, newline)
 
-    # Assemble the full "banner", including a full horizontal rule underneath it
-    # (and an extra whitespace newline, because)
-    ban <- c(first_row, second_row, "\\midrule ", "")
-    return(paste(ban, collapse = "\n"))
+    # Assemble the full "banner"
+    return(paste(
+        first_row,
+        second_row,
+        sep = "\n"
+    ))
 }
 
 
