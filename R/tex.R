@@ -38,7 +38,3 @@ italics <- function (...) paste0("\\textit{", ..., "}")
 bold <- function (...) paste0("\\textbf{", ..., "}")
 
 underline <- function (...) paste0("\\underline{", ..., "}")
-
-texTable <- function (df, sep=" & ", collapse=paste0(newline, "\n")) {
-    do.call(paste, c(df, sep=sep, collapse=collapse))
-}
