@@ -56,13 +56,33 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     }
     theme$proportions <- proportions
 
+    # Build the tables
     headers <- lapply(data_summary$results, tableHeader, theme = theme)
 
     data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
     bodies <- lapply(results, function (x)
         sapply(x, latexTableBody, theme = theme, topline = topline))
-    table_footer <- latexTableFoot(topline)
+    table_footer <- "\n\\end{longtable}\n\n"
+    table_bodies <- sapply(seq_along(data_summary$results), function(i) {
+        paste(
+            headers[[i]],
+            bodies[[i]],
+            table_footer,
+            sep="\n",
+            collapse="\n"
+        )
+    })
+    if (topline) {
+        # Topline tables are centered (probably should be a theme option?)
+        # Also munge newline whitespace to match status quo output
+        table_bodies <- sub("\\\n\\\n$", "", table_bodies)
+        table_bodies <- center(table_bodies)
+        table_bodies <- paste0(table_bodies, "\n\n")
+    }
+    if (theme$one_per_sheet) {
+        table_bodies <- paste0(table_bodies, "\n\\clearpage")
+    }
 
     out <- latexDocHead(
         theme = theme,
@@ -80,19 +100,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         out,
         latexStart(table_of_contents = table_of_contents, sample_desc = sample_desc,
             field_period = field_period, moe = moe, font_size = theme$font_size),
-        sapply(seq_along(data_summary$results), function(i) {
-            tbl <- paste(
-                headers[[i]],
-                bodies[[i]],
-                table_footer,
-                sep="\n",
-                collapse="\n"
-            )
-            if (theme$one_per_sheet) {
-                tbl <- c(tbl, "\\clearpage")
-            }
-            return(tbl)
-        }),
+        table_bodies,
         append_text,
         latexDocFoot()
     )
@@ -148,7 +156,7 @@ latexTableBody <- function(df, theme, topline) {
     }
 
     data <- lapply(data, function(dt) {
-        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, escM),
+        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, texEscape),
             nrow = nrow(dt))
     })
 
@@ -208,21 +216,6 @@ latexTableBody <- function(df, theme, topline) {
     )
 }
 
-escM <- function(str) {
-    if (is.null(str)) {
-        return("")
-    }
-    gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", # IDK what this does
-        gsub("([#$%&_])", "\\\\\\1", # Escape special characters
-            gsub("[\u00A3\uFFE1]", "\\\\pounds", # Handle GBP currency
-                gsub("\n", "\\\\", # Turn newlines into \newlines
-                    str
-                )
-            )
-        )
-    )
-}
-
 validLatexFont <- function (theme_font) {
     # Make sure the theme font is valid; provide a fallback rather than erroring
     poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
@@ -237,11 +230,11 @@ validLatexFont <- function (theme_font) {
 }
 
 latexDocHead <- function (theme, title, subtitle, topline) {
-    title <- escM(title)
-    subtitle <- escM(subtitle)
+    title <- texEscape(title)
+    subtitle <- texEscape(subtitle)
     if (nchar(subtitle)) {
         # If there is one, precede it by a newline
-        subtitle <- paste(" \\\\", subtitle)
+        subtitle <- paste("", newline, subtitle)
     }
 
     bdr <- ifelse(topline, 1, 0.5)
@@ -292,11 +285,11 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\\fancyfoot[R]{\\thepage}\n",
         "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}\n",
         "\\let\\PBS=\\PreserveBackslash\n",
-        "\\newcommand{\\longtablesep}{\\endfirsthead \\multicolumn{2}{c}{\\textit{",
-            escM(theme$latex_headtext), "}} \\\\ \\endhead \\multicolumn{2}{c}{\\textit{",
-            escM(theme$latex_foottext), "}} \\\\ \\endfoot \\endlastfoot}\n",
+        "\\newcommand{\\longtablesep}{\\endfirsthead ",
+            multicolumn(2, italics(texEscape(theme$latex_headtext))), " \\\\ \\endhead ",
+            multicolumn(2, italics(texEscape(theme$latex_foottext))), " \\\\ \\endfoot \\endlastfoot}\n",
         "\\usepackage[titles]{tocloft}\n",
-        "\\newcommand{\\cftchapfont}{", fontLine(theme$font_size), "}\n",
+        "\\newcommand{\\cftchapfont}{", fontsize(theme$font_size), "}\n",
         "\\newcommand{\\formatvardescription}[1]{", applyLatexStyle("#1", theme$format_var_description), "}\n",
         "\\newcommand{\\formatvarname}[1]{", applyLatexStyle("#1", theme$format_var_name), "}\n",
         "\\newcommand{\\formatvaralias}[1]{", applyLatexStyle("#1", theme$format_var_alias), "}\n",
@@ -305,7 +298,6 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         "\n\n\n\n\n")
 }
 
-fontLine <- function(size) paste0("\\fontsize{", size, "}{", size * 1.5, "}")
 
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     if (!is.null(sample_desc)) {
@@ -340,17 +332,17 @@ applyLatexStyle <- function(item, item_theme) {
     }
     if (!is.null(item_theme$decoration)) {
         if (any(c("underline", "underline2") %in% item_theme$decoration)) {
-            item <- paste0("\\underline{", item, "}")
+            item <- underline(item)
         }
         if ("italic" %in% item_theme$decoration) {
-            item <- paste0("\\textit{", item, "}")
+            item <- italics(item)
         }
         if ("bold" %in% item_theme$decoration) {
-            item <- paste0("\\textbf{", item, "}")
+            item <- bold(item)
         }
     }
     if (!is.null(item_theme$font_size)) {
-        item <- paste0(fontLine(item_theme$font_size), item)
+        item <- paste0(fontsize(item_theme$font_size), item)
     }
     if (!is.null(item_theme$font_color)) {
         if (grepl("^#[A-z0-9]{6}", item_theme$font_color)) {
@@ -407,7 +399,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     if (col_names_len >= 10) {
         which.split <- grep("^[0-9]+ - ", col_names)
         if (length(which.split) == 2) {
-            labs <- escM(sub("^[0-9]+ - (.*)$", "\\1", col_names[which.split]))
+            labs <- texEscape(sub("^[0-9]+ - (.*)$", "\\1", col_names[which.split]))
             mcwidth <- (max(which.split) - min(which.split) + 1)/2
             midgaps <- 1 + ceiling(mcwidth)  ## in case it's an odd number
             mcwidth <- floor(mcwidth)
@@ -424,11 +416,11 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                     col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-    header_row <- paste("\\\\", header_row, "& &", paste(escM(col_names), collapse = " & "), " & \\\n")
+    header_row <- paste(newline, header_row, "& &", paste(texEscape(col_names), collapse = " & "), " & \\\n")
     header_row <- paste(header_row, "\n\\endfirsthead\n\\multicolumn{",
-        col_names_len + 2, "}{c}{\\textit{", theme$latex_headtext, "}} \\\\",
+        col_names_len + 2, "}{c}{", italics(theme$latex_headtext), "} \\\\",
         header_row, "\\endhead\n\\multicolumn{", col_names_len + 2,
-        "}{c}{\\textit{", theme$latex_foottext, "}} \\\\ \n\\endfoot\n\\endlastfoot\n",
+        "}{c}{", italics(theme$latex_foottext), "} \\\\ \n\\endfoot\n\\endlastfoot\n",
         sep = "")
     col.header <- paste("B{\\centering}{", col_width, "}", sep = "")
     col.header <- paste(rep(col.header, col_names_len+1), collapse = "")
@@ -438,14 +430,6 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     toplineTableDef(var, tab_definition, header_row, theme)
 }
 
-
-latexTableFoot <- function(topline) {
-    if (topline) {
-        return("\n\\end{longtable}\n\\end{center}\n\n")
-    } else {
-        return("\n\\end{longtable}\n\n")
-    }
-}
 
 latexTableName <- function(var, theme) {
     var_info <- getVarInfo(var, theme)
@@ -465,9 +449,9 @@ latexTableName <- function(var, theme) {
         var_info <- list(format_var_name = paste0("\\color{", col, "}{404}"))
     }
     out <- paste0(
-        "\\addcontentsline{lot}{table}{ ", escM(var_info[[1]]), "}\n",
+        "\\addcontentsline{lot}{table}{ ", texEscape(var_info[[1]]), "}\n",
         "\\hangindent=0em \\parbox{", ifelse(inherits(var, "ToplineVar"), "6.5", "9"), "in}{\n",
-        paste0("\\", gsub("_", "", names(var_info)), "{", escM(var_info), "}", collapse = "\\\\ \n"),
+        paste0("\\", gsub("_", "", names(var_info)), "{", texEscape(var_info), "}", collapse = "\\\\ \n"),
         "}"
     )
     if (!is.null(col)) {
@@ -496,8 +480,12 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
     banner_def_body <- rep(makeLatexBanner(binfo,
         width = round((page_width - theme$format_label_column$col_width)/col_num_sum-.1, 2),
         theme = theme), 2)
-    banner_def_body[2] <- paste0("& \\multicolumn{", col_num_sum, "}{c}{",
-        theme$latex_headtext, "} \\\\ ", banner_def_body[2])
+    banner_def_body[2] <- paste(
+        "&",
+        multicolumn(col_num_sum, theme$latex_headtext),
+        newline,
+        banner_def_body[2]
+    )
     banner_def_body <- paste("\\toprule", banner_def_body, sep="\n",
         collapse="\\endfirsthead \n")
 
@@ -513,18 +501,42 @@ longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
 }
 
 makeLatexBanner <- function (binfo, width=NULL, theme) {
-    m_split <- paste0("}{m{", width,"in}}{\\centering ")
-    ban <- paste0(c(paste(" & \\multicolumn{", binfo$len, "}{c}{\\bf ",
-        escM(binfo$names), "}", collapse = "", sep = ""),
-        paste(" & \\multicolumn{1}{c}{", escM(unlist(binfo$multicols)), "}",
-            collapse = "", sep = "")),
-        " \\\\")
-    ban[2] <- paste("{\\bf #1}", ban[2])
+    # NPR: This is not used in the function, but maybe it should be, given
+    # vague bug reports. Keep it here until we sort that out.
+    # m_split <- paste0("}{m{", width,"in}}{\\centering ")
 
-    ban[1] <- paste0(ban[1], paste0(" \\cmidrule(lr{.75em}){",
-        binfo$multicols_csum[2:(length(binfo$multicols_csum)-1)], "-",
-        binfo$multicols_csum[3:length(binfo$multicols_csum)] - 1, "}", collapse = ""))
-    return(paste(c(ban, "\\midrule \n"), collapse = "\n"))
+    # The top row are the variable names
+    first_row <- paste(
+        " &",
+        multicolumn(binfo$len, "\\bf ", texEscape(binfo$names)),
+        collapse=""
+    )
+    # Add a newline
+    first_row <- paste(first_row, newline)
+    # Now add a bunch of horizontal rules underneath the headers, grouping the
+    # category names in the second row under the variable names in the first
+    start_cols <- binfo$multicols_csum[2:(length(binfo$multicols_csum) - 1)]
+    end_cols <- binfo$multicols_csum[3:length(binfo$multicols_csum)] - 1
+    # cmidrule() is vectorized over those integers, so we need to paste(collapse)
+    first_row <- paste(
+        c(first_row, cmidrule(start_cols, end_cols)),
+        collapse = " "
+    )
+
+    # The second row has the category names
+    second_row <- paste(
+        " &",
+        multicolumn(1, texEscape(unlist(binfo$multicols))),
+        collapse=""
+    )
+    # Add a variable anchor to the beginning of the second row (this is for the
+    # table of contents?) and end with a newline
+    second_row <- paste("{\\bf #1}", second_row, newline)
+
+    # Assemble the full "banner", including a full horizontal rule underneath it
+    # (and an extra whitespace newline, because)
+    ban <- c(first_row, second_row, "\\midrule ", "")
+    return(paste(ban, collapse = "\n"))
 }
 
 
@@ -533,7 +545,6 @@ makeLatexBanner <- function (binfo, width=NULL, theme) {
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
     paste0(
-        "\\begin{center}\n",
         tab_definition, "\n",
         latexTableName(var, theme),
         header_row

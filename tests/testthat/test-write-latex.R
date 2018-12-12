@@ -8,9 +8,9 @@ tabbook_reference <- normalizePath(test_path("ref/tabbook1.tex"))
 topline_reference <- normalizePath(test_path("ref/topline1.tex"))
 
 test_that("LaTeX escaping", {
-    expect_identical(escM("$"), "\\$")
-    expect_identical(escM(NULL), "")
-    expect_identical(escM("\n"), "\\")
+    expect_identical(texEscape("$"), "\\$")
+    expect_identical(texEscape(NULL), "")
+    expect_identical(texEscape("\n"), "\\")
 })
 
 with_temp_dir({
