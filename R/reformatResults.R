@@ -27,36 +27,64 @@ getBannerInfo <- function(banner, theme) {
     len <- sapply(banner, function(x) length(x$categories))
     banner_cols_pos <- cumsum(len) + 1
     multicols <- sapply(banner, function(x) x$categories[!is.na(x$categories)])
-    multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {length(x) + empty_col})))
-    format_cols <- if (empty_col) { unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
-    } else { multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1 - empty_col) }
+    multicols_csum <- cumsum(c(banner_cols_pos[1], sapply(multicols, function(x) {
+        length(x) + empty_col
+    })))
+    if (empty_col) {
+        format_cols <- unlist(sapply(2:length(multicols_csum), function(i) multicols_csum[i-1]:(multicols_csum[i]-2)))
+        border_columns <- multicols_csum[2:(length(multicols_csum)-1)] - 1
+    } else {
+        format_cols <- multicols_csum[[1]]:(multicols_csum[[length(multicols_csum)]] - 1 - empty_col)
+        border_columns <- multicols_csum[2:(length(multicols_csum)-1)]
 
+    }
     names <- sapply(banner, getName)
 
-    border_columns <- if (empty_col) { multicols_csum[2:(length(multicols_csum)-1)]-1
-    } else { multicols_csum[2:(length(multicols_csum)-1)] }
-
-    list(empty_col = empty_col, len = len, multicols = multicols,
-        multicols_csum = multicols_csum, format_cols = format_cols,
-        border_columns = border_columns, names = names)
+    list(
+        empty_col = empty_col,
+        len = len,
+        multicols = multicols,
+        multicols_csum = multicols_csum,
+        format_cols = format_cols,
+        border_columns = border_columns,
+        names = names
+    )
 }
 
 getItemData <- function(data, item_name, empty_col, round){
     tmp_data <- lapply(seq_along(data), function(bv) {
-        dt <- if (round) round(data[[bv]][[item_name]]) else data[[bv]][[item_name]]
-        if (is.vector(dt)) return(c(dt, if (empty_col) as.numeric(NA)))
-        if (!is.vector(dt) && empty_col) return(cbind(dt, as.numeric(NA)))
-        if (!is.vector(dt) && !empty_col) return(dt)
+        dt <- data[[bv]][[item_name]]
+        if (round) {
+            dt <- round(dt)
+        }
+
+        if (is.vector(dt)) {
+            return(c(dt, if (empty_col) as.numeric(NA)))
+        }
+        if (!is.vector(dt) && empty_col) {
+            return(cbind(dt, as.numeric(NA)))
+        }
+        if (!is.vector(dt) && !empty_col) {
+            return(dt)
+        }
     })
-    if (is.null(unlist(tmp_data))) return(NULL)
-    if (!is.null(dim(tmp_data[[1]])) && length(dim(tmp_data[[1]])) == 2) { return(do.call(cbind, tmp_data)) }
+    if (is.null(unlist(tmp_data))) {
+        return(NULL)
+    }
+    if (!is.null(dim(tmp_data[[1]])) && length(dim(tmp_data[[1]])) == 2) {
+        return(do.call(cbind, tmp_data))
+    }
     return(unlist(tmp_data))
 }
 
 reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex) {
     possible <- c("weighted_n", "unweighted_n", "totals_row", "means", "medians")
-    if (var$no_totals) possible <- setdiff(possible, "totals_row")
-    if (!var$mean_median) { possible <- setdiff(possible, c("means", "medians")) }
+    if (var$no_totals) {
+        possible <- setdiff(possible, "totals_row")
+    }
+    if (!var$mean_median) {
+        possible <- setdiff(possible, c("means", "medians"))
+    }
     top <- unlist(sapply(possible, function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_top) return(p)))
     bottom <- unlist(sapply(rev(possible), function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_bottom) return(p)))
     data_order <- c(top, "body", bottom)
@@ -72,7 +100,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         dx <- piece_names[[dt]]
         data <- getItemData(data = var$crosstabs[[banner_name]], item_name = dx,
             empty_col = banner_info$empty_col && !latex, round = FALSE)
-        if (is.vector(data)) data <- t(data)
+        if (is.vector(data)) {
+            data <- t(data)
+        }
         theme_dt <- theme[[paste0("format_", dt)]]
 
         data[is.nan(data)] <- NA
@@ -85,10 +115,15 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
             data[] <- data * 100
         }
 
-        if (!proportions && prop_v || weight_v) { rdig <- 0 }
-        else if (latex) { rdig <- theme$digits }
-        else if (!is.null(theme$digits_final)) { rdig <- theme$digits_final + (proportions && theme$excel_percent_sign && prop_v)*2 }
-        else { rdig <- Inf }
+        if (!proportions && prop_v || weight_v) {
+            rdig <- 0
+        } else if (latex) {
+            rdig <- theme$digits
+        } else if (!is.null(theme$digits_final)) {
+            rdig <- theme$digits_final + (proportions && theme$excel_percent_sign && prop_v)*2
+        } else {
+            rdig <- Inf
+        }
         if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
             data[] <- apply(data, 2, roundPropCategorical, theme$digits)
         } else if (!is.null(rdig) && !is.infinite(rdig)) {
@@ -96,8 +131,16 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         }
 
         if (dt %in% "totals_row") {
-            data_tmp <- if (proportions) { colSums(data) } else { getItemData(data = var$crosstabs[[banner_name]], item_name = "weighted_base",
-                empty_col = banner_info$empty_col && !latex, round = FALSE) }
+            if (proportions) {
+                data_tmp <- colSums(data)
+            } else {
+                data_tmp <-  getItemData(
+                    data = var$crosstabs[[banner_name]],
+                    item_name = "weighted_base",
+                    empty_col = banner_info$empty_col && !latex,
+                    round = FALSE
+                )
+            }
             data <- matrix(data_tmp, nrow = 1, ncol = ncol(data),
                 dimnames = list(c(theme$format_totals_row$name), colnames(data)))
         }
@@ -135,9 +178,17 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
             theme$format_min_base$min_base, nrow = nrow(unweighted_n), ncol = ncol(unweighted_n))
     min_cell_rep <- colSums(min_cell, na.rm = TRUE) > 0
     top_sub <- mask_vars %in% top
-    min_cell_top <- if (any(top_sub)) matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n), byrow = TRUE)
+    if (any(top_sub)) {
+        min_cell_top <- matrix(min_cell_rep, nrow = sum(top_sub), ncol = ncol(unweighted_n), byrow = TRUE)
+    } else {
+        min_cell_top <- NULL
+    }
     bottom_sub <- mask_vars %in% bottom
-    min_cell_bottom <- if (any(bottom_sub)) matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n), byrow = TRUE)
+    if (any(bottom_sub)) {
+        min_cell_bottom <- matrix(min_cell_rep, nrow = sum(bottom_sub), ncol = ncol(unweighted_n), byrow = TRUE)
+    } else {
+        min_cell_bottom <- NULL
+    }
     if (is(var, "ToplineCategoricalArray") && latex) {
         rownames(data_list$body) <- sapply(var$inserts_obj, name)
         data_list <- lapply(data_list, function(x) {
