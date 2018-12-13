@@ -191,12 +191,6 @@ latexTableBody <- function(df, theme) {
     return(out)
 }
 
-texTable <- function (df, sep=" & ", collapse=paste0(newline, "\n")) {
-    # TODO: use this
-    do.call(paste, c(df, sep=sep, collapse=collapse))
-}
-
-
 tableHeader <- function(x, theme) {
     UseMethod("tableHeader", x)
 }
@@ -213,16 +207,31 @@ tableHeader.default <- function(x) {
 # Assumes that \banner[a-z]{} macros are defined in the preamble
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
-    sapply(seq_along(var$crosstabs), function(num) {
-        paste(
-            if (num != 1) "\\vspace{-.25in}",
-            "\\tbltop", letters[num], "\n",
-            if (num == 1) latexTableName(var, theme),
-            "\\addlinespace \n",
-            "\\banner", letters[num],"{} \n\n",
-            sep=""
+    header <- paste(
+        "\\tbltopa",
+        latexTableName(var, theme),
+        "\\addlinespace",
+        "\\bannera{}",
+        "",
+        "",
+        sep="\n"
+    )
+    ntabs <- length(var$crosstabs)
+    if (ntabs > 1) {
+        # Subsequent banners don't get the same table name at the top, and the
+        # negative vspace squeezes them closer to the one above
+        next_headers <- paste(
+            "\\vspace{-.25in}",
+            paste0("\\tbltop", letters[2:ntabs]),
+            "\\addlinespace",
+            paste0("\\banner", letters[2:ntabs],"{}"),
+            "",
+            "",
+            sep="\n"
         )
-    })
+        header <- c(header, next_headers)
+    }
+    return(header)
 }
 
 #' @export
@@ -351,7 +360,7 @@ longtableHeadFootMacros <- function (banner, num, page_width = 9, theme) {
         banner_def_body1
     )
 
-    return(paste(
+    return(c(
         # Here is \bannera
         paste0(
             "\\newcommand{\\banner", letters[num],"}[1]",
@@ -383,8 +392,7 @@ longtableHeadFootMacros <- function (banner, num, page_width = 9, theme) {
                 "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
                 "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}",
             "}"),
-        "",
-        sep="\n"
+        ""
     ))
 }
 
