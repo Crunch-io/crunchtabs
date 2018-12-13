@@ -50,43 +50,44 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         stop("The expected class for `data_summary` is either Toplines, CrunchTabs or Crosstabs CrunchTabs, not ", collapse_items(class(data_summary)))
     }
 
-    topline <- is(data_summary, "Toplines")
+    theme$topline <- topline <- is(data_summary, "Toplines")
     if (is.null(theme$font_size)) {
         theme$font_size <- 12
     }
     theme$proportions <- proportions
 
     # Build the tables
-    headers <- lapply(data_summary$results, tableHeader, theme = theme)
-
-    data_summary$results <- lapply(data_summary$results, removeInserts, theme)
-    results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
-    # NPR: it looks like `results` is a list of lists of objects. Each element
+    # NPR: `data_summary$results` is a list of lists of objects. Each element
     # will be a table thing, but each of those tables may contain more than one
     # table body when it's a crosstab with multiple banners.
-    bodies <- lapply(results, function (x)
-        sapply(x, latexTableBody, theme = theme, topline = topline))
-    table_footer <- "\n\\end{longtable}\n\n"
-    table_bodies <- sapply(seq_along(data_summary$results), function(i) {
+    table_bodies <- lapply(data_summary$results, function (x) {
+        headers <- tableHeader(x, theme)
+        # Do some munging and generate the table bodies to match those headers
+        x <- removeInserts(x, theme)
+        content <- reformatLatexResults(x, data_summary$banner, theme)
+        bodies <- sapply(content, latexTableBody, theme = theme)
+        # This paste will collapse the perhaps multiple banner tables into a
+        # single string of LaTeX
         paste(
-            headers[[i]],
-            bodies[[i]],
-            table_footer,
+            headers,
+            bodies,
+            "",
+            "\\end{longtable}", # Table footer
             sep="\n",
-            collapse="\n"
+            collapse="\n\n\n"
         )
     })
     if (topline) {
         # Topline tables are centered (probably should be a theme option?)
-        # Also munge newline whitespace to match status quo output
-        table_bodies <- sub("\\\n\\\n$", "", table_bodies)
         table_bodies <- center(table_bodies)
-        table_bodies <- paste0(table_bodies, "\n\n")
     }
     if (theme$one_per_sheet) {
         table_bodies <- paste0(table_bodies, "\n\\clearpage")
     }
+    # Put some space between each table
+    table_bodies <- paste0(table_bodies, "\n\n")
 
+    # Now assemble the .tex document
     head <- latexDocHead(
         theme = theme,
         title = title,
@@ -96,10 +97,17 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     if (!topline) {
         # Generate the banner definition macros in the header so they can
         # be reused on each page
-        head <- c(head, sapply(seq_along(data_summary$banner), function (j) {
-            longtableHeadFootB(data_summary$banner[[j]], num = j, page_width = 9,
-                theme = theme)
-        }))
+        head <- c(
+            head,
+            sapply(seq_along(data_summary$banner), function (j) {
+                longtableHeadFootMacros(
+                    data_summary$banner[[j]],
+                    num = j,
+                    page_width = 9,
+                    theme = theme
+                )
+            })
+        )
     }
 
     out <- c(

@@ -9,10 +9,20 @@ roundPropCategorical <- function(data, digits = 0) {
     return(rounded)
 }
 
-getBannerInfo <- function(banner, theme){
-    if (is.null(banner)) return(list(empty_col = FALSE, multicols = NA, multicols_csum = NA,
-        format_cols = 2, border_columns = NULL))
+default_banner <- list(
+    Results=list(
+        empty_col = FALSE,
+        multicols = NA,
+        multicols_csum = NA,
+        format_cols = 2,
+        border_columns = NULL
+    )
+)
 
+getBannerInfo <- function(banner, theme) {
+    if (is.null(banner)) {
+        return(default_banner)
+    }
     empty_col <- !is.null(theme$format_banner_split) && theme$format_banner_split$empty_col
     len <- sapply(banner, function(x) length(x$categories))
     banner_cols_pos <- cumsum(len) + 1
@@ -192,18 +202,14 @@ removeInserts <- function(var, theme) {
 }
 
 
-reformatLatexResults <- function(data_summary, proportions, theme) {
-    banner <- data_summary$banner
+reformatLatexResults <- function(result, banner, theme) {
     if (is.null(banner)) {
-        banner_names <- "Results"
+        banner_info <- default_banner
     } else {
-        banner_names <- names(banner)
+        banner_info <- lapply(banner, getBannerInfo, theme=theme)
     }
-    banner_info <- sapply(banner_names, function(bn) getBannerInfo(banner[[bn]], theme = theme),
-        simplify = FALSE)
 
-    return(lapply(data_summary$results, function(x)
-        sapply(banner_names, function(bn)
-            reformatVar(var = x, banner_name = bn, theme = theme, proportions = proportions,
-                banner_info = banner_info[[bn]], latex = TRUE), simplify = FALSE)))
+    return(sapply(names(banner_info), function(bn)
+            reformatVar(var = result, banner_name = bn, theme = theme, proportions = theme$proportions,
+                banner_info = banner_info[[bn]], latex = TRUE), simplify = FALSE))
 }

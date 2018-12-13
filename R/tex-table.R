@@ -1,4 +1,4 @@
-latexTableBody <- function(df, theme, topline) {
+latexTableBody <- function(df, theme) {
     # The input "df" object is shaped like this:
     # List of 9
     #  $ top            : NULL
@@ -31,6 +31,7 @@ latexTableBody <- function(df, theme, topline) {
     # Except when they're categorical array toplines, and somehow they're still
     # arrays
     data <- lapply(data, as.data.frame)
+    topline <- theme$topline
     topline_catarray <- inherits(df, "ToplineCategoricalArray")
     if (topline_catarray) {
         # print(str(data))
@@ -337,7 +338,7 @@ latexTableName <- function(var, theme) {
 # \bannera{} that takes one argument (first column label)
 # \tbltopa that takes no arguments
 # If given multiple banners, \bannerb \tbltopb, etc are created
-longtableHeadFootB <- function (banner, num, page_width = 9, theme) {
+longtableHeadFootMacros <- function (banner, num, page_width = 9, theme) {
     binfo <- getBannerInfo(banner, theme)
     col_num_sum <- length(unlist(binfo$multicols))
 
