@@ -228,6 +228,7 @@ validLatexFont <- function (theme_font) {
 }
 
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
+    # More preamble before the tables
     if (!is.null(sample_desc)) {
         sample_desc <- paste("Sample  & ", sample_desc, newline, "")
     }

@@ -1,13 +1,46 @@
 latexTableBody <- function(df, theme, topline) {
+    # The input "df" object is shaped like this:
+    # List of 9
+    #  $ top            : NULL
+    #  $ bottom         : Named chr "unweighted_n"
+    #   ..- attr(*, "names")= chr "unweighted_n"
+    #  $ data_order     : Named chr [1:2] "body" "unweighted_n"
+    #   ..- attr(*, "names")= chr [1:2] "" "unweighted_n"
+    #  $ inserts        : NULL
+    #  $ data_list      :List of 2
+    #   ..$ body        :'data.frame':	3 obs. of  5 variables:
+    #   .. ..$ Total   : num [1:3] 25 47 38
+    #   .. ..$ 16 to 34: num [1:3] 0 31 44
+    #   .. ..$ 35+     : num [1:3] 53 65 33
+    #   .. ..$ Male    : num [1:3] 46 28 28
+    #   .. ..$ Female  : num [1:3] 0 71 51
+    #   ..$ unweighted_n:'data.frame':	1 obs. of  5 variables:
+    #   .. ..$ Total   : num 17
+    #   .. ..$ 16 to 34: num 6
+    #   .. ..$ 35+     : num 11
+    #   .. ..$ Male    : num 9
+    #   .. ..$ Female  : num 8
+    #  $ min_cell_top   : NULL
+    #  $ min_cell_body  : logi [1:3, 1:5] NA NA NA NA NA NA ...
+    #  $ min_cell_bottom: NULL
+    #  $ min_cell       : logi [1:5] FALSE FALSE FALSE FALSE FALSE
+    #  - attr(*, "class")= chr [1:2] "MultipleResponseCrossTabVar" "CrossTabVar"
+
     data <- df$data_list
+    # So `data` is a list of data frames
     for (nm in intersect(c("body", "totals_row"), names(data))) {
-        data[[nm]][] <- round(data[[nm]], theme$digits)
-        data[[nm]][] <- format(data[[nm]], nsmall=theme$digits, big.mark=",")
-        data[[nm]][] <- apply(data[[nm]], 2, trimws)
-        if (theme$proportions) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste0, "%")
-        }
+        # For each column in these data.frames, round and treat as percentages
+        data[[nm]][] <- lapply(data[[nm]], function (x) {
+            x <- round(x, theme$digits)
+            x <- format(x, nsmall=theme$digits, big.mark=",")
+            x <- trimws(x)
+            if (theme$proportions) {
+                x <- paste0(x, "%")
+            }
+            return(x)
+        })
     }
+    # NPR: this one is doing some wacky things currently
     for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
         nm2 <- paste0("format_", nm)
         data[[nm]][] <- trimws(format(data[[nm]], big.mark=","))
@@ -15,6 +48,9 @@ latexTableBody <- function(df, theme, topline) {
             data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
         }
         if (!is.null(theme[[nm2]]$latex_adjust) && !topline) {
+            # NPR: this is the part that is printing weird stuff:
+            # \midrule Unweighted N: Min & \multicolumn{1}{c}{c(" 8", "11")} & \multicolumn{1}{c}{c("1", "2")} & \multicolumn{1}{c}{c(" 8", "11")} & \multicolumn{1}{c}{c("1", "2")}\\
+            # Unweighted N: Max & \multicolumn{1}{c}{c("2", "4")} & \multicolumn{1}{c}{c("4", "7")} & \multicolumn{1}{c}{c("2", "4")} & \multicolumn{1}{c}{c("4", "7")} \\
             data[[nm]][] <- apply(data[[nm]], 2, paste_around,
                 paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
         }
@@ -84,7 +120,7 @@ latexTableBody <- function(df, theme, topline) {
     if (is(df, "ToplineCategoricalArray")) {
         df$data_order <- "body"
     }
-    paste(
+    out <- paste(
         paste0(
             data[intersect(c("body", "medians", "means"), df$data_order)],
             collapse = ""
@@ -95,6 +131,13 @@ latexTableBody <- function(df, theme, topline) {
             collapse = ""
         )
     )
+    # This produces a single string that looks like:
+    #
+    # Cat & 25\% & 0\% & 53\% & 46\% & 0\%\\
+    # Dog & 47\% & 31\% & 65\% & 28\% & 71\%\\
+    # Bird & 38\% & 44\% & 33\% & 28\% & 51\% \\
+    #  \midrule Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{9} & \multicolumn{1}{c}{8} \\
+    return(out)
 }
 
 texTable <- function (df, sep=" & ", collapse=paste0(newline, "\n")) {
