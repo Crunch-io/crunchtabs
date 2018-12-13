@@ -28,6 +28,13 @@ latexTableBody <- function(df, theme, topline) {
 
     data <- df$data_list
     # So `data` is a list of data frames
+    # Except when they're categorical array toplines, and somehow they're still
+    # arrays
+    data <- lapply(data, as.data.frame)
+    topline_catarray <- inherits(df, "ToplineCategoricalArray")
+    if (topline_catarray) {
+        print(str(data))
+    }
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         # For each column in these data.frames, round and treat as percentages
         data[[nm]] <- format(
@@ -74,6 +81,9 @@ latexTableBody <- function(df, theme, topline) {
             }
         }
     }
+    if (topline_catarray) {
+        print(str(data))
+    }
 
     # After that formatting has been applied, `data` looks like this:
     # List of 2
@@ -114,15 +124,27 @@ latexTableBody <- function(df, theme, topline) {
     #      Cat Dog Bird Net: Cat/Dog
     # Home  49  43    9           92
     # Work  42  37   21           79
+
+    # Topline categorical arrays have categories across the columns, not rows
     for (i in which(df$inserts %in% c("Heading"))) {
-        # Apply style to the heading (col 1), then blank out the rest of the row
-        data$body[i, 2:ncol(data$body)] <- ""
-        # TODO: this should be [i, 1]
-        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_headers)
+        if (topline_catarray) {
+            # Apply style to the heading (row 1), then blank out the rest of the col
+            data$body[2:nrow(data$body), i] <- ""
+            data$body[1, i] <- applyLatexStyle(data$body[i, 1], theme$format_headers)
+        } else {
+            # Apply style to the heading (col 1), then blank out the rest of the row
+            data$body[i, 2:ncol(data$body)] <- ""
+            data$body[i, 1] <- applyLatexStyle(data$body[i, 1], theme$format_headers)
+        }
     }
     for (i in which(df$inserts %in% c("Subtotal"))) {
-        # Apply subtotal style to the whole row
-        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
+        if (topline_catarray) {
+            # Apply subtotal style to the whole col
+            data$body[, i] <- applyLatexStyle(data$body[, i], theme$format_subtotals)
+        } else {
+            # Apply subtotal style to the whole row
+            data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
+        }
     }
 
     # Turn each table in `data` into a LaTeX table string
@@ -141,7 +163,7 @@ latexTableBody <- function(df, theme, topline) {
     })
 
     # Assemble the components of the table, based on "data_order"
-    if (is(df, "ToplineCategoricalArray")) {
+    if (topline_catarray) {
         # Apparently you can't have any extra table members for these
         df$data_order <- "body"
     }
