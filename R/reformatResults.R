@@ -52,29 +52,27 @@ getBannerInfo <- function(banner, theme) {
 }
 
 getItemData <- function(data, item_name, empty_col, round){
-    tmp_data <- lapply(seq_along(data), function(bv) {
-        dt <- data[[bv]][[item_name]]
+    tmp_data <- lapply(data, function(bv) {
+        dt <- bv[[item_name]]
         if (round) {
             dt <- round(dt)
         }
-
-        if (is.vector(dt)) {
-            return(c(dt, if (empty_col) as.numeric(NA)))
+        if (empty_col) {
+            if (is.vector(dt)) {
+                dt <- c(dt, NA_real_)
+            } else {
+                dt <- cbind(dt, NA_real_)
+            }
         }
-        if (!is.vector(dt) && empty_col) {
-            return(cbind(dt, as.numeric(NA)))
-        }
-        if (!is.vector(dt) && !empty_col) {
-            return(dt)
-        }
+        return(dt)
     })
     if (is.null(unlist(tmp_data))) {
         return(NULL)
-    }
-    if (!is.null(dim(tmp_data[[1]])) && length(dim(tmp_data[[1]])) == 2) {
+    } else if (length(dim(tmp_data[[1]])) == 2) {
         return(do.call(cbind, tmp_data))
+    } else {
+        return(unlist(tmp_data))
     }
-    return(unlist(tmp_data))
 }
 
 reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex) {
