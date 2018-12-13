@@ -30,15 +30,16 @@ latexTableBody <- function(df, theme, topline) {
     # So `data` is a list of data frames
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         # For each column in these data.frames, round and treat as percentages
-        data[[nm]][] <- lapply(data[[nm]], function (x) {
-            x <- round(x, theme$digits)
-            x <- format(x, nsmall=theme$digits, big.mark=",")
-            x <- trimws(x)
-            if (theme$proportions) {
-                x <- paste0(x, "%")
-            }
-            return(x)
-        })
+        data[[nm]] <- format(
+            round(data[[nm]], theme$digits),
+            nsmall=theme$digits,
+            big.mark=","
+        )
+        if (theme$proportions) {
+            data[[nm]][] <- lapply(data[[nm]], function (x) {
+                paste0(trimws(x), "%")
+            })
+        }
     }
     # NPR: this one is doing some wacky things currently
     for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
@@ -58,6 +59,8 @@ latexTableBody <- function(df, theme, topline) {
 
     mask_vars <- c("totals_row", "means", "medians")
     if (!is.null(theme$format_min_base$min_base) && any(df$min_cell_body)) {
+        # NPR: I'm not clear on what this does; something about hiding cells
+        # with a base size below some threshold?
         if (!is.null(theme$format_min_base$mask)) {
             data$body[df$min_cell_body] <- theme$format_min_base$mask
             for (nm in intersect(mask_vars, names(data))) {
@@ -72,11 +75,31 @@ latexTableBody <- function(df, theme, topline) {
         }
     }
 
+    # After that formatting has been applied, `data` looks like this:
+    # List of 2
+    #  $ body        :'data.frame':	3 obs. of  5 variables:
+    #   ..$ Total   : chr [1:3] "25%" "47%" "38%"
+    #   ..$ 16 to 34: chr [1:3] "0%" "31%" "44%"
+    #   ..$ 35+     : chr [1:3] "53%" "65%" "33%"
+    #   ..$ Male    : chr [1:3] "46%" "28%" "28%"
+    #   ..$ Female  : chr [1:3] "0%" "71%" "51%"
+    #  $ unweighted_n:'data.frame':	1 obs. of  5 variables:
+    #   ..$ Total   : chr "\\multicolumn{1}{c}{17}"
+    #   ..$ 16 to 34: chr "\\multicolumn{1}{c}{6}"
+    #   ..$ 35+     : chr "\\multicolumn{1}{c}{11}"
+    #   ..$ Male    : chr "\\multicolumn{1}{c}{9}"
+    #   ..$ Female  : chr "\\multicolumn{1}{c}{8}"
     data <- lapply(data, function(dt) {
         matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, texEscape),
             nrow = nrow(dt))
     })
+    # That step turns everything into a character matrix, including with rownames
+    # List of 2
+    #  $ body        : chr [1:3, 1:6] "Cat" "Dog" "Bird" "25\\%" ...
+    #  $ unweighted_n: chr [1, 1:6] "Unweighted N" "\\multicolumn{1}{c}{17}" "\\multicolumn{1}{c}{6}" "\\multicolumn{1}{c}{11}" ...
 
+    # Apply additional styles to the whole table
+    # TODO: this can probably be simplified greatly, need tests first
     for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
         data[[nm]][] <- apply(data[[nm]], 2, applyLatexStyle, theme[[paste0("format_", nm)]])
     }
@@ -92,45 +115,57 @@ latexTableBody <- function(df, theme, topline) {
     # Home  49  43    9           92
     # Work  42  37   21           79
     for (i in which(df$inserts %in% c("Heading"))) {
+        # Apply style to the heading (col 1), then blank out the rest of the row
         data$body[i, 2:ncol(data$body)] <- ""
+        # TODO: this should be [i, 1]
         data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_headers)
     }
     for (i in which(df$inserts %in% c("Subtotal"))) {
+        # Apply subtotal style to the whole row
         data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
     }
 
-    collapsestring <- "\\\\\n"
+    # Turn each table in `data` into a LaTeX table string
     if (topline && ncol(data$body) == 2) {
         sepstring <- " \\hspace*{0.15em} \\dotfill "
     } else {
         sepstring <- " & "
     }
     data <- lapply(data, function(dt) {
-        paste(
-            paste(
-                paste0(
-                    if (topline) " & ",
-                    apply(dt, 1, paste, collapse = sepstring)
-                ),
-                collapse = collapsestring),
-            collapsestring
-        )
+        rows <- apply(dt, 1, paste, collapse = sepstring)
+        if (topline) {
+            rows <- paste0(" & ", rows)
+        }
+        # Add a newline and a carriage return to each row, then join in a single string
+        return(paste0(rows, " ", newline, "\n", collapse=""))
     })
 
+    # Assemble the components of the table, based on "data_order"
     if (is(df, "ToplineCategoricalArray")) {
+        # Apparently you can't have any extra table members for these
         df$data_order <- "body"
     }
-    out <- paste(
-        paste0(
-            data[intersect(c("body", "medians", "means"), df$data_order)],
-            collapse = ""
-        ),
-        if (!topline) "\\midrule",
-        paste0(
-            data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
-            collapse = ""
-        )
+    main_table <- paste(
+        data[intersect(c("body", "medians", "means"), df$data_order)],
+        collapse=""
     )
+    footer <- paste(
+        data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
+        collapse=""
+    )
+    if (nchar(footer)) {
+        if (topline) {
+            # Just join them
+            out <- paste(main_table, footer)
+        } else {
+            # For crosstabs, there should be a separator between the table and the N rows
+            out <- paste(main_table, "\\midrule", footer)
+        }
+    } else {
+        # The main table is all there is
+        out <- main_table
+    }
+
     # This produces a single string that looks like:
     #
     # Cat & 25\% & 0\% & 53\% & 46\% & 0\%\\

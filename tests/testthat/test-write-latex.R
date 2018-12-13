@@ -30,6 +30,8 @@ with_temp_dir({
         if (!identical(tex, ref)) {
             system(paste("diff", tabbook_reference, shQuote("Example Dataset with Nets.tex")))
         }
+        # To update reference table on NPR's computer:
+        # file.copy("Example Dataset with Nets.tex", "~/c/crunchtabs/tests/testthat/ref/tabbook1.tex", overwrite=TRUE)
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
@@ -64,6 +66,8 @@ with_temp_dir({
         if (!identical(tex, ref)) {
             system(paste("diff", topline_reference, "topline1.tex"))
         }
+        # To update reference table on NPR's computer:
+        # file.copy("topline1.tex", "~/c/crunchtabs/tests/testthat/ref/topline1.tex", overwrite=TRUE)
 
         skip_on_appveyor()
         writeLatex(ts, pdf = TRUE)
