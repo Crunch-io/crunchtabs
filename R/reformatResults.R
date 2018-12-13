@@ -194,7 +194,11 @@ removeInserts <- function(var, theme) {
 
 reformatLatexResults <- function(data_summary, proportions, theme) {
     banner <- data_summary$banner
-    banner_names <- if (is.null(banner)) "Results" else names(banner)
+    if (is.null(banner)) {
+        banner_names <- "Results"
+    } else {
+        banner_names <- names(banner)
+    }
     banner_info <- sapply(banner_names, function(bn) getBannerInfo(banner[[bn]], theme = theme),
         simplify = FALSE)
 

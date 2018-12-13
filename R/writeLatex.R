@@ -61,6 +61,9 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
 
     data_summary$results <- lapply(data_summary$results, removeInserts, theme)
     results <- reformatLatexResults(data_summary, proportions = proportions, theme = theme)
+    # NPR: it looks like `results` is a list of lists of objects. Each element
+    # will be a table thing, but each of those tables may contain more than one
+    # table body when it's a crosstab with multiple banners.
     bodies <- lapply(results, function (x)
         sapply(x, latexTableBody, theme = theme, topline = topline))
     table_footer <- "\n\\end{longtable}\n\n"

@@ -2,7 +2,6 @@ context("Write Latex")
 
 cs <- readRDS(test_path("fixtures/crosstab_summary.RDS"))
 ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
-# ts$results$petloc <- NULL # see TODO in writeLatex.R
 
 tabbook_reference <- normalizePath(test_path("ref/tabbook1.tex"))
 topline_reference <- normalizePath(test_path("ref/topline1.tex"))
