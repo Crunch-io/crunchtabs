@@ -6,10 +6,13 @@ ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
 tabbook_reference <- normalizePath(test_path("ref/tabbook1.tex"))
 topline_reference <- normalizePath(test_path("ref/topline1.tex"))
 
+bad_description <- "Q.
+and"
+
 test_that("LaTeX escaping", {
     expect_identical(texEscape("$"), "\\$")
     expect_identical(texEscape(NULL), "")
-    expect_identical(texEscape("\n"), "\\")
+    expect_identical(texEscape(bad_description), "Q. \\newline and")
 })
 
 with_temp_dir({
@@ -71,5 +74,12 @@ with_temp_dir({
         skip_on_appveyor()
         writeLatex(ts, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))
+
+        bad <- ts
+        ts$results[[1]]$description <- bad_description
+        writeLatex(ts, pdf = TRUE, file="topline2")
+        # expect_true(file.exists("topline2.tex"))
+        # file.copy("topline2.tex", "~/c/crunchtabs/tests/testthat/ref/topline2.tex", overwrite=TRUE)
+        expect_true(file.exists("topline2.pdf"))
     })
 })
