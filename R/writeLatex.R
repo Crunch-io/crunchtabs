@@ -62,7 +62,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     # table body when it's a crosstab with multiple banners.
     table_bodies <- lapply(data_summary$results, function (x) {
         headers <- tableHeader(x, theme)
-        # Do some munging and generate the table bodies to match those headers
+        # Do some munging and generate the table bodies to match those header(s)
         x <- removeInserts(x, theme)
         content <- reformatLatexResults(x, data_summary$banner, theme)
         bodies <- sapply(content, latexTableBody, theme = theme)

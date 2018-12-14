@@ -33,35 +33,35 @@ latexTableBody <- function(df, theme) {
     data <- lapply(data, as.data.frame)
     topline <- theme$topline
     topline_catarray <- inherits(df, "ToplineCategoricalArray")
-    if (topline_catarray) {
-        # print(str(data))
+
+    dfapply <- function (df, ...) {
+        # lapply over columns to alter them and return the data.frame
+        # yes yes, just use purrr instead.
+        df[] <- lapply(df, ...)
+        df
     }
+
     for (nm in intersect(c("body", "totals_row"), names(data))) {
         # For each column in these data.frames, round and treat as percentages
-        data[[nm]] <- format(
-            round(data[[nm]], theme$digits),
-            nsmall=theme$digits,
-            big.mark=","
-        )
+        data[[nm]] <- dfapply(data[[nm]], formatNum, digits=theme$digits)
         if (theme$proportions) {
-            data[[nm]][] <- lapply(data[[nm]], function (x) {
+            data[[nm]] <- dfapply(data[[nm]], function (x) {
                 paste0(trimws(x), "%")
             })
         }
     }
     # NPR: this one is doing some wacky things currently
     for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
-        nm2 <- paste0("format_", nm)
-        data[[nm]][] <- trimws(format(data[[nm]], big.mark=","))
+        data[[nm]] <- dfapply(data[[nm]], formatNum)
         if (theme[[nm2]]$latex_add_parenthesis) {
-            data[[nm]][] <- apply(data[[nm]], 2, paste_around, "(", ")")
+            data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
         }
-        if (!is.null(theme[[nm2]]$latex_adjust) && !topline) {
-            # NPR: this is the part that is printing weird stuff:
-            # \midrule Unweighted N: Min & \multicolumn{1}{c}{c(" 8", "11")} & \multicolumn{1}{c}{c("1", "2")} & \multicolumn{1}{c}{c(" 8", "11")} & \multicolumn{1}{c}{c("1", "2")}\\
-            # Unweighted N: Max & \multicolumn{1}{c}{c("2", "4")} & \multicolumn{1}{c}{c("4", "7")} & \multicolumn{1}{c}{c("2", "4")} & \multicolumn{1}{c}{c("4", "7")} \\
-            data[[nm]][] <- apply(data[[nm]], 2, paste_around,
-                paste0("\\multicolumn{1}{", theme[[nm2]]$latex_adjust, "}{"), "}")
+        alignment <- theme[[paste0("format_", nm)]]$latex_adjust
+        if (!is.null(alignment) && !topline) {
+            data[[nm]] <- dfapply(data[[nm]], function (x) {
+                # Align these cells
+                multicolumn(1, x, align=alignment)
+            })
         }
     }
 
@@ -191,6 +191,16 @@ latexTableBody <- function(df, theme) {
     return(out)
 }
 
+formatNum <- function (x, digits=0, ...) {
+    trimws(
+        format(
+            round(x, digits),
+            nsmall=digits,
+            big.mark=","
+        )
+    )
+}
+
 tableHeader <- function(x, theme) {
     UseMethod("tableHeader", x)
 }
@@ -250,6 +260,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     col_names <- sapply(var$inserts_obj, name)
     col_names_len <- length(col_names)
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
+
     # use heuristic for scale questions
     if (col_names_len >= 10) {
         which.split <- grep("^[0-9]+ - ", col_names)
@@ -271,7 +282,14 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                     col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-    header_row <- paste(newline, header_row, "& &", paste(texEscape(col_names), collapse = " & "), " & \\\n")
+
+    header_row <- paste(
+        newline,
+        header_row,
+        "& &",
+        paste(texEscape(col_names), collapse = " & "),
+        " & \\\n"
+    )
     header_row <- paste(
         header_row,
         "\\endfirsthead",
@@ -297,6 +315,13 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     )
 }
 
+toplineTableDef <- function(var, tab_definition, header_row, theme) {
+    paste0(
+        tab_definition, "\n",
+        latexTableName(var, theme),
+        header_row
+    )
+}
 
 latexTableName <- function(var, theme) {
     var_info <- getVarInfo(var, theme)
@@ -435,16 +460,4 @@ makeLatexBanner <- function (binfo, width=NULL) {
         second_row,
         sep = "\n"
     ))
-}
-
-
-# Toplines ----------------------------------------------------------------
-
-
-toplineTableDef <- function(var, tab_definition, header_row, theme) {
-    paste0(
-        tab_definition, "\n",
-        latexTableName(var, theme),
-        header_row
-    )
 }
