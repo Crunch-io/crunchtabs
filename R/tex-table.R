@@ -100,6 +100,20 @@ latexTableBody <- function(df, theme) {
         rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_subtotals)
     }
 
+    # Escape everything
+    data <- lapply(data, function(dt) dfapply(dt, texEscape, Names=TRUE))
+
+    # Apply additional styles to whole table sections
+    # TODO: add tests for this
+    for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
+        data[[nm]] <- dfapply(
+            data[[nm]],
+            applyLatexStyle,
+            theme[[paste0("format_", nm)]],
+            Names=TRUE
+        )
+    }
+
     # After that formatting has been applied, `data` looks like this:
     # List of 2
     #  $ body        :'data.frame':	3 obs. of  5 variables:
@@ -114,38 +128,23 @@ latexTableBody <- function(df, theme) {
     #   ..$ 35+     : chr "\\multicolumn{1}{c}{11}"
     #   ..$ Male    : chr "\\multicolumn{1}{c}{9}"
     #   ..$ Female  : chr "\\multicolumn{1}{c}{8}"
-    data <- lapply(data, function(dt) dfapply(dt, texEscape, Names=TRUE))
-
-    # Apply additional styles to the whole table
-    # TODO: add tests for this
-    for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
-        data[[nm]] <- dfapply(
-            data[[nm]],
-            applyLatexStyle,
-            theme[[paste0("format_", nm)]],
-            Names=TRUE
-        )
-    }
 
     # Turn each table in `data` into a LaTeX table string
-    cell_separator <- " & "
     if (topline_catarray) {
         # Apparently you can't have any extra table members for these, only "body"
 
         # Also, IMPORTANT: cat arrays get displayed transposed. First, paste
         # by column to generate the table rows
-        rows <- lapply(data$body, paste, collapse=cell_separator)
+        rows <- lapply(data$body, paste, collapse=" & ")
         # Add to each row an empty cell (idk why), the row name (from the df
         # column names), and a newline, and collapse them into a single string
-        return(paste0(
-            cell_separator,
+        return(paste(
+            "&",
             names(rows),
-            cell_separator,
+            "&",
             rows,
-            " ",
             newline,
-            "\n",
-            collapse=""
+            collapse="\n"
         ))
     }
 
@@ -153,36 +152,28 @@ latexTableBody <- function(df, theme) {
         if (topline) {
             # tables have a single column, and we use a dotfill to connect them
             # to the label. Plus there's a leading empty cell, for some reason
-            rows <- paste0(
-                cell_separator,
+            rows <- paste(
+                "&",
                 rownames(dt),
-                " \\hspace*{0.15em} \\dotfill ",
+                "\\hspace*{0.15em} \\dotfill",
                 dt[[1]]
             )
         } else {
-            rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = cell_separator)
+            rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = " & ")
         }
-        # Add a newline and a carriage return to each row, then join in a single string
-        return(paste0(rows, " ", newline, "\n", collapse=""))
+        # Add a newline to each row, then join in a single string
+        return(paste(rows, newline, collapse="\n"))
     })
 
     # Assemble the components of the table, based on "data_order"
-    main_table <- paste(
-        data[intersect(c("body", "medians", "means"), df$data_order)],
-        collapse=""
-    )
-    footer <- paste(
-        data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)],
-        collapse=""
-    )
-    if (nchar(footer)) {
-        if (topline) {
-            # Just join them
-            out <- paste(main_table, footer)
-        } else {
-            # For crosstabs, there should be a separator between the table and the N rows
-            out <- paste(main_table, "\\midrule", footer)
-        }
+    main_table <- data[intersect(c("body", "medians", "means"), df$data_order)]
+    footer <- data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)]
+    if (topline) {
+        # Just join them
+        out <- paste(c(main_table, footer), collapse="\n")
+    } else {
+        # For crosstabs, there should be a separator between the table and the N rows
+        out <- paste(c(main_table, "\\midrule", footer), collapse="\n")
     }
 
     # This produces a single string that looks like:
@@ -291,7 +282,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
         header_row,
         "& &",
         paste(texEscape(col_names), collapse = " & "),
-        " & \\\n"
+        " & \n"
     )
     header_row <- paste(
         header_row,
