@@ -28,19 +28,17 @@ latexTableBody <- function(df, theme) {
 
     data <- df$data_list
     # So `data` is a list of data frames
-    # Except when they're categorical array toplines, and somehow they're still
-    # arrays
-    data <- lapply(data, as.data.frame)
-    
+
     topline <- theme$topline
     topline_catarray <- inherits(df, "ToplineCategoricalArray")
 
-    dfapply <- function (df, FUN, ..., rownames=FALSE) {
+    dfapply <- function (df, FUN, ..., Names=FALSE) {
         # lapply over columns to alter them and return the data.frame
         # yes yes, just use purrr instead.
         df[] <- lapply(df, FUN, ...)
-        if (rownames) {
-            # Do it to the rownames too
+        if (Names) {
+            # Do it to the row and col names too
+            names(df) <- FUN(names(df), ...)
             rownames(df) <- FUN(rownames(df), ...)
         }
         df
@@ -91,32 +89,15 @@ latexTableBody <- function(df, theme) {
     # Add more formatting
     headers <- df$inserts %in% "Heading"
     subtotals <- df$inserts %in% "Subtotal"
-    # Topline categorical arrays have categories across the columns, not rows
     for (i in which(headers)) {
-        if (topline_catarray) {
-            # Apply style to the heading, then blank out the rest of the col
-            data$body[, i] <- ""
-            # NPR: you'd think you should do this, but the table header doesn't
-            # use names(data), so no style is effectively applied
-            # names(data$body)[i] <- applyLatexStyle(names(data$body)[i], theme$format_headers)
-        } else {
-            # Apply style to the heading, then blank out the rest of the row
-            data$body[i, ] <- ""
-            rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_headers)
-        }
+        # Apply style to the heading, then blank out the rest of the row
+        data$body[i, ] <- ""
+        rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_headers)
     }
     for (i in which(subtotals)) {
-        if (topline_catarray) {
-            # Apply subtotal style to the whole col
-            data$body[, i] <- applyLatexStyle(data$body[, i], theme$format_subtotals)
-            # NPR: you'd think you should do this, but the table header doesn't
-            # use names(data), so no style is effectively applied
-            # names(data$body)[i] <- applyLatexStyle(names(data$body)[i], theme$format_subtotals)
-        } else {
-            # Apply subtotal style to the whole row
-            data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
-            rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_subtotals)
-        }
+        # Apply subtotal style to the whole row
+        data$body[i, ] <- applyLatexStyle(data$body[i, ], theme$format_subtotals)
+        rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_subtotals)
     }
 
     # After that formatting has been applied, `data` looks like this:
@@ -133,7 +114,7 @@ latexTableBody <- function(df, theme) {
     #   ..$ 35+     : chr "\\multicolumn{1}{c}{11}"
     #   ..$ Male    : chr "\\multicolumn{1}{c}{9}"
     #   ..$ Female  : chr "\\multicolumn{1}{c}{8}"
-    data <- lapply(data, function(dt) dfapply(dt, texEscape, rownames=TRUE))
+    data <- lapply(data, function(dt) dfapply(dt, texEscape, Names=TRUE))
 
     # Apply additional styles to the whole table
     # TODO: add tests for this
@@ -142,32 +123,50 @@ latexTableBody <- function(df, theme) {
             data[[nm]],
             applyLatexStyle,
             theme[[paste0("format_", nm)]],
-            rownames=TRUE
+            Names=TRUE
         )
     }
 
     # Turn each table in `data` into a LaTeX table string
-    if (topline && ncol(data$body) == 1) {
-        sepstring <- " \\hspace*{0.15em} \\dotfill "
-    } else {
-        sepstring <- " & "
+    cell_separator <- " & "
+    if (topline_catarray) {
+        # Apparently you can't have any extra table members for these, only "body"
+
+        # Also, IMPORTANT: cat arrays get displayed transposed. First, paste
+        # by column to generate the table rows
+        rows <- lapply(data$body, paste, collapse=cell_separator)
+        # Add to each row an empty cell (idk why), the row name (from the df
+        # column names), and a newline, and collapse them into a single string
+        return(paste0(
+            cell_separator,
+            names(rows),
+            cell_separator,
+            rows,
+            " ",
+            newline,
+            "\n",
+            collapse=""
+        ))
     }
+
     data <- lapply(data, function(dt) {
-        rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = sepstring)
         if (topline) {
-            # Why?
-            rows <- paste0(" & ", rows)
+            # tables have a single column, and we use a dotfill to connect them
+            # to the label. Plus there's a leading empty cell, for some reason
+            rows <- paste0(
+                cell_separator,
+                rownames(dt),
+                " \\hspace*{0.15em} \\dotfill ",
+                dt[[1]]
+            )
+        } else {
+            rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = cell_separator)
         }
         # Add a newline and a carriage return to each row, then join in a single string
         return(paste0(rows, " ", newline, "\n", collapse=""))
     })
 
     # Assemble the components of the table, based on "data_order"
-    if (topline_catarray) {
-        # Apparently you can't have any extra table members for these
-        return(data$body)
-    }
-
     main_table <- paste(
         data[intersect(c("body", "medians", "means"), df$data_order)],
         collapse=""
