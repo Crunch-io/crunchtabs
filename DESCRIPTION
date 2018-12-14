@@ -1,11 +1,14 @@
 Package: crunchtabs
 Type: Package
-Title: Report (Toplines and Banners) Generation for Crunch Datasets
+Title: Custom Report Generation for Crunch Datasets
 Description: This package provides functions for report generation:
     - Toplines (one-way frequency tables),
     - Banners (cross tabulations).
 Version: 1.1.1
-Authors@R: person("Persephone", "Tsebelis", role=c("aut", "cre"), email="persephone.tsebelis@yougov.com")
+Authors@R: c(
+    person("Persephone", "Tsebelis", role="aut"),
+    person("Kamil", "Sedrowicz", role="aut"),
+    person("Neal", "Richardson", email="neal@crunch.io", role=c("aut", "cre")))
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: LGPL (>= 3)
