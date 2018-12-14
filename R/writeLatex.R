@@ -50,68 +50,30 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
         stop("The expected class for `data_summary` is either Toplines, CrunchTabs or Crosstabs CrunchTabs, not ", collapse_items(class(data_summary)))
     }
 
-    theme$topline <- topline <- is(data_summary, "Toplines")
+    # Munge the theme a bit
+    theme$topline <- is(data_summary, "Toplines")
     if (is.null(theme$font_size)) {
         theme$font_size <- 12
     }
     theme$proportions <- proportions
 
-    # Build the tables
-    # NPR: `data_summary$results` is a list of lists of objects. Each element
-    # will be a table thing, but each of those tables may contain more than one
-    # table body when it's a crosstab with multiple banners.
-    table_bodies <- lapply(data_summary$results, function (x) {
-        headers <- tableHeader(x, theme)
-        # Do some munging and generate the table bodies to match those header(s)
-        x <- removeInserts(x, theme)
-        content <- reformatLatexResults(x, data_summary$banner, theme)
-        bodies <- sapply(content, latexTableBody, theme = theme)
-        # This paste will collapse the perhaps multiple banner tables into a
-        # single string of LaTeX
-        paste(
-            headers,
-            bodies,
-            "",
-            "\\end{longtable}", # Table footer
-            sep="\n",
-            collapse="\n\n\n"
-        )
-    })
-    if (topline) {
-        # Topline tables are centered (probably should be a theme option?)
-        table_bodies <- center(table_bodies)
-    }
-    if (theme$one_per_sheet) {
-        table_bodies <- paste0(table_bodies, "\n\\clearpage")
-    }
-    # Put some space between each table
-    table_bodies <- paste0(table_bodies, "\n\n")
-
     # Now assemble the .tex document
-    head <- latexDocHead(
-        theme = theme,
-        title = title,
-        subtitle = subtitle,
-        topline = topline
-    )
-    if (!topline) {
-        # Generate the banner definition macros in the header so they can
-        # be reused on each page
-        head <- c(
-            head,
-            sapply(seq_along(data_summary$banner), function (j) {
-                longtableHeadFootMacros(
-                    data_summary$banner[[j]],
-                    num = j,
-                    page_width = 9,
-                    theme = theme
-                )
-            })
-        )
-    }
-
-    out <- c(
-        head,
+    out <- unlist(c(
+        latexDocHead(
+            theme = theme,
+            title = title,
+            subtitle = subtitle
+        ),
+        # If there are one or more banners, generate the banner definition
+        # macros in the header so they can be reused on each page.
+        lapply(seq_along(data_summary$banner), function (j) {
+            longtableHeadFootMacros(
+                data_summary$banner[[j]],
+                num = j,
+                page_width = 9,
+                theme = theme
+            )
+        }),
         document(
             latexStart(
                 table_of_contents = table_of_contents,
@@ -120,12 +82,16 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
                 moe = moe,
                 font_size = theme$font_size
             ),
-            table_bodies,
+            buildLatexReportTables(
+                data_summary$results,
+                data_summary$banner,
+                theme
+            ),
             append_text,
             "",
-            "}"
+            "}" # See latexStart for the open {
         )
-    )
+    ))
 
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
@@ -140,7 +106,44 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     return(invisible(data_summary))
 }
 
-latexDocHead <- function (theme, title, subtitle, topline) {
+buildLatexReportTables <- function (results, banner, theme) {
+    # Each element of `results` contains a list of tables. For toplines and
+    # tab books with a single banner, those are length 1, but if there are
+    # multiple banners, we'll generate tables for each (slightly differently)
+    # and join them together into a single result.
+    #
+    # This function returns a character vector the same length as `results`,
+    # each being the "full" table.
+    table_bodies <- lapply(results, function (x) {
+        headers <- tableHeader(x, theme)
+        # Do some munging and generate the table bodies to match those header(s)
+        x <- removeInserts(x, theme)
+        content <- reformatLatexResults(x, banner, theme)
+        bodies <- sapply(content, latexTableBody, theme = theme)
+        # This paste will collapse the perhaps multiple banner tables into a
+        # single string of LaTeX
+        paste(
+            headers,
+            bodies,
+            "",
+            "\\end{longtable}", # Table footer
+            sep="\n",
+            collapse="\n\n\n"
+        )
+    })
+    if (theme$topline) {
+        # Topline tables are centered (probably should be a theme option?)
+        table_bodies <- center(table_bodies)
+    }
+    if (theme$one_per_sheet) {
+        table_bodies <- paste0(table_bodies, "\n\\clearpage")
+    }
+    # Put some space between each table
+    table_bodies <- paste0(table_bodies, "\n\n")
+    return(table_bodies)
+}
+
+latexDocHead <- function (theme, title, subtitle, topline=theme$topline) {
     title <- texEscape(title)
     subtitle <- texEscape(subtitle)
     if (nchar(subtitle)) {
@@ -148,14 +151,15 @@ latexDocHead <- function (theme, title, subtitle, topline) {
         subtitle <- paste("", newline, subtitle)
     }
 
-    bdr <- ifelse(topline, "1in", "0.5in")
     logo <- theme$logo$file
     if (!is.null(logo)) {
         logo <- paste0("\\fancyhead[R]{\\includegraphics[scale=.4]{", logo, "}}")
     }
     if (topline) {
+        bdr <- "1in"
         doc_class <- "\\documentclass{article}"
     } else {
+        bdr <- "0.5in"
         doc_class <- "\\documentclass[landscape]{article}"
     }
 
@@ -225,19 +229,6 @@ latexDocHead <- function (theme, title, subtitle, topline) {
     )
 }
 
-validLatexFont <- function (theme_font) {
-    # Make sure the theme font is valid; provide a fallback rather than erroring
-    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
-        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
-        "tgschola","tgtermes","times","utopia")
-    if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
-        theme_font <- "helvet"
-        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
-            ". It has been set to `helvet`.", call. = FALSE)
-    }
-    return(theme_font)
-}
-
 latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
     # More preamble before the tables
     if (!is.null(sample_desc)) {
@@ -279,34 +270,4 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
         "",
         ""
     )
-}
-
-applyLatexStyle <- function(item, item_theme) {
-    if (is.null(item) || identical(item, "")) {
-        # Nothing to style
-        return("")
-    }
-    if (!is.null(item_theme$decoration)) {
-        if (any(c("underline", "underline2") %in% item_theme$decoration)) {
-            item <- underline(item)
-        }
-        if ("italic" %in% item_theme$decoration) {
-            item <- italics(item)
-        }
-        if ("bold" %in% item_theme$decoration) {
-            item <- bold(item)
-        }
-    }
-    if (!is.null(item_theme$font_size)) {
-        item <- paste0(fontsize(item_theme$font_size), item)
-    }
-    if (!is.null(item_theme$font_color)) {
-        if (grepl("^#[A-z0-9]{6}", item_theme$font_color)) {
-            warning("In Latex, colors must be color names not hex codes. ", item_theme$font_color,
-                " will be ignored.", call. = FALSE)
-        } else {
-            item <- paste0("\\color{", item_theme$font_color, "}", item)
-        }
-    }
-    return(item)
 }

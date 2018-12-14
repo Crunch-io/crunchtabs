@@ -38,3 +38,48 @@ italics <- function (...) paste0("\\textit{", ..., "}")
 bold <- function (...) paste0("\\textbf{", ..., "}")
 
 underline <- function (...) paste0("\\underline{", ..., "}")
+
+## Some functions that are more specific to this package
+
+applyLatexStyle <- function(item, item_theme) {
+    if (is.null(item) || identical(item, "")) {
+        # Nothing to style
+        return("")
+    }
+    if (!is.null(item_theme$decoration)) {
+        if (any(c("underline", "underline2") %in% item_theme$decoration)) {
+            item <- underline(item)
+        }
+        if ("italic" %in% item_theme$decoration) {
+            item <- italics(item)
+        }
+        if ("bold" %in% item_theme$decoration) {
+            item <- bold(item)
+        }
+    }
+    if (!is.null(item_theme$font_size)) {
+        item <- paste0(fontsize(item_theme$font_size), item)
+    }
+    if (!is.null(item_theme$font_color)) {
+        if (grepl("^#[A-z0-9]{6}", item_theme$font_color)) {
+            warning("In Latex, colors must be color names not hex codes. ", item_theme$font_color,
+                " will be ignored.", call. = FALSE)
+        } else {
+            item <- paste0("\\color{", item_theme$font_color, "}", item)
+        }
+    }
+    return(item)
+}
+
+validLatexFont <- function (theme_font) {
+    # Make sure the theme font is valid; provide a fallback rather than erroring
+    poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
+        "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
+        "tgschola","tgtermes","times","utopia")
+    if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
+        theme_font <- "helvet"
+        warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
+            ". It has been set to `helvet`.", call. = FALSE)
+    }
+    return(theme_font)
+}
