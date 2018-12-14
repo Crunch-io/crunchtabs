@@ -57,41 +57,47 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     }
     theme$proportions <- proportions
 
+    if (table_of_contents) {
+        toc <- c("\\listoftables", "\\newpage")
+    } else {
+        toc <- NULL
+    }
+
     # Now assemble the .tex document
-    out <- unlist(c(
+    out <- c(
         latexDocHead(
             theme = theme,
             title = title,
-            subtitle = subtitle
+            subtitle = subtitle,
+            banner = data_summary$banner
         ),
-        # If there are one or more banners, generate the banner definition
-        # macros in the header so they can be reused on each page.
-        lapply(seq_along(data_summary$banner), function (j) {
-            longtableHeadFootMacros(
-                data_summary$banner[[j]],
-                num = j,
-                page_width = 9,
-                theme = theme
-            )
-        }),
         document(
-            latexStart(
-                table_of_contents = table_of_contents,
+            latexSampleDescription(
                 sample_desc = sample_desc,
                 field_period = field_period,
-                moe = moe,
-                font_size = theme$font_size
+                moe = moe
             ),
-            buildLatexReportTables(
-                data_summary$results,
-                data_summary$banner,
-                theme
-            ),
-            append_text,
+            toc,
             "",
-            "}" # See latexStart for the open {
+            in_brackets(
+                "\\setlength{\\LTleft}{0pt}",
+                "\\setlength{\\LTright}{\\fill}",
+                "\\setlength{\\LTcapwidth}{\\textwidth}",
+                vspace(".25in"),
+                "",
+                "",
+                "%% here's where individual input starts %%",
+                "",
+                "",
+                latexReportTables(
+                    data_summary$results,
+                    data_summary$banner,
+                    theme
+                ),
+                append_text
+            )
         )
-    ))
+    )
 
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
@@ -106,7 +112,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     return(invisible(data_summary))
 }
 
-buildLatexReportTables <- function (results, banner, theme) {
+latexReportTables <- function (results, banner, theme) {
     # Each element of `results` contains a list of tables. For toplines and
     # tab books with a single banner, those are length 1, but if there are
     # multiple banners, we'll generate tables for each (slightly differently)
@@ -118,6 +124,7 @@ buildLatexReportTables <- function (results, banner, theme) {
         headers <- tableHeader(x, theme)
         # Do some munging and generate the table bodies to match those header(s)
         x <- removeInserts(x, theme)
+        # Lots of dragons in this "reformat" code :shrug:
         content <- reformatLatexResults(x, banner, theme)
         bodies <- sapply(content, latexTableBody, theme = theme)
         # This paste will collapse the perhaps multiple banner tables into a
@@ -143,7 +150,8 @@ buildLatexReportTables <- function (results, banner, theme) {
     return(table_bodies)
 }
 
-latexDocHead <- function (theme, title, subtitle, topline=theme$topline) {
+latexDocHead <- function (theme, title, subtitle, banner=NULL) {
+    topline <- theme$topline
     title <- texEscape(title)
     subtitle <- texEscape(subtitle)
     if (nchar(subtitle)) {
@@ -163,7 +171,7 @@ latexDocHead <- function (theme, title, subtitle, topline=theme$topline) {
         doc_class <- "\\documentclass[landscape]{article}"
     }
 
-    c(
+    unlist(c(
         doc_class,
         "\\usepackage[pdftex]{graphicx}",
         "\\usepackage[utf8]{inputenc}",
@@ -222,14 +230,21 @@ latexDocHead <- function (theme, title, subtitle, topline=theme$topline) {
         paste0("\\newcommand{\\formatvarsubname}[1]{", applyLatexStyle("#1", theme$format_var_subname), "}"),
         "",
         "",
-        "",
-        "",
-        "",
-        ""
-    )
+        # If there are one or more banners, generate the banner definition
+        # macros in the header so they can be reused on each page.
+        lapply(seq_along(banner), function (j) {
+            longtableHeadFootMacros(
+                banner[[j]],
+                num = j,
+                page_width = 9,
+                theme = theme
+            )
+        })
+        # (the return is wrapped in unlist() because of ^)
+    ))
 }
 
-latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_size) {
+latexSampleDescription <- function(sample_desc, field_period, moe) {
     # More preamble before the tables
     if (!is.null(sample_desc)) {
         sample_desc <- paste("Sample  & ", sample_desc, newline, "")
@@ -240,34 +255,12 @@ latexStart <- function(table_of_contents, sample_desc, field_period, moe, font_s
     if (!is.null(field_period)) {
         field_period <- paste("Conducted  & ", field_period, newline, "")
     }
-    if (table_of_contents) {
-        toc <- c("\\listoftables", "\\newpage")
-    } else {
-        toc <- NULL
-    }
 
     c(
         "\\begin{tabular}{ll}", # TODO: don't include this tabular at all if empty
         sample_desc,
         field_period,
         moe,
-        "\\end{tabular}",
-        toc,
-        "",
-        "",
-        paste0(
-            "{", # Is this the random { that gets closed at end(document)?
-            "\\setlength{\\LTleft}{0pt}"
-        ),
-        "\\setlength{\\LTright}{\\fill}",
-        "\\setlength{\\LTcapwidth}{\\textwidth}",
-        "",
-        "",
-        "%% here's where individual input starts %%",
-        "",
-        "",
-        " \\vspace{.25in} ",
-        "",
-        ""
+        "\\end{tabular}"
     )
 }

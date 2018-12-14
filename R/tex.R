@@ -39,6 +39,11 @@ bold <- function (...) paste0("\\textbf{", ..., "}")
 
 underline <- function (...) paste0("\\underline{", ..., "}")
 
+# Some TeX styles work within {}, like { \bf ...}
+in_brackets <- function (...) c("{", ..., "}")
+
+vspace <- function(space) paste0("\\vspace{", space, "}")
+
 ## Some functions that are more specific to this package
 
 applyLatexStyle <- function(item, item_theme) {
