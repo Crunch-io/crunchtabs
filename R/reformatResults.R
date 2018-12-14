@@ -86,10 +86,14 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     top <- unlist(sapply(possible, function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_top) return(p)))
     bottom <- unlist(sapply(rev(possible), function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_bottom) return(p)))
     data_order <- c(top, "body", bottom)
-    piece_names <- list("body" = ifelse(proportions, "proportions", "counts"),
+    piece_names <- list(
+        "body" = ifelse(proportions, "proportions", "counts"),
         "totals_row" = ifelse(proportions, "proportions", "counts"),
-        "weighted_n" = "weighted_base", "unweighted_n" = "base", "means" = "mean",
-        "medians" = "median")
+        "weighted_n" = "weighted_base",
+        "unweighted_n" = "base",
+        "means" = "mean",
+        "medians" = "median"
+    )
 
     data_list <- sapply(unique(data_order), function(dt) {
         prop_v <- gsub("_row", "", dt) %in% c("body", "totals")
@@ -149,7 +153,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
 
         if (weight_v && nrow(data) > 1) {
             data <- rbind(apply(data, 2, min, na.rm = TRUE), apply(data, 2, max, na.rm = TRUE))
-            if (all(data[1, ] == data[2, ])) data <- data[1, , drop = FALSE]
+            if (all(data[1, ] == data[2, ])) {
+                data <- data[1, , drop = FALSE]
+            }
         }
         if (!is.null(theme_dt$name)) {
             rownames(data) <- paste0(theme_dt$name,
@@ -195,10 +201,22 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         })
     }
 
-    return(structure(list(top = top, bottom = bottom, data_order = data_order,
-        inserts = var$inserts, data_list = data_list, min_cell_top = min_cell_top,
-        min_cell_body = min_cell, min_cell_bottom = min_cell_bottom,
-        min_cell = min_cell_rep), class = class(var)))
+    return(
+        structure(
+            list(
+                top = top,
+                bottom = bottom,
+                data_order = data_order,
+                inserts = var$inserts,
+                data_list = data_list,
+                min_cell_top = min_cell_top,
+                min_cell_body = min_cell,
+                min_cell_bottom = min_cell_bottom,
+                min_cell = min_cell_rep
+            ),
+            class = class(var)
+        )
+    )
 }
 
 getVarInfo <- function(var, theme) {

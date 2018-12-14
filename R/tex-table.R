@@ -31,13 +31,18 @@ latexTableBody <- function(df, theme) {
     # Except when they're categorical array toplines, and somehow they're still
     # arrays
     data <- lapply(data, as.data.frame)
+    
     topline <- theme$topline
     topline_catarray <- inherits(df, "ToplineCategoricalArray")
 
-    dfapply <- function (df, ...) {
+    dfapply <- function (df, FUN, ..., rownames=FALSE) {
         # lapply over columns to alter them and return the data.frame
         # yes yes, just use purrr instead.
-        df[] <- lapply(df, ...)
+        df[] <- lapply(df, FUN, ...)
+        if (rownames) {
+            # Do it to the rownames too
+            rownames(df) <- FUN(rownames(df), ...)
+        }
         df
     }
 
@@ -45,18 +50,18 @@ latexTableBody <- function(df, theme) {
         # For each column in these data.frames, round and treat as percentages
         data[[nm]] <- dfapply(data[[nm]], formatNum, digits=theme$digits)
         if (theme$proportions) {
-            data[[nm]] <- dfapply(data[[nm]], function (x) {
-                paste0(trimws(x), "%")
-            })
+            # Add a percent sign
+            data[[nm]] <- dfapply(data[[nm]], paste0, "%")
         }
     }
     # NPR: this one is doing some wacky things currently
     for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
+        this_theme <- theme[[paste0("format_", nm)]]
         data[[nm]] <- dfapply(data[[nm]], formatNum)
-        if (theme[[nm2]]$latex_add_parenthesis) {
+        if (this_theme$latex_add_parenthesis) {
             data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
         }
-        alignment <- theme[[paste0("format_", nm)]]$latex_adjust
+        alignment <- this_theme$latex_adjust
         if (!is.null(alignment) && !topline) {
             data[[nm]] <- dfapply(data[[nm]], function (x) {
                 # Align these cells
@@ -84,8 +89,10 @@ latexTableBody <- function(df, theme) {
     }
 
     # Add more formatting
+    headers <- df$inserts %in% "Heading"
+    subtotals <- df$inserts %in% "Subtotal"
     # Topline categorical arrays have categories across the columns, not rows
-    for (i in which(df$inserts %in% c("Heading"))) {
+    for (i in which(headers)) {
         if (topline_catarray) {
             # Apply style to the heading, then blank out the rest of the col
             data$body[, i] <- ""
@@ -98,7 +105,7 @@ latexTableBody <- function(df, theme) {
             rownames(data$body)[i] <- applyLatexStyle(rownames(data$body)[i], theme$format_headers)
         }
     }
-    for (i in which(df$inserts %in% c("Subtotal"))) {
+    for (i in which(subtotals)) {
         if (topline_catarray) {
             # Apply subtotal style to the whole col
             data$body[, i] <- applyLatexStyle(data$body[, i], theme$format_subtotals)
@@ -126,30 +133,29 @@ latexTableBody <- function(df, theme) {
     #   ..$ 35+     : chr "\\multicolumn{1}{c}{11}"
     #   ..$ Male    : chr "\\multicolumn{1}{c}{9}"
     #   ..$ Female  : chr "\\multicolumn{1}{c}{8}"
-    data <- lapply(data, function(dt) {
-        matrix(apply(data.frame(rownames(dt), dt, stringsAsFactors = FALSE), 2, texEscape),
-            nrow = nrow(dt))
-    })
-    # That step turns everything into a character matrix, including with rownames
-    # List of 2
-    #  $ body        : chr [1:3, 1:6] "Cat" "Dog" "Bird" "25\\%" ...
-    #  $ unweighted_n: chr [1, 1:6] "Unweighted N" "\\multicolumn{1}{c}{17}" "\\multicolumn{1}{c}{6}" "\\multicolumn{1}{c}{11}" ...
+    data <- lapply(data, function(dt) dfapply(dt, texEscape, rownames=TRUE))
 
     # Apply additional styles to the whole table
-    # TODO: this can probably be simplified greatly, need tests first
+    # TODO: add tests for this
     for (nm in intersect(gsub("format_", "", names(theme)), names(data))) {
-        data[[nm]][] <- apply(data[[nm]], 2, applyLatexStyle, theme[[paste0("format_", nm)]])
+        data[[nm]] <- dfapply(
+            data[[nm]],
+            applyLatexStyle,
+            theme[[paste0("format_", nm)]],
+            rownames=TRUE
+        )
     }
 
     # Turn each table in `data` into a LaTeX table string
-    if (topline && ncol(data$body) == 2) {
+    if (topline && ncol(data$body) == 1) {
         sepstring <- " \\hspace*{0.15em} \\dotfill "
     } else {
         sepstring <- " & "
     }
     data <- lapply(data, function(dt) {
-        rows <- apply(dt, 1, paste, collapse = sepstring)
+        rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = sepstring)
         if (topline) {
+            # Why?
             rows <- paste0(" & ", rows)
         }
         # Add a newline and a carriage return to each row, then join in a single string
@@ -159,8 +165,9 @@ latexTableBody <- function(df, theme) {
     # Assemble the components of the table, based on "data_order"
     if (topline_catarray) {
         # Apparently you can't have any extra table members for these
-        df$data_order <- "body"
+        return(data$body)
     }
+
     main_table <- paste(
         data[intersect(c("body", "medians", "means"), df$data_order)],
         collapse=""
@@ -177,9 +184,6 @@ latexTableBody <- function(df, theme) {
             # For crosstabs, there should be a separator between the table and the N rows
             out <- paste(main_table, "\\midrule", footer)
         }
-    } else {
-        # The main table is all there is
-        out <- main_table
     }
 
     # This produces a single string that looks like:
