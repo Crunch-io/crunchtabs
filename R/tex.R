@@ -42,6 +42,25 @@ underline <- function (...) paste0("\\underline{", ..., "}")
 # Some TeX styles work within {}, like { \bf ...}
 in_brackets <- function (...) c("{", ..., "}")
 
+newcommand <- function (command, ..., args=0) {
+    command <- paste0("\\", command)
+    start <- c("\\newcommand", in_brackets(command))
+    if (args) {
+        # TODO: infer number of args from ..., the highest #N referenced
+        start <- c(start, "[", args, "]")
+    }
+    paste0(c(start, in_brackets(...)), collapse="")
+}
+
+usepackage <- function (package, ...) {
+    args <- paste(..., sep=", ")
+    if (length(args)) {
+        return(paste0("\\usepackage[", args, "]{", package, "}"))
+    } else {
+        return(paste0("\\usepackage{", paste(package, sep=", "), "}"))
+    }
+}
+
 vspace <- function(space) paste0("\\vspace{", space, "}")
 
 ## Some functions that are more specific to this package

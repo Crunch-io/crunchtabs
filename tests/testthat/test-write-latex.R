@@ -75,11 +75,10 @@ with_temp_dir({
         writeLatex(ts, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))
 
+        # Test that fix for #36: previously failed to generate PDF
         bad <- ts
         ts$results[[1]]$description <- bad_description
         writeLatex(ts, pdf = TRUE, file="topline2")
-        # expect_true(file.exists("topline2.tex"))
-        # file.copy("topline2.tex", "~/c/crunchtabs/tests/testthat/ref/topline2.tex", overwrite=TRUE)
         expect_true(file.exists("topline2.pdf"))
     })
 })

@@ -144,7 +144,7 @@ latexReportTables <- function (results, banner, theme) {
     if (theme$topline) {
         # Topline tables are centered (probably should be a theme option?)
         # center() is vectorized to center each element, but maybe the whole
-        # list of tables should be centered in a single block? 
+        # list of tables should be centered in a single block?
         table_bodies <- center(table_bodies)
     }
     if (theme$one_per_sheet) {
@@ -178,27 +178,41 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
 
     unlist(c(
         doc_class,
-        "\\usepackage[pdftex]{graphicx}",
-        "\\usepackage[utf8]{inputenc}",
-        "\\usepackage{fancyhdr}",
-        "\\usepackage{sfmath}",
-        "\\usepackage{comment}",
-        "\\usepackage[T1]{fontenc}",
-        paste0(
-            "\\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {},",
-            "pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue,",
-            "linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}"
+        usepackage("graphicx", "pdftex"),
+        usepackage("inputenc", "utf8"),
+        usepackage("fancyhdr"),
+        usepackage("sfmath"),
+        usepackage("comment"),
+        usepackage("fontenc", "T1"),
+        usepackage("hyperref",
+            "pdftex=true",
+            "pdftoolbar=true",
+            "pdfmenubar=true",
+            "pdfauthor = {}",
+            "pdfcreator = {PDFLaTeX}",
+            "pdftitle = {}",
+            "colorlinks=true",
+            "urlcolor=blue",
+            "linkcolor=blue",
+            "citecolor=blue",
+            "implicit=true",
+            "hypertexnames=false"
         ),
-        paste0("\\usepackage[scaled]{", validLatexFont(theme$font), "}"),
+        usepackage(validLatexFont(theme$font), "scaled"),
         "\\renewcommand*\\familydefault{\\sfdefault}",
-        "\\usepackage{booktabs, dcolumn, longtable}",
-        paste0("\\usepackage[top=0.6in, bottom=0.6in, left=", bdr,
-            ", right=", bdr, ", includeheadfoot]{geometry}"),
-        "\\usepackage{array}",
-        "\\usepackage[english]{babel}",
+        usepackage("booktabs, dcolumn, longtable"),
+        usepackage("geometry",
+            "top=0.6in",
+            "bottom=0.6in",
+            paste0("left=", bdr),
+            paste0("right=", bdr),
+            "includeheadfoot"
+        ),
+        usepackage("array"),
+        usepackage("babel", "english"),
         "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}",
         "\\setlength{\\parindent}{0pt}",
-        "\\usepackage[dvipsnames]{color}",
+        usepackage("color", "dvipsnames"),
         "\\definecolor{gray}{gray}{0.85}",
         "\\pagestyle{fancy}",
         "\\renewcommand{\\headrulewidth}{0pt}",
@@ -209,30 +223,38 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
         logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}", #!topline
         "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}", #!topline
-        "\\usepackage{float}", #topline
-        "\\usepackage{marginnote}", #topline
+        usepackage("float"), #topline
+        usepackage("marginnote"), #topline
         "\\setlength\\extrarowheight{2pt}", #topline
         "\\newlength\\mywidth", #topline
         "\\setlength\\mywidth{3.5in}", #topline
-        "\\usepackage{caption}", #topline
+        usepackage("caption"), #topline
         "\\captionsetup[table]{labelformat=empty}", #topline
         "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #topline
         "\\fancyfoot{}",
         "\\fancyfoot[R]{\\thepage}",
-        "\\newcommand{\\PreserveBackslash}[1]{\\let\\temp=\\\\#1\\let\\\\=\\temp}",
+        newcommand("PreserveBackslash", args=1, "\\let\\temp=\\\\#1\\let\\\\=\\temp"),
         "\\let\\PBS=\\PreserveBackslash",
-        paste0(
-            "\\newcommand{\\longtablesep}{\\endfirsthead ",
-            multicolumn(2, italics(texEscape(theme$latex_headtext))), " \\\\ \\endhead ",
-            multicolumn(2, italics(texEscape(theme$latex_foottext))), " \\\\ \\endfoot \\endlastfoot}"
-        ),
-        "\\usepackage[titles]{tocloft}",
-        paste0("\\newcommand{\\cftchapfont}{", fontsize(theme$font_size), "}"),
-        paste0("\\newcommand{\\formatvardescription}[1]{", applyLatexStyle("#1", theme$format_var_description), "}"),
-        paste0("\\newcommand{\\formatvarname}[1]{", applyLatexStyle("#1", theme$format_var_name), "}"),
-        paste0("\\newcommand{\\formatvaralias}[1]{", applyLatexStyle("#1", theme$format_var_alias), "}"),
-        paste0("\\newcommand{\\formatvarfiltertext}[1]{", applyLatexStyle("#1", theme$format_var_filtertext), "}"),
-        paste0("\\newcommand{\\formatvarsubname}[1]{", applyLatexStyle("#1", theme$format_var_subname), "}"),
+        newcommand("longtablesep", paste(
+            "\\endfirsthead",
+            multicolumn(2, italics(texEscape(theme$latex_headtext))), newline,
+            "\\endhead",
+            multicolumn(2, italics(texEscape(theme$latex_foottext))), newline,
+            "\\endfoot",
+            "\\endlastfoot"
+        )),
+        usepackage("tocloft", "titles"),
+        newcommand("cftchapfont", fontsize(theme$font_size)),
+        newcommand("formatvardescription", args=1,
+            applyLatexStyle("#1", theme$format_var_description)),
+        newcommand("formatvarname", args=1,
+            applyLatexStyle("#1", theme$format_var_name)),
+        newcommand("formatvaralias", args=1,
+            applyLatexStyle("#1", theme$format_var_alias)),
+        newcommand("formatvarfiltertext", args=1,
+            applyLatexStyle("#1", theme$format_var_filtertext)),
+        newcommand("formatvarsubname", args=1,
+            applyLatexStyle("#1", theme$format_var_subname)),
         "",
         "",
         # If there are one or more banners, generate the banner definition
