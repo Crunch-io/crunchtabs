@@ -225,10 +225,10 @@ tableHeader.CrossTabVar <- function(var, theme) {
         # Subsequent banners don't get the same table name at the top, and the
         # negative vspace squeezes them closer to the one above
         next_headers <- paste(
-            "\\vspace{-.25in}",
+            vspace("-.25in"),
             paste0("\\tbltop", letters[2:ntabs]),
             "\\addlinespace",
-            paste0("\\banner", letters[2:ntabs],"{}"),
+            paste0("\\banner", letters[2:ntabs], "{}"),
             "",
             "",
             sep="\n"

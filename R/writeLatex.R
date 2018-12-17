@@ -118,8 +118,8 @@ latexReportTables <- function (results, banner, theme) {
     # multiple banners, we'll generate tables for each (slightly differently)
     # and join them together into a single result.
     #
-    # This function returns a character vector the same length as `results`,
-    # each being the "full" table.
+    # This lapply returns a character vector the same length as `results`,
+    # each string in it being a "full" table.
     table_bodies <- lapply(results, function (x) {
         headers <- tableHeader(x, theme)
         # Do some munging and generate the table bodies to match those header(s)
@@ -127,25 +127,30 @@ latexReportTables <- function (results, banner, theme) {
         # Lots of dragons in this "reformat" code :shrug:
         content <- reformatLatexResults(x, banner, theme)
         bodies <- sapply(content, latexTableBody, theme = theme)
+        footers <- rep("\n\\end{longtable}", length(bodies))
+        # ^^ rep() is technically unnecessary, but it makes explicit the
+        # recycling that would happen inside the paste() below
+
         # This paste will collapse the perhaps multiple banner tables into a
-        # single string of LaTeX
+        # single string of LaTeX.
         paste(
             headers,
             bodies,
-            "",
-            "\\end{longtable}", # Table footer
+            footers,
             sep="\n",
             collapse="\n\n\n"
         )
     })
     if (theme$topline) {
         # Topline tables are centered (probably should be a theme option?)
+        # center() is vectorized to center each element, but maybe the whole
+        # list of tables should be centered in a single block? 
         table_bodies <- center(table_bodies)
     }
     if (theme$one_per_sheet) {
         table_bodies <- paste0(table_bodies, "\n\\clearpage")
     }
-    # Put some space between each table
+    # Put some extra space between each table
     table_bodies <- paste0(table_bodies, "\n\n")
     return(table_bodies)
 }
