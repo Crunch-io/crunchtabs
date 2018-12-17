@@ -243,49 +243,75 @@ tableHeader.ToplineVar <- function(var, theme) {
     toplineTableDef(
         var,
         "\\begin{longtable}{p{0.3in}p{5.5in}}",
-        header_row = "\\longtablesep\n",
+        header_row = "\\longtablesep",
         theme = theme
     )
 }
 
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
-    header_row <- "\n"
+    header_row <- newline
     col_names <- sapply(var$inserts_obj, name)
     col_names_len <- length(col_names)
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
 
     # use heuristic for scale questions
     if (col_names_len >= 10) {
+        # NPR: Trying to interpret what this code does, it's looking for
+        # something like a 0-10 scale where the endpoints are labeled like
+        # "0 - Not at all likely" and "10 - Extremely likely" and the middle
+        # labels are just the integer scale values. The goal is to create a
+        # two-row table header: top row has the prose labels, second row has
+        # just the numbers.
         which.split <- grep("^[0-9]+ - ", col_names)
         if (length(which.split) == 2) {
+            # Extract the two string labels
             labs <- texEscape(sub("^[0-9]+ - (.*)$", "\\1", col_names[which.split]))
-            mcwidth <- (max(which.split) - min(which.split) + 1)/2
-            midgaps <- 1 + ceiling(mcwidth)  ## in case it's an odd number
+            # Note that this allows for values outside the scale, such as
+            # "Don't know". We'll label the scale range within just the part
+            # that is the scale, and the DK or other categories on the end will
+            # be formatted as appropriate.
+            scale_range <- max(which.split) - min(which.split)
+            # We're going to divide this range into two multicolumns
+            mcwidth <- (scale_range + 1) / 2
+            # If there is an odd number, we may have to have a gap cell between
+            # the multicolumns
+            midgaps <- 1 + ceiling(mcwidth)
             mcwidth <- floor(mcwidth)
             midgaps <- midgaps - mcwidth
+            # Left align the the low end label and right align the high end
             labs[1] <- multicolumn(mcwidth, labs[1], align="l")
             labs[2] <- multicolumn(mcwidth, labs[2], align="r")
+            # Construct the table row for these labels
             scalestart <- paste(rep(" &", min(which.split)), collapse = "")
             scalemid <- paste(rep(" &", midgaps), collapse = "")
             scaleend <- paste(rep(" &", length(col_names) - max(which.split)), collapse = "")
-            thisrow <- paste(scalestart, labs[1], scalemid, labs[2], scaleend, "\\\\")
-            header_row <- paste(header_row, thisrow, "\n")
+            thisrow <- paste(
+                scalestart,
+                labs[1],
+                scalemid,
+                labs[2],
+                scaleend,
+                newline
+            )
+            # Append that to the "header_row" we've started collecting
+            header_row <- paste(header_row, thisrow, sep="\n")
+            # Now strip those string labels from the column names, and we'll
+            # pass those along to the "normal" code path
             col_names <- sub("^([0-9]+) - .*$", "\\1", col_names)
+            # I have no idea why col_width is changed here, what this math
+            # entails, or why theme$format_label_column$col_width is invoked
+            # here but not earlier where col_width is previously defined
             col_width <- paste(round((5.5 - theme$format_label_column$col_width)/
                     col_names_len - 0.11, 3), "in", sep = "")
         }
     }
 
     header_row <- paste(
-        newline,
         header_row,
-        "& &",
-        paste(texEscape(col_names), collapse = " & "),
-        " & \n"
-    )
-    header_row <- paste(
-        header_row,
+        # Make a table row of column names (hence joined by &), with some empty
+        # cells at the beginning (for row labels?) and end (why?)
+        paste(c("", "", texEscape(col_names), ""), collapse = " & "),
         "\\endfirsthead",
         paste(multicolumn(col_names_len + 2, italics(theme$latex_headtext)), newline),
         header_row,
@@ -293,13 +319,19 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
         paste(multicolumn(col_names_len + 2, italics(theme$latex_foottext)), newline),
         "\\endfoot",
         "\\endlastfoot",
-        "",
-        sep = "\n"
+        sep="\n"
     )
     col.header <- paste0("B{\\centering}{", col_width, "}")
     col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
-    tab_definition <- paste0("\\begin{longtable}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{",
-        theme$format_label_column$col_width, "in}", col.header, "}")
+    tab_definition <- paste0(
+        "\\begin{longtable}",
+        "{",
+            "@{\\extracolsep{\\fill}}",
+            "p{0.1in}",
+            "B{\\raggedright}{", theme$format_label_column$col_width, "in}",
+            col.header,
+        "}"
+    )
 
     toplineTableDef(
         var,
@@ -310,11 +342,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 }
 
 toplineTableDef <- function(var, tab_definition, header_row, theme) {
-    paste0(
-        tab_definition, "\n",
-        latexTableName(var, theme),
-        header_row
-    )
+    paste(tab_definition, latexTableName(var, theme), header_row, "", sep="\n")
 }
 
 latexTableName <- function(var, theme) {
@@ -380,37 +408,41 @@ longtableHeadFootMacros <- function (banner, num, page_width = 9, theme) {
     )
 
     return(c(
-        # Here is \bannera
-        paste0(
-            "\\newcommand{\\banner", letters[num],"}[1]",
-            "{",
-            "\\toprule"
-        ),
+        # Here is \bannera{}
+        # Note that \bannera is never called with an argument, even though it
+        # takes one (see below for what would happen if you did give an arg)
+        newcommand(paste0("banner", letters[num]), args=1, paste(
+            "\\toprule",
             banner_def_body1,
-            "\\midrule ",
-            "\\endfirsthead ",
+            "\\midrule",
+            "\\endfirsthead",
             "\\toprule",
             banner_def_body2,
-            "\\midrule ",
-            "\\endhead ",
-            "\\midrule ",
+            "\\midrule",
+            "\\endhead",
+            "\\midrule",
             paste("&", multicolumn(col_num_sum, theme$latex_foottext), newline, ""),
-            "\\bottomrule ",
-            "\\endfoot ",
-            "\\bottomrule ",
-            "\\endlastfoot ",
-        "}",
+            "\\bottomrule",
+            "\\endfoot",
+            "\\bottomrule",
+            "\\endlastfoot",
+            "",
+            sep="\n"
+        )),
         # Here is \tbltopa
-        paste0(
-            "\\newcommand{\\tbltop", letters[num], "}",
-            "{"
-        ),
-            # Indendation here just to show what is inside the {} of newcommand
+        newcommand(paste0("tbltop", letters[num]),
             paste0(
-                "\\begin{longtable}{@{\\extracolsep{\\fill}}>{\\hangindent=1em \\PBS ",
-                "\\raggedright \\hspace{0pt}}b{", theme$format_label_column$col_width,
-                "in}*{", col_num_sum, "}{", theme$latex_table_align, "}}",
-            "}"),
+                "\n",
+                "\\begin{longtable}",
+                "{",
+                    "@{\\extracolsep{\\fill}}",
+                    ">{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}",
+                    "b{", theme$format_label_column$col_width, "in}",
+                    "*{", col_num_sum, "}",
+                    "{", theme$latex_table_align, "}",
+                "}"
+            )
+        ),
         ""
     ))
 }
@@ -444,8 +476,9 @@ makeLatexBanner <- function (binfo, width=NULL) {
         multicolumn(1, texEscape(unlist(binfo$multicols))),
         collapse=""
     )
-    # Add a variable anchor to the beginning of the second row (this is for the
-    # table of contents?) and end with a newline
+    # Add a variable anchor to the beginning of the second row (this is where
+    # the argument to \bannera{} would go, if anyone supplied it)
+    # and end with a newline
     second_row <- paste("{\\bf #1}", second_row, newline)
 
     # Assemble the full "banner"
