@@ -1,7 +1,7 @@
 structure(list(url = "https://app.crunch.io/api/datasets/ad5fa/multitables/4996c/tabbook/", 
     status_code = 202L, headers = structure(list(allow = "OPTIONS, POST", 
         `content-encoding` = "gzip", `content-type` = "application/json;charset=utf-8", 
-        date = "Mon, 22 Jan 2018 15:46:03 GMT", location = "https://s3/export/tabbooks/ad5fa%2404626891f3f103e0ff7c5eb49c0ecc0d/crunchtabs-fixture.json?Signature=ObAE%2FWtVKg85i8m0URTrwZsSZeo%3D&Expires=1516639563&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+        date = "Mon, 22 Jan 2018 15:46:03 GMT", location = "https://s3/export/tabbooks/ad5fa%2404626891f3f103e0ff7c5eb49c0ecc0d/crunchtabs-fixture.json", 
         server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
         `x-timing` = "", `content-length` = "169", connection = "keep-alive"), .Names = c("allow", 
     "content-encoding", "content-type", "date", "location", "server", 
@@ -10,7 +10,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/ad5fa/multitables/4996c
         structure(list(status = 202L, version = "HTTP/1.1", headers = structure(list(
             allow = "OPTIONS, POST", `content-encoding` = "gzip", 
             `content-type` = "application/json;charset=utf-8", 
-            date = "Mon, 22 Jan 2018 15:46:03 GMT", location = "https://s3/export/tabbooks/ad5fa%2404626891f3f103e0ff7c5eb49c0ecc0d/crunchtabs-fixture.json?Signature=ObAE%2FWtVKg85i8m0URTrwZsSZeo%3D&Expires=1516639563&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+            date = "Mon, 22 Jan 2018 15:46:03 GMT", location = "https://s3/export/tabbooks/ad5fa%2404626891f3f103e0ff7c5eb49c0ecc0d/crunchtabs-fixture.jsonA", 
             server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
             `x-timing` = "", `content-length` = "169", connection = "keep-alive"), .Names = c("allow", 
         "content-encoding", "content-type", "date", "location", 

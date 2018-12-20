@@ -1,7 +1,7 @@
 structure(list(url = "https://app.crunch.io/api/datasets/0cf18b/multitables/1e8165/tabbook/", 
     status_code = 202L, headers = structure(list(allow = "OPTIONS, POST", 
         `content-encoding` = "gzip", `content-type` = "application/json;charset=utf-8", 
-        date = "Thu, 19 Apr 2018 17:59:05 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24d1e88e7f018782c57a4e17e9ed425cc7/Example-Dataset-with-Nets.json?Signature=PQk5N%2FJKfOO6c3UjOHrpei5zQ5k%3D&Expires=1524164345&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+        date = "Thu, 19 Apr 2018 17:59:05 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24d1e88e7f018782c57a4e17e9ed425cc7/Example-Dataset-with-Nets.json", 
         server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
         `x-timing` = "", `content-length` = "171", connection = "keep-alive"), .Names = c("allow", 
     "content-encoding", "content-type", "date", "location", "server", 
@@ -10,7 +10,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/0cf18b/multitables/1e81
         structure(list(status = 202L, version = "HTTP/1.1", headers = structure(list(
             allow = "OPTIONS, POST", `content-encoding` = "gzip", 
             `content-type` = "application/json;charset=utf-8", 
-            date = "Thu, 19 Apr 2018 17:59:05 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24d1e88e7f018782c57a4e17e9ed425cc7/Example-Dataset-with-Nets.json?Signature=PQk5N%2FJKfOO6c3UjOHrpei5zQ5k%3D&Expires=1524164345&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+            date = "Thu, 19 Apr 2018 17:59:05 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24d1e88e7f018782c57a4e17e9ed425cc7/Example-Dataset-with-Nets.json", 
             server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
             `x-timing` = "", `content-length` = "171", connection = "keep-alive"), .Names = c("allow", 
         "content-encoding", "content-type", "date", "location", 
