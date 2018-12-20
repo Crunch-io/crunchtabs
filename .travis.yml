@@ -1,6 +1,5 @@
 language: r
 cache: packages
-warnings_are_errors: false
 before_install:
   - tlmgr install fancyhdr sfmath comment psnfss babel-english float marginnote tocloft
 r:
