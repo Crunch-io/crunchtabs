@@ -1,7 +1,7 @@
 structure(list(url = "https://app.crunch.io/api/datasets/0cf18b/multitables/ce88af/tabbook/", 
     status_code = 202L, headers = structure(list(allow = "OPTIONS, POST", 
         `content-encoding` = "gzip", `content-type` = "application/json;charset=utf-8", 
-        date = "Thu, 19 Apr 2018 17:59:15 GMT", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A0cf18bd407d54f3b8fc32c291089c17c%24391598d2d56bfbe5160abcc07cc224ba/Example-Dataset-with-Nets.json?Signature=BjCaI0Xej4YMRET4KeOJHQ71n6o%3D&Expires=1524164354&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+        date = "Thu, 19 Apr 2018 17:59:15 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24391598d2d56bfbe5160abcc07cc224ba/Example-Dataset-with-Nets.json?Signature=BjCaI0Xej4YMRET4KeOJHQ71n6o%3D&Expires=1524164354&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
         server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
         `x-timing` = "", `content-length` = "170", connection = "keep-alive"), .Names = c("allow", 
     "content-encoding", "content-type", "date", "location", "server", 
@@ -10,7 +10,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/0cf18b/multitables/ce88
         structure(list(status = 202L, version = "HTTP/1.1", headers = structure(list(
             allow = "OPTIONS, POST", `content-encoding` = "gzip", 
             `content-type` = "application/json;charset=utf-8", 
-            date = "Thu, 19 Apr 2018 17:59:15 GMT", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A0cf18bd407d54f3b8fc32c291089c17c%24391598d2d56bfbe5160abcc07cc224ba/Example-Dataset-with-Nets.json?Signature=BjCaI0Xej4YMRET4KeOJHQ71n6o%3D&Expires=1524164354&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
+            date = "Thu, 19 Apr 2018 17:59:15 GMT", location = "https://s3/export/tabbooks/0cf18bd407d54f3b8fc32c291089c17c%24391598d2d56bfbe5160abcc07cc224ba/Example-Dataset-with-Nets.json?Signature=BjCaI0Xej4YMRET4KeOJHQ71n6o%3D&Expires=1524164354&AWSAccessKeyId=AKIAJT4CEBNJXNPF3NZA", 
             server = "nginx", `set-cookie` = "REDACTED", vary = "Cookie, Accept-Encoding", 
             `x-timing` = "", `content-length` = "170", connection = "keep-alive"), .Names = c("allow", 
         "content-encoding", "content-type", "date", "location", 
