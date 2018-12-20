@@ -17,3 +17,5 @@ tests/new_ds_gender_categories.csv
 tests/new_ds_petloc_subvariables.csv
 tests/new_ds_variables.csv
 .httr-oauth
+.RData
+.Rhistory
