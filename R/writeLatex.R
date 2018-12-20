@@ -4,6 +4,7 @@
 #' Toplines (one-way frequency tables) or Banners (cross tabulations).
 #'
 #' @param data_summary An object of class \code{Toplines} or \code{Crosstabs}.
+#' @param theme A theme object (default: `themeDefaultLatex`).
 #' @param filename character. The name of the output file (without extension).
 #' @param title An optional title. Defaults to the data summary title.
 #' @param subtitle An optional character subtitle. Defaults to an empty string.
@@ -19,8 +20,7 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#'
-#' @param theme
+#' @param logging add log messages
 #'
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.

@@ -1,68 +1,73 @@
-#' Generate Theme for writeExcel or writeLatex
+#' Generate Theme for `writeExcel` or `writeLatex`
 #'
-#' \code{themeNew} produces themes for writeExcel.
+#' `themeNew` produces themes for `writeExcel` or `writeLatex`.
+#' 
+#' @section Theme Arguments:
+#' \describe{
+#' \item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
+#' \item{digits_final}{In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?}
+#' \item{excel_footer}{In Excel, an optional character vector of length 3.  The footer text of the file.}
+#' \item{excel_freeze_column}{In Excel, a numeric. What column should be the last frozen column? Defaults to 1.}
+#' \item{excel_header}{In Excel, An optional character vector of length 3. The header text of the file.}
+#' \item{excel_orientation}{In Excel, a character. The orientation of the page if printed. Valid options are: "landscape", and "portrait". Defaults to "landscape".}
+#' \item{excel_percent_sign}{In Excel, a logical. Should "\%" be pasted in each cell that contains a proportion? Defaults to FALSE.}
+#' \item{excel_show_grid_lines}{In Excel, a logical. Should the default grid lines of the file show? Defaults to FALSE.}
+#' \item{excel_table_border}{In Excel, an optional list. The formatting of the border around each downbreak. Includes: border_color, and border_style.}
+#' \item{font}{An optional character. The font to be used.}
+#' \item{font_color}{In Excel, an optional color. The color of the font.}
+#' \item{font_size}{An optional numeric. The size of the font.}
+#' \item{format_banner_categories}{In Excel, a list. How the banner/crossbreak response options should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_banner_names}{In Excel, an optional list. How the banner/crossbreak variable names should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_banner_split}{In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style}
+#' \itemize{
+#'      \item{\code{empty_col} In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
+#' }
+#' \item{format_headers}{An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
+#' Includes:
+#' \itemize{
+#'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
+#'       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
+#' }
+#' \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+#' \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+#' \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
+#' Includes:
+#' \itemize{
+#'      \item{\code{mask} An optional character to be used to mark cells with base below the min_base.}
+#'      \item{\code{min_base} An optional numeric. The minimum acceptable base size for a question.}
+#' }
+#' \item{format_subtitle}{An optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_subtotals}{An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_title}{An optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_totals_column}{In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
+#' \item{format_totals_row}{An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
+#' \item{format_var_alias}{An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.}
+#' \item{format_var_description}{An optional list. How downbreak variable descriptions should be formatted. If `NULL` downbreak variable descriptions will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+#' \item{format_var_filtertext}{An optional list. How downbreak variable filtertext/notes should be formatted. If `NULL` downbreak variable filtertext/notes will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+#' \item{format_var_name}{An optional list. How downbreak variable names should be formatted. If `NULL` downbreak variable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.}
+#' \item{format_var_subname}{An optional list. How downbreak subvariable names should be formatted. If `NULL` downbreak subvariable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, valign, and wrap_text.}
+#' \item{format_unweighted_n}{An optional list. How unweighted Ns should be formatted. If `NULL` unweighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
+#' \item{format_weighted_n}{An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
+#' \item{latex_foottext}{In Latex, a character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+#' \item{latex_headtext}{In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
+#' \item{latex_multirowheaderlines}{In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.}
+#' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
+#' \item{logo}{An optional list. Information about the logo to be included in the tables.}
+#' Includes:
+#' \itemize{
+#'     \item{\code{file} An optional character path to the file that should be used for the logo.}
+#'     \item{\code{dpi} In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
+#'     \item{\code{height} In Excel, a numeric. The height of the logo. Defaults to 2.}
+#'     \item{\code{width} In Excel, a numeric. The width of the logo. Defaults to 4.}
+#'     \item{\code{startCol} In Excel, a numeric. The column coordinate of upper left corner of the logo. Defaults to 1.}
+#'     \item{\code{startRow} In Excel, a numeric. The row coordinate of upper left corner of the logo. Defaults to 1.}
+#'     \item{\code{units} In Excel, a character. Units of width and height. Valid options are: "cm", "in", and "px." Defaults to "in".}
+#' }
+#' \item{one_per_sheet}{A logical. Should each question be on its own sheet/page? Defaults to FALSE.}
+#'}
 #'
-#' @title Arguments
-#' @param digits A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.
-#' @param digits_final In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?
-#' @param excel_footer In Excel, an optional character vector of length 3.  The footer text of the file.
-#' @param excel_freeze_column In Excel, a numeric. What column should be the last frozen column? Defaults to 1.
-#' @param excel_header In Excel, An optional character vector of length 3. The header text of the file.
-#' @param excel_orientation In Excel, a character. The orientation of the page if printed. Valid options are: "landscape", and "portrait". Defaults to "landscape".
-#' @param excel_percent_sign In Excel, a logical. Should "\%" be pasted in each cell that contains a proportion? Defaults to FALSE.
-#' @param excel_show_grid_lines In Excel, a logical. Should the default grid lines of the file show? Defaults to FALSE.
-#' @param excel_table_border In Excel, an optional list. The formatting of the border around each downbreak. Includes: border_color, and border_style.
-#' @param font An optional character. The font to be used.
-#' @param font_color In Excel, an optional color. The color of the font.
-#' @param font_size An optional numeric. The size of the font.
-#' @param format_banner_categories In Excel, a list. How the banner/crossbreak response options should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_banner_names In Excel, an optional list. How the banner/crossbreak variable names should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_banner_split In Excel, an optional list. How should the banner variables be separated? Includes: border_color, border_style
-#' \describe{
-#'      \item{empty_col}{In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
-#' }
-#' @param format_headers An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_label_column In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text,
-#' \describe{
-#'       \item{col_width}{A numeric. Width of the label column. Defaults to 40.}
-#'       \item{extend_borders}{In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
-#' }
-#' @param format_means An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
-#' @param format_medians An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
-#' @param format_min_base An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text
-#' \describe{
-#'      \item{mask}{An optional character to be used to mark cells with base below the min_base.}
-#'      \item{min_base}{An optional numeric. The minimum acceptable base size for a question.}
-#' }
-#' @param format_subtitle An optional list. How the table subtitle should be formatted. If `NULL` the table subtitle will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_subtotals An optional list. How subtotals should be formatted. If `NULL` subtotals will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_title An optional list. How the table title should be formatted. If `NULL` the table title will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_totals_column In Excel, a list. How the totals column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.
-#' @param format_totals_row An optional list. How total rows should be formatted. If `NULL` total rows will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.
-#' @param format_var_alias An optional list. How downbreak variable aliases should be formatted. If `NULL` downbreak variable aliases will not appear.  Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_q_number, valign, and wrap_text.
-#' @param format_var_description An optional list. How downbreak variable descriptions should be formatted. If `NULL` downbreak variable descriptions will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
-#' @param format_var_filtertext An optional list. How downbreak variable filtertext/notes should be formatted. If `NULL` downbreak variable filtertext/notes will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
-#' @param format_var_name An optional list. How downbreak variable names should be formatted. If `NULL` downbreak variable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, repeat_for_subs, valign, and wrap_text.
-#' @param format_var_subname An optional list. How downbreak subvariable names should be formatted. If `NULL` downbreak subvariable names will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, include_alias, include_q_number, valign, and wrap_text.
-#' @param format_unweighted_n An optional list. How unweighted Ns should be formatted. If `NULL` unweighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.
-#' @param format_weighted_n An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.
-#' @param latex_foottext In Latex, a character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'
-#' @param latex_headtext In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'
-#' @param latex_multirowheaderlines In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.
-#' @param latex_table_align In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.
-#' @param logo An optional list. Information about the logo to be included in the tables. Includes:
-#' \describe{
-#'     \item{file}{An optional character path to the file that should be used for the logo.}
-#'     \item{dpi}{In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
-#'     \item{height}{In Excel, a numeric. The height of the logo. Defaults to 2.}
-#'     \item{width}{In Excel, a numeric. The width of the logo. Defaults to 4.}
-#'     \item{startCol}{In Excel, a numeric. The column coordinate of upper left corner of the logo. Defaults to 1.}
-#'     \item{startRow}{In Excel, a numeric. The row coordinate of upper left corner of the logo. Defaults to 1.}
-#'     \item{units}{In Excel, a character. Units of width and height. Valid options are: "cm", "in", and "px." Defaults to "in".}
-#' }
-#' @param one_per_sheet A logical. Should each question be on its own sheet/page? Defaults to FALSE.
-#'
-#' @note Subarguments
+#' \subsection{Subarguments}{
 #' \describe{
 #' \item{background_color}{In Excel, an optional color. Cell background color.}
 #' \item{border_bottom}{In Excel, an optional logical. Should there be a border on the bottom? }
@@ -88,11 +93,11 @@
 #' \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
 #' \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
 #' }
-#'
-#' @examples
-#' \dontrun{
-#' theme stuff
 #' }
+#' 
+#' @param ... Named arguments that specify the various output types. See the Theme Arguments section below for a complete listing.
+#' @param default_theme a theme object to use for defaults if you're modifying an already existing themes
+#'
 #' @export
 #' @importFrom utils modifyList
 themeNew <- function(..., default_theme = themeDefaultExcel()){
@@ -137,9 +142,16 @@ themeNew <- function(..., default_theme = themeDefaultExcel()){
     return(theme)
 }
 
-#' Generate default Theme for writeExcel
+#' Generate default Theme for `writeExcel`
 #'
 #' \code{themeDefaultExcel} is the default theme. Users can change base options
+#' 
+#' @param font the font to use (default: Calibri)
+#' @param font_size the font size to use (default: 12)
+#' @param font_color the color of the type (default: black)
+#' @param valign the alignment to use in cells (default: center)
+#' 
+#' @return A set of theme defaults for use in `writeExcel`
 #'
 #' @export
 themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
@@ -198,9 +210,14 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
     return(defaults)
 }
 
-#' Generate default Theme for writeLatex
+#' Generate default Theme for `writeLatex`
 #'
 #' \code{themeDefaultLatex} is the default theme. Users can change base options
+#' 
+#' @param font the font to use (default: `"helvet"` for Helvetica)
+#' @param font_size the font size to use (default: 12)
+#' 
+#' @return A set of theme defaults for use in `writeLatex`
 #'
 #' @export
 themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
@@ -427,8 +444,19 @@ theme_validator <- function(theme) {
     }
 }
 
+#' Project-specific themes
+#' 
+#' These are some default themes for specific projects
+#' 
+#' @param logo an image of the logo to use (default: `NULL`)
+#' 
+#' @return a new theme object
+#' 
+#' @name project-themes
+NULL
 
 #' @export
+#' @rdname project-themes
 themeUKPolitical <- function() {
     themeNew(default_theme = themeDefaultExcel(font = "Arial", font_size = 8),
         format_title=list(font_size = 14),
@@ -467,6 +495,7 @@ themeUKPolitical <- function() {
 }
 
 #' @export
+#' @rdname project-themes
 themeHuffPoToplines <- function(logo = NULL) {
     themeNew(default_theme = themeDefaultLatex(),
         logo = logo,
@@ -481,7 +510,9 @@ themeHuffPoToplines <- function(logo = NULL) {
         latex_table_align = "r",
         one_per_sheet = FALSE)
 }
+
 #' @export
+#' @rdname project-themes
 themeHuffPoCrosstabs <- function(logo = NULL) {
     themeNew(default_theme = themeDefaultLatex(),
         logo = logo,

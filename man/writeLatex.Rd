@@ -13,7 +13,7 @@ writeLatex(data_summary, theme = themeDefaultLatex(),
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}
 
-\item{theme}{}
+\item{theme}{A theme object (default: `themeDefaultLatex`).}
 
 \item{filename}{character. The name of the output file (without extension).}
 
@@ -40,6 +40,8 @@ if \code{FALSE} the report shows counts.}
 
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
+
+\item{logging}{add log messages}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

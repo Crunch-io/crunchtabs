@@ -2,12 +2,24 @@
 % Please edit documentation in R/theme.R
 \name{themeDefaultExcel}
 \alias{themeDefaultExcel}
-\title{Generate default Theme for writeExcel}
+\title{Generate default Theme for `writeExcel`}
 \usage{
 themeDefaultExcel(font = getOption("font", default = "Calibri"),
   font_size = getOption("font_size", default = 12),
   font_color = getOption("font_color", default = "black"),
   valign = getOption("valign", default = "center"))
+}
+\arguments{
+\item{font}{the font to use (default: Calibri)}
+
+\item{font_size}{the font size to use (default: 12)}
+
+\item{font_color}{the color of the type (default: black)}
+
+\item{valign}{the alignment to use in cells (default: center)}
+}
+\value{
+A set of theme defaults for use in `writeExcel`
 }
 \description{
 \code{themeDefaultExcel} is the default theme. Users can change base options

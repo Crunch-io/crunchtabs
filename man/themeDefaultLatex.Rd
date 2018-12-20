@@ -2,10 +2,18 @@
 % Please edit documentation in R/theme.R
 \name{themeDefaultLatex}
 \alias{themeDefaultLatex}
-\title{Generate default Theme for writeLatex}
+\title{Generate default Theme for `writeLatex`}
 \usage{
 themeDefaultLatex(font = getOption("font", default = "helvet"),
   font_size = getOption("font_size", default = 12))
+}
+\arguments{
+\item{font}{the font to use (default: `"helvet"` for Helvetica)}
+
+\item{font_size}{the font size to use (default: 12)}
+}
+\value{
+A set of theme defaults for use in `writeLatex`
 }
 \description{
 \code{themeDefaultLatex} is the default theme. Users can change base options
