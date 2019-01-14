@@ -1,10 +1,12 @@
 Package: crunchtabs
 Type: Package
 Title: Custom Report Generation for Crunch Datasets
-Description: This package provides functions for report generation:
-    - Toplines (one-way frequency tables),
-    - Banners (cross tabulations).
-Version: 1.1.1
+Description: In order to generate custom survey reports, this package provides
+    functions for computing 'toplines' (one-way frequency summaries) and
+    'banners' (cross-tabulations) of datasets in the Crunch
+    (<https://crunch.io/>) web service. Reports can be written in 'PDF' format
+    using 'LaTeX' or in Microsoft Excel '.xlsx' files.
+Version: 1.2.0
 Authors@R: c(
     person("Persephone", "Tsebelis", role="aut"),
     person("Kamil", "Sedrowicz", role="aut"),

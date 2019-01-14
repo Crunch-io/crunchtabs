@@ -1,4 +1,4 @@
-# crunchtabs 1.1.1 (under development)
+# crunchtabs 1.2.0
 
 * Fix .tex/.pdf reports when variable names (table headers) contain newline characters (#36)
 * Fix .tex/.pdf topline reports containing categorical array variables with subtotals

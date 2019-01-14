@@ -36,8 +36,8 @@ with_mock_tabs("ds2_book1.json", "ds2_mt1.json", expr = {
 					"A few times a year", "Seldom", "Never", "Don't know")),
 			.Names = "pew_churatd"))
 
-		expect_equivalent(rowmargin, expected_row_margin)
-		expect_equivalent(colmargin, expected_col_margin)
+		expect_equivalent(as.array(rowmargin), expected_row_margin)
+		expect_equivalent(as.array(colmargin), expected_col_margin)
 
 		expect_equivalent(as.vector(bases(subtable, margin=1)), c(254, 164, 88, 432, 62))
 		expect_equivalent(as.vector(bases(subtable, margin=2)), c(98, 172, 62, 137, 211, 297, 23))
