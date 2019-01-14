@@ -1,3 +1,5 @@
+# crunchtabs 1.2.1 (under development)
+
 # crunchtabs 1.2.0
 
 * Fix .tex/.pdf reports when variable names (table headers) contain newline characters (#36)
