@@ -324,7 +324,6 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                 sep="\n"
             )
     } else {
-        print(header_row)
         header_row <- paste0(header_row, 
                 paste(c("", "", texEscape(col_names), ""), collapse = " & "),
             "\\\\\n")
