@@ -72,6 +72,13 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
             banner = data_summary$banner
         ),
         document(
+            # moved here on 20190907 per delia's email
+            "\\setlength{\\LTleft}{0pt}",
+            "\\setlength{\\LTright}{\\fill}",
+            "\\setlength{\\LTcapwidth}{\\textwidth}",
+            vspace(".25in"),
+            "",
+            "",
             latexSampleDescription(
                 sample_desc = sample_desc,
                 field_period = field_period,
@@ -80,12 +87,6 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
             toc,
             "",
             in_brackets(
-                "\\setlength{\\LTleft}{0pt}",
-                "\\setlength{\\LTright}{\\fill}",
-                "\\setlength{\\LTcapwidth}{\\textwidth}",
-                vspace(".25in"),
-                "",
-                "",
                 "%% here's where individual input starts %%",
                 "",
                 "",
@@ -121,34 +122,44 @@ latexReportTables <- function (results, banner, theme) {
     # This lapply returns a character vector the same length as `results`,
     # each string in it being a "full" table.
     table_bodies <- lapply(results, function (x) {
-        headers <- tableHeader(x, theme)
         # Do some munging and generate the table bodies to match those header(s)
         x <- removeInserts(x, theme)
         # Lots of dragons in this "reformat" code :shrug:
         content <- reformatLatexResults(x, banner, theme)
-        bodies <- sapply(content, latexTableBody, theme = theme)
-        footers <- rep("\n\\end{longtable}", length(bodies))
-        # ^^ rep() is technically unnecessary, but it makes explicit the
-        # recycling that would happen inside the paste() below
+        
+        # PT: decide if the final table should be longtable or tabular based on the
+        # number of responses and latex_max_lines_for_tabular 
+        x$longtable <- calculateIfLongtable(content[[1]], theme)
+
+        # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
+        header <- tableHeader(x, theme)
+        body <- sapply(content, latexTableBody, theme = theme)
+        footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
 
         # This paste will collapse the perhaps multiple banner tables into a
         # single string of LaTeX.
-        paste(
-            headers,
-            bodies,
-            footers,
+        table <- paste(
+            header,
+            body,
+            footer,
             sep="\n",
             collapse="\n\n\n"
         )
+        if (x$longtable) {
+            # centers longtables because otherwise the head/foot text are not centered
+            # but doesn't center tabular because it actually ends up being uncentered
+            # if centered is used on tabulars.
+            table <- center(table)
+        }
+        return(table)
     })
-    if (theme$topline) {
-        # Topline tables are centered (probably should be a theme option?)
-        # center() is vectorized to center each element, but maybe the whole
-        # list of tables should be centered in a single block?
-        table_bodies <- center(table_bodies)
-    }
     if (theme$one_per_sheet) {
         table_bodies <- paste0(table_bodies, "\n\\clearpage")
+    } else {
+        # two tabulars in a row have no space between them so this is a hack to add space.
+        tabulars <- grep("begin\\{tabular\\}", table_bodies) 
+        add_space <- tabulars[tabulars %in% (tabulars-1)]
+        table_bodies[add_space] <- paste0(table_bodies[add_space], "\n", vspace(".25in"))
     }
     # Put some extra space between each table
     table_bodies <- paste0(table_bodies, "\n\n")
@@ -222,7 +233,7 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
             applyLatexStyle(subtitle, theme$format_subtitle), "}"),
         logo,
         "\\newcolumntype{d}{D{.}{.}{3.2}}", #!topline
-        "\\newcolumntype{g}{D{\\%}{\\%}{5.0}}", #!topline
+        "\\newcolumntype{g}{D{\\%}{\\%}{3.0}}", #!topline #changed 20190907 from 5.0 to 3.0
         usepackage("float"), #topline
         usepackage("marginnote"), #topline
         "\\setlength\\extrarowheight{2pt}", #topline
@@ -244,7 +255,7 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
             "\\endlastfoot"
         )),
         usepackage("tocloft", "titles"),
-        newcommand("cftchapfont", fontsize(theme$font_size)),
+        newcommand("cftchapfont", theme$font_size)), # TODO: make this actually change the font size
         newcommand("formatvardescription", args=1,
             applyLatexStyle("#1", theme$format_var_description)),
         newcommand("formatvarname", args=1,
@@ -272,22 +283,26 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
 }
 
 latexSampleDescription <- function(sample_desc, field_period, moe) {
+    if (is.null(sample_desc) & is.null(moe) & is.null(field_period)) {
+      return("")
+    } # TODONE: don't include this tabular at all if empty
+  
     # More preamble before the tables
     if (!is.null(sample_desc)) {
         sample_desc <- paste("Sample  & ", sample_desc, newline, "")
     }
-    if (!is.null(moe)) {
-        moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$", newline, "")
-    }
     if (!is.null(field_period)) {
         field_period <- paste("Conducted  & ", field_period, newline, "")
     }
+    if (!is.null(moe)) {
+        moe <- paste("Margin of Error &  $\\pm ", round(100 * moe, digits = 1), "\\%$", newline, "")
+    }
 
     c(
-        "\\begin{tabular}{ll}", # TODO: don't include this tabular at all if empty
+        "\\begin{longtable}{ll}",
         sample_desc,
         field_period,
         moe,
-        "\\end{tabular}"
+        "\\end{longtable}"
     )
 }
