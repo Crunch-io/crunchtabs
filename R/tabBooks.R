@@ -12,7 +12,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
         aliases(variables(book[[1]][[ix]]))[2] })
     banner_var_names[1] <- "___total___"
-    var_nums <- match(vars, aliases(book))
+    var_nums <- setdiff(match(vars, aliases(book)), NA)
 
     structure(unlist(lapply(var_nums, function(vi) {
         crunch_cube <- book[[vi]][[1]]
@@ -22,6 +22,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
         alias <- aliases(cube_variable)
         var_type <- type(dataset[[aliases(cube_variable)]])
 
+        if (getOption("testing_crunchtabs", default = FALSE)) print(alias)
+        
         is_mr_type <- var_type == "multiple_response"
         is_cat_type <- var_type %in% c("categorical", "categorical_array")
         is_array_type <- var_type == "categorical_array"

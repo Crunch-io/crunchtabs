@@ -201,7 +201,7 @@ tableHeader <- function(x, theme) {
 
 #' @export
 tableHeader.default <- function(x) {
-    wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "getName")
+    wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
 }
 
 # Header for LongTable with Banner.
@@ -242,8 +242,8 @@ tableHeader.CrossTabVar <- function(var, theme) {
 tableHeader.ToplineVar <- function(var, theme) {
     toplineTableDef(
         var,
-        "\\begin{longtable}{p{0.3in}p{5.5in}}",
-        header_row = "\\longtablesep",
+        paste0("\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}{p{0.3in}p{5.5in}}"),
+        header_row = if(var$longtable) "\\longtablesep",
         theme = theme
     )
 }
@@ -306,25 +306,33 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                     col_names_len - 0.11, 3), "in", sep = "")
         }
     }
-
-    header_row <- paste(
-        header_row,
-        # Make a table row of column names (hence joined by &), with some empty
-        # cells at the beginning (for row labels?) and end (why?)
-        paste(c("", "", texEscape(col_names), ""), collapse = " & "),
-        "\\endfirsthead",
-        paste(multicolumn(col_names_len + 2, italics(theme$latex_headtext)), newline),
-        header_row,
-        "\\endhead",
-        paste(multicolumn(col_names_len + 2, italics(theme$latex_foottext)), newline),
-        "\\endfoot",
-        "\\endlastfoot",
-        sep="\n"
-    )
+    
+    if (var$longtable) {
+            header_row <- paste(
+                header_row,
+                # Make a table row of column names (hence joined by &), with some empty
+                # cells at the beginning (for row labels?) and end (why?)
+                # PT: end has extra column so it remains centered under the question wording.
+                paste(c("", "", texEscape(col_names), ""), collapse = " & "),
+                "\\endfirsthead",
+                paste(multicolumn(col_names_len + 2, italics(theme$latex_headtext)), newline),
+                header_row,
+                "\\endhead",
+                paste(multicolumn(col_names_len + 2, italics(theme$latex_foottext)), newline),
+                "\\endfoot",
+                "\\endlastfoot",
+                sep="\n"
+            )
+    } else {
+        print(header_row)
+        header_row <- paste0(header_row, 
+                paste(c("", "", texEscape(col_names), ""), collapse = " & "),
+            "\\\\\n")
+    }
     col.header <- paste0("B{\\centering}{", col_width, "}")
     col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
     tab_definition <- paste0(
-        "\\begin{longtable}",
+        "\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}",
         "{",
             "@{\\extracolsep{\\fill}}",
             "p{0.1in}",
@@ -364,6 +372,9 @@ latexTableName <- function(var, theme) {
     if (length(var_info) == 0) {
         # NPR: I guess this is a fallback to print 404 if there's no variable
         # metadata? Is this likely even valid TeX?
+        # PT: If there's no metadata, it just makes a bg_color box because otherwise 
+        # the formatting is off. 404 is just an internal joke but it's not visible 
+        # because the text is the same color as the background.
         var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
     }
     out <- paste0(
@@ -487,4 +498,31 @@ makeLatexBanner <- function (binfo, width=NULL) {
         second_row,
         sep = "\n"
     ))
+}
+
+calculateIfLongtable <- function(x, theme) {
+        UseMethod("calculateIfLongtable", x)
+}
+
+#' @export
+calculateIfLongtable.default <- function(x, theme) {
+    wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "calculateIfLongtable")
+}
+
+#' @export
+calculateIfLongtable.CrossTabVar <- function(var, theme) {
+    return(sum(ceiling(nchar(var$rownames)/25)) > 
+        theme$latex_max_lines_for_tabular)
+}
+
+#' @export
+calculateIfLongtable.ToplineVar <- function(var, theme) {
+    return(sum(ceiling(nchar(var$rownames)/90)) > 
+        theme$latex_max_lines_for_tabular)
+}
+
+#' @export
+calculateIfLongtable.ToplineCategoricalArray <- function(var, theme) {
+    return(sum(ceiling(nchar(var$rownames)/25)) > 
+        theme$latex_max_lines_for_tabular)
 }

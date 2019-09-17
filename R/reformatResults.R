@@ -197,8 +197,11 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
         names(data_list$body) <- var[["subnames"]]
         data_list <- data_list["body"] # We only keep the body for arrays
+        rownames <- var[["subnames"]]
+    } else {
+        rownames <- unlist(lapply(data_list, rownames), use.names = FALSE)
     }
-
+    
     return(
         structure(
             list(
@@ -210,7 +213,8 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
                 min_cell_top = min_cell_top,
                 min_cell_body = min_cell,
                 min_cell_bottom = min_cell_bottom,
-                min_cell = min_cell_rep
+                min_cell = min_cell_rep,
+                rownames = rownames
             ),
             class = class(var)
         )

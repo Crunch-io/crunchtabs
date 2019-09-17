@@ -51,7 +51,8 @@
 #' \item{format_weighted_n}{An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
 #' \item{latex_foottext}{In Latex, a character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 #' \item{latex_headtext}{In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
-#' \item{latex_multirowheaderlines}{In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.}
+#' \item{latex_max_lines_for_tabular}{In Latex, an integer. What is the maximum number of lines a table can be before it is converted to a longtable? Currently only works on toplines. Defaults to 0.}
+#' \item{latex_multirowheaderlines}{In Latex, a logical. Should banners allow multi-row headlines? Defaults to FALSE.}
 #' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
@@ -203,7 +204,8 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
         latex_headtext = "",
         latex_foottext = "",
         latex_table_align = "r",
-        latex_multirowheaderlines = TRUE)
+        latex_multirowheaderlines = TRUE,
+        latex_max_lines_for_tabular = 0)
 
     class(defaults) <- "Theme"
 
@@ -252,7 +254,8 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         latex_headtext = "",
         latex_foottext = "",
         latex_table_align = "r",
-        latex_multirowheaderlines = TRUE
+        latex_multirowheaderlines = TRUE,
+        latex_max_lines_for_tabular = 0
         )
 
     class(defaults) <- "Theme"
@@ -395,6 +398,7 @@ validators_to_use <- list(
     latex_adjust = c(class = "character", len = 1, missing = TRUE),
     latex_foottext = c(class = "character", len = 1, missing = FALSE, default = ""),
     latex_headtext = c(class = "character", len = 1, missing = FALSE, default = ""),
+    latex_max_lines_for_tabular = c(class = "numeric", len = 1, missing = FALSE, default = 0),
     latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
@@ -421,13 +425,18 @@ validators_to_use <- list(
     wrap_text = c(class = "logical", len = 1, missing = TRUE, default = TRUE))
 
 theme_validator <- function(theme) {
-    theme_required <- c("format_banner_split", "digits", "digits_final", "font", "font_color", "font_size", "excel_footer",
-        "format_banner_categories", "format_banner_names", "format_headers", "format_label_column", "format_means",
-        "format_medians", "format_min_base", "format_subtitle", "format_subtotals", "format_title", "format_totals_column",
-        "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description",
-        "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "excel_freeze_column", "halign",
-        "excel_header", "latex_foottext", "latex_headtext", "latex_table_align", "latex_multirowheaderlines", "latex_round_percentages",
-        "logo", "one_per_sheet", "excel_orientation", "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", "valign")
+    theme_required <- c("format_banner_split", "digits", "digits_final", "font", 
+        "font_color", "font_size", "excel_footer", "format_banner_categories", 
+        "format_banner_names", "format_headers", "format_label_column", "format_means", 
+        "format_medians", "format_min_base", "format_subtitle", "format_subtotals", 
+        "format_title", "format_totals_column", "format_totals_row", "format_unweighted_n", 
+        "format_var_alias", "format_var_description", "format_var_filtertext", 
+        "format_var_name", "format_var_subname", "format_weighted_n", 
+        "excel_freeze_column", "halign", "excel_header", "latex_foottext", 
+        "latex_headtext", "latex_table_align", "latex_max_lines_for_tabular", 
+        "latex_multirowheaderlines", "latex_round_percentages", "logo", 
+        "one_per_sheet", "excel_orientation", "excel_percent_sign", 
+        "excel_show_grid_lines", "excel_table_border", "valign")
 
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {
@@ -491,7 +500,8 @@ themeUKPolitical <- function() {
         latex_headtext = "",
         latex_foottext = "",
         latex_table_align = "r",
-        latex_multirowheaderlines = FALSE)
+        latex_multirowheaderlines = FALSE, 
+        latex_max_lines_for_tabular = 0)
 }
 
 #' @export
