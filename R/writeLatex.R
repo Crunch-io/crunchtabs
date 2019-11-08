@@ -255,7 +255,7 @@ latexDocHead <- function (theme, title, subtitle, banner=NULL) {
             "\\endlastfoot"
         )),
         usepackage("tocloft", "titles"),
-        newcommand("cftchapfont", theme$font_size)), # TODO: make this actually change the font size
+        newcommand("cftchapfont", theme$font_size), # TODO: make this actually change the font size
         newcommand("formatvardescription", args=1,
             applyLatexStyle("#1", theme$format_var_description)),
         newcommand("formatvarname", args=1,
