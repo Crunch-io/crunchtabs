@@ -4,8 +4,10 @@
 \alias{themeDefaultLatex}
 \title{Generate default Theme for `writeLatex`}
 \usage{
-themeDefaultLatex(font = getOption("font", default = "helvet"),
-  font_size = getOption("font_size", default = 12))
+themeDefaultLatex(
+  font = getOption("font", default = "helvet"),
+  font_size = getOption("font_size", default = 12)
+)
 }
 \arguments{
 \item{font}{the font to use (default: `"helvet"` for Helvetica)}

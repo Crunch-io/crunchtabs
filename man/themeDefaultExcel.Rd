@@ -4,10 +4,12 @@
 \alias{themeDefaultExcel}
 \title{Generate default Theme for `writeExcel`}
 \usage{
-themeDefaultExcel(font = getOption("font", default = "Calibri"),
+themeDefaultExcel(
+  font = getOption("font", default = "Calibri"),
   font_size = getOption("font_size", default = 12),
   font_color = getOption("font_color", default = "black"),
-  valign = getOption("valign", default = "center"))
+  valign = getOption("valign", default = "center")
+)
 }
 \arguments{
 \item{font}{the font to use (default: Calibri)}

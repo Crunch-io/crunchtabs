@@ -64,7 +64,10 @@ Includes:
 \item{format_weighted_n}{An optional list. How weighted Ns should be formatted. If `NULL` weighted Ns will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_fixed, position_top, valign, and wrap_text.}
 \item{latex_foottext}{In Latex, a character. A character string indicating what text should be placed at the top of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 \item{latex_headtext}{In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
-\item{latex_multirowheaderlines}{In Latex, a logical. logical. Should banners allow multi-row headlines? Defaults to FALSE.}
+\item{latex_max_lines_for_tabular}{In Latex, an integer. What is the maximum number of lines a table can be before it is converted to a longtable? Currently only works on toplines. Defaults to 0.}
+\item{latex_multirowheaderlines}{In Latex, a logical. Should banners allow multi-row headlines? Defaults to FALSE.}
+\item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100\% where necessary? Defaults to FALSE.}
+\item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
 \item{logo}{An optional list. Information about the logo to be included in the tables.}
 Includes:
