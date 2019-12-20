@@ -126,8 +126,16 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         } else {
             rdig <- Inf
         }
-        if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
-            data[] <- apply(data, 2, roundPropCategorical, theme$digits)
+        
+        should_round <- (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && 
+                proportions && theme$latex_round_percentages)
+        should_round <- ifelse(var$alias %in% theme$latex_round_percentages_exception, 
+            !should_round, should_round)
+        if (should_round) {
+        # if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
+        #     if (is.null(theme$latex_round_percentage_exception) || !var$alias %in% theme$latex_round_percentage_exception) {
+                data[] <- apply(data, 2, roundPropCategorical, theme$digits)
+        #     }
         } else if (!is.null(rdig) && !is.infinite(rdig)) {
             data[] <- round(data, rdig)
         }

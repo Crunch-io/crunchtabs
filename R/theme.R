@@ -53,6 +53,8 @@
 #' \item{latex_headtext}{In Latex, a character. A character string indicating what text should be placed at the bottom of continuation tables. 'tbc' is a shortcut for 'to be continued.'}
 #' \item{latex_max_lines_for_tabular}{In Latex, an integer. What is the maximum number of lines a table can be before it is converted to a longtable? Currently only works on toplines. Defaults to 0.}
 #' \item{latex_multirowheaderlines}{In Latex, a logical. Should banners allow multi-row headlines? Defaults to FALSE.}
+#' \item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100% where necessary? Defaults to FALSE.}
+#' \item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 #' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
@@ -282,7 +284,7 @@ theme_validators <- list(
             }
             return(theme_validators$valid_values(value, name, validator))
         }
-        if (length(value) != as.numeric(validator["len"])) {
+        if (!is.na(validator["len"]) && length(value) != as.numeric(validator["len"])) {
             return(theme_validators$length_error(value, validator["len"], name,
                 validator["missing"]))
         }
@@ -401,6 +403,7 @@ validators_to_use <- list(
     latex_max_lines_for_tabular = c(class = "numeric", len = 1, missing = FALSE, default = 0),
     latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+    latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
     latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
     logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
         "width", "height", "units", "dpi")),
@@ -425,30 +428,35 @@ validators_to_use <- list(
     wrap_text = c(class = "logical", len = 1, missing = TRUE, default = TRUE))
 
 theme_validator <- function(theme) {
-    theme_required <- c("format_banner_split", "digits", "digits_final", "font", 
-        "font_color", "font_size", "excel_footer", "format_banner_categories", 
-        "format_banner_names", "format_headers", "format_label_column", "format_means", 
-        "format_medians", "format_min_base", "format_subtitle", "format_subtotals", 
-        "format_title", "format_totals_column", "format_totals_row", "format_unweighted_n", 
+    theme_required <- c("digits", "digits_final", "excel_footer", 
+        "excel_freeze_column", "excel_header", "excel_orientation", 
+        "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", 
+        "font", "font_color", "font_size", "format_banner_categories", 
+        "format_banner_names", "format_banner_split", "format_headers", 
+        "format_label_column", "format_means", "format_medians", "format_min_base", 
+        "format_subtitle", "format_subtotals", "format_title", 
+        "format_totals_column", "format_totals_row", "format_unweighted_n", 
         "format_var_alias", "format_var_description", "format_var_filtertext", 
-        "format_var_name", "format_var_subname", "format_weighted_n", 
-        "excel_freeze_column", "halign", "excel_header", "latex_foottext", 
-        "latex_headtext", "latex_table_align", "latex_max_lines_for_tabular", 
-        "latex_multirowheaderlines", "latex_round_percentages", "logo", 
-        "one_per_sheet", "excel_orientation", "excel_percent_sign", 
-        "excel_show_grid_lines", "excel_table_border", "valign")
+        "format_var_name", "format_var_subname", "format_weighted_n", "halign", 
+        "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular", 
+        "latex_multirowheaderlines", "latex_round_percentages", 
+        "latex_round_percentages_exception", "latex_table_align", "logo", 
+        "one_per_sheet", "valign")
 
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {
-        warning("Arguments: ", collapse_items(ignore), " are not supported in themeNew and will be ignored.")
+        warning("Arguments: ", collapse_items(ignore), 
+            " are not supported in themeNew and will be ignored.")
     }
 
     errors <- unlist(sapply(theme_required, function(name) {
         theme_validators$find_validator(theme[[name]], name)
     }))
-    if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors, "`digits` must be less than 20.")
+    if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors, 
+        "`digits` must be less than 20.")
     if (length(errors) != 0){
-        if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"), "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)
+        if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"), 
+            "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)
         stop("\n", paste0(errors, collapse = "\n"), call. = FALSE)
     }
 }
