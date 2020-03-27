@@ -1,0 +1,21 @@
+name: CI
+
+"on":
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 1beb/ygbds
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: tinytex install
+      run: | 
+        Rscript -e "install.packages('tinytex')"
+        Rscript -e "tinytex::install_tinytex()"
+    - name: Build
+      run: R CMD build --no-build-vignettes --no-manual .
+    - name: Check
+      run: |
+        R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
