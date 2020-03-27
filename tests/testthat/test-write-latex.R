@@ -24,8 +24,8 @@ with_temp_dir({
 
     test_that("Write Latex crosstab", {
         writeLatex(cs)
-        expect_true(file.exists("Example Dataset with Nets.tex"))
-        tex <- readLines("Example Dataset with Nets.tex")
+        expect_true(file.exists("Example-Dataset-with-Nets.tex"))
+        tex <- readLines("Example-Dataset-with-Nets.tex")
         expect_equal(tex[1], "\\documentclass[landscape]{article}")
         ref <- readLines(tabbook_reference)
         expect_identical(tex, ref)
@@ -36,26 +36,26 @@ with_temp_dir({
         # file.copy("Example Dataset with Nets.tex", "~/c/crunchtabs/tests/testthat/ref/tabbook1.tex", overwrite=TRUE)
 
         writeLatex(cs, sample_desc = "Adults")
-        expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
+        expect_silent(tex <- readLines("Example-Dataset-with-Nets.tex"))
         expect_equal(tex[90], "Sample  &  Adults \\\\ ")
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
         skip_on_appveyor()
-        writeLatex(cs, pdf = TRUE)
-        expect_true(file.exists("Example Dataset with Nets.pdf"))
-        expect_output(writeLatex(cs, pdf = TRUE, logging = TRUE), "PDF-ing")
-        writeLatex(cs, subtitle = "something", pdf = TRUE)
-        writeLatex(cs, sample_desc = "Adults", pdf = TRUE)
-        writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
+        suppressWarnings(writeLatex(cs, pdf = TRUE))
+        expect_true(file.exists("Example-Dataset-with-Nets.pdf"))
+        expect_output(suppressWarnings(writeLatex(cs, pdf = TRUE, logging = TRUE)), "PDF-ing")
+        suppressWarnings(writeLatex(cs, subtitle = "something", pdf = TRUE))
+        suppressWarnings(writeLatex(cs, sample_desc = "Adults", pdf = TRUE))
+        suppressWarnings(writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE))
 
         theme <- themeNew(default_theme = themeDefaultLatex(), digits = 1)
-        writeLatex(cs, theme = theme, pdf = TRUE)
+        suppressWarnings(writeLatex(cs, theme = theme, pdf = TRUE))
         theme <- themeNew(default_theme = theme, font_size = 20)
-        writeLatex(cs, theme = theme, pdf = TRUE)
+        suppressWarnings(writeLatex(cs, theme = theme, pdf = TRUE))
         theme <- themeNew(default_theme = theme, format_unweighted_n=list(latex_round_percentages = TRUE))
-        writeLatex(cs, theme = theme, pdf = TRUE)
+        suppressWarnings(writeLatex(cs, theme = theme, pdf = TRUE))
         theme <- themeNew(default_theme = theme, format_weighted_n=list(latex_add_parenthesis = TRUE))
-        writeLatex(cs, theme = theme, pdf = TRUE)
+        suppressWarnings(writeLatex(cs, theme = theme, pdf = TRUE))
     })
 
     test_that("Write Latex toplines", {
@@ -72,13 +72,13 @@ with_temp_dir({
         # file.copy("topline1.tex", "~/c/crunchtabs/tests/testthat/ref/topline1.tex", overwrite=TRUE)
 
         skip_on_appveyor()
-        writeLatex(ts, pdf = TRUE)
-        expect_true(file.exists("Example Dataset with Nets.pdf"))
+        suppressWarnings(writeLatex(ts, pdf = TRUE))
+        expect_true(file.exists("Example-Dataset-with-Nets.pdf"))
 
         # Test that fix for #36: previously failed to generate PDF
         bad <- ts
         ts$results[[1]]$description <- bad_description
-        writeLatex(ts, pdf = TRUE, file="topline2")
+        suppressWarnings(writeLatex(ts, pdf = TRUE, file="topline2"))
         expect_true(file.exists("topline2.pdf"))
     })
 })

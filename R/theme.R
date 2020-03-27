@@ -252,7 +252,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
         latex_headtext = "",
         latex_foottext = "",
         latex_table_align = "r",
-        latex_multirowheaderlines = TRUE
+        latex_multirowheaderlines = TRUE 
         )
 
     class(defaults) <- "Theme"
@@ -330,6 +330,7 @@ theme_validators <- list(
 norm <- list("font", "font_size", "font_color", "background_color", "valign",
     "halign","wrap_text", "decoration", "font_size", "border_style",
     "border_color", "border_top", "border_bottom", "border_left", "border_right")
+
 validators_to_use <- list(
     background_color = c(class = "color", len = 1, missing = TRUE),
     format_banner_split = list(missing = TRUE,
@@ -395,8 +396,10 @@ validators_to_use <- list(
     latex_adjust = c(class = "character", len = 1, missing = TRUE),
     latex_foottext = c(class = "character", len = 1, missing = FALSE, default = ""),
     latex_headtext = c(class = "character", len = 1, missing = FALSE, default = ""),
+    latex_max_lines_for_tabular = c(class = "numeric", len = 1, missing = TRUE, default = FALSE),
     latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
     latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+    # latex_round_percentages_exception = c(class = "character", missing = TRUE, default = FALSE),
     latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
     logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
         "width", "height", "units", "dpi")),
@@ -418,7 +421,8 @@ validators_to_use <- list(
     units = list(mult = FALSE, missing = FALSE, valid = list("in", "cm", "px"), default = "in"),
     valign = list(mult = FALSE, missing = TRUE, valid = list("top", "bottom", "center")),
     width = c(class = "numeric", len = 1, missing = FALSE, default = 4),
-    wrap_text = c(class = "logical", len = 1, missing = TRUE, default = TRUE))
+    wrap_text = c(class = "logical", len = 1, missing = TRUE, default = TRUE)
+    )
 
 theme_validator <- function(theme) {
     theme_required <- c("format_banner_split", "digits", "digits_final", "font", "font_color", "font_size", "excel_footer",
@@ -427,16 +431,26 @@ theme_validator <- function(theme) {
         "format_totals_row", "format_unweighted_n", "format_var_alias", "format_var_description",
         "format_var_filtertext", "format_var_name", "format_var_subname", "format_weighted_n", "excel_freeze_column", "halign",
         "excel_header", "latex_foottext", "latex_headtext", "latex_table_align", "latex_multirowheaderlines", "latex_round_percentages",
-        "logo", "one_per_sheet", "excel_orientation", "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", "valign")
+        "logo", "one_per_sheet", "excel_orientation", "excel_percent_sign", "excel_show_grid_lines", "excel_table_border", "valign",
+        "latex_round_percentages_exception", "latex_max_lines_for_tabular")
 
     ignore <- setdiff(names(theme), theme_required)
     if (length(ignore) > 0) {
         warning("Arguments: ", collapse_items(ignore), " are not supported in themeNew and will be ignored.")
     }
+    
+    errors = list()
+    for(name in theme_required) {
+        if(name == "latex_round_percentages_exception") {
+            # NOTE: No current validation method for mult type without fixed values and 
+            # no tests for validation. Skipping validation on this edge case condition
+            # to avoid possibilty for regressions
+            next
+        }
+        errors[[name]] = theme_validators$find_validator(theme[[name]], name)
+    }
+    errors = unlist(errors)
 
-    errors <- unlist(sapply(theme_required, function(name) {
-        theme_validators$find_validator(theme[[name]], name)
-    }))
     if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors, "`digits` must be less than 20.")
     if (length(errors) != 0){
         if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"), "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)

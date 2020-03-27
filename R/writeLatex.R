@@ -101,12 +101,20 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
 
     if (!is.null(filename)) {
         filename <- paste0(filename, ".tex")
+        filename <- gsub(" ", "-", filename) # Some systems dislike spaces
         cat(out, sep = "\n", file = filename)
         if (pdf) {
             if (logging) {
                 print("PDF-ing")
             }
-            pdflatex(filename, open)
+            if("tinytex" %in% rownames(installed.packages())) {
+                tinytex::pdflatex(filename, bib_engine = NULL)
+                if(open) {
+                    file.open(filename)
+                }
+            } else {
+                pdflatex(filename, open)
+            }
         }
     }
     return(invisible(data_summary))

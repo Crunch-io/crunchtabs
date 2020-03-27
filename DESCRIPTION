@@ -26,7 +26,8 @@ Suggests:
     httptest (>= 2.0.0),
     jsonlite,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 2.1.0)
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
