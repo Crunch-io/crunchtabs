@@ -107,7 +107,14 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
             if (logging) {
                 print("PDF-ing")
             }
-            pdflatex(filename, open)
+            if("tinytex" %in% rownames(installed.packages())) {
+                tinytex::pdflatex(filename, bib_engine = NULL)
+                if(open) {
+                    file.open(filename)
+                }
+            } else {
+                pdflatex(filename, open)
+            }
         }
     }
     return(invisible(data_summary))
@@ -121,7 +128,12 @@ latexReportTables <- function (results, banner, theme) {
     #
     # This lapply returns a character vector the same length as `results`,
     # each string in it being a "full" table.
-    table_bodies <- lapply(results, function (x) {
+    
+    table_bodies <- list()
+    
+    for(i in 1:length(results)) { # convert to loop for debug
+        x = results[[i]]
+    
         # Do some munging and generate the table bodies to match those header(s)
         x <- removeInserts(x, theme)
         # Lots of dragons in this "reformat" code :shrug:
@@ -151,8 +163,9 @@ latexReportTables <- function (results, banner, theme) {
             # if centered is used on tabulars.
             table <- center(table)
         }
-        return(table)
-    })
+        table_bodies[[i]] = table
+    }
+    
     if (theme$one_per_sheet) {
         table_bodies <- paste0(table_bodies, "\n\\clearpage")
     } else {

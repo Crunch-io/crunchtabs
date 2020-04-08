@@ -37,7 +37,7 @@ with_temp_dir({
 
         writeLatex(cs, sample_desc = "Adults")
         expect_silent(tex <- readLines("Example Dataset with Nets.tex"))
-        expect_equal(tex[90], "Sample  &  Adults \\\\ ")
+        expect_true(any(tex == "Sample  &  Adults \\\\ "))
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02")
 
         skip_on_appveyor()
