@@ -1,9 +1,0 @@
-language: r
-cache: packages
-before_install:
-  - tlmgr install fancyhdr sfmath comment psnfss babel-english float marginnote tocloft
-r:
-  - release
-  - devel
-after_success:
-  - Rscript -e 'covr::codecov()'
