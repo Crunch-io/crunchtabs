@@ -1,6 +1,6 @@
 # crunchtabs
 
-[![Build Status](https://travis-ci.org/Crunch-io/crunchtabs.png?branch=master)](https://travis-ci.org/Crunch-io/crunchtabs)  [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs) [![Build status](https://ci.appveyor.com/api/projects/status/5x52wy88wnvdky3n?svg=true)](https://ci.appveyor.com/project/nealrichardson/crunchtabs)
+[![Build Status](https://travis-ci.org/Crunch-io/crunchtabs.png?branch=master)](https://travis-ci.org/Crunch-io/crunchtabs)  [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs)
 
 
 ## Installing
