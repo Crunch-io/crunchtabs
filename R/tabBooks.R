@@ -8,7 +8,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     if (topline) { banner_use$Results[[2]] <- NULL }
 
     multitable <- getMultitable(banner_flatten, dataset)
-    book <- tabBook(multitable, dataset = dataset[vars], weight = weight, format="json")
+    book <- tabBook(multitable, dataset = dataset[vars], weight = weight, output_format="json")
     banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
         aliases(variables(book[[1]][[ix]]))[2] })
     banner_var_names[1] <- "___total___"
