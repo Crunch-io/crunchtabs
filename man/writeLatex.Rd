@@ -4,11 +4,22 @@
 \alias{writeLatex}
 \title{Generate LaTeX Reports: Toplines and Banners}
 \usage{
-writeLatex(data_summary, theme = themeDefaultLatex(),
-  filename = getName(data_summary), title = getName(data_summary),
-  subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
-  field_period = NULL, moe = NULL, append_text = NULL,
-  proportions = TRUE, pdf = FALSE, open = FALSE, logging = FALSE)
+writeLatex(
+  data_summary,
+  theme = themeDefaultLatex(),
+  filename = getName(data_summary),
+  title = getName(data_summary),
+  subtitle = NULL,
+  table_of_contents = FALSE,
+  sample_desc = NULL,
+  field_period = NULL,
+  moe = NULL,
+  append_text = NULL,
+  proportions = TRUE,
+  pdf = FALSE,
+  open = FALSE,
+  logging = FALSE
+)
 }
 \arguments{
 \item{data_summary}{An object of class \code{Toplines} or \code{Crosstabs}.}

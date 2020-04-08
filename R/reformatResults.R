@@ -95,28 +95,30 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         "medians" = "median"
     )
 
-    data_list <- sapply(unique(data_order), function(dt) {
+    data_list <- list() 
+    
+    for(dt in unique(data_order)) {
         prop_v <- gsub("_row", "", dt) %in% c("body", "totals")
         weight_v <- dt %in% c("unweighted_n", "weighted_n")
         mm_v <- dt %in% c("means", "medians")
         dx <- piece_names[[dt]]
         data <- getItemData(data = var$crosstabs[[banner_name]], item_name = dx,
-            empty_col = banner_info$empty_col && !latex, round = FALSE)
+                            empty_col = banner_info$empty_col && !latex, round = FALSE)
         if (is.vector(data)) {
             data <- t(data)
         }
         theme_dt <- theme[[paste0("format_", dt)]]
-
+        
         data[is.nan(data)] <- NA
-
+        
         if (prop_v) {
             data[is.na(data)] <- 0
         }
-
+        
         if (prop_v && proportions && (latex || !theme$excel_percent_sign)) {
             data[] <- data * 100
         }
-
+        
         if (!proportions && prop_v || weight_v) {
             rdig <- 0
         } else if (latex) {
@@ -126,12 +128,22 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         } else {
             rdig <- Inf
         }
-        if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
+        
+        should_round <- (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && 
+                         proportions && theme$latex_round_percentages)
+        should_round <- ifelse(var$alias %in% theme$latex_round_percentages_exception, 
+                               !should_round, should_round)
+        if (should_round & dt !="weighted_n") {
+            # if (latex && prop_v && !is(var, "MultipleResponseCrossTabVar") && proportions && theme$latex_round_percentages) {
+            #     if (is.null(theme$latex_round_percentage_exception) || !var$alias %in% theme$latex_round_percentage_exception) {
             data[] <- apply(data, 2, roundPropCategorical, theme$digits)
+            #     }
         } else if (!is.null(rdig) && !is.infinite(rdig)) {
             data[] <- round(data, rdig)
+        } else {
+            data[] <- round(data, rdig)
         }
-
+        
         if (dt %in% "totals_row") {
             if (proportions) {
                 data_tmp <- colSums(data)
@@ -144,13 +156,13 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
                 )
             }
             data <- matrix(data_tmp, nrow = 1, ncol = ncol(data),
-                dimnames = list(c(theme$format_totals_row$name), colnames(data)))
+                           dimnames = list(c(theme$format_totals_row$name), colnames(data)))
         }
         if (var$type %in% c("categorical", "categorical_array") && dt %in% "body" &&
-                any(var$inserts %in% c("Heading", "Subtotal"))) {
+            any(var$inserts %in% c("Heading", "Subtotal"))) {
             data <- as.matrix(calcTabInsertions(data, var$inserts_obj, var$categories))
         }
-
+        
         if (weight_v && nrow(data) > 1) {
             data <- rbind(apply(data, 2, min, na.rm = TRUE), apply(data, 2, max, na.rm = TRUE))
             if (all(data[1, ] == data[2, ])) {
@@ -159,14 +171,14 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         }
         if (!is.null(theme_dt$name)) {
             rownames(data) <- paste0(theme_dt$name,
-                if (weight_v && !is.null(dim(data)) && nrow(data) == 2) c(": Min", ": Max"))
+                                     if (weight_v && !is.null(dim(data)) && nrow(data) == 2) c(": Min", ": Max"))
         }
-
+        
         data <- setNames(as.data.frame(data, stringsAsFactors = FALSE),
-            unlist(lapply(banner_info$multicols, function(x) c(x, if (banner_info$empty_col && !latex) "empty"))))
-
-        return(data)
-    }, simplify = FALSE)
+                         unlist(lapply(banner_info$multicols, function(x) c(x, if (banner_info$empty_col && !latex) "empty"))))
+        
+        data_list[[dt]] = data
+    }
 
     unweighted_n <- getItemData(var$crosstabs[[banner_name]], "base",
         empty_col = banner_info$empty_col && !latex, round = FALSE)
@@ -197,8 +209,11 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
         names(data_list$body) <- var[["subnames"]]
         data_list <- data_list["body"] # We only keep the body for arrays
+        rownames <- var[["subnames"]]
+    } else {
+        rownames <- unlist(lapply(data_list, rownames), use.names = FALSE)
     }
-
+    
     return(
         structure(
             list(
@@ -210,7 +225,8 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
                 min_cell_top = min_cell_top,
                 min_cell_body = min_cell,
                 min_cell_bottom = min_cell_bottom,
-                min_cell = min_cell_rep
+                min_cell = min_cell_rep,
+                rownames = rownames
             ),
             class = class(var)
         )
@@ -273,8 +289,17 @@ reformatLatexResults <- function(result, banner, theme) {
     } else {
         banner_info <- lapply(banner, getBannerInfo, theme=theme)
     }
+    
+    results <- list()
+    for(bn in names(banner_info)) {
+        results[[bn]] = reformatVar(
+            var = result, 
+            banner_name = bn, 
+            theme = theme, 
+            proportions = theme$proportions,
+            banner_info = banner_info[[bn]], 
+            latex = TRUE)
+    }
 
-    return(sapply(names(banner_info), function(bn)
-            reformatVar(var = result, banner_name = bn, theme = theme, proportions = theme$proportions,
-                banner_info = banner_info[[bn]], latex = TRUE), simplify = FALSE))
+    return(results)
 }
