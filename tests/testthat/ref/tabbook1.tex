@@ -22,7 +22,7 @@
 \fancyhead{}
 \fancyhead[L]{{\fontsize{16}{24}\textbf{Example Dataset with Nets}}}
 \newcolumntype{d}{D{.}{.}{3.2}}
-\newcolumntype{g}{D{\%}{\%}{5.0}}
+\newcolumntype{g}{D{\%}{\%}{3.0}}
 \usepackage{float}
 \usepackage{marginnote}
 \setlength\extrarowheight{2pt}
@@ -37,7 +37,7 @@
 \let\PBS=\PreserveBackslash
 \newcommand{\longtablesep}{\endfirsthead \multicolumn{2}{c}{\textit{}} \\ \endhead \multicolumn{2}{c}{\textit{}} \\ \endfoot \endlastfoot}
 \usepackage[titles]{tocloft}
-\newcommand{\cftchapfont}{\fontsize{12}{18}}
+\newcommand{\cftchapfont}{12}
 \newcommand{\formatvardescription}[1]{#1}
 \newcommand{\formatvarname}[1]{#1}
 \newcommand{\formatvaralias}[1]{#1}
@@ -86,19 +86,19 @@
 \begin{longtable}{@{\extracolsep{\fill}}>{\hangindent=1em \PBS \raggedright \hspace{0pt}}b{1.5in}*{4}{r}}}
 
 \begin{document}
-\begin{tabular}{ll}
-\end{tabular}
-
-{
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{\fill}
 \setlength{\LTcapwidth}{\textwidth}
 \vspace{.25in}
 
 
+
+
+{
 %% here's where individual input starts %%
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 1. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
@@ -130,9 +130,11 @@ Bird & 38\% & 44\% & 35\% & 30\% \\
 Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{8} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 2. What is your favorite pet?}
 \hangindent=0em \parbox{9in}{
@@ -171,9 +173,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{13} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{4} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 3A. Name the kinds of pets you have at these locations. — Home}
 \hangindent=0em \parbox{9in}{
@@ -208,9 +212,11 @@ Totals & 101\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{6} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 3B. Name the kinds of pets you have at these locations. — Work}
 \hangindent=0em \parbox{9in}{
@@ -245,9 +251,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{8} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 4. }
 \hangindent=0em \parbox{9in}{
@@ -286,9 +294,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 5. How many dogs do you have?}
 \hangindent=0em \parbox{9in}{
@@ -325,9 +335,11 @@ Totals & 100\% & 99\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 6. How many dogs do you have?}
 \hangindent=0em \parbox{9in}{
@@ -366,9 +378,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{6} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 7. }
 \hangindent=0em \parbox{9in}{
@@ -405,9 +419,11 @@ Totals & 100\% & 98\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 8. }
 \hangindent=0em \parbox{9in}{
@@ -448,9 +464,11 @@ Totals & 99\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 9. }
 \hangindent=0em \parbox{9in}{
@@ -481,9 +499,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 10. }
 \hangindent=0em \parbox{9in}{
@@ -516,9 +536,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 11. }
 \hangindent=0em \parbox{9in}{
@@ -555,9 +577,11 @@ Totals & 99\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 12. }
 \hangindent=0em \parbox{9in}{
@@ -588,9 +612,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 13. What is your favorite pet?}
 \hangindent=0em \parbox{9in}{
@@ -637,9 +663,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 14. Numeric data with values less then 0.}
 \hangindent=0em \parbox{9in}{
@@ -679,9 +707,11 @@ Totals & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{9} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
+\begin{center}
 \tbltopa
 \addcontentsline{lot}{table}{ 15. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
@@ -715,6 +745,7 @@ Unweighted N: Min & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{2} & \multicolumn
 Unweighted N: Max & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+\end{center}
 \clearpage
 
 
