@@ -40,10 +40,16 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   if (!is.null(weight)) {
     if (crunch::is.variable(weight)) { weight <- crunch::alias(weight) }
     if (!weight %in% all_aliases) {
-      stop("`weight`, if provided, must be a valid variable in `dataset`. '", weight, "' is not found.")
+      stop("`weight`, if provided, must be a valid variable in `dataset`. '",
+           weight, "' is not found."
+      )
     }
     if (!weight %in% weightVariables(dataset)) {
-      stop("`weight`, if provided, must be a valid weight variable in `dataset`. '", weight, "' is not a weight variable.")
+      stop(
+        "`weight`, if provided, must be a valid weight variable in `dataset`. '",
+        weight,
+        "' is not a weight variable."
+      )
     }
   }
   if (!is.null(banner) && !is(banner, "Banner")) {
