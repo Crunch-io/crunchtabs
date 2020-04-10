@@ -13,7 +13,7 @@ jobs:
     - name: Install tinytex
       run: |
         Rscript -e "install.packages(c('tinytex', 'httptest'))"
-        Rscript -e "tinytex::install_prebuilt()"
+        Rscript -e "tinytex::install_tinytex()"
     - name: Build
       run: R CMD build --no-build-vignettes --no-manual .
     - name: Check
