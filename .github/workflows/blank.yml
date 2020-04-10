@@ -11,9 +11,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install tinytex
-      run: | 
+      run: |
         Rscript -e "install.packages(c('tinytex', 'httptest'))"
-        Rscript -e "tinytex::install_tinytex()"
+        Rscript -e "tinytex::install_prebuilt()"
     - name: Build
       run: R CMD build --no-build-vignettes --no-manual .
     - name: Check
