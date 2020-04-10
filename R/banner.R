@@ -92,11 +92,24 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
     }, simplify = FALSE), class = "Banner")
 }
 
+#' Recode Categories
+#' 
+#' Given a question alias, recode the responses in 
+#' that question based on the recodes provided. 
+#' 
+#' @param alias A question alias
+#' @param responses The responses for the specified question alias
+#' @param recodes A character vector of recodes for those responses
 recode_categories <- function(alias, responses, recodes) {
-    error_if_items(setdiff(names(recodes), c(names(responses), ".default")),
+    error_if_items(
+        setdiff(names(recodes), c(names(responses), ".default")),
         paste0("Responses in `recodes` must be included in variable responses. This is not true for {items} in '", alias, "'."),
-        quotes = TRUE, and = TRUE)
-    if (!is.null(recodes)) recodes <- lapply(recodes, function(r) return(r))
+        quotes = TRUE, 
+        and = TRUE
+    )
+    
+    if (!is.null(recodes)) 
+        recodes <- lapply(recodes, function(r) return(r))
 
     if (!is.null(recodes) && ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
             (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))]))))) {
