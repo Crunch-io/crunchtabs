@@ -10,7 +10,9 @@ Version: 1.2.1
 Authors@R: c(
     person("Persephone", "Tsebelis", role="aut"),
     person("Kamil", "Sedrowicz", role="aut"),
-    person("Neal", "Richardson", email="neal@crunch.io", role=c("aut", "cre")))
+    person("Neal", "Richardson", email="neal@crunch.io", role=c("aut")),
+    person("Brandon", "Bertelsen", email="brandon.bertelsen@yougov.com", role=c("aut", "cre"))
+)
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: LGPL (>= 3)
