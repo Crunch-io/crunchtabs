@@ -1,4 +1,6 @@
-# crunchtabs 1.2.1 (under development)
+# crunchtabs 1.2.1
+
+* Added new theme settings: latex_max_lines_for_tabular and latex_round_percentages_exception options.
 
 # crunchtabs 1.2.0
 
