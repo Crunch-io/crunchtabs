@@ -14,6 +14,6 @@ recode_categories(alias, responses, recodes)
 \item{recodes}{A character vector of recodes for those responses}
 }
 \description{
-Given a question alias, recode the responses in 
+Given a question alias, recode the responses in
 that question based on the recodes provided.
 }

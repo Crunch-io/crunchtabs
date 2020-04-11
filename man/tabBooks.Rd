@@ -6,6 +6,17 @@
 \usage{
 tabBooks(dataset, vars, banner, weight = NULL, topline = FALSE)
 }
+\arguments{
+\item{dataset}{A crunch dataset name}
+
+\item{vars}{A character vector of var names that exist within the crunch dataset}
+
+\item{banner}{A banner object from \link{banner}}
+
+\item{weight}{A weighting variable passed to \link{crunch::tabBook}}
+
+\item{topline}{Logical identifying if this is a topline only}
+}
 \description{
 Prepares the actual data for tabulation
 }

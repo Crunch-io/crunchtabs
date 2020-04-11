@@ -4,6 +4,11 @@
 #'
 #' @importFrom crunch multitables newMultitable tabBook allVariables aliases types type crtabs prop.table margin.table bases
 #' @importFrom digest digest
+#' @param dataset A crunch dataset name
+#' @param vars A character vector of var names that exist within the crunch dataset
+#' @param banner A banner object from \link{banner}
+#' @param weight A weighting variable passed to \link{crunch::tabBook}
+#' @param topline Logical identifying if this is a topline only
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 
   banner_flatten <- unique(unlist(banner, recursive = FALSE))
@@ -11,7 +16,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
   banner_use <- banner
   if (topline) { banner_use$Results[[2]] <- NULL }
 
-  multitable <- crunch::getMultitable(banner_flatten, dataset)
+  multitable <- getMultitable(banner_flatten, dataset)
   book <- crunch::tabBook(multitable, dataset = dataset[vars], weight = weight, output_format = "json")
   banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
     crunch::aliases(crunch::variables(book[[1]][[ix]]))[2] })
@@ -35,7 +40,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     is_crosstabs_array <- is_array_type && !topline
 
     valiases <- if (is_crosstabs_array) {
-      crunch::getSubAliases(crunch_cube)
+      getSubAliases(crunch_cube)
     } else {
       crunch::aliases(cube_variable)
     }
@@ -49,7 +54,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     metadata <- list(
       name = names(cube_variable),
       description = crunch::descriptions(cube_variable),
-      notes = notes(cube_variable),
+      notes = crunch::notes(cube_variable),
       type = var_type,
       no_totals = is_mr_type,
       mean_median = show_mean_median,
@@ -99,7 +104,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
       if (!is_mr_type) {
         bdata <- lapply(bdata, function(xi) {
           matrix(xi, nrow = nrow(pdata[[2]]), ncol = length(xi), byrow = TRUE,
-                 dimnames=list(rownames(pdata[[2]]), names(xi)))
+                 dimnames = list(rownames(pdata[[2]]), names(xi)))
         })
       }
 
@@ -134,7 +139,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 #' Given a Banner object and a dataset, find or create the corresponding Crunch multitable
 #'
 #' @param banner_flatten A banner object from \link{banner}
-#' @param dataset The name of the data
+#' @param dataset A CrunchDataset from \link{crunch::loadDataset}
 getMultitable <- function(banner_flatten, dataset) {
   mtvars <- paste0("`", setdiff(names(banner_flatten), "___total___"), "`")
   mt_name <- digest::digest(sort(mtvars), "md5")
