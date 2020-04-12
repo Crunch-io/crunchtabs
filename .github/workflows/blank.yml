@@ -6,14 +6,10 @@ name: CI
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 1beb/ygbds
+    container: 1beb/crunchtabs
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install tinytex
-      run: | 
-        Rscript -e "install.packages(c('tinytex', 'httptest'))"
-        Rscript -e "tinytex::install_tinytex()"
     - name: Build
       run: R CMD build --no-build-vignettes --no-manual .
     - name: Check
