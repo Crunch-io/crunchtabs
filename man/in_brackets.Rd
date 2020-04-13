@@ -10,5 +10,5 @@ in_brackets(...)
 \item{...}{Tex to be wrapped}
 }
 \description{
-Some tex styles only work within {}, like { \bf ...}
+Some tex styles only work within {}, like { \\bf ...}
 }

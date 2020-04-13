@@ -94,7 +94,7 @@ underline <- function(...) paste0("\\underline{", ..., "}")
 
 #' Bracket styling
 #'
-#' Some tex styles only work within {}, like { \bf ...}
+#' Some tex styles only work within {}, like { \\bf ...}
 #'
 #' @param ... Tex to be wrapped
 in_brackets <- function(...) c("{", ..., "}")

@@ -151,7 +151,12 @@ getMultitable <- function(banner_flatten, dataset) {
   return(multitable)
 }
 
-# TODO: Document
+#' Banner Data Recode
+#'
+#' Recodes the names of categories based
+#'
+#' @param b_table A categorical matrix
+#' @param b_recode A categorical matrix identifying the new category names
 bannerDataRecode <- function(b_table, b_recode) {
   names_mask <- (b_recode$old_categories %in% dimnames(b_table)[[b_recode$alias]]) &
     !is.na(b_recode$categories_out)
@@ -175,7 +180,13 @@ bannerDataRecode <- function(b_table, b_recode) {
   return(t_table)
 }
 
-# Return Excel-style column name.
+#' Return Excel-style column name.
+#'
+#' Returns an excel style column name. Useful
+#' for identifying a specific column. Column 1, would be A
+#' in Excel, column 100 would be CV in excel
+#'
+#' @param n An integer identfying the column number
 get_grid_number <- function(n) {
   out <- c()
   while (n > 0) {
@@ -186,6 +197,16 @@ get_grid_number <- function(n) {
   paste0(out, collapse = "")
 }
 
+#' Create row data
+#'
+#' Adjust table data to match the desired output
+#' depending on the type of data being presented
+#'
+#' @param data An object containing data. Either a crosstab array or topline array.
+#' @param row An integer identifying the row number
+#' @param is_crosstabs_array Logical, is this a crosstab array?
+#' @param is_toplines_array Logical, is this a toplines array?
+#' @param is_base Logical, is this a row of bases?
 row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) {
   dimnames(data$`___total___`)$total <- "Total"
   data <- lapply(data, function(dt){
