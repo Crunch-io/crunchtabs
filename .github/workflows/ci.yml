@@ -15,9 +15,9 @@ jobs:
       run: |
         R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
     - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          repository: yougov-datascience/crunchtabs_inernal_tests
-          event-type: internal_tests
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.PAT_TOKEN }}
+        repository: yougov-datascience/crunchtabs_inernal_tests
+        event-type: internal_tests
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
