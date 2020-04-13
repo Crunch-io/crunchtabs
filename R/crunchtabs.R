@@ -9,7 +9,7 @@
 NULL
 
 #' @importFrom crunch notifyIfNewVersion
-.onLoad <- function (lib, pkgname="crunchtabs") {
-    crunch::notifyIfNewVersion("crunchtabs", github="Crunch-io/crunchtabs")
-    invisible()
+.onLoad <- function(lib, pkgname = "crunchtabs") {
+  crunch::notifyIfNewVersion("crunchtabs", github = "Crunch-io/crunchtabs")
+  # invisible() does nothing
 }
