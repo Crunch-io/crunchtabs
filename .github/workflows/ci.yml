@@ -16,4 +16,4 @@ jobs:
         R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
     - name: Repository Dispatch
       run: | 
-        curl -X POST -u "${{ secrets.PAT_USERNAME }}:{{ secrets.PAT_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/yougov-datascience/crunchtabs_internal_tests/dispatches --data '{"event_type": "test"}'
+        curl -X POST -u "${{ secrets.PAT_USERNAME }}:{{ secrets.PAT_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/yougov-datascience/crunchtabs_internal_tests/dispatches --data '{"event_type": "crunchtabs_hook"}'
