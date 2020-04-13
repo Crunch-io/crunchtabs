@@ -1,0 +1,19 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 1beb/crunchtabs
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: R CMD build --no-build-vignettes --no-manual .
+    - name: Check
+      run: |
+        R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
+    - name: Repository Dispatch
+      run: |
+        curl -X POST -u "${{ secrets.PAT_USERNAME }}:{{ secrets.PAT_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/yougov-datascience/crunchtabs_internal_tests/dispatches --data '{"event_type": "crunchtabs_hook"}'
