@@ -17,4 +17,4 @@ jobs:
     - name: Dispatch for Internal Integration Tests
       run: |
         echo "curl here"
-        # curl -XPOST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/yougov-datacience/crunchtabs_internal_tests/dispatches --data '{"event_type": "run_integration_tests"}'
+        curl -XPOST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/yougov-datacience/crunchtabs_internal_tests/dispatches --data '{"event_type": "run_integration_tests"}'
