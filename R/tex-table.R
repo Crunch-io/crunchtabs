@@ -369,10 +369,11 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
   # Issue # 67: Add smart widths
   if (is.na(theme$format_label_column$col_width)) {
 
-    col_width_perc = c(.18, .18, .17, 0.16, 0.15, 0.14, 0.12, 0.10)[col_names_len]
+    col_width_perc = c(.15, .15, .15, 0.15, 0.15, 0.14, 0.12, 0.10)[col_names_len]
+    first_col_width = 6.5 - (0.6 * (col_names_len)) - 0.6 - 0.1 * col_names_len
+    first_col_width = ifelse(first_col_width < 1.5, 1.5, first_col_width)
 
     col_width <- paste(round(col_width_perc, digits = 2), "\\mywidth", sep = "")
-    first_col_width <- rev(seq(1.5, 4.5, by = 0.5))[col_names_len]
 
     col.header <- paste0("B{\\centering}{", col_width, "}")
     col.header <- paste0(
