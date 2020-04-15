@@ -364,13 +364,26 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                          "\\\\\n")
   }
 
-
-
   # Issue # 67: Add smart widths
   if (is.na(theme$format_label_column$col_width)) {
+    # \\mywidth == 3.5in
+    # page width topline = 6.5in
+    # spacing between response column 0.1in
+    # minimum width of stub = 1.5in, leaving 5.5in to work with
+    # 10 or more response category case, dealt with above
 
-    col_width_perc = c(.15, .15, .15, 0.15, 0.15, 0.14, 0.12, 0.10)[col_names_len]
-    first_col_width = 6.5 - (0.6 * (col_names_len)) - 0.6 - 0.1 * col_names_len
+
+    col_names_adj = seq(0,1,length.out=9)[col_names_len]
+
+    col_width_factor = seq(0.75, 0.55, length.out = 9)[col_names_len]
+    col_width_perc = round(col_width_factor / 3.5, 2)
+    first_col_width = 6.5 -                     # page width
+      (col_width_factor * col_names_len) -      # subtract real col widths
+      (0.1 * (col_names_len + col_names_adj)) - # spacing 0.1in per name
+      col_width_factor/(9 - col_names_len) -    # scaled column_width_factor
+      0.275                                     # match left indent (~1em)
+
+    # Never go below 1.5in
     first_col_width = ifelse(first_col_width < 1.5, 1.5, first_col_width)
 
     col_width <- paste(round(col_width_perc, digits = 2), "\\mywidth", sep = "")
@@ -449,11 +462,8 @@ latexTableName <- function(var, theme) {
     var_info$formatvarsubname <- NULL
   }
   if (length(var_info) == 0) {
-    # NPR: I guess this is a fallback to print 404 if there's no variable
-    # metadata? Is this likely even valid TeX?
-    # PT: If there's no metadata, it just makes a bg_color box because otherwise
-    # the formatting is off. 404 is just an internal joke but it's not visible
-    # because the text is the same color as the background.
+    # TODO: This shouldn't ever happen. User should be warned
+    warning("Missing variable: ", alias(var))
     var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
   }
   out <- paste0(
@@ -470,7 +480,7 @@ latexTableName <- function(var, theme) {
     out <- paste0(
       "\\colorbox{", bg_color, "}{\n",
       out,
-      "}" # Should put a \n before this
+      "\\hspace*{1ex}}" # Adding horizontal space to match left padding
     )
   }
   return(paste(out, newline))
