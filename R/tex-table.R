@@ -373,7 +373,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     # 10 or more response category case, dealt with above
 
 
-    col_names_adj = seq(0,1,length.out=9)[col_names_len]
+    col_names_adj = seq(0,1,length.out = 9)[col_names_len]
 
     col_width_factor = seq(0.75, 0.55, length.out = 9)[col_names_len]
     col_width_perc = round(col_width_factor / 3.5, 2)
