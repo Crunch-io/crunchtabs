@@ -372,7 +372,6 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     # minimum width of stub = 1.5in, leaving 5.5in to work with
     # 10 or more response category case, dealt with above
 
-
     col_names_adj = seq(0,1,length.out = 9)[col_names_len]
 
     col_width_factor = seq(0.75, 0.55, length.out = 9)[col_names_len]
@@ -405,6 +404,12 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 
   } else {
 
+    if (is.na(theme$format_label_column)) {
+      width_inches = 1.5
+    } else {
+      width_inches = theme$format_label_column$col_width
+    }
+
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
     col.header <- paste0("B{\\centering}{", col_width, "}")
     col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
@@ -414,7 +419,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
       "{",
       "@{\\extracolsep{\\fill}}",
       "p{0.1in}",
-      "B{\\raggedright}{", theme$format_label_column$col_width, "in}",
+      "B{\\raggedright}{", width_inches, "in}",
       col.header,
       "}"
     )
@@ -501,7 +506,12 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
   binfo <- getBannerInfo(banner, theme)
   col_num_sum <- length(unlist(binfo$multicols))
 
-  banner_width <- round((page_width - theme$format_label_column$col_width)/col_num_sum - .1, 2)
+  if (is.na(theme$format_label_column$col_width)) {
+    default_width = 1.5
+  } else {
+    default_width = theme$format_label_column$col_width
+  }
+  banner_width <- round((page_width - default_width)/col_num_sum - .1, 2)
   banner_def_body1 <- makeLatexBanner(binfo, width = banner_width)
   banner_def_body2 <- paste(
     "&",
@@ -542,7 +552,7 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
         "{",
         "@{\\extracolsep{\\fill}}",
         ">{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}",
-        "b{", theme$format_label_column$col_width, "in}",
+        "b{", default_width, "in}",
         "*{", col_num_sum, "}",
         "{", theme$latex_table_align, "}",
         "}"
