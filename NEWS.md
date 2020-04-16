@@ -1,9 +1,10 @@
 ## crunchtabs 1.2.2
 
-* Make categorical arrays in toplines smarter
-* Add ability to specify column width of stub in crosstab and categorical array via format_value_column_exceptions
-* Adding significant documentation 
-* Adding more tests 
+* Make categorical arrays in toplines smarter (#67)
+* Add ability to specify column width of stub in crosstab and categorical array via format_value_column_exceptions (#77)
+* Adding significant documentation (#66)
+* Adding more tests (#11)
+* Updates to CI and development setup (#68)
 
 ## crunchtabs 1.2.1
 
