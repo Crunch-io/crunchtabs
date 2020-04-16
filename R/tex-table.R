@@ -405,9 +405,15 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
   } else {
 
     if (is.na(theme$format_label_column)) {
-      width_inches = 1.5
+      label_width = 1.5
     } else {
-      width_inches = theme$format_label_column$col_width
+      # Global override, exception overrules
+      label_width = theme$format_label_column$col_width
+    }
+
+    check = theme$format_label_column_exceptions[var$alias]
+    if (!is.na(check) & !is.null(check)) {
+      label_width = theme$format_label_column_exceptions[var$alias]
     }
 
     col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
@@ -419,7 +425,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
       "{",
       "@{\\extracolsep{\\fill}}",
       "p{0.1in}",
-      "B{\\raggedright}{", width_inches, "in}",
+      "B{\\raggedright}{", label_width, "in}",
       col.header,
       "}"
     )
