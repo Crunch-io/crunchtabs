@@ -245,7 +245,9 @@ tableHeader.CrossTabVar <- function(var, theme) {
 
   label_width = "1.5in" # Default!
   check = theme$format_label_column_exceptions[var$alias]
-  if (!is.na(check) & !is.null(check)) {
+  check = ifelse(is.null(check), NA_real_, check)
+
+  if (!is.na(check)) {
     label_width = paste0(theme$format_label_column_exceptions[var$alias], "in")
   }
 
