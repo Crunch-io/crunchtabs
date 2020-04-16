@@ -108,7 +108,7 @@ latexTableBody <- function(df, theme) {
   }
 
   # Escape everything
-  data <- lapply(data, function(dt) dfapply(dt, texEscape, Names=TRUE))
+  data <- lapply(data, function(dt) dfapply(dt, texEscape, Names = TRUE))
 
   # Apply additional styles to whole table sections
   # TODO: add tests for this
@@ -117,7 +117,7 @@ latexTableBody <- function(df, theme) {
       data[[nm]],
       applyLatexStyle,
       theme[[paste0("format_", nm)]],
-      Names=TRUE
+      Names = TRUE
     )
   }
 
@@ -142,7 +142,7 @@ latexTableBody <- function(df, theme) {
 
     # Also, IMPORTANT: cat arrays get displayed transposed. First, paste
     # by column to generate the table rows
-    rows <- lapply(data$body, paste, collapse=" & ")
+    rows <- lapply(data$body, paste, collapse = " & ")
     # Add to each row an empty cell (idk why), the row name (from the df
     # column names), and a newline, and collapse them into a single string
     return(paste(
@@ -151,7 +151,7 @@ latexTableBody <- function(df, theme) {
       "&",
       rows,
       newline,
-      collapse="\n"
+      collapse = "\n"
     ))
   }
 
@@ -375,18 +375,73 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
                          paste(c("", "", texEscape(col_names), ""), collapse = " & "),
                          "\\\\\n")
   }
-  col.header <- paste0("B{\\centering}{", col_width, "}")
-  col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
 
-  tab_definition <- paste0(
-    "\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}",
-    "{",
-    "@{\\extracolsep{\\fill}}",
-    "p{0.1in}",
-    "B{\\raggedright}{", theme$format_label_column$col_width, "in}",
-    col.header,
-    "}"
-  )
+  # Issue # 67: Add smart widths
+  if (is.na(theme$format_label_column$col_width)) {
+    # \\mywidth == 3.5in
+    # page width topline = 6.5in
+    # spacing between response column 0.1in
+    # minimum width of stub = 1.5in, leaving 5.5in to work with
+    # 10 or more response category case, dealt with above
+
+    col_names_adj = seq(0,1,length.out = 9)[col_names_len]
+
+    col_width_factor = seq(0.75, 0.55, length.out = 9)[col_names_len]
+    col_width_perc = round(col_width_factor / 3.5, 2)
+    first_col_width = 6.5 -                     # page width
+      (col_width_factor * col_names_len) -      # subtract real col widths
+      (0.1 * (col_names_len + col_names_adj)) - # spacing 0.1in per name
+      col_width_factor/(9 - col_names_len) -    # scaled column_width_factor
+      0.275                                     # match left indent (~1em)
+
+    # Never go below 1.5in
+    first_col_width = ifelse(first_col_width < 1.5, 1.5, first_col_width)
+
+    col_width <- paste(round(col_width_perc, digits = 2), "\\mywidth", sep = "")
+
+    col.header <- paste0("B{\\centering}{", col_width, "}")
+    col.header <- paste0(
+      paste(rep(col.header, col_names_len + 1), collapse = "")
+    )
+
+    tab_definition <- paste0(
+      "\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}",
+      "{",
+      "@{\\extracolsep{\\fill}}",
+      "p{0.1in}",
+      "B{\\raggedright}{", first_col_width , "in}",
+      col.header,
+      "}"
+    )
+
+  } else {
+
+    if (is.na(theme$format_label_column)) {
+      label_width = 1.5
+    } else {
+      # Global override, exception overrules
+      label_width = theme$format_label_column$col_width
+    }
+
+    check = theme$format_label_column_exceptions[var$alias]
+    if (!is.na(check) & !is.null(check)) {
+      label_width = theme$format_label_column_exceptions[var$alias]
+    }
+
+    col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
+    col.header <- paste0("B{\\centering}{", col_width, "}")
+    col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
+
+    tab_definition <- paste0(
+      "\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}",
+      "{",
+      "@{\\extracolsep{\\fill}}",
+      "p{0.1in}",
+      "B{\\raggedright}{", label_width, "in}",
+      col.header,
+      "}"
+    )
+  }
 
   toplineTableDef(
     var,
@@ -430,11 +485,8 @@ latexTableName <- function(var, theme) {
     var_info$formatvarsubname <- NULL
   }
   if (length(var_info) == 0) {
-    # NPR: I guess this is a fallback to print 404 if there's no variable
-    # metadata? Is this likely even valid TeX?
-    # PT: If there's no metadata, it just makes a bg_color box because otherwise
-    # the formatting is off. 404 is just an internal joke but it's not visible
-    # because the text is the same color as the background.
+    # TODO: This shouldn't ever happen. User should be warned
+    warning("Missing variable: ", alias(var))
     var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
   }
   out <- paste0(
@@ -451,7 +503,7 @@ latexTableName <- function(var, theme) {
     out <- paste0(
       "\\colorbox{", bg_color, "}{\n",
       out,
-      "}" # Should put a \n before this
+      "\\hspace*{1ex}}" # Adding horizontal space to match left padding
     )
   }
   return(paste(out, newline))
@@ -472,7 +524,12 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
   binfo <- getBannerInfo(banner, theme)
   col_num_sum <- length(unlist(binfo$multicols))
 
-  banner_width <- round((page_width - theme$format_label_column$col_width)/col_num_sum - .1, 2)
+  if (is.na(theme$format_label_column$col_width)) {
+    default_width = 1.5
+  } else {
+    default_width = theme$format_label_column$col_width
+  }
+  banner_width <- round((page_width - default_width)/col_num_sum - .1, 2)
   banner_def_body1 <- makeLatexBanner(binfo, width = banner_width)
   banner_def_body2 <- paste(
     "&",

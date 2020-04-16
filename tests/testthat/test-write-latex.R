@@ -28,8 +28,8 @@ with_temp_dir({
         tex <- readLines("Example Dataset with Nets.tex")
         expect_equal(tex[1], "\\documentclass[landscape]{article}")
         ref <- readLines(tabbook_reference)
-        expect_identical(tex, ref)
-        if (!identical(tex, ref)) {
+        expect_identical(trimws(tex), trimws(ref))
+        if (!identical(trimws(tex), trimws(ref))) {
             system(paste("diff", tabbook_reference, shQuote("Example Dataset with Nets.tex")))
         }
         # To update reference table on NPR's computer:
@@ -64,8 +64,8 @@ with_temp_dir({
         tex <- readLines("topline1.tex")
         expect_equal(tex[1], "\\documentclass{article}")
         ref <- readLines(topline_reference)
-        expect_identical(tex, ref)
-        if (!identical(tex, ref)) {
+        expect_identical(trimws(tex), trimws(ref))
+        if (!identical(trimws(tex), trimws(ref))) {
             system(paste("diff", topline_reference, "topline1.tex"))
         }
         # To update reference table on NPR's computer:
