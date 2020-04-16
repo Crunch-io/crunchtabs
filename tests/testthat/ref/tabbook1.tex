@@ -56,14 +56,14 @@
 \midrule
 \endhead
 \midrule
-& \multicolumn{5}{c}{} \\ 
+& \multicolumn{5}{c}{} \\
 \bottomrule
 \endfoot
 \bottomrule
 \endlastfoot
 }
-\newcommand{\tbltopa}{
-\begin{longtable}{@{\extracolsep{\fill}}>{\hangindent=1em \PBS \raggedright \hspace{0pt}}b{1.5in}*{5}{r}}}
+\newcommand{\tbltopa[1]}{
+\begin{longtable}{@{\extracolsep{\fill}}>{\hangindent=1em \PBS \raggedright \hspace{0pt}}b{#1}*{5}{r}}}
 
 \newcommand{\bannerb}[1]{\toprule
  & \multicolumn{1}{c}{\bf } & \multicolumn{3}{c}{\bf Age} \\ \cmidrule(lr{.75em}){3-5}
@@ -76,14 +76,14 @@
 \midrule
 \endhead
 \midrule
-& \multicolumn{4}{c}{} \\ 
+& \multicolumn{4}{c}{} \\
 \bottomrule
 \endfoot
 \bottomrule
 \endlastfoot
 }
-\newcommand{\tbltopb}{
-\begin{longtable}{@{\extracolsep{\fill}}>{\hangindent=1em \PBS \raggedright \hspace{0pt}}b{1.5in}*{4}{r}}}
+\newcommand{\tbltopb[1]}{
+\begin{longtable}{@{\extracolsep{\fill}}>{\hangindent=1em \PBS \raggedright \hspace{0pt}}b{#1}*{4}{r}}}
 
 \begin{document}
 \setlength{\LTleft}{0pt}
@@ -99,10 +99,10 @@
 
 
 \begin{center}
-\tbltopa
+\tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 1. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{1. Do you have any of these animals as pets? Please select all that apply.}\\ 
+\formatvardescription{1. Do you have any of these animals as pets? Please select all that apply.}\\
 \formatvarfiltertext{Uniform base is True.}} \\
 \addlinespace
 \bannera{}
@@ -118,7 +118,7 @@ Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \vspace{-.25in}
-\tbltopb
+\tbltopb[1.5in]
 \addlinespace
 \bannerb{}
 
@@ -135,7 +135,7 @@ Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
-\tbltopa
+\tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 2. What is your favorite pet?}
 \hangindent=0em \parbox{9in}{
 \formatvardescription{2. What is your favorite pet?}} \\
@@ -157,7 +157,7 @@ Unweighted N & \multicolumn{1}{c}{13} & \multicolumn{1}{c}{5} & \multicolumn{1}{
 
 
 \vspace{-.25in}
-\tbltopb
+\tbltopb[1.5in]
 \addlinespace
 \bannerb{}
 
@@ -178,7 +178,7 @@ Unweighted N & \multicolumn{1}{c}{13} & \multicolumn{1}{c}{5} & \multicolumn{1}{
 
 
 \begin{center}
-\tbltopa
+\tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 3A. Name the kinds of pets you have at these locations. — Home}
 \hangindent=0em \parbox{9in}{
 \formatvardescription{3A. Name the kinds of pets you have at these locations. — Home}} \\
@@ -198,7 +198,7 @@ Unweighted N & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{3} & \multicolumn{1}{
 
 
 \vspace{-.25in}
-\tbltopb
+\tbltopb[1.5in]
 \addlinespace
 \bannerb{}
 
@@ -671,7 +671,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 \tbltopa
 \addcontentsline{lot}{table}{ 14. Numeric data with values less then 0.}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{14. Numeric data with values less then 0.}\\ 
+\formatvardescription{14. Numeric data with values less then 0.}\\
 \formatvarfiltertext{Not useful.}} \\
 \addlinespace
 \bannera{}
@@ -715,7 +715,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 \tbltopa
 \addcontentsline{lot}{table}{ 15. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{15. Do you have any of these animals as pets? Please select all that apply.}\\ 
+\formatvardescription{15. Do you have any of these animals as pets? Please select all that apply.}\\
 \formatvarfiltertext{Uniform base is False.}} \\
 \addlinespace
 \bannera{}

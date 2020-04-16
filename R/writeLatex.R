@@ -131,7 +131,7 @@ latexReportTables <- function (results, banner, theme) {
 
   table_bodies <- list()
 
-  for(i in 1:length(results)) { # convert to loop for debug
+  for (i in 1:length(results)) { # convert to loop for debug
     x = results[[i]]
 
     # Do some munging and generate the table bodies to match those header(s)

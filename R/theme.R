@@ -29,6 +29,7 @@
 #'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
 #'       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 #' }
+#' #' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 #' \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -244,7 +245,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
                                            latex_add_parenthesis = FALSE, latex_adjust = "c"),
                    format_totals_row = c(norm, name = "Totals",
                                          position_top = FALSE, position_bottom = TRUE),
-                   format_label_column = c(norm, col_width = 1.5, extend_borders = FALSE),
+                   format_label_column = c(norm, col_width = NA_real_ , extend_borders = FALSE),
                    format_totals_column = norm,
                    digits = 0,
                    one_per_sheet = TRUE,
@@ -366,8 +367,9 @@ validators_to_use <- list(
   format_banner_names = list(missing = TRUE, include = norm),
   format_title = list(missing = TRUE, include = norm),
   format_headers = list(missing = TRUE, include = norm),
-  format_label_column = list(missing = FALSE,
+  format_label_column = list(missing = TRUE,
                              include = c(norm, "col_width", "extend_borders")),
+  format_label_column_exceptions = c(class = "numeric", len = NA, missing = TRUE),
   format_means = list(missing = TRUE,
                       include = c(norm, "name", "position_top", "position_bottom")),
   format_medians = list(missing = TRUE,
@@ -435,20 +437,22 @@ validators_to_use <- list(
 #'
 #' @param theme An object from \link{themeNew}
 theme_validator <- function(theme) {
-  theme_required <- c("digits", "digits_final", "excel_footer",
-                      "excel_freeze_column", "excel_header", "excel_orientation",
-                      "excel_percent_sign", "excel_show_grid_lines", "excel_table_border",
-                      "font", "font_color", "font_size", "format_banner_categories",
-                      "format_banner_names", "format_banner_split", "format_headers",
-                      "format_label_column", "format_means", "format_medians", "format_min_base",
-                      "format_subtitle", "format_subtotals", "format_title",
-                      "format_totals_column", "format_totals_row", "format_unweighted_n",
-                      "format_var_alias", "format_var_description", "format_var_filtertext",
-                      "format_var_name", "format_var_subname", "format_weighted_n", "halign",
-                      "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
-                      "latex_multirowheaderlines", "latex_round_percentages",
-                      "latex_round_percentages_exception", "latex_table_align", "logo",
-                      "one_per_sheet", "valign")
+  theme_required <- c(
+    "digits", "digits_final", "excel_footer",
+    "excel_freeze_column", "excel_header", "excel_orientation",
+    "excel_percent_sign", "excel_show_grid_lines", "excel_table_border",
+    "font", "font_color", "font_size", "format_banner_categories",
+    "format_banner_names", "format_banner_split", "format_headers",
+    "format_label_column", "format_label_column_exceptions", "format_means",
+    "format_medians", "format_min_base",
+    "format_subtitle", "format_subtotals", "format_title",
+    "format_totals_column", "format_totals_row", "format_unweighted_n",
+    "format_var_alias", "format_var_description", "format_var_filtertext",
+    "format_var_name", "format_var_subname", "format_weighted_n", "halign",
+    "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
+    "latex_multirowheaderlines", "latex_round_percentages",
+    "latex_round_percentages_exception", "latex_table_align", "logo",
+    "one_per_sheet", "valign")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {
@@ -459,8 +463,10 @@ theme_validator <- function(theme) {
   errors <- unlist(sapply(theme_required, function(name) {
     theme_validators$find_validator(theme[[name]], name)
   }))
-  if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors,
-                                                                 "`digits` must be less than 20.")
+
+  if (is.numeric(theme$digits) && theme$digits > 20)
+    errors <- c(errors,"`digits` must be less than 20.")
+
   if (length(errors) != 0) {
     if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"),
                                  "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)
@@ -468,97 +474,3 @@ theme_validator <- function(theme) {
   }
 }
 
-#' Project-specific themes
-#'
-#' These are some default themes for specific projects
-#'
-#' @param logo an image of the logo to use (default: `NULL`)
-#'
-#' @return a new theme object
-#'
-#' @name project-themes
-NULL
-
-#' @export
-#' @rdname project-themes
-themeUKPolitical <- function() {
-  themeNew(
-    default_theme = themeDefaultExcel(font = "Arial", font_size = 8),
-    format_title = list(font_size = 14),
-    format_banner_names = list(
-      font = "Arial Narrow", font_size = 8,
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
-    format_banner_categories = list(
-      font = "Arial Narrow", font_size = 8,
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
-    format_var_alias = NULL,
-    format_var_name = NULL,
-    format_var_description = list(
-      repeat_for_subs = FALSE, decoration = "bold",
-      font_color = "black"),
-    format_var_filtertext = list(repeat_for_subs = FALSE),
-    format_var_subname = list(decoration = "bold", font_color = "black"),
-    format_label_column = list(halign = "right", col_width = 80, extend_borders = FALSE),
-    format_subtotals = list(background_color = "#b8cce4"),
-    format_headers = list(background_color = "#b8cce4"),
-    format_weighted_n = list(
-      name = "Weighted Sample",
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
-      border_style = "thin", border_color = "black", position_bottom = FALSE,
-      position_fixed = TRUE, halign = "center"),
-    format_unweighted_n = list(
-      name = "Unweighted Sample", font_color = "#969696",
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
-      position_bottom = FALSE, position_fixed = TRUE),
-    format_totals_column = list(decoration = "bold"),
-    format_means = NULL,
-    format_medians = NULL,
-    format_totals_row = NULL,
-    format_min_base = list(min_base = 50, mask = NULL, decoration = "italic"),
-    excel_freeze_column = 2,
-    digits_final = 0,
-    excel_percent_sign = FALSE,
-    latex_headtext = "",
-    latex_foottext = "",
-    latex_table_align = "r",
-    latex_multirowheaderlines = FALSE,
-    latex_max_lines_for_tabular = 0)
-}
-
-#' @export
-#' @rdname project-themes
-themeHuffPoToplines <- function(logo = NULL) {
-  themeNew(
-    default_theme = themeDefaultLatex(),
-    logo = logo,
-    format_title = list(decoration = "bold"),
-    format_var_description = list(
-      include_q_number = TRUE, decoration = "bold",
-      background_color = "gray"),
-    format_var_filtertext = list(decoration = "italic", font_size = 8),
-    format_totals_row = NULL,
-    format_unweighted_n = NULL,
-    latex_headtext = "tbc",
-    latex_foottext = "tbc",
-    latex_table_align = "r",
-    one_per_sheet = FALSE)
-}
-
-#' @export
-#' @rdname project-themes
-themeHuffPoCrosstabs <- function(logo = NULL) {
-  themeNew(
-    default_theme = themeDefaultLatex(),
-    logo = logo,
-    format_title = list(decoration = "bold"),
-    format_subtitle = list(decoration = "bold"),
-    format_min_base = list(min_base = 30, mask = "*"),
-    format_var_name = list(include_q_number = TRUE, decoration = "bold"),
-    format_var_description = list(include_q_number = FALSE),
-    format_var_filtertext = list(decoration = "italic", font_size = 8),
-    format_unweighted_n = list(latex_add_parenthesis = TRUE),
-    latex_headtext = "tbc",
-    latex_foottext = "tbc",
-    latex_table_align = "r",
-    one_per_sheet = TRUE)
-}

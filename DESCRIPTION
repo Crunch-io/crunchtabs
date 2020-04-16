@@ -21,7 +21,8 @@ Depends:
 Imports:
     openxlsx,
     digest,
-    methods
+    methods,
+    tinytex
 Suggests:
     covr,
     httptest (>= 2.0.0),
