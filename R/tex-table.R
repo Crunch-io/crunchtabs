@@ -416,7 +416,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
 
   } else {
 
-    if (is.na(theme$format_label_column)) {
+    if (is.na(theme$format_label_column$col_width)) {
       label_width = 1.5
     } else {
       # Global override, exception overrules
