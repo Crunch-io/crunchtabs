@@ -1,9 +1,10 @@
 name: internal_tests
 
-on: [push]
-  branches:
-    - develop
-    - master
+on:
+  push:
+    branches:
+      - develop
+      - master
 
 jobs:
   build:
