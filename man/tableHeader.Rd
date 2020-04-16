@@ -39,3 +39,6 @@ case of multiple banners displayed underneath each other, the title only
 appears on the top one).
 Assumes that `\\banner[a-z]{}` macros are defined in the preamble
 }
+\details{
+Importantly, this also controls the relative widths of the columns.
+}

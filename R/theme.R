@@ -29,6 +29,7 @@
 #'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
 #'       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 #' }
+#' #' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 #' \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -368,7 +369,7 @@ validators_to_use <- list(
   format_headers = list(missing = TRUE, include = norm),
   format_label_column = list(missing = TRUE,
                              include = c(norm, "col_width", "extend_borders")),
-  format_label_column_exceptions = list(class = "character", len = NA, missing = TRUE),
+  format_label_column_exceptions = c(class = "numeric", len = NA, missing = TRUE),
   format_means = list(missing = TRUE,
                       include = c(norm, "name", "position_top", "position_bottom")),
   format_medians = list(missing = TRUE,
@@ -436,20 +437,22 @@ validators_to_use <- list(
 #'
 #' @param theme An object from \link{themeNew}
 theme_validator <- function(theme) {
-  theme_required <- c("digits", "digits_final", "excel_footer",
-                      "excel_freeze_column", "excel_header", "excel_orientation",
-                      "excel_percent_sign", "excel_show_grid_lines", "excel_table_border",
-                      "font", "font_color", "font_size", "format_banner_categories",
-                      "format_banner_names", "format_banner_split", "format_headers",
-                      "format_label_column", "format_means", "format_medians", "format_min_base",
-                      "format_subtitle", "format_subtotals", "format_title",
-                      "format_totals_column", "format_totals_row", "format_unweighted_n",
-                      "format_var_alias", "format_var_description", "format_var_filtertext",
-                      "format_var_name", "format_var_subname", "format_weighted_n", "halign",
-                      "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
-                      "latex_multirowheaderlines", "latex_round_percentages",
-                      "latex_round_percentages_exception", "latex_table_align", "logo",
-                      "one_per_sheet", "valign")
+  theme_required <- c(
+    "digits", "digits_final", "excel_footer",
+    "excel_freeze_column", "excel_header", "excel_orientation",
+    "excel_percent_sign", "excel_show_grid_lines", "excel_table_border",
+    "font", "font_color", "font_size", "format_banner_categories",
+    "format_banner_names", "format_banner_split", "format_headers",
+    "format_label_column", "format_label_column_exceptions", "format_means",
+    "format_medians", "format_min_base",
+    "format_subtitle", "format_subtotals", "format_title",
+    "format_totals_column", "format_totals_row", "format_unweighted_n",
+    "format_var_alias", "format_var_description", "format_var_filtertext",
+    "format_var_name", "format_var_subname", "format_weighted_n", "halign",
+    "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
+    "latex_multirowheaderlines", "latex_round_percentages",
+    "latex_round_percentages_exception", "latex_table_align", "logo",
+    "one_per_sheet", "valign")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {
@@ -460,8 +463,10 @@ theme_validator <- function(theme) {
   errors <- unlist(sapply(theme_required, function(name) {
     theme_validators$find_validator(theme[[name]], name)
   }))
-  if (is.numeric(theme$digits) && theme$digits > 20) errors <- c(errors,
-                                                                 "`digits` must be less than 20.")
+
+  if (is.numeric(theme$digits) && theme$digits > 20)
+    errors <- c(errors,"`digits` must be less than 20.")
+
   if (length(errors) != 0) {
     if (length(errors) > 5) stop("\n", paste0(errors[1:5], collapse = "\n"),
                                  "\nAnd ", length(errors) - 5, " more errors.", call. = FALSE)
