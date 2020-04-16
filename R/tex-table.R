@@ -177,10 +177,10 @@ latexTableBody <- function(df, theme) {
   footer <- data[intersect(c("totals_row", "weighted_n", "unweighted_n"), df$data_order)]
   if (topline) {
     # Just join them
-    out <- paste(c(main_table, footer), collapse="\n")
+    out <- paste(c(main_table, footer), collapse = "\n")
   } else {
     # For crosstabs, there should be a separator between the table and the N rows
-    out <- paste(c(main_table, "\\midrule", footer), collapse="\n")
+    out <- paste(c(main_table, "\\midrule", footer), collapse = "\n")
   }
 
   # This produces a single string that looks like:
@@ -202,8 +202,8 @@ formatNum <- function (x, digits=0, ...) {
   trimws(
     format(
       round(x, digits),
-      nsmall=digits,
-      big.mark=","
+      nsmall = digits,
+      big.mark = ","
     )
   )
 }
@@ -215,6 +215,8 @@ formatNum <- function (x, digits=0, ...) {
 #' * CrossTabVar
 #' * ToplineVar
 #' * ToplineCategoricalArray
+#'
+#' Importantly, this also controls the relative widths of the columns.
 #'
 #' @md
 #' @param x An object of one of the types listed
@@ -240,8 +242,16 @@ tableHeader.default <- function(x) {
 #' @rdname tableHeader
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
+
+  label_width = "1.5in" # Default!
+  check = theme$format_label_column_exceptions[var$alias]
+  if (!is.na(check) & !is.null(check)) {
+    label_width = paste0(theme$format_label_column_exceptions[var$alias], "in")
+  }
+
+
   header <- paste(
-    "\\tbltopa",
+    paste0("\\tbltopa[",label_width,"]"),
     latexTableName(var, theme),
     "\\addlinespace",
     "\\bannera{}",
@@ -255,7 +265,7 @@ tableHeader.CrossTabVar <- function(var, theme) {
     # negative vspace squeezes them closer to the one above
     next_headers <- paste(
       vspace("-.25in"),
-      paste0("\\tbltop", letters[2:ntabs]),
+      paste0("\\tbltop", letters[2:ntabs], "[", label_width ,"]"),
       "\\addlinespace",
       paste0("\\banner", letters[2:ntabs], "{}"),
       "",
@@ -365,6 +375,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
   }
   col.header <- paste0("B{\\centering}{", col_width, "}")
   col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
+
   tab_definition <- paste0(
     "\\begin{", ifelse(var$longtable, "longtable", "tabular"), "}",
     "{",
@@ -493,14 +504,14 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
       )),
     # Here is \tbltopa
     newcommand(
-      paste0("tbltop", letters[num]),
+      paste0("tbltop", letters[num], "[1]"), # Issue 77
       paste0(
         "\n",
         "\\begin{longtable}",
         "{",
         "@{\\extracolsep{\\fill}}",
         ">{\\hangindent=1em \\PBS \\raggedright \\hspace{0pt}}",
-        "b{", theme$format_label_column$col_width, "in}",
+        "b{#1}", # Issue #77
         "*{", col_num_sum, "}",
         "{", theme$latex_table_align, "}",
         "}"
