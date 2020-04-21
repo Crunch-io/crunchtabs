@@ -26,6 +26,8 @@ pdflatex(
 \item{options}{Additional options passed to pdflatex}
 
 \item{path.to.pdflatex}{The system path to pdflatex}
+
+\item{...}{Further arguments, unused.}
 }
 \description{
 A utility function that runs pdflatex
