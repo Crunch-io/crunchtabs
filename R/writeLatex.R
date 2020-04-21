@@ -253,7 +253,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     paste0("\\fancyhead[L]{{", applyLatexStyle(title, theme$format_title), "}",
            applyLatexStyle(subtitle, theme$format_subtitle), "}"),
     logo,
-    "\\setlength{\\headheight}{16pt}", # Issue 47
+    "\\setlength{\\headheight}{30pt}", # Issue 47
     "\\newcolumntype{d}{D{.}{.}{3.2}}", #!topline
     "\\newcolumntype{g}{D{\\%}{\\%}{3.0}}", #!topline #changed 20190907 from 5.0 to 3.0
     usepackage("float"), #topline
