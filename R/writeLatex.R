@@ -33,6 +33,7 @@
 #' crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
 #' writeLatex(crosstabs_summary, 'filename')
 #' }
+#' @importFrom utils installed.packages
 #' @export
 writeLatex <- function(data_summary, theme = themeDefaultLatex(),
                        filename = getName(data_summary), title = getName(data_summary),

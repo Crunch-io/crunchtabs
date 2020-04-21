@@ -7,7 +7,7 @@
 #' @param dataset A crunch dataset name
 #' @param vars A character vector of var names that exist within the crunch dataset
 #' @param banner A banner object from \link{banner}
-#' @param weight A weighting variable passed to \link{crunch::tabBook}
+#' @param weight A weighting variable passed to \link[crunch]{tabBook}
 #' @param topline Logical identifying if this is a topline only
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 
