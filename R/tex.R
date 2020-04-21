@@ -213,11 +213,13 @@ validLatexFont <- function(theme_font) {
   # Make sure the theme font is valid; provide a fallback rather than erroring
   poss_fonts <- c("bookman","charter","courier","fourier","helvet","lmodern",
                   "lmr","palatino","tgadventor","tgbonum","tgcursor","tgheros","tgpagella",
-                  "tgschola","tgtermes","times","utopia")
+                  "tgschola","tgtermes","times","utopia", "raleway")
+
+  # Raleway is Rawline, YouGov's default font.
   if (is.null(theme_font) || !tolower(theme_font) %in% poss_fonts) {
-    theme_font <- "helvet"
+    theme_font <- "raleway"
     warning("theme$font must be in ", paste0(poss_fonts, collapse = ", "),
-            ". It has been set to `helvet`.", call. = FALSE)
+            ". It has been set to `raleway`.", call. = FALSE)
   }
   return(theme_font)
 }

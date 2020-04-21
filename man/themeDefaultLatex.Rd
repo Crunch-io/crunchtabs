@@ -5,12 +5,12 @@
 \title{Generate default Theme for `writeLatex`}
 \usage{
 themeDefaultLatex(
-  font = getOption("font", default = "helvet"),
+  font = getOption("font", default = "raleway"),
   font_size = getOption("font_size", default = 12)
 )
 }
 \arguments{
-\item{font}{the font to use (default: `"helvet"` for Helvetica)}
+\item{font}{the font to use (default: `"raleway"` for Raleway)}
 
 \item{font_size}{the font size to use (default: 12)}
 }

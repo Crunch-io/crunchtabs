@@ -219,13 +219,13 @@ themeDefaultExcel <- function(font = getOption("font", default = "Calibri"),
 #'
 #' \code{themeDefaultLatex} is the default theme. Users can change base options
 #'
-#' @param font the font to use (default: `"helvet"` for Helvetica)
+#' @param font the font to use (default: `"raleway"` for Raleway)
 #' @param font_size the font size to use (default: 12)
 #'
 #' @return A set of theme defaults for use in `writeLatex`
 #'
 #' @export
-themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
+themeDefaultLatex <- function(font = getOption("font", default = "raleway"),
                               font_size = getOption("font_size", default = 12)){
 
   norm <- list(font = font, font_size = NULL)
