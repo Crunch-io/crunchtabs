@@ -1,15 +1,15 @@
 context('Preparing a banner data summary')
 
-ds = readRDS("fixtures/testing-dataset.rds")
-
-test_that("We can load a dataset from the crunchtabs package", {
-  expect_s4_class(ds, "CrunchDataset")
-  expect_identical(name(ds), "Testing Dataset")
-})
+# ds = readRDS("fixtures/testing-dataset.rds")
+#
+# test_that("We can load a dataset from the crunchtabs package", {
+#   expect_s4_class(ds, "CrunchDataset")
+#   expect_identical(name(ds), "Testing Dataset")
+# })
 
 
 with_test_authentication({
-    ds <- loadDataset("Testing Dataset", project="crunchtabs")
+    ds <- loadDataset("Testing Dataset", project="crunchtabs") # Doesn't work anymore
 
     # NOTE: is this an expected behaviour?
     # banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
