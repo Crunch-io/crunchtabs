@@ -136,7 +136,7 @@ usepackage <- function(package, ...) {
 #'
 #' Create dynamic vspace tex
 #'
-#' @param An integer identifying the number of spaces to print
+#' @param space An integer identifying the number of spaces to print
 vspace <- function(space) paste0("\\vspace{", space, "}")
 
 
