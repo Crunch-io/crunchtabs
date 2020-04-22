@@ -23,7 +23,7 @@
 #'      \item{\code{empty_col} In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
 #' }
 #' \item{format_headers}{An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
-#' \item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
+#' \item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text. In LaTeX, allows you to set col_width only, in inches of the crosstab stub globally.}
 #' Includes:
 #' \itemize{
 #'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
