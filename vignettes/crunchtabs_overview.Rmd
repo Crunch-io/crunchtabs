@@ -11,9 +11,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `crunchtabs` package creates reports using [crunch](https://github.com/Crunch-io/rcrunch) data sets. A rudimentary understanding of the `crunch` R package is expected from readers of this document. Anyone with a `crunch` login should be able to follow along with the examples included here. Don't have a `crunch` account? . `crunchtabs` can be used to produce three types of reports: toplines, cross tabulations, and codebooks (not yet implemented). Each of these can be saved as a \*.tex, a \*.pdf or an \*.xlsx file.
+The `crunchtabs` package creates reports using [crunch](https://github.com/Crunch-io/rcrunch) datasets. A rudimentary understanding of the `crunch` R package is expected from readers of this document. Anyone with a `crunch` login should be able to follow along with the examples included here. `crunchtabs` can be used to produce three types of reports: toplines, cross tabulations, and codebooks (not yet implemented). Each of these can be saved as a \*.tex, a \*.pdf or an \*.xlsx file.
 
-The goal of this document is to provide you with enough information to go from nothing, to a client ready report, fast. For all of the examples included in this vignette we will work with `crunch`'s built in pet dataset. So if you've never worked with crunch before, start by running the following: 
+The goal of this document is to provide you with enough information to go from nothing, to a client ready report, as fast as you can type. For all of the examples included in this vignette we will work with `crunch`'s built in pet dataset. If you've never worked with crunch before, start by running the following: 
 
 ```{r, eval = FALSE}
 library(crunch)
@@ -21,10 +21,11 @@ login()
 ds <- newExampledataset()
 ```
 
+This will ensure that you have the example dataset available to your account. 
 
 ## PDF Reports
 
-`crunchtabs` generates PDF reports by writing custom LaTeX to a file, then compiling that file. A significant amount of thought has gone into the default settings and we strongly recommend that you stick with them. With that said, there is a bounty of structural and thematic options that can be adjusted or manipulated to your requirements.
+`crunchtabs` generates PDF reports by writing generated LaTeX to a file, then compiling that file. A significant amount of thought has gone into the default settings and we recommend that you stick with them. However, there is a bounty of structural and thematic options that can be adjusted or manipulated to your requirements.
 
 ### Create a Topline
 
