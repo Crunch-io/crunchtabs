@@ -11,37 +11,51 @@ vignette: >
 
 The `crunchtabs` package can be used to produce three types of reports:
 
-* Toplines (one-way frequency tables)
-* Banners (cross tabulations)
-* Codebooks
+* Toplines 
+* Cross Tabulations 
+* Codebooks (Planned, not yet implenmented)
 
 Topline and crosstabs reports can be saved as \*.tex/\*.pdf or \*.xlsx files.
-Codebooks can be save as \*.tex/\*.pdf files.
+Codebooks can be save as \*.tex/ or \*.pdf files.
 
-## General Notes
+## Quick Start
 
-* The package is based on S3 classes
-* Reports can be highly customized
+### Topline Reports
 
-## Toplines reports
+Generating a topline report is quick and easy.  
 
-In order to generate a toplines report:
+#### PDF 
 
-1. generate a toplines data summary
 ```{r, eval = FALSE}
+library(crunchtabs)
+library(crunch)
+
+login()
+
+ds = loadDataset("My Dataset")
+
 toplines_summary <- crosstabs(dataset = ds)
-```
-2. call the `writeLatex` or `writeExcel` function passing it the toplines summary object 
-```{r, eval = FALSE}
 writeLatex(toplines_summary, filename = filename)
+```
+
+#### Excel
+
+```{r, eval = FALSE}
+library(crunchtabs)
+library(crunch)
+
+login()
+
+ds = loadDataset("My Dataset")
+
+toplines_summary <- crosstabs(dataset = ds)
 writeExcel(toplines_summary, filename = filename)
 ```
 
-## Banner reports
 
-In order to generate a banner report:
+### Cross Tabulation Reports
 
-1. create a banner object
+Creating a banner report 
 ```{r, eval = FALSE}
 banner_data <- banner(ds, vars = list(`banner 1` = c('gender', 'age4')))
 ```
@@ -55,7 +69,7 @@ writeLatex(crosstabs_summary, filename = filename)
 writeExcel(crosstabs_summary, filename = filename)
 ```
 
-## Codebooks
+### Codebooks (Not yet implemented)
 
 In order to generate a codebook:
 
