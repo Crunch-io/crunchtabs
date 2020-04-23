@@ -318,7 +318,8 @@ writeLatex(
 
 ### Including a logo
 
-If you want to include a logo it should be in PNG format and should be of reasonable quality so as not to create scaling problems when users zoom into the document you have created. 
+Logos should be in PNG format and should be of reasonable quality so as not to create scaling problems when users zoom into the document you have created. 
+
 
 
 ### 
