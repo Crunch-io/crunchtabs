@@ -2,7 +2,9 @@
 title: "Frequently Asked Questions"
 author: "Brandon Bertelsen"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -64,10 +66,6 @@ myAwesomeTheme = themeNew(
 )
 ```
 
-### How do I request a new feature? 
-
-We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
-
 ### How do I install a different release of crunchtabs?
 
 In the code example below we show you how to install Release 1.2.1:
@@ -75,3 +73,7 @@ In the code example below we show you how to install Release 1.2.1:
 ```{r, eval = FALSE}
 remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
 ```
+
+### How do I request a new feature? 
+
+We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)

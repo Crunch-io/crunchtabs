@@ -370,7 +370,6 @@ myAppend = paste0(
 ")
 ```
 
-
 ```{r, eval = FALSE}
 writeLatex(
   ct_summary, 
