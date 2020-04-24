@@ -1,3 +1,12 @@
+## crunchtabs 1.2.3
+
+* tableHeader.CrossTabVar respects global stub width setting (#93)
+* Updated vignette (#65)
+* Adding more tests (#84)
+* Warn users of missing logo in pdf (#88)
+* Fix warnings (#47, unmerged!)
+* Adding pkgdown (#96)
+
 ## crunchtabs 1.2.2
 
 * Make categorical arrays in toplines smarter (#67)
