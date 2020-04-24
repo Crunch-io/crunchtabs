@@ -86,22 +86,23 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 
 ![Cross Tabulation Excel Example from the Example Dataset](example-003-excel-ct.png){width=650px}
 
-This package was designed to allow for some elements of style and structure to pass between the two formats. However, it should not be assumed that if something works in one format it will work in another. In the rest of this document we have done our best to identify the formats that 
+This package was designed to allow for some elements of style and structure to pass between the two formats. However, it should not be assumed that if something works in one format it will work in another.
 
 ## Structural Elements
 
 The default result is immediately useful for a researcher. However, there are other elements that we may wish to add or adjust before sharing with a client or internal stakeholders, such as: 
 
 * Including or excluding questions
-* Weighting our data
+* Weighting our data 
 * Calculating and including the margin of error
-* Adding titles
-* Specifying a field window
-* Inserting a logo
-* Using a table of contents
-* Appending additional information
+* Adding titles 
+* Using a table of contents 
+* Customizing the theme
+* Specifying a field window (PDF Only)
+* Appending additional information (PDF Only)
 
-While some of these may be firmly within the realm of "theme" items, we separate concerns based on which functions within `crunchtabs` adjust them. For this reason _structural elements_ are those elements that are parameterized by the `writeLatex` or `writeExcel` function directly. There are many more theme elements that will be discussed in a later section (Theme) that are parameterized by the `themeNew` function. 
+
+While some of these may be firmly within the realm of "theme" items, we separate concerns based on which functions within `crunchtabs` adjust them. For this reason _structural elements_ are those elements that are parameterized by the `writeLatex` or `writeExcel` function directly. There are many more theme elements available in the `themeNew` function but it is outside of the scope of this document. 
 
 ### Including or Excluding Questions
 
@@ -279,7 +280,52 @@ writeLatex(
 
 ![Including Margin of Error](example-008-ct-titles.png){width=650px}
 
-### Specifying a field window
+### Including a Table of Contents 
+
+A small change to our call to `writeLatex` or `writeExcel` allows for the inclusion of a table of contents. In both document types this creates a "linked" table of contents that navigates to the table of interest on-click.
+
+```{r, eval=FALSE}
+writeLatex(
+  ct_summary, 
+  # ...,
+  table_of_contents = TRUE,
+  pdf = TRUE
+) 
+
+writeExcel(
+  ct_summary, 
+  # ...,
+  table_of_contents = TRUE
+)
+```
+
+![PDF: Table of Contents](example-011-pdf-toc.png){width=650px}
+
+
+![Excel: Table of Contents](example-011-xlsx-toc.png){width=650px}
+
+### Customizing Theme
+
+There are a large amount of theme options available for both PDF and Excel reports. Here we only provide a cursory example. We recommend reviewing `?themeNew` for more specific details about all of the elements that can be changed. We provide a few common examples below. 
+
+```{r, eval = FALSE}
+myTheme = themeNew(
+  
+)
+
+writeLatex(
+  ct_summary, 
+  filename = "output", 
+  title = "The Amazing Pet Survey",
+  subtitle = "Everyone Loves Cats",
+  theme = myTheme,
+  pdf = TRUE,
+  moe = include_moe
+) 
+```
+
+
+### Specifying a field window (PDF Only)
 
 There are two common patterns for specifying a field window. The first is to specify it using the `field_period` argument of the `writeLatex` function. The second is to set your field window as the `subtitle`. In the *Adding Titles* section, the `subtitle` argument accepts arbitrary text. 
 
@@ -290,7 +336,9 @@ writeLatex(
 ) 
 ```
 
-### Appending Text
+![Including a Field Period](example-008a-ct-field-date.png){width=650px}
+
+### Appending Text (PDF Only)
 
 The string passed to `append_text` will be visible on the last page of your report.
 
@@ -301,9 +349,9 @@ writeLatex(
 ) 
 ```
 
-![Cross Tabulation Relabel](example-009-ct-append.png){width=650px}
+![Appending Basic Text](example-009-ct-append.png){width=650px}
 
-You can also append much larger chunks of text like a disclosure, analysis, or other marketing copy that is required for all of your documents. A typical workflow here is to create a .tex fragment file that includes your copy. Tex makes significant use of the `\` character. In R, you must _escape_ the backslash with an additional backslash. In the example below you seee `\begin` becomes `\\begin` and a new line `\\` becomes `\\\\`.
+You can also append much larger chunks of text like a disclosure, analysis, or other marketing copy that is required for all of your documents. A typical workflow here is to create a .tex fragment file or an R string object that includes your copy. Tex makes significant use of the `\` character. In R, you must _escape_ the backslash with an additional backslash. In the example below you see `\begin` becomes `\\begin` and a new line `\\` becomes `\\\\`.
 
 ```{r, eval = FALSE}
 myAppend = paste0(  
@@ -334,7 +382,8 @@ writeLatex(
 
 ![Appending Arbitrary Tex](example-010-ct-append.png){width=650px} 
 
+## Seeking Commentary
 
-## End
+We are always seeking feedback on this and other documents or features of `crunchtabs`. Feel free to leave an [issue](https://github.com/Crunch-io/crunchtabs)
 
 > No pets were harmed in the making of this vignette.
