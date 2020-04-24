@@ -53,7 +53,7 @@ writeLatex(
 
 ### How do I append more information?
 
-See the section about appending text in the [overview](../overview.html#appending-text-pdf-only)
+See the section about appending text in the [overview](articles/overview.html#appending-text-pdf-only)
 
 ### How do I mask questions with low base sizes?
 
