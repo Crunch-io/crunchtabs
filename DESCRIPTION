@@ -6,7 +6,7 @@ Description: In order to generate custom survey reports, this package provides
     'banners' (cross-tabulations) of datasets in the Crunch
     (<https://crunch.io/>) web service. Reports can be written in 'PDF' format
     using 'LaTeX' or in Microsoft Excel '.xlsx' files.
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: c(
     person("Persephone", "Tsebelis", role="aut"),
     person("Kamil", "Sedrowicz", role="aut"),
@@ -21,13 +21,15 @@ Depends:
 Imports:
     openxlsx,
     digest,
-    methods
+    methods,
+    tinytex
 Suggests:
     covr,
     httptest (>= 2.0.0),
     jsonlite,
     knitr,
-    rmarkdown
-RoxygenNote: 7.0.2
+    rmarkdown,
+    testthat (>= 2.1.0)
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 Encoding: UTF-8

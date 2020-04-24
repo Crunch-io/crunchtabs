@@ -38,6 +38,6 @@ summaries of a Cruch dataset.
 \dontrun{
 toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
 crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
-                               weight = 'weight', banner = banner_object)
+ weight = 'weight', banner = banner_object)
 }
 }
