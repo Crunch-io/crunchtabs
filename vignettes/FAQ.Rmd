@@ -51,6 +51,8 @@ writeLatex(
 
 ### How do I append more information?
 
+See the section about appending text in the [overview](../overview.html#appending-text-pdf-only)
+
 ### How do I mask questions with low base sizes?
 
 Below is an example of masking responses where the base size is less than the central limit theorem with a "-" character.
@@ -65,3 +67,11 @@ myAwesomeTheme = themeNew(
 ### How do I request a new feature? 
 
 We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
+
+### How do I install a different release of crunchtabs?
+
+In the code example below we show you how to install Release 1.2.1:
+
+```{r, eval = FALSE}
+remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
+```
