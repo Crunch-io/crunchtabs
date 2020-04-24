@@ -59,6 +59,7 @@ ul,  ol {
     border: 0;
 }
 
+
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus,
 .navbar-default .navbar-nav>.active>a,
@@ -105,4 +106,19 @@ code {
 footer {
     font-size: 14px;
     padding-top: 25px;
+}
+
+/* BEB Additions */
+
+p.caption {
+  text-align: center;
+}
+
+img {
+  text-align: center;
+}
+
+blockquote {
+  margin: 10px 25px 10px 25px;
+  text-align: center;
 }
