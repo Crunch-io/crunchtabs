@@ -10,3 +10,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.httr-oauth$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -81,3 +81,11 @@ test_that("Spacing on toplines", {
   expect_equal(res, "\\colorbox{gray}{\n\\addcontentsline{lot}{table}{ . This is a description}\n\\hangindent=0em \\parbox{6.5in}{\n\\formatvardescription{. This is a description}\\\\ \n\\formatvarfiltertext{This is filtertext}}\\hspace*{1ex}} \\\\")
 })
 
+test_that("Global for crosstab works format_label_column_exceptions", {
+  theme = themeNew(format_label_column = list(col_width = 3), format_label_column_exceptions = c('test' = 2.5), default_theme = themeDefaultLatex())
+  var = list()
+  var$alias = "nottest"
+  class(var) = "CrossTabVar"
+  res = tableHeader(var, theme)
+  expect_equal(res, "\\tbltopa[3in]\n\\addcontentsline{lot}{table}{ . }\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. }} \\\\\n\\addlinespace\n\\bannera{}\n\n")
+})

@@ -10,6 +10,8 @@ formatNum(x, digits = 0, ...)
 \item{x}{A numeric vector}
 
 \item{digits}{The number of digits}
+
+\item{...}{Furth arguments, unused.}
 }
 \description{
 Round and format a number, removing what space.

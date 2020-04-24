@@ -77,7 +77,9 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
                  "Variables in `vars` must be of type categorical or multiple_response. This is not true for {items}.",
                  and = TRUE, quotes = TRUE)
 
-  variables <- setNames(lapply(ds_vars, function(var) {
+  variables <- list()
+  for (i in 1:length(ds_vars)) {
+    var <- ds_vars[[i]]
     alias <- alias(var)
     name <- if (is.null(labels[[alias]])) {
       name(var)
@@ -92,11 +94,13 @@ banner <- function(dataset, vars, labels = NULL, recodes = NULL) {
       na.omit(categories(dataset[[alias]]))
     }
 
-    structure(
+    variables[[i]] <- structure(
       c(alias = alias, name = name, type = type,
         recode_categories(alias, responses, recodes[[alias]])),
       class = "BannerVar")
-  }), aliases(ds_vars))
+  }
+
+  names(variables) <- aliases(ds_vars)
 
   total <- structure(
     list(alias = "___total___", name = "", type = "Total",

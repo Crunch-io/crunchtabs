@@ -198,7 +198,8 @@ latexTableBody <- function(df, theme) {
 #'
 #' @param x A numeric vector
 #' @param digits The number of digits
-formatNum <- function (x, digits=0, ...) {
+#' @param ... Furth arguments, unused.
+formatNum <- function(x, digits=0, ...) {
   trimws(
     format(
       round(x, digits),
@@ -243,7 +244,8 @@ tableHeader.default <- function(x) {
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
 
-  label_width = "1.5in" # Default!
+  label_width = ifelse(is.na(theme$format_label_column$col_width), "1.5in", paste0(theme$format_label_column$col_width, "in"))
+
   check = theme$format_label_column_exceptions[var$alias]
   check = ifelse(is.null(check), NA_real_, check)
 
@@ -651,21 +653,21 @@ calculateIfLongtable.default <- function(x, theme) {
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.CrossTabVar <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/25)) >
+calculateIfLongtable.CrossTabVar <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/25)) >
            theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineVar <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/90)) >
+calculateIfLongtable.ToplineVar <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/90)) >
            theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineCategoricalArray <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/25)) >
+calculateIfLongtable.ToplineCategoricalArray <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/25)) >
            theme$latex_max_lines_for_tabular)
 }

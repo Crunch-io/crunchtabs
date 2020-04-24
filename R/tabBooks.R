@@ -7,7 +7,7 @@
 #' @param dataset A crunch dataset name
 #' @param vars A character vector of var names that exist within the crunch dataset
 #' @param banner A banner object from \link{banner}
-#' @param weight A weighting variable passed to \link{crunch::tabBook}
+#' @param weight A weighting variable passed to \link[crunch]{tabBook}
 #' @param topline Logical identifying if this is a topline only
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 
@@ -139,7 +139,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 #' Given a Banner object and a dataset, find or create the corresponding Crunch multitable
 #'
 #' @param banner_flatten A banner object from \link{banner}
-#' @param dataset A CrunchDataset from \link{crunch::loadDataset}
+#' @param dataset A CrunchDataset from \link[crunch]{loadDataset}
 getMultitable <- function(banner_flatten, dataset) {
   mtvars <- paste0("`", setdiff(names(banner_flatten), "___total___"), "`")
   mt_name <- digest::digest(sort(mtvars), "md5")

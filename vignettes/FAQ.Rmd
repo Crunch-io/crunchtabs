@@ -1,0 +1,79 @@
+---
+title: "Frequently Asked Questions"
+author: "Brandon Bertelsen"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## FAQ
+
+### How do I hide the question numbers?
+
+A number of theme options exist for this purpose, `format_var_alias`, `format_var_description`, `format_var_filtertext`, and `format_var_name`. In your format list, set an item `include_q_number = FALSE` as in the example below.
+
+```{r, eval = FALSE}
+myAwesomeTheme = themeNew(
+  ..., # your other theme options
+  format_var_description = list(include_q_number = FALSE),
+  format_var_filtertext = list(include_q_number = FALSE)
+)
+```
+
+### How do I make it so that there is more than one question per page?
+
+```{r, eval = FALSE}
+myAwesomeTheme = themeNew(
+  ...,
+  one_per_sheet = FALSE
+)
+```
+
+### How do I output numbers like 1,000 instead of 1000?
+
+```{r, eval = FALSE}
+format(1000, nsmall=0, big.mark=",")
+```
+
+### How do I add a subtitle to my document?
+
+A common usage of the subtitle is to include the survey's field window. Especially for studies that are run continuously.
+
+```{r, eval = FALSE}
+writeLatex(
+  ...,
+  subtitle = "My Amazing Subtitle"
+)
+```
+
+### How do I append more information?
+
+See the section about appending text in the [overview](../overview.html#appending-text-pdf-only)
+
+### How do I mask questions with low base sizes?
+
+Below is an example of masking responses where the base size is less than the central limit theorem with a "-" character.
+
+```{r, eval = FALSE} 
+myAwesomeTheme = themeNew(
+  ...,
+  format_min_base = list(mask = "-", min_base = 30)
+)
+```
+
+### How do I install a different release of crunchtabs?
+
+In the code example below we show you how to install Release 1.2.1:
+
+```{r, eval = FALSE}
+remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
+```
+
+### How do I request a new feature? 
+
+We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
