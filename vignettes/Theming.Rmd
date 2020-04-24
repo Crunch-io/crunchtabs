@@ -1,5 +1,5 @@
 ---
-title: "Frequently Asked Questions"
+title: "Theming"
 author: "Brandon Bertelsen"
 date: "`r Sys.Date()`"
 output: 
@@ -13,4 +13,4 @@ vignette: >
 
 ## Theming
 
-This page is under active development. Please see `?themeNew` for detailed documentation of theme objects. Specific solutions or cookbook examples are available in the [FAQ](../FAQ.html)
+This page is under active development. Please see `?themeNew` for detailed documentation of theme objects. Specific solutions or cookbook examples are available in the [FAQ](articles/FAQ.html)
