@@ -7,9 +7,11 @@
 #' @param verbose Logical, should the function be verbose?
 #' @param cleanup Logical, should tex/log files be cleaned?
 #' @param options Additional options passed to pdflatex
+#' @param path.to.pdflatex The system path to pdflatex
+#' @param ... Further arguments, unused.
 pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = TRUE, options = "-halt-on-error",
                      path.to.pdflatex = Sys.which("pdflatex"), ...) {
-
+  # nocov start
   filepath <- dirname(texfile)
   texfile <- basename(texfile)
   pdffile <- sub("\\.tex$", "\\.pdf", texfile, ignore.case = TRUE)
@@ -56,7 +58,7 @@ pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = T
   } else if (open) {
     file.open(returnfile)
   }
-
+  # nocov end
   return(returnfile)
 }
 

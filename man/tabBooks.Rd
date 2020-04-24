@@ -13,7 +13,7 @@ tabBooks(dataset, vars, banner, weight = NULL, topline = FALSE)
 
 \item{banner}{A banner object from \link{banner}}
 
-\item{weight}{A weighting variable passed to \link{crunch::tabBook}}
+\item{weight}{A weighting variable passed to \link[crunch]{tabBook}}
 
 \item{topline}{Logical identifying if this is a topline only}
 }
