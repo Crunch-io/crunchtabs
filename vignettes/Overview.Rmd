@@ -86,6 +86,8 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 
 ![Cross Tabulation Excel Example from the Example Dataset](example-003-excel-ct.png){width=650px}
 
+This package was designed to allow for some elements of style and structure to pass between the two formats. However, it should not be assumed that if something works in one format it will work in another. In the rest of this document we have done our best to identify the formats that 
+
 ## Structural Elements
 
 The default result is immediately useful for a researcher. However, there are other elements that we may wish to add or adjust before sharing with a client or internal stakeholders, such as: 
@@ -262,7 +264,7 @@ In the example we see the margin of error has been placed near the top of the pa
 
 ### Adding Titles
 
-The default title behavior assigns the dataset name as the title on each page of the report. Often the internal reference used to denote a data set is not well aligned or appropriate for other stakeholder's. Below we will show you how to customize this output by using a title and a subtitle. 
+The default title behavior assigns the dataset name as the title on each page of the report. Often the internal reference used to denote a data set is not well aligned or appropriate for other stakeholders. Below we will show you how to customize this output by using a title and a subtitle. 
 
 ```{r, eval = FALSE}
 writeLatex(
@@ -283,117 +285,56 @@ There are two common patterns for specifying a field window. The first is to spe
 
 ```{r, eval = FALSE}
 writeLatex(
-  ct_summary, 
-  filename = "output", 
-  pdf = TRUE,
-  append_text = "Field Window: 2020-02-04 - 2020-03-04"
+  # ...
+  field_period = "2020-02-04 - 2020-03-04"
 ) 
 ```
 
 ### Appending Text
 
+The string passed to `append_text` will be visible on the last page of your report.
+
 ```{r, eval = FALSE}
 writeLatex(
-  ct_summary, 
-  filename = "output", 
-  pdf = TRUE,
+  # ...
   append_text = "Field Window: 2020-02-04 - 2020-03-04"
 ) 
 ```
 
 ![Cross Tabulation Relabel](example-009-ct-append.png){width=650px}
 
-The string passed to `append_text` will be visible on the last page of your report. Appended text can also be much larger and can include paragraphs by using "\n" character as the `sep` argument in your `paste` function. 
+You can also append much larger chunks of text like a disclosure, analysis, or other marketing copy that is required for all of your documents. A typical workflow here is to create a .tex fragment file that includes your copy. Tex makes significant use of the `\` character. In R, you must _escape_ the backslash with an additional backslash. In the example below you seee `\begin` becomes `\\begin` and a new line `\\` becomes `\\\\`.
+
+```{r, eval = FALSE}
+myAppend = paste0(  
+"
+
+\\begin{tabular*}{5.5in}{p{2in}p{4in}}
+\\textbf{Sponsorship}   &    \\emph{CLIENTNAME} \\\\
+\\addlinespace \\addlinespace
+\\textbf{Fieldwork}    &    COMPANYNAME \\\\
+\\addlinespace \\addlinespace
+\\textbf{Interviewing Dates} &  2020-04-04 \\\\
+\\addlinespace \\addlinespace
+\\textbf{Target population}  &  US Adult Population \\\\
+\\end{tabular*}
+
+")
+```
+
 
 ```{r, eval = FALSE}
 writeLatex(
   ct_summary, 
   filename = "output", 
   pdf = TRUE,
-  append_text = paste0("Field Start: 2020-02-04", "Field End: 2020-03-04", sep = "\\\\")
+  append_text = myAppend
 ) 
 ```
 
+![Appending Arbitrary Tex](example-010-ct-append.png){width=650px} 
 
 
-### Including a logo
-
-Logos should be in PNG format and should be of reasonable quality so as not to create scaling problems when users zoom into the document you have created. 
-
-
-
-### 
-
-## Theming
-
-### Fonts and Typography
-
-### Spacing
-
-### Backgrounds
-
-### Borders
-
-### Common Theme Options
-
-There are a large number of theme related options. In this section we will cover some of the more basic elements. 
-
-## FAQ
-
-### How do I hide question numbers?
-
-A number of theme options exist for this purpose, `format_var_alias`, `format_var_description`, `format_var_filtertext`, and `format_var_name`. In your format list, set an item `include_q_number = FALSE` as in the example below.
-
-```{r, eval = FALSE}
-myAwesomeTheme = themeNew(
-  ..., # your other theme options
-  format_var_description = list(include_q_number = FALSE),
-  format_var_filtertext = list(include_q_number = FALSE)
-)
-```
-
-### How do I make it so that there is more than one question per page?
-
-```{r, eval = FALSE}
-myAwesomeTheme = themeNew(
-  ...,
-  one_per_sheet = FALSE
-)
-```
-
-### How do I output numbers like 1,000 instead of 1000?
-
-```{r, eval = FALSE}
-format(1000, nsmall=0, big.mark=",")
-```
-
-### How do I add a subtitle to my document?
-
-A common usage of the subtitle is to include the survey's field window. Especially for studies that are run continuously.
-
-```{r, eval = FALSE}
-writeLatex(
-  ...,
-  subtitle = "My Amazing Subtitle"
-)
-```
-
-### How do I append more information?
-
-### How do I mask questions with low base sizes?
-
-Below is an example of masking responses where the base size is less than the central limit theorem with a "-" character.
-
-```{r, eval = FALSE} 
-myAwesomeTheme = themeNew(
-  ...,
-  format_min_base = list(mask = "-", min_base = 30)
-)
-```
-
-### How do I request a new feature? 
-
-We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
-
+## End
 
 > No pets were harmed in the making of this vignette.

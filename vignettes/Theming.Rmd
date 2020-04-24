@@ -1,0 +1,27 @@
+---
+title: "Frequently Asked Questions"
+author: "Brandon Bertelsen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Theming
+
+### Including a logo
+
+Logos should be in PNG format and should be of reasonable quality so as not to create scaling problems when users zoom into the document you have created. 
+
+
+### Fonts and Typography
+
+### Spacing
+
+### Backgrounds
+
+### Borders
+
+### Common Theme Options
