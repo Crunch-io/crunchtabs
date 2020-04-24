@@ -11,7 +11,7 @@ vignette: >
 
 ## FAQ
 
-### How do I hide question numbers?
+### How do I hide the question numbers?
 
 A number of theme options exist for this purpose, `format_var_alias`, `format_var_description`, `format_var_filtertext`, and `format_var_name`. In your format list, set an item `include_q_number = FALSE` as in the example below.
 
