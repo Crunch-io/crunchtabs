@@ -11,6 +11,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: git config
+      run: | 
+        git config --global user.email "Marvin the Paranoid Android"
+        git config --global user.name "marvin@heart-of-gold.co.uk"
     - name: Deploy package
       run: pkgdown::deploy_to_branch(new_process = FALSE)
       shell: Rscript {0}
