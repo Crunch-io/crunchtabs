@@ -14,3 +14,6 @@ jobs:
     - name: Check
       run: |
         R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
+    - name: Coverage
+      run: |
+        Rscript -e 'covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")'

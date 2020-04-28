@@ -74,6 +74,34 @@ In the code example below we show you how to install Release 1.2.1:
 remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
 ```
 
+See [releases](https://github.com/Crunch-io/crunchtabs/releases) for more information.
+
+### How do I use a logo in Excel?
+
+You can control the height, width, dpi and start column (specified by a number). 
+
+```{r, eval = FALSE}
+library(crunchtabs)
+login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+ct_banner <- banner(ds, vars = list(`banner 1` = c('allpets')))
+ct_summary <- crosstabs(dataset = ds, banner = ct_banner)
+
+myTheme <- themeNew(
+  logo = list(
+    file = "yougov-logo.png", 
+    dpi = 100, 
+    height = 0.75, 
+    width = 3, 
+    startCol = 6)
+)
+
+writeExcel(ct_summary, filename = "output", theme = myTheme) 
+```
+
 ### How do I request a new feature? 
 
 We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
