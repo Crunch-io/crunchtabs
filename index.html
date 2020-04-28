@@ -102,45 +102,72 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#crunchtabs" class="anchor"></a>crunchtabs</h1></div>
 
-<div id="installing" class="section level2">
+<div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installing" class="anchor"></a>Installing</h2>
-<!-- If you're putting `crunchtabs` on CRAN, it can be installed with
-
-    install.packages("crunchtabs") -->
-<p><code>crunchtabs</code> is not yet on CRAN, but you can install it from GitHub using the <a href="https://github.com/r-lib/remotes">remotes</a> package (part of <code>devtools</code>):</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("remotes")</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"Crunch-io/crunchtabs"</span>)</a></code></pre></div>
-<p>To make PDF reports, youâll need a working LaTeX installation. One way to get this is with the <a href="https://yihui.name/tinytex/">tinytex</a> package. Or, see <a href="https://www.latex-project.org/get/" class="uri">https://www.latex-project.org/get/</a> to install everything.</p>
-<p>If you find that you need additional TeX packages to get the PDF to build, try running the <code>tlmgr install</code> command found in <a href="https://github.com/Crunch-io/crunchtabs/blob/master/.travis.yml">.travis.yml</a>.</p>
+<a href="#quick-start" class="anchor"></a>Quick Start</h2>
+<p>For a broader introduction please see our <a href="https://crunch-io.github.io/crunchtabs/articles/Overview.html">introductory vignette</a></p>
+<div id="install-tinytex" class="section level3">
+<h3 class="hasAnchor">
+<a href="#install-tinytex" class="anchor"></a>1. Install tinytex</h3>
+<p>To make PDF reports, youâll need a working LaTeX installation. One way to get this is with the <a href="https://yihui.name/tinytex/">tinytex</a> package. Or, see <a href="https://www.latex-project.org/get/" class="uri">https://www.latex-project.org/get/</a> to install everything. We strongly recommend installing tinytex because it reduces the number of potential problems.</p>
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages('tinytex')
+tinytex::install_tinytex()</a></code></pre>
 </div>
-<div id="getting-started" class="section level2">
+<div id="install-crunchtabs" class="section level3">
+<h3 class="hasAnchor">
+<a href="#install-crunchtabs" class="anchor"></a>2. Install crunchtabs</h3>
+<pre><code><a href="https://remotes.r-lib.org/reference/install_github.html"># install.packages("remotes")
+remotes::install_github("Crunch-io/crunchtabs")</a></code></pre>
+</div>
+<div id="create-a-topline" class="section level3">
+<h3 class="hasAnchor">
+<a href="#create-a-topline" class="anchor"></a>Create a Topline</h3>
+<p>Generating a topline report is quick and easy!</p>
+<pre><code># library(crunchtabs)
+# login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+toplines_summary &lt;- crosstabs(dataset = ds)
+writeLatex(toplines_summary, filename = "output", pdf = TRUE) # output.pdf will be written </code></pre>
+<p><img src="articles/example-001-topline.png" alt="Topline Example from the Example Dataset"></p>
+</div>
+<div id="create-a-cross-tabulation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#create-a-cross-tabulation" class="anchor"></a>Create a Cross Tabulation</h3>
+<p>The only additional step required for a cross tab report is to create a <code>banner</code> object. Then, setting it as the <code>banner</code> argument for the <code>crosstabs</code> function. Below, we create a cross tabulation report that shows the type of pet(s) respondents own to our survey for every question in the survey. Once you have run the code, we encourage you to open the resulting <code>output.pdf</code> file. Inside of the report you will find a cross tabulation of all questions by pet ownership.</p>
+<pre><code># library(crunchtabs)
+# login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+ct_banner &lt;- banner(ds, vars = list(`banner 1` = c('allpets')))
+ct_summary &lt;- crosstabs(dataset = ds, banner = ct_banner) # banner parameter set here
+writeLatex(ct_summary, filename = "output", pdf = TRUE) # output.pdf will be written </code></pre>
+<p><img src="articles/example-002-crosstabs.png" alt="Cross Tabulation Example from the Example Dataset"></p>
+</div>
+</div>
+<div id="excel" class="section level2">
 <h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting started</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(crunchtabs)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">login</span>()</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">ds &lt;-<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"My survey"</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">crossbreaks &lt;-<span class="st"> </span><span class="kw">banner</span>(ds, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    <span class="dt">Demographics=</span><span class="kw">c</span>(<span class="st">"gender"</span>, <span class="st">"age4"</span>, <span class="st">"education"</span>),</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">    <span class="dt">Results=</span><span class="kw">c</span>(<span class="st">"q4"</span>, <span class="st">"segmentation"</span>)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">))</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">crosstabs &lt;-<span class="st"> </span><span class="kw">crosstabs</span>(ds, <span class="dt">banner=</span>crossbreaks)</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="kw">writeExcel</span>(crosstabs, <span class="dt">filename=</span><span class="st">"my-tab-book.xlsx"</span>)</a></code></pre></div>
+<a href="#excel" class="anchor"></a>Excel</h2>
+<p>To create documents in excel, the process is the same as that for creating PDF reports. However, in the last line of our example scripts we use <code>writeExcel</code> instead of <code>writeLatex</code> while also removing the <code>pdf = TRUE</code> argument. As with PDF reports, there are a large amount of options that can be set to adjust the look and feel of the resulting Excel spreadsheets.</p>
+<pre><code><a href="reference/writeExcel.html"># ... cross tab
+writeExcel(ct_summary, filename = "output") # output.xlsx will be written 
+
+# ... topline, not yet implemented
+# writeExcel(toplines_summary, filename = "output") # output.xlsx will be written </a></code></pre>
+<p><img src="articles/example-003-excel-ct.png" alt="Cross Tabulation Excel Example from the Example Dataset"></p>
 </div>
 <div id="for-developers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#for-developers" class="anchor"></a>For developers</h2>
-<p>The repository includes a Makefile to facilitate some common tasks, if youâre into that kind of thing.</p>
+<p>The repository includes a Makefile to facilitate some common tasks.</p>
 <div id="running-tests" class="section level3">
 <h3 class="hasAnchor">
 <a href="#running-tests" class="anchor"></a>Running tests</h3>
 <p><code>$ make test</code>. Requires the <a href="https://github.com/nealrichardson/httptest">httptest</a> package. You can also specify a specific test file or files to run by adding a âfile=â argument, like <code>$ make test file=latex</code>. <code>test_package</code> will do a regular-expression pattern match within the file names. See its documentation in the <code>testthat</code> package.</p>
-</div>
-<div id="updating-documentation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#updating-documentation" class="anchor"></a>Updating documentation</h3>
-<p><code>$ make doc</code>. Requires the <a href="https://github.com/klutometis/roxygen">roxygen2</a> package.</p>
 </div>
 </div>
 </div>
