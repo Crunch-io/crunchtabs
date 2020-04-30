@@ -61,6 +61,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   vars_out <- if (codebook) { vars } else {
     intersect(vars, all_aliases[all_types %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
 
+
   error_if_items(
     unique(types(allVariables(dataset[setdiff(vars, vars_out)]))),
     "`vars` of type(s) {items} are not supported and have been skipped.",

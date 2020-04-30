@@ -133,37 +133,68 @@ latexReportTables <- function (results, banner, theme) {
   table_bodies <- list()
 
   for (i in 1:length(results)) { # convert to loop for debug
+
     x = results[[i]]
 
-    # Do some munging and generate the table bodies to match those header(s)
-    x <- removeInserts(x, theme)
-    # Lots of dragons in this "reformat" code :shrug:
-    content <- reformatLatexResults(x, banner, theme)
+    if(!x$type %in% c("NumericVariable", "DateTimeVariable", "TextVariable")) {
+      # Do some munging and generate the table bodies to match those header(s)
+      x <- removeInserts(x, theme)
+      # Lots of dragons in this "reformat" code :shrug:
+      content <- reformatLatexResults(x, banner, theme)
 
-    # PT: decide if the final table should be longtable or tabular based on the
-    # number of responses and latex_max_lines_for_tabular
-    x$longtable <- calculateIfLongtable(content[[1]], theme)
+      # PT: decide if the final table should be longtable or tabular based on the
+      # number of responses and latex_max_lines_for_tabular
+      x$longtable <- calculateIfLongtable(content[[1]], theme)
 
-    # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
-    header <- tableHeader(x, theme)
-    body <- sapply(content, latexTableBody, theme = theme)
-    footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
+      # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
+      header <- tableHeader(x, theme)
+      body <- sapply(content, latexTableBody, theme = theme)
+      footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
 
-    # This paste will collapse the perhaps multiple banner tables into a
-    # single string of LaTeX.
-    table <- paste(
-      header,
-      body,
-      footer,
-      sep = "\n",
-      collapse = "\n\n\n"
-    )
-    if (x$longtable) {
-      # centers longtables because otherwise the head/foot text are not centered
-      # but doesn't center tabular because it actually ends up being uncentered
-      # if centered is used on tabulars.
-      table <- center(table)
+      # This paste will collapse the perhaps multiple banner tables into a
+      # single string of LaTeX.
+      table <- paste(
+        header,
+        body,
+        footer,
+        sep = "\n",
+        collapse = "\n\n\n"
+      )
+      if (x$longtable) {
+        # centers longtables because otherwise the head/foot text are not centered
+        # but doesn't center tabular because it actually ends up being uncentered
+        # if centered is used on tabulars.
+        table <- center(table)
+      }
+    } else {
+      # Customized path for variables that are manually added
+      # to tabBook results. tabBook does not provide summaries for
+      # numeric, datetime nor text variables which we need for
+      # creating a basic codebook
+
+      x$longtable <- calculateIfLongtable(x, theme)
+      header <- tableHeader(x, theme)
+      body <- latexTableBody(x, theme)
+      footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
+
+      table <- paste(
+        header,
+        body,
+        footer,
+        sep = "\n",
+        collapse = "\n\n\n"
+      )
+
+      if (x$longtable) {
+        # centers longtables because otherwise the head/foot text are not centered
+        # but doesn't center tabular because it actually ends up being uncentered
+        # if centered is used on tabulars.
+        table <- center(table)
+      }
+
     }
+
+
     table_bodies[[i]] = table
   }
 

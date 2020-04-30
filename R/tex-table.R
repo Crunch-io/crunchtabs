@@ -53,7 +53,14 @@ latexTableBody <- function(df, theme) {
 
   for (nm in intersect(c("body", "totals_row"), names(data))) {
     # For each column in these data.frames, round and treat as percentages
-    data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    if (!is.null(df$type)) {
+      if (df$type == "NumericVariable") {
+        data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits_numeric)
+      }
+    } else {
+      data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    }
+
     if (theme$proportions) {
       # Add a percent sign
       data[[nm]] <- dfapply(data[[nm]], paste0, "%")
@@ -220,16 +227,16 @@ formatNum <- function(x, digits=0, ...) {
 #' Importantly, this also controls the relative widths of the columns.
 #'
 #' @md
-#' @param x An object of one of the types listed
+#' @param var An object of one of the types listed
 #' @param theme A theme object from \link{themeNew}
-tableHeader <- function(x, theme) {
-  UseMethod("tableHeader", x)
+tableHeader <- function(var, theme) {
+  UseMethod("tableHeader", var)
 }
 
 #' @rdname tableHeader
 #' @export
-tableHeader.default <- function(x) {
-  wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
+tableHeader.default <- function(var, theme) {
+  wrong_class_error(var, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
 }
 
 #' Header for LongTable with Banner.
