@@ -98,7 +98,7 @@
       <h1 data-toc-skip>Frequently Asked Questions</h1>
                         <h4 class="author">Brandon Bertelsen</h4>
             
-            <h4 class="date">2020-04-28</h4>
+            <h4 class="date">2020-05-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/FAQ.Rmd"><code>vignettes/FAQ.Rmd</code></a></small>
       <div class="hidden name"><code>FAQ.Rmd</code></div>
@@ -110,11 +110,26 @@
 <div id="faq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faq" class="anchor"></a>FAQ</h2>
+<div id="how-do-i-change-the-crosstab-stub-width" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-change-the-crosstab-stub-width" class="anchor"></a>How do I change the crosstab stub width?</h3>
+<p>The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override.</p>
+<div class="sourceCode" id="cb1"><html><body><pre class="r">myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column = list(col_width = 2)
+)</pre></body></html></div>
+<p>The code example above would set the stub width to 2 inches. For a PDF document, col_width is in inches. You can also create an exceptional stub width for one or more questions, as follows:</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r">myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column_exception = c("alias"=2.5, "otheralias"=1.25)
+)</pre></body></html></div>
+<p>In this case, you create a named numeric vector where the name is the question alias whose stub width you wish to change and the numeric value is the stub width in inches.</p>
+</div>
 <div id="how-do-i-hide-the-question-numbers" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-hide-the-question-numbers" class="anchor"></a>How do I hide the question numbers?</h3>
 <p>A number of theme options exist for this purpose, <code>format_var_alias</code>, <code>format_var_description</code>, <code>format_var_filtertext</code>, and <code>format_var_name</code>. In your format list, set an item <code>include_q_number = FALSE</code> as in the example below.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
   <span class="no">...</span>, <span class="co"># your other theme options</span>
   <span class="kw">format_var_description</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">include_q_number</span> <span class="kw">=</span> <span class="fl">FALSE</span>),
   <span class="kw">format_var_filtertext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">include_q_number</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
@@ -123,7 +138,7 @@
 <div id="how-do-i-make-it-so-that-there-is-more-than-one-question-per-page" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-make-it-so-that-there-is-more-than-one-question-per-page" class="anchor"></a>How do I make it so that there is more than one question per page?</h3>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
   <span class="no">...</span>,
   <span class="kw">one_per_sheet</span> <span class="kw">=</span> <span class="fl">FALSE</span>
 )</pre></body></html></div>
@@ -131,13 +146,13 @@
 <div id="how-do-i-output-numbers-like-1000-instead-of-1000" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-output-numbers-like-1000-instead-of-1000" class="anchor"></a>How do I output numbers like 1,000 instead of 1000?</h3>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span>(<span class="fl">1000</span>, <span class="kw">nsmall</span><span class="kw">=</span><span class="fl">0</span>, <span class="kw">big.mark</span><span class="kw">=</span><span class="st">","</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span>(<span class="fl">1000</span>, <span class="kw">nsmall</span><span class="kw">=</span><span class="fl">0</span>, <span class="kw">big.mark</span><span class="kw">=</span><span class="st">","</span>)</pre></body></html></div>
 </div>
 <div id="how-do-i-add-a-subtitle-to-my-document" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-add-a-subtitle-to-my-document" class="anchor"></a>How do I add a subtitle to my document?</h3>
 <p>A common usage of the subtitle is to include the survey’s field window. Especially for studies that are run continuously.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(
   <span class="no">...</span>,
   <span class="kw">subtitle</span> <span class="kw">=</span> <span class="st">"My Amazing Subtitle"</span>
 )</pre></body></html></div>
@@ -151,7 +166,7 @@
 <h3 class="hasAnchor">
 <a href="#how-do-i-mask-questions-with-low-base-sizes" class="anchor"></a>How do I mask questions with low base sizes?</h3>
 <p>Below is an example of masking responses where the base size is less than the central limit theorem with a “-” character.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
   <span class="no">...</span>,
   <span class="kw">format_min_base</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">mask</span> <span class="kw">=</span> <span class="st">"-"</span>, <span class="kw">min_base</span> <span class="kw">=</span> <span class="fl">30</span>)
 )</pre></body></html></div>
@@ -160,14 +175,14 @@
 <h3 class="hasAnchor">
 <a href="#how-do-i-install-a-different-release-of-crunchtabs" class="anchor"></a>How do I install a different release of crunchtabs?</h3>
 <p>In the code example below we show you how to install Release 1.2.1:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
 <p>See <a href="https://github.com/Crunch-io/crunchtabs/releases">releases</a> for more information.</p>
 </div>
 <div id="how-do-i-use-a-logo-in-excel" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-use-a-logo-in-excel" class="anchor"></a>How do I use a logo in Excel?</h3>
 <p>You can control the height, width, dpi and start column (specified by a number).</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">crunchtabs</span>)
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">crunchtabs</span>)
 <span class="fu">login</span>()
 
 <span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
