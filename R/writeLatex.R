@@ -288,6 +288,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
                applyLatexStyle("#1", theme$format_var_filtertext)),
     newcommand("formatvarsubname", args = 1,
                applyLatexStyle("#1", theme$format_var_subname)),
+    usepackage("amsmath"),
     "",
     "",
     # If there are one or more banners, generate the banner definition
