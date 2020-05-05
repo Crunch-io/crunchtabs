@@ -8,7 +8,7 @@
 \alias{codebookItem.MultipleResponseVariable}
 \alias{codebookItem.NumericVariable}
 \alias{codebookItem.TextVariable}
-\alias{codebookItem.DateTimeVariable}
+\alias{codebookItem.DatetimeVariable}
 \title{Generate a codebook item}
 \usage{
 codebookItem(x, ...)
@@ -25,7 +25,7 @@ codebookItem(x, ...)
 
 \method{codebookItem}{TextVariable}(x)
 
-\method{codebookItem}{DateTimeVariable}(x)
+\method{codebookItem}{DatetimeVariable}(x)
 }
 \arguments{
 \item{x}{An object of one of the types listed}
@@ -41,7 +41,7 @@ of the data object being passed. Expected classes are:
 \item MultipleResponseVariable
 \item NumericVariable
 \item TextVariable
-\item DateTimeVariable
+\item DatetimeVariable
 }
 
 Importantly, this also controls the relative widths of the columns.
@@ -58,6 +58,6 @@ Importantly, this also controls the relative widths of the columns.
 
 \item \code{TextVariable}: Prepares a codebookitem for a TextVariable
 
-\item \code{DateTimeVariable}: Prepares a codebookitem for a DateTimeVariable
+\item \code{DatetimeVariable}: Prepares a codebookitem for a DatetimeVariable
 }}
 
