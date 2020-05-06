@@ -74,6 +74,30 @@ In the code example below we show you how to install Release 1.2.1:
 remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
 ```
 
+### How do I replace question numbers with question aliases?
+
+We can manipulate the crosstab object so that instead of displaying a number, we display the question alias. 
+```{r, eval = FALSE}
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if it doesn't work
+ct = crosstabs(ds)
+
+nms = names(ct$results)
+for(i in 1:results) {
+  ct$results[[i]]$number = i
+}
+
+writeLatex(ct, ...)
+```
+
+Instead of: 
+
+> 1. This is my question text
+
+You should see: 
+
+> question_alias. This is my question text
+
 ### How do I request a new feature? 
 
 We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)
