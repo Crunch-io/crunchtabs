@@ -64,11 +64,15 @@ pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = T
 
 #' Open
 #'
-#' Open a document on mac
+#' Open a document
 #'
 #' @param x A vector of filenames
 file.open <- function(x) {
-  if (grepl("mac", .Platform$pkgType)) {
+  if (Sys.info()['sysname'] == "Linux") {
+    for (i in x) system(paste("xdg-open", shQuote(i)))
+  } else if (Sys.info()['sysname'] == "Windows") {
+    for (i in x) system(paste("xdg-open", shQuote(i)))
+  } else {
     for (i in x) system(paste("open", shQuote(i)))
   }
 }

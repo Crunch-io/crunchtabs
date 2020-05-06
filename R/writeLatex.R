@@ -111,7 +111,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
       if ("tinytex" %in% rownames(installed.packages())) {
         tinytex::pdflatex(filename, bib_engine = NULL)
         if (open) {
-          file.open(filename)
+          file.open(gsub(".tex", ".pdf", filename, fixed = TRUE))
         }
       } else {
         pdflatex(filename, open)
@@ -121,7 +121,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
   return(invisible(data_summary))
 }
 
-latexReportTables <- function (results, banner, theme) {
+latexReportTables <- function(results, banner, theme) {
   # Each element of `results` contains a list of tables. For toplines and
   # tab books with a single banner, those are length 1, but if there are
   # multiple banners, we'll generate tables for each (slightly differently)
