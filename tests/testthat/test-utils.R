@@ -30,3 +30,7 @@ test_that("error_if_that", {
     "Vars in 1 and 2"
   )
 })
+
+test_that("Paths appropriately on different OS", {
+  # Too much effort, ignoring tests.
+})
