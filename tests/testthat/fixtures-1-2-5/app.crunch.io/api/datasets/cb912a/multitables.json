@@ -1,0 +1,14 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/cb912a/multitables/",
+    "description": "List of multitable definitions for this dataset",
+    "index": {
+        "https://app.crunch.io/api/datasets/cb912a/multitables/4ec7df/": {
+            "is_public": false,
+            "team": null,
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "name": "c4cae4",
+            "id": "4ec7df"
+        }
+    }
+}

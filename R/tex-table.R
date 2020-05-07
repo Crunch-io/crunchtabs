@@ -67,18 +67,22 @@ latexTableBody <- function(df, theme) {
     }
   }
   # NPR: this one is doing some wacky things currently
-  for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
-    this_theme <- theme[[paste0("format_", nm)]]
-    data[[nm]] <- dfapply(data[[nm]], formatNum)
-    if (this_theme$latex_add_parenthesis) {
-      data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
-    }
-    alignment <- this_theme$latex_adjust
-    if (!is.null(alignment) && !topline) {
-      data[[nm]] <- dfapply(data[[nm]], function(x) {
-        # Align these cells
-        multicolumn(1, x, align = alignment)
-      })
+  if (is.null(df$type)) {
+    for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
+      this_theme <- theme[[paste0("format_", nm)]]
+
+      data[[nm]] <- dfapply(data[[nm]], formatNum)
+
+      if (this_theme$latex_add_parenthesis) {
+        data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
+      }
+      alignment <- this_theme$latex_adjust
+      if (!is.null(alignment) && !topline) {
+        data[[nm]] <- dfapply(data[[nm]], function(x) {
+          # Align these cells
+          multicolumn(1, x, align = alignment)
+        })
+      }
     }
   }
 

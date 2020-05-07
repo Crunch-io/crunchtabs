@@ -367,10 +367,14 @@ prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, n = 10L) {
 #' with existing patterns
 #'
 #' @param obj The obj created by \link{prepareExtraSummary}
-fixExtraSummaryWeights <- function(obj) {
-  names(obj$data_list) = c("body", "unweighted_n")
-  obj$data_list[[2]] = c("weighted_n" = "weighted_n")
-  obj$rownames[length(obj$rownames)] = "Weighted N"
-  obj$bottom[[1]] = c("weighted_n" = "weighed_n")
+#' @param weighted Is the set weighted?
+fixExtraSummaryWeights <- function(obj, weighted = FALSE) {
+  if (weighted) {
+    names(obj$data_list) = c("body", "weighted_n")
+    obj$data_list[[2]] = c("weighted_n" = "weighted_n")
+    obj$rownames[length(obj$rownames)] = "Weighted N"
+    obj$bottom[[1]] = c("weighted_n" = "weighed_n")
+    obj
+  }
   obj
 }
