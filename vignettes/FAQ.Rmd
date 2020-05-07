@@ -13,6 +13,28 @@ vignette: >
 
 ## FAQ
 
+### How do I change the crosstab stub width?
+
+The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override. 
+
+```{r, eval = FALSE}
+myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column = list(col_width = 2)
+)
+```
+
+The code example above would set the stub width to 2 inches. For a PDF document, col_width is in inches. You can also create an exceptional stub width for one or more questions, as follows:
+
+```{r, eval = FALSE}
+myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column_exception = c("alias"=2.5, "otheralias"=1.25)
+)
+```
+
+In this case, you create a named numeric vector where the name is the question alias whose stub width you wish to change and the numeric value is the stub width in inches. 
+
 ### How do I hide the question numbers?
 
 A number of theme options exist for this purpose, `format_var_alias`, `format_var_description`, `format_var_filtertext`, and `format_var_name`. In your format list, set an item `include_q_number = FALSE` as in the example below.
@@ -74,6 +96,7 @@ In the code example below we show you how to install Release 1.2.1:
 remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
 ```
 
+<<<<<<< HEAD
 ### How do I replace question numbers with question aliases?
 
 We can manipulate the crosstab object so that instead of displaying a number, we display the question alias. 
@@ -97,6 +120,35 @@ Instead of:
 You should see: 
 
 > question_alias. This is my question text
+=======
+See [releases](https://github.com/Crunch-io/crunchtabs/releases) for more information.
+
+### How do I use a logo in Excel?
+
+You can control the height, width, dpi and start column (specified by a number). 
+
+```{r, eval = FALSE}
+library(crunchtabs)
+login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+ct_banner <- banner(ds, vars = list(`banner 1` = c('allpets')))
+ct_summary <- crosstabs(dataset = ds, banner = ct_banner)
+
+myTheme <- themeNew(
+  logo = list(
+    file = "yougov-logo.png", 
+    dpi = 100, 
+    height = 0.75, 
+    width = 3, 
+    startCol = 6)
+)
+
+writeExcel(ct_summary, filename = "output", theme = myTheme) 
+```
+>>>>>>> 184c119e47a746f5c41fdf89a6a1c40e768d82e1
 
 ### How do I request a new feature? 
 
