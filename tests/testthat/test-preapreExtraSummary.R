@@ -1,23 +1,31 @@
 
-# Same tests, but using function
-with_api_fixture("fixture 1", {
-  ds <- crunch::loadDataset(
-    "fixture 1",
-    project = crunch::projects()[["crunchtestdemo fixtures"]]
+with_api_fixture <- function(fixture_path, expr) {
+  with(
+    crunch::temp.options(
+      crunch.api = "https://app.crunch.io/api/",
+      httptest.mock.paths = fixture_path
+    ),
+    httptest::with_mock_api(expr)
   )
+}
 
-  actual <- crunch_mean_by(ds, "age", "region")
+context("prepareExtraSummary NumericVariable")
 
-  expect_equivalent(as.numeric(actual@arrays$mean[1:2]), c(30.75, 70))
-  expect_equivalent(names(actual@arrays$mean[1:2]), c("North", "South"))
+with_api_fixture("fixtures-1-2-5", {
+
+  ds <- loadDataset("Example dataset")
+
+  test_that("dataset is not weighted", {
+    expect_null(weight(ds))
+  })
+
+  test_that("dataset is accessible", {
+    expect_true(exists("ds"))
+  })
+
+  ct <- crosstabs(ds)
+
 })
 
-context("prepareExtraSummary Text")
-context("prepareExtraSummary Numeric")
-
-test_that("Created response matches expectations", {
-
-})
-
-
-context("prepareExtraSummary Datetime")
+context("prepareExtraSummary DatetimeVariable")
+context("prepareExtraSummary TextVariable")

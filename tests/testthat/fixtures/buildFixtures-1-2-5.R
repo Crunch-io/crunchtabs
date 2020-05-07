@@ -6,9 +6,11 @@ library(httptest)
 login()
 
 # Assumes your wd is project dir
+rm(list = ls())
+ds <- newExampleDataset()
 start_capturing("tests/testthat/fixtures-1-2-5")
 
-ds <- newExampleDataset()
+ds <- loadDataset("Example dataset")
 
 # Unweighted ----
 
@@ -30,7 +32,7 @@ stop_capturing()
 
 start_capturing("tests/testthat/fixtures-1-2-5-weighted")
 
-ds <- newExampleDataset()
+ds <- loadDataset("Example dataset")
 
 ct_banner <- banner(
   ds,
@@ -72,3 +74,4 @@ ct_weighted <- crosstabs(
 )
 
 stop_capturing()
+with_consent(deleteDataset("Example dataset"))

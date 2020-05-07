@@ -4,10 +4,12 @@
 \alias{fixExtraSummaryWeights}
 \title{Weighting Object Titles}
 \usage{
-fixExtraSummaryWeights(obj)
+fixExtraSummaryWeights(obj, weighted = FALSE)
 }
 \arguments{
 \item{obj}{The obj created by \link{prepareExtraSummary}}
+
+\item{weighted}{Is the set weighted?}
 }
 \description{
 If the object is weighted
