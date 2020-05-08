@@ -1,7 +1,7 @@
 {
     "meta": {
-        "multitable_id": "68a54fb5318e4622b0cc2336aea8e607",
-        "user_id": "27a15802a16a4272b46e0bb75959555c",
+        "multitable_id": "846c8e",
+        "user_id": "27a158",
         "doc_layout": {
             "toc": false,
             "variable_sheets": "many_sheets",
@@ -15,20 +15,20 @@
                 "size": 0
             },
             "population_size": null,
-            "dataset_id": "79d986c67a9b4f87830b20a1e017abb2",
+            "dataset_id": "0d5f47",
             "description": "A dataset to illustrate the API"
         },
         "template": [
             {
                 "query": [
                     {
-                        "each": "5FjwuQcYn8OovUeUa7nr19000000"
+                        "each": "35PUZXCBd7QEzYkuylqQRC000000"
                     },
                     {
                         "function": "as_selected",
                         "args": [
                             {
-                                "variable": "5FjwuQcYn8OovUeUa7nr19000000"
+                                "variable": "35PUZXCBd7QEzYkuylqQRC000000"
                             }
                         ]
                     }

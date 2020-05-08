@@ -1,8 +1,8 @@
 {
     "element": "shoji:view",
-    "self": "https://app.crunch.io/api/progress/success/",
+    "self": "https://app.crunch.io/api/progress/",
     "views": {
-        "result": "https://app.crunch.io/api/progress/success/result/"
+        "result": "https://app.crunch.io/api/progress/result/"
     },
     "value": {
         "progress": 100,

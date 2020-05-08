@@ -1,9 +1,9 @@
 {
     "element": "shoji:catalog",
-    "self": "https://app.crunch.io/api/datasets/79d986c67a9b4f87830b20a1e017abb2/variables/5FjwuQcYn8OovUeUa7nr19000000/subvariables/",
+    "self": "https://app.crunch.io/api/datasets/0d5f47/variables/35PUZXCBd7QEzYkuylqQRC000000/subvariables/",
     "description": "Contains the subvariables for this array variable.",
     "index": {
-        "https://app.crunch.io/api/datasets/79d986c67a9b4f87830b20a1e017abb2/variables/5FjwuQcYn8OovUeUa7nr19000000/subvariables/0001/": {
+        "https://app.crunch.io/api/datasets/0d5f47/variables/35PUZXCBd7QEzYkuylqQRC000000/subvariables/0001/": {
             "discarded": false,
             "alias": "allpets_1",
             "secure": false,
@@ -15,7 +15,7 @@
             "hidden": false,
             "description": ""
         },
-        "https://app.crunch.io/api/datasets/79d986c67a9b4f87830b20a1e017abb2/variables/5FjwuQcYn8OovUeUa7nr19000000/subvariables/0002/": {
+        "https://app.crunch.io/api/datasets/0d5f47/variables/35PUZXCBd7QEzYkuylqQRC000000/subvariables/0002/": {
             "discarded": false,
             "alias": "allpets_2",
             "secure": false,
@@ -27,7 +27,7 @@
             "hidden": false,
             "description": ""
         },
-        "https://app.crunch.io/api/datasets/79d986c67a9b4f87830b20a1e017abb2/variables/5FjwuQcYn8OovUeUa7nr19000000/subvariables/0003/": {
+        "https://app.crunch.io/api/datasets/0d5f47/variables/35PUZXCBd7QEzYkuylqQRC000000/subvariables/0003/": {
             "discarded": false,
             "alias": "allpets_3",
             "secure": false,
