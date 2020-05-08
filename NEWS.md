@@ -1,5 +1,19 @@
+## crunchtabs 1.2.5
+
+* Add summarization for continuous variables (NumericVariable) in toplines (#80)
+* Add summarization for date time variable (DatetimeVariable) in toplines (#120)
+* Add summarization for text data (TextVariable) in toplines (#121)
+* Add amsmath package to latex preamble (#123)
+* Bugfix for open=TRUE, PDF doc now opens appropriately (#125)
+* Update FAQ: question alias numbering example (#128)
+* Update FAQ: customizing stub widths (#118)
+* Update FAQ: specifying logos in excel (#115)
+* Internal proposal for new summarizations and codebook (#117)
+* Fix codecov checks (#111)
+
 ## crunchtabs 1.2.3
 
+* New introductory and FAQ vignettes (#96)
 * tableHeader.CrossTabVar respects global stub width setting (#93)
 * Updated vignette (#65)
 * Adding more tests (#84)
