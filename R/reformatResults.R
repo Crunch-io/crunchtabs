@@ -15,16 +15,20 @@ roundPropCategorical <- function(data, digits = 0) {
   return(rounded)
 }
 
-# TODO: Convert these random global vars to functions instead.
-default_banner <- list(
-  Results = list(
-    empty_col = FALSE,
-    multicols = NA,
-    multicols_csum = NA,
-    format_cols = 2,
-    border_columns = NULL
+#' Create default banner
+#'
+#' Creates a banner for use with \link{reformatLatexResults}
+default_banner <- function() {
+  list(
+    Results = list(
+      empty_col = FALSE,
+      multicols = NA,
+      multicols_csum = NA,
+      format_cols = 2,
+      border_columns = NULL
+    )
   )
-)
+}
 
 #' Banner Meta Data
 #'
@@ -361,7 +365,7 @@ removeInserts <- function(var, theme) {
 #' @param theme A crunchtabs theme object from \link{themeNew}
 reformatLatexResults <- function(result, banner, theme) {
   if (is.null(banner)) {
-    banner_info <- default_banner
+    banner_info <- default_banner()
   } else {
     banner_info <- lapply(banner, getBannerInfo, theme = theme)
   }

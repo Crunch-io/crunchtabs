@@ -5,17 +5,19 @@
 #' we must "reflow" the question numbers
 #' so that they match dataset order.
 #'
-#' @param x A crosstabs object from the \link{crosstabs} function.
+#' @param x A results object from within the \link{crosstabs} function.
 reflowQuestionNumbers <- function(x) {
-  for (i in 1:length(x$results)) {
-    x$results[[i]]$number = i
+  for (i in 1:length(x)) {
+    x[[i]]$number = i
   }
   x
 }
 
 #' Prepare Summary Content
 #'
-#' Prepare summary content for codebooks.
+#' Prepare summary content for toplines for classes that
+#' are not covered by tabBook such as NumericVariable, DatetimeVariables
+#' and TextVariable
 #'
 #' @param x A variable of class NumericVariable, DatetimeVariable or TextVariable
 #' @param ... Additional arguments passed to methods
@@ -32,9 +34,9 @@ prepareExtraSummary.default <- function(x) {
 
 #' Prepare Numeric Content
 #'
-#' tabBook does not report an appopriate numeric summary without
-#' being provided with a multitable. So we "fake" a numeric summary
-#' as by overwriting the structure of a categorical object.
+#' \link[crunch]{tabBook} does not report an appropriate numeric summary
+#' without being provided with a multitable. So we "fake" a numeric summary
+#' by overwriting the structure of a categorical object.
 #'
 #' If data are weighted we display Weighted N instead of Unweighted
 #' N
@@ -52,72 +54,24 @@ prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE) {
   firstq = qt[2]
   thirdq = qt[4]
   stdev = sd(y, na.rm = TRUE)
-  n = sum(!is.na(y))
 
   # Mock the content object
 
-  # If no description, use name:
-  descript = ifelse(description(x) == "", name(x), description(x))
-
-  obj = structure(
-    list(
-      alias = alias(x),
-      name = name(x),
-      description = descript,
-      notes = notes(x),
-      type = "NumericVariable", # Assigned for diversion
-      top = NULL,
-      bottom = c(
-        unweighted_n = "unweighted_n"),
-      data_order = c("body", unweighted_n = "unweighted_n"),
-      inserts = c("Category", "Category", "Category", "Category", "Category", "Category"),
-      data_list = list(
-        body = structure(
-          list(
-            c(
-              minima,
-              firstq,
-              half,
-              mu,
-              thirdq,
-              maxima,
-              stdev
-            )),
-          .Names = NA_character_,
-          class = "data.frame",
-          row.names = c("Miniumum",
-                        "1st Quartile",
-                        "Median","Mean",
-                        "3rd Quartile",
-                        "Maximum",
-                        "Standard Deviation")),
-        unweighted_n = structure(
-          list(n),
-          .Names = NA_character_, class = "data.frame", row.names = "Unweighted N")),
-      min_cell_top = NULL,
-      min_cell_body = structure(
-        c(NA, NA, NA, NA, NA, NA),
-        .Dim = c(6L, 1L)),
-      min_cell_bottom = structure(
-        FALSE,
-        .Dim = c(1L, 1L)),
-      min_cell = FALSE,
-      rownames = c("Miniumum",
-                   "1st Quartile",
-                   "Median","Mean",
-                   "3rd Quartile",
-                   "Maximum",
-                   "Standard Deviation",
-                   "Unweighted N")),
-    class = c("ToplineVar", "CrossTabVar")
+  obj = resultsObject(
+    x,
+    top = NULL,
+    weighted = weighted,
+    body_values = c(minima, firstq, half, mu, thirdq, maxima, stdev),
+    body_labels = c(
+      "Minimum",
+      "1st Quartile",
+      "Median",
+      "Mean",
+      "3rd Quartile",
+      "Maximum",
+      "Standard Deviation"
+    )
   )
-
-  if (weighted) {
-    # Overwrite naming
-    obj$data_list[[2]] = c("weighted_n" = "weighted_n")
-    obj$rownames[length(obj$rownames)] = "Weighted N"
-    obj$bottom[[1]] = c("weighted_n" = "weighed_n")
-  }
 
   obj
 }
@@ -143,152 +97,24 @@ prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, tz = "UTC")
   half = median(y, na.rm = TRUE)
   firstq = qt[2]
   thirdq = qt[4]
-  n = sum(!is.na(y))
 
   # Mock the content object
-
-  # If no description, use name:
-  descript = ifelse(description(x) == "", name(x), description(x))
-
-  obj = structure(
-    list(
-      alias = alias(x),
-      name = name(x),
-      description = descript,
-      notes = notes(x),
-      type = "NumericVariable", # Assigned for diversion
-      top = NULL,
-      bottom = c(
-        unweighted_n = "unweighted_n"),
-      data_order = c("body", unweighted_n = "unweighted_n"),
-      inserts = c("Category", "Category", "Category", "Category", "Category", "Category"),
-      data_list = list(
-        body = structure(
-          list(
-            c(
-              minima,
-              firstq,
-              half,
-              thirdq,
-              maxima
-            )),
-          .Names = NA_character_,
-          class = "data.frame",
-          row.names = c("Miniumum",
-                        "1st Quartile",
-                        "Median",
-                        "3rd Quartile",
-                        "Maximum")),
-        unweighted_n = structure(
-          list(n),
-          .Names = NA_character_, class = "data.frame", row.names = "Unweighted N")),
-      min_cell_top = NULL,
-      min_cell_body = structure(
-        c(NA, NA, NA, NA, NA, NA),
-        .Dim = c(6L, 1L)),
-      min_cell_bottom = structure(
-        FALSE,
-        .Dim = c(1L, 1L)),
-      min_cell = FALSE,
-      rownames = c("Miniumum",
-                   "1st Quartile",
-                   "Median",
-                   "3rd Quartile",
-                   "Maximum",
-                   "Unweighted N")),
-    class = c("ToplineVar", "CrossTabVar")
+  obj = resultsObject(
+    x,
+    top = NULL,
+    weighted = weighted,
+    body_values = c(minima, firstq, half, thirdq, maxima),
+    body_labels = c(
+      "Minimum",
+      "1st Quartile",
+      "Median",
+      "3rd Quartile",
+      "Maximum"
+    )
   )
-
-  if (weighted) {
-    # There are some object naming
-    # differences that need to be accomodated
-    # depending on if data are weighted
-    obj = fixExtraSummaryWeights(obj)
-  }
 
   obj
 }
-
-prepareExtraSummary.SurveyDuration <- function(x, weighted = TRUE) {
-  y = as.vector(x)
-  qt = quantile(y, na.rm = TRUE)
-  minima = min(y, na.rm = TRUE)
-  maxima = max(y, na.rm = TRUE)
-  half = median(y, na.rm = TRUE)
-  mu = mean(y, na.rm = TRUE)
-  firstq = qt[2]
-  thirdq = qt[4]
-  stdev = sd(y, na.rm = TRUE)
-  n = sum(!is.na(y))
-
-  # Mock the content object
-
-  # If no description, use name:
-  descript = ifelse(description(x) == "", name(x), description(x))
-
-  obj = structure(
-    list(
-      alias = "duration",
-      name = "Survey Length",
-      description = "What is the length of this survey, in minutes?",
-      notes = "",
-      type = "NumericVariable", # Assigned for diversion
-      top = NULL,
-      bottom = c(
-        unweighted_n = "unweighted_n"),
-      data_order = c("body", unweighted_n = "unweighted_n"),
-      inserts = c("Category", "Category", "Category", "Category", "Category", "Category"),
-      data_list = list(
-        body = structure(
-          list(
-            c(
-              minima,
-              firstq,
-              half,
-              mu,
-              thirdq,
-              maxima,
-              stdev
-            )),
-          .Names = NA_character_,
-          class = "data.frame",
-          row.names = c("Miniumum",
-                        "1st Quartile",
-                        "Median","Mean",
-                        "3rd Quartile",
-                        "Maximum",
-                        "Standard Deviation")),
-        unweighted_n = structure(
-          list(n),
-          .Names = NA_character_, class = "data.frame", row.names = "Unweighted N")),
-      min_cell_top = NULL,
-      min_cell_body = structure(
-        c(NA, NA, NA, NA, NA, NA),
-        .Dim = c(6L, 1L)),
-      min_cell_bottom = structure(
-        FALSE,
-        .Dim = c(1L, 1L)),
-      min_cell = FALSE,
-      rownames = c("Miniumum",
-                   "1st Quartile",
-                   "Median","Mean",
-                   "3rd Quartile",
-                   "Maximum",
-                   "Standard Deviation",
-                   "Unweighted N")),
-    class = c("ToplineVar", "CrossTabVar")
-  )
-
-  if (weighted) {
-    # Overwrite naming
-    obj$data_list[[2]] = c("weighted_n" = "weighted_n")
-    obj$rownames[length(obj$rownames)] = "Weighted N"
-    obj$bottom[[1]] = c("weighted_n" = "weighed_n")
-  }
-
-  obj
-}
-
 
 #' Prepare Text Content
 #'
@@ -301,80 +127,95 @@ prepareExtraSummary.SurveyDuration <- function(x, weighted = TRUE) {
 #'
 #' @param x A variable of class \link[crunch]{TextVariable}
 #' @param weighted Logical. Are these data weighted?
-#' @param n The number of verbatim responses to present as a sample. Defaults to 10.
+#' @param count The number of verbatim responses to present as a sample. Defaults to 10.
 #' @export
-prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, n = 10L) {
+prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10L) {
+  set.seed(42)
   y = as.vector(x)
-  set.seed(42) # The answer
-  y = sort(sample(unique(y[!is.na(y)]), n, replace = FALSE))
+  y = sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
   n = sum(!is.na(y)) # This could be wrong for un-enforced responses such as ""
 
   # Mock the content object
+  obj = resultsObject(
+    x,
+    weighted = weighted,
+    body_values = rep("", length(y)),
+    body_labels = y
+  )
 
-  # If no description, use name:
-  descript = ifelse(description(x) == "", name(x), description(x))
+  obj
+}
 
-  obj = structure(
+
+#' Generic Results Object
+#'
+#' As \link[crunch]{tabBook} does not provide us with a way to  create summaries
+#' for some variable types we are forced to create an object that bypasses
+#' the reformatVar function. Our goal is to use as much of the
+#' code infrastructure for theming purposes as possible while
+#' allowing the creation of new topline summary objects
+#'
+#' @param x A dataset variable
+#' @param top The top of the results object. NULL by default
+#' @param weighted Logical. Are these data weighted?
+#' @param body_values The values to present
+#' @param body_labels The labels to present
+resultsObject <- function(x, top = NULL, weighted, body_values, body_labels) {
+
+  stopifnot(length(body_values) == length(body_labels))
+
+  top = top
+  data_list = list()
+  data_list$body = data.frame(
+    x = body_values,
+    row.names = body_labels
+  )
+  names(data_list$body) = NA_character_
+
+  # Presentation differences if data are
+  # weighted or unweighted
+
+  if (weighted) {
+    data_list$weighted_n = data.frame(
+      x = sum(!is.na(as.vector(x))),
+      row.names = "Weighted N"
+    )
+    names(data_list$weighted_n) = NA_character_
+
+    bottom = c(weighted_n = "weighted_n")
+    data_order = c("body", weighted_n = "weighted_n")
+
+  } else {
+
+    data_list$unweighted_n = data.frame(
+      x = sum(!is.na(as.vector(x))),
+      row.names = "Unweighted N"
+    )
+    names(data_list$unweighted_n) = NA_character_
+
+    bottom = c(unweighted_n = "unweighted_n")
+    data_order = c("body",unweighted_n = "unweighted_n")
+  }
+
+  structure(
     list(
       alias = alias(x),
       name = name(x),
-      description = descript,
+      description = ifelse(description(x) == "", name(x), description(x)),
       notes = notes(x),
-      type = "NumericVariable", # Assigned for diversion
+      type = class(x)[1],
       top = NULL,
-      bottom = c(
-        unweighted_n = "unweighted_n"),
-      data_order = c("body", unweighted_n = "unweighted_n"),
-      inserts = rep("Category", n),
-      data_list = list(
-        body = structure(
-          list(rep("", n)),
-          .Names = NA_character_,
-          class = "data.frame",
-          row.names = y),
-        unweighted_n = structure(
-          list(n),
-          .Names = NA_character_, class = "data.frame", row.names = "Unweighted N")),
+      bottom = bottom,
+      data_order = data_order,
+      inserts = rep("Category", length(body_values)),
+      data_list = data_list,
       min_cell_top = NULL,
-      min_cell_body = structure(
-        rep(NA, n + 1),
-        .Dim = c((n + 1L), 1L)),
-      min_cell_bottom = structure(
-        FALSE,
-        .Dim = c(1L, 1L)),
+      no_totals = TRUE,
+      mean_median = FALSE,
+      min_cell_body = matrix(rep(NA, length(body_values))),
+      min_cell_bottom = matrix(FALSE),
       min_cell = FALSE,
-      rownames = c(y,
-                   "Unweighted N")),
-    class = c("ToplineVar", "CrossTabVar")
-  )
-
-  if (weighted) {
-    # There are some object naming
-    # differences that need to be accomodated
-    # depending on if data are weighted
-    obj = fixExtraSummaryWeights(obj)
-  }
-
-  obj
+      rownames = c(body_labels, ifelse(weighted, "Weighted N", "Unweighted N"))),
+    class = c("ToplineVar", "CrossTabVar"))
 }
 
-
-#' Weighting Object Titles
-#'
-#' If the object is weighted
-#' there is a slight difference in
-#' the naming required to align
-#' with existing patterns
-#'
-#' @param obj The obj created by \link{prepareExtraSummary}
-#' @param weighted Is the set weighted?
-fixExtraSummaryWeights <- function(obj, weighted = FALSE) {
-  if (weighted) {
-    names(obj$data_list) = c("body", "weighted_n")
-    obj$data_list[[2]] = c("weighted_n" = "weighted_n")
-    obj$rownames[length(obj$rownames)] = "Weighted N"
-    obj$bottom[[1]] = c("weighted_n" = "weighed_n")
-    obj
-  }
-  obj
-}

@@ -63,7 +63,12 @@ latexTableBody <- function(df, theme) {
 
     if (theme$proportions) {
       # Add a percent sign
-      data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      if (!is.null(df$type)) {
+        # No action becasue it is one of: Numeric, Datetime, or Text
+      } else {
+        data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      }
+
     }
   }
   # NPR: this one is doing some wacky things currently

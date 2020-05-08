@@ -136,7 +136,7 @@ latexReportTables <- function (results, banner, theme) {
 
     x = results[[i]]
 
-    if(!x$type %in% c("NumericVariable", "DateTimeVariable", "TextVariable")) {
+    if(!x$type %in% c("NumericVariable", "DatetimeVariable", "TextVariable")) {
       # Do some munging and generate the table bodies to match those header(s)
       x <- removeInserts(x, theme)
       # Lots of dragons in this "reformat" code :shrug:
@@ -149,7 +149,8 @@ latexReportTables <- function (results, banner, theme) {
       # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
       header <- tableHeader(x, theme)
       body <- sapply(content, latexTableBody, theme = theme)
-      footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
+      footer <- ifelse(
+        x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
 
       # This paste will collapse the perhaps multiple banner tables into a
       # single string of LaTeX.
