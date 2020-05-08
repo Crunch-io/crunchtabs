@@ -4,14 +4,14 @@
 \alias{prepareExtraSummary.TextVariable}
 \title{Prepare Text Content}
 \usage{
-\method{prepareExtraSummary}{TextVariable}(x, weighted = TRUE, n = 10L)
+\method{prepareExtraSummary}{TextVariable}(x, weighted = TRUE, num = 10L)
 }
 \arguments{
 \item{x}{A variable of class \link[crunch]{TextVariable}}
 
 \item{weighted}{Logical. Are these data weighted?}
 
-\item{n}{The number of verbatim responses to present as a sample. Defaults to 10.}
+\item{count}{The number of verbatim responses to present as a sample. Defaults to 10.}
 }
 \description{
 tabBook does not report an appropriate date time summary without

@@ -15,5 +15,7 @@ prepareExtraSummary(x, ...)
 \item{...}{Additional arguments passed to methods}
 }
 \description{
-Prepare summary content for codebooks.
+Prepare summary content for toplines for classes that
+are not covered by tabBook such as NumericVariable, DatetimeVariables
+and TextVariable
 }

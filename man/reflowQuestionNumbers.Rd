@@ -7,7 +7,7 @@
 reflowQuestionNumbers(x)
 }
 \arguments{
-\item{x}{A crosstabs object from the \link{crosstabs} function.}
+\item{x}{A results object from within the \link{crosstabs} function.}
 }
 \description{
 When we manually add summaries of

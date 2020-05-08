@@ -8,6 +8,7 @@
 * Update FAQ: question alias numbering example (#128)
 * Update FAQ: customizing stub widths (#118)
 * Update FAQ: specifying logos in excel (#115)
+* Update FAQ: how to weight by question (#106)
 * Internal proposal for new summarizations and codebook (#117)
 * Fix codecov checks (#111)
 

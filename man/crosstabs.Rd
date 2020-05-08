@@ -9,7 +9,11 @@ crosstabs(
   vars = names(dataset),
   weight = crunch::weight(dataset),
   banner = NULL,
-  codebook = FALSE
+  codebook = FALSE,
+  include_numeric = FALSE,
+  include_datetime = FALSE,
+  include_verbatims = FALSE,
+  num_verbatims = 10
 )
 }
 \arguments{
@@ -25,6 +29,14 @@ Defaults to current weight variable. For unweighted, set to \code{NULL}}
 a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.}
 
 \item{codebook}{If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.}
+
+\item{include_numeric}{Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.}
+
+\item{include_datetime}{Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.}
+
+\item{include_verbatims}{Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.}
+
+\item{num_verbatims}{An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)

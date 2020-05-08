@@ -12,9 +12,9 @@
 \item{weighted}{Logical. Are these data weighted?}
 }
 \description{
-tabBook does not report an appopriate numeric summary without
-being provided with a multitable. So we "fake" a numeric summary
-as by overwriting the structure of a categorical object.
+\link[crunch]{tabBook} does not report an appropriate numeric summary
+without being provided with a multitable. So we "fake" a numeric summary
+by overwriting the structure of a categorical object.
 }
 \details{
 If data are weighted we display Weighted N instead of Unweighted
