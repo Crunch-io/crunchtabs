@@ -5,6 +5,7 @@
 #' @section Theme Arguments:
 #' \describe{
 #' \item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
+#' \item{digits_numeric}{A numeric. How many digits should continuous variable data be rounded to? (In Latex, , this is Latex styling.) Defaults to 2.}
 #' \item{digits_final}{In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?}
 #' \item{excel_footer}{In Excel, an optional character vector of length 3.  The footer text of the file.}
 #' \item{excel_freeze_column}{In Excel, a numeric. What column should be the last frozen column? Defaults to 1.}
@@ -204,6 +205,7 @@ themeDefaultExcel <- function(
     excel_freeze_column = 1,
     excel_percent_sign = TRUE,
     digits = 0,
+    digits_numeric = 2,
     one_per_sheet = FALSE,
     latex_round_percentages = TRUE,
     latex_headtext = "",
@@ -251,6 +253,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     format_label_column = c(norm, col_width = NA_real_ , extend_borders = FALSE),
     format_totals_column = norm,
     digits = 0,
+    digits_numeric = 2,
     one_per_sheet = TRUE,
     excel_percent_sign = TRUE,
     excel_show_grid_lines = FALSE,
@@ -358,6 +361,7 @@ validators_to_use <- list(
   decoration = list(mult = TRUE, missing = TRUE,
                     valid = list("bold","strikeout","italic","underline","underline2")),
   digits = c(class = "numeric", len = 1, missing = FALSE, default = 0),
+  digits_numeric = c(class = "numeric", len = 1, missing = FALSE, default = 2),
   digits_final = c(class = "numeric", len = 1, missing = TRUE),
   dpi = c(class = "numeric", len = 1, missing = FALSE, default = 300),
   empty_col = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
@@ -442,7 +446,7 @@ validators_to_use <- list(
 #' @param theme An object from \link{themeNew}
 theme_validator <- function(theme) {
   theme_required <- c(
-    "digits", "digits_final", "excel_footer",
+    "digits","digits_numeric", "digits_final", "excel_footer",
     "excel_freeze_column", "excel_header", "excel_orientation",
     "excel_percent_sign", "excel_show_grid_lines", "excel_table_border",
     "font", "font_color", "font_size", "format_banner_categories",

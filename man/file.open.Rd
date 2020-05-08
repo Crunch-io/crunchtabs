@@ -10,5 +10,5 @@ file.open(x)
 \item{x}{A vector of filenames}
 }
 \description{
-Open a document on mac
+Open a document
 }

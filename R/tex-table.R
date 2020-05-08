@@ -53,25 +53,41 @@ latexTableBody <- function(df, theme) {
 
   for (nm in intersect(c("body", "totals_row"), names(data))) {
     # For each column in these data.frames, round and treat as percentages
-    data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    if (!is.null(df$type)) {
+      if (df$type == "NumericVariable") {
+        data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits_numeric)
+      }
+    } else {
+      data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    }
+
     if (theme$proportions) {
       # Add a percent sign
-      data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      if (!is.null(df$type)) {
+        # No action becasue it is one of: Numeric, Datetime, or Text
+      } else {
+        data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      }
+
     }
   }
   # NPR: this one is doing some wacky things currently
-  for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
-    this_theme <- theme[[paste0("format_", nm)]]
-    data[[nm]] <- dfapply(data[[nm]], formatNum)
-    if (this_theme$latex_add_parenthesis) {
-      data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
-    }
-    alignment <- this_theme$latex_adjust
-    if (!is.null(alignment) && !topline) {
-      data[[nm]] <- dfapply(data[[nm]], function(x) {
-        # Align these cells
-        multicolumn(1, x, align = alignment)
-      })
+  if (is.null(df$type)) {
+    for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
+      this_theme <- theme[[paste0("format_", nm)]]
+
+      data[[nm]] <- dfapply(data[[nm]], formatNum)
+
+      if (this_theme$latex_add_parenthesis) {
+        data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
+      }
+      alignment <- this_theme$latex_adjust
+      if (!is.null(alignment) && !topline) {
+        data[[nm]] <- dfapply(data[[nm]], function(x) {
+          # Align these cells
+          multicolumn(1, x, align = alignment)
+        })
+      }
     }
   }
 
@@ -220,16 +236,16 @@ formatNum <- function(x, digits=0, ...) {
 #' Importantly, this also controls the relative widths of the columns.
 #'
 #' @md
-#' @param x An object of one of the types listed
+#' @param var An object of one of the types listed
 #' @param theme A theme object from \link{themeNew}
-tableHeader <- function(x, theme) {
-  UseMethod("tableHeader", x)
+tableHeader <- function(var, theme) {
+  UseMethod("tableHeader", var)
 }
 
 #' @rdname tableHeader
 #' @export
-tableHeader.default <- function(x) {
-  wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
+tableHeader.default <- function(var, theme) {
+  wrong_class_error(var, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
 }
 
 #' Header for LongTable with Banner.

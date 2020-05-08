@@ -18,6 +18,7 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \describe{
 \item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
+\item{digits_numeric}{A numeric. How many digits should continuous variable data be rounded to? (In Latex, , this is Latex styling.) Defaults to 2.}
 \item{digits_final}{In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?}
 \item{excel_footer}{In Excel, an optional character vector of length 3.  The footer text of the file.}
 \item{excel_freeze_column}{In Excel, a numeric. What column should be the last frozen column? Defaults to 1.}
