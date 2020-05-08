@@ -68,7 +68,7 @@ myAwesomeTheme = themeNew(
 
 ### How do I display questions with different weights in the same report?
 
-We can chain crosstabs objects easily to create the desired effect: 
+We can chain crosstabs objects easily to create the desired effect. Below, we create two crosstabs objects with the variables and the weighting we want applied and then we concatenate them together.
 
 ```{r, eval = FALSE}
 # ...
@@ -108,7 +108,6 @@ topline_summary$results = crunchtabs:::reflowQuestionNumbers(
 
 writeLatex(topline_summary)
 ```
-
 
 ### How do I install a different release of crunchtabs?
 
