@@ -66,6 +66,50 @@ myAwesomeTheme = themeNew(
 )
 ```
 
+### How do I display questions with different weights in the same report?
+
+We can chain crosstabs objects easily to create the desired effect: 
+
+```{r, eval = FALSE}
+# ...
+topline_summary = crosstabs(ds, vars = c("a", "b"), weight = "weightvar")
+chain_me = crosstabs(ds, vars = c("c"), weight = "other_weightvar")
+
+topline_summary$results = c(
+  topline_summary$results, 
+  chain_me$results
+)
+
+topline_summary$results = crunchtabs:::reflowQuestionNumbers(
+  topline_summary$results
+)
+
+writeLatex(topline_summary)
+```
+
+Re-weighting the same variable with another weight in the same report is possible but requires you to also adjust the names so that you can edit the question text appropriately to demonstrate the different weighting: 
+
+```{r, eval = FALSE}
+# ...
+topline_summary = crosstabs(ds, vars = c("a", "b"), weight = "weightvar")
+chain_me = crosstabs(ds, vars = c("a"), weight = "other_weightvar")
+
+names(chain_me$results) = "a_other_weight_var" # rename the alias
+chain_me$results$a_other_weight_var$description = "This is question text (weighted by other_weight_var)"
+
+topline_summary$results = c(
+  topline_summary$results, 
+  chain_me$results
+)
+
+topline_summary$results = crunchtabs:::reflowQuestionNumbers(
+  topline_summary$results
+)
+
+writeLatex(topline_summary)
+```
+
+
 ### How do I install a different release of crunchtabs?
 
 In the code example below we show you how to install Release 1.2.1:

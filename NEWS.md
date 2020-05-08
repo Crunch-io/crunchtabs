@@ -1,6 +1,6 @@
 ## crunchtabs 1.2.5
 
-* Add summarization for continuous variables (NumericVariable) in topline (#80)
+* Add summarization for continuous variables (NumericVariable) in toplines (#80)
 * Add summarization for date time variable (DatetimeVariable) in toplines (#120)
 * Add summarization for text data (TextVariable) in toplines (#121)
 * Add amsmath package to latex preamble (#123)
