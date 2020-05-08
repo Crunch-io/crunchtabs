@@ -1,4 +1,11 @@
-# Use rcrunch's redactor file exactly
-# https://github.com/Crunch-io/rcrunch/blob/master/inst/httptest/redact.R
-# You could also write your own
-source(system.file("httptest/redact.R", package = "crunch", mustWork = TRUE))
+function(response) {
+    ## Remove multipart form fields because POST sources/ sends a tmpfile path
+    ## that's different every time, so the request will never match.
+    response$request$fields <- NULL
+    ## So that the login request isn't tied to one user's creds, ignore it in mocks
+    if (response$url == "https://app.crunch.io/api/public/login/") {
+        response$request$options[["postfields"]] <- NULL
+    }
+    response %>%
+        redact_auth()
+}
