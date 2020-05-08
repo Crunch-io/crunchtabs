@@ -8,6 +8,8 @@ login()
 # Assumes your wd is project dir
 rm(list = ls())
 ds <- newExampleDataset()
+
+httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
 
 ds <- loadDataset("Example dataset")
