@@ -1,4 +1,4 @@
-function(response) {
+crunchtabs_redact <- function(response) {
     ## Remove multipart form fields because POST sources/ sends a tmpfile path
     ## that's different every time, so the request will never match.
     response$request$fields <- NULL

@@ -10,6 +10,8 @@ rm(list = ls())
 ds <- newExampleDataset()
 
 httpcache::clearCache()
+source(system.file("httptest/redact.R", package = "crunchtabs", mustWork = TRUE))
+set_redactor(crunchtabs_redact) # have to override so that crunch's redaction doesn't get loaded
 start_capturing("tests/testthat/fixtures-1-2-5")
 
 ds <- loadDataset("Example dataset")
