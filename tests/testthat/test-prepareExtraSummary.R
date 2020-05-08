@@ -3,9 +3,23 @@ with_api_fixture <- function(fixture_path, expr) {
   with(
     crunch::temp.options(
       crunch.api = "https://app.crunch.io/api/",
-      httptest.mock.paths = fixture_path
+      httptest.mock.paths = fixture_path,
+      crunch.show.progress = FALSE
     ),
-    httptest::with_mock_api(expr)
+    httptest::with_mock_api(
+      # Also need to redact UUIDs as is done in POSTs
+      with_mock(
+        `crunch::crPOST` = function(...) {
+          args <- list(...)
+          args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
+          do.call(
+            function(...) crunch:::crunchAPI("POST", ...),
+            args
+          )
+        },
+        expr
+      )
+    )
   )
 }
 
