@@ -1,0 +1,35 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/by_name/Example%20dataset/",
+    "description": "Datasets with a given name ",
+    "index": {
+        "https://app.crunch.io/api/datasets/79d986c67a9b4f87830b20a1e017abb2/": {
+            "size": {
+                "rows": 20,
+                "unfiltered_rows": 20,
+                "columns": 10
+            },
+            "current_editor_name": "Greg",
+            "account": "https://app.crunch.io/api/accounts/00001/",
+            "owner_name": "Greg",
+            "name": "Example dataset",
+            "end_date": null,
+            "streaming": "no",
+            "owner_id": "https://app.crunch.io/api/users/27a15802a16a4272b46e0bb75959555c/",
+            "current_editor": "https://app.crunch.io/api/users/27a15802a16a4272b46e0bb75959555c/",
+            "creation_time": "2020-05-08T19:50:22.878000+00:00",
+            "archived": false,
+            "view_of": null,
+            "start_date": null,
+            "modification_time": "2020-05-08T19:50:24.654000+00:00",
+            "access_time": "2020-05-08T19:50:22.686000+00:00",
+            "permissions": {
+                "edit": true,
+                "view": true
+            },
+            "is_published": true,
+            "id": "79d986c67a9b4f87830b20a1e017abb2",
+            "description": "A dataset to illustrate the API"
+        }
+    }
+}
