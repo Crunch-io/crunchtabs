@@ -8,9 +8,9 @@
 \alias{tableHeader.ToplineCategoricalArray}
 \title{Generate a tableHeader}
 \usage{
-tableHeader(x, theme)
+tableHeader(var, theme)
 
-\method{tableHeader}{default}(x)
+\method{tableHeader}{default}(var, theme)
 
 \method{tableHeader}{CrossTabVar}(var, theme)
 
@@ -19,11 +19,9 @@ tableHeader(x, theme)
 \method{tableHeader}{ToplineCategoricalArray}(var, theme)
 }
 \arguments{
-\item{x}{An object of one of the types listed}
+\item{var}{An object of class ToplineCategoricalArray}
 
 \item{theme}{A theme object from \link{themeNew}}
-
-\item{var}{An object of class ToplineCategoricalArray}
 }
 \description{
 A passthrough function that creates a table header appropriate to the class

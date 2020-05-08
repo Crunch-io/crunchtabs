@@ -7,7 +7,7 @@
 vspace(space)
 }
 \arguments{
-\item{An}{integer identifying the number of spaces to print}
+\item{space}{An integer identifying the number of spaces to print}
 }
 \description{
 Create dynamic vspace tex

@@ -9,7 +9,7 @@ getMultitable(banner_flatten, dataset)
 \arguments{
 \item{banner_flatten}{A banner object from \link{banner}}
 
-\item{dataset}{A CrunchDataset from \link{crunch::loadDataset}}
+\item{dataset}{A CrunchDataset from \link[crunch]{loadDataset}}
 }
 \description{
 Given a Banner object and a dataset, find or create the corresponding Crunch multitable

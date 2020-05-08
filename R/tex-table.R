@@ -53,25 +53,41 @@ latexTableBody <- function(df, theme) {
 
   for (nm in intersect(c("body", "totals_row"), names(data))) {
     # For each column in these data.frames, round and treat as percentages
-    data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    if (!is.null(df$type)) {
+      if (df$type == "NumericVariable") {
+        data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits_numeric)
+      }
+    } else {
+      data[[nm]] <- dfapply(data[[nm]], formatNum, digits = theme$digits)
+    }
+
     if (theme$proportions) {
       # Add a percent sign
-      data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      if (!is.null(df$type)) {
+        # No action becasue it is one of: Numeric, Datetime, or Text
+      } else {
+        data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+      }
+
     }
   }
   # NPR: this one is doing some wacky things currently
-  for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
-    this_theme <- theme[[paste0("format_", nm)]]
-    data[[nm]] <- dfapply(data[[nm]], formatNum)
-    if (this_theme$latex_add_parenthesis) {
-      data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
-    }
-    alignment <- this_theme$latex_adjust
-    if (!is.null(alignment) && !topline) {
-      data[[nm]] <- dfapply(data[[nm]], function(x) {
-        # Align these cells
-        multicolumn(1, x, align = alignment)
-      })
+  if (is.null(df$type)) {
+    for (nm in intersect(c("unweighted_n", "weighted_n"), names(data))) {
+      this_theme <- theme[[paste0("format_", nm)]]
+
+      data[[nm]] <- dfapply(data[[nm]], formatNum)
+
+      if (this_theme$latex_add_parenthesis) {
+        data[[nm]] <- dfapply(data[[nm]], paste_around, "(", ")")
+      }
+      alignment <- this_theme$latex_adjust
+      if (!is.null(alignment) && !topline) {
+        data[[nm]] <- dfapply(data[[nm]], function(x) {
+          # Align these cells
+          multicolumn(1, x, align = alignment)
+        })
+      }
     }
   }
 
@@ -198,7 +214,8 @@ latexTableBody <- function(df, theme) {
 #'
 #' @param x A numeric vector
 #' @param digits The number of digits
-formatNum <- function (x, digits=0, ...) {
+#' @param ... Furth arguments, unused.
+formatNum <- function(x, digits=0, ...) {
   trimws(
     format(
       round(x, digits),
@@ -219,16 +236,16 @@ formatNum <- function (x, digits=0, ...) {
 #' Importantly, this also controls the relative widths of the columns.
 #'
 #' @md
-#' @param x An object of one of the types listed
+#' @param var An object of one of the types listed
 #' @param theme A theme object from \link{themeNew}
-tableHeader <- function(x, theme) {
-  UseMethod("tableHeader", x)
+tableHeader <- function(var, theme) {
+  UseMethod("tableHeader", var)
 }
 
 #' @rdname tableHeader
 #' @export
-tableHeader.default <- function(x) {
-  wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
+tableHeader.default <- function(var, theme) {
+  wrong_class_error(var, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "tableHeader")
 }
 
 #' Header for LongTable with Banner.
@@ -243,7 +260,8 @@ tableHeader.default <- function(x) {
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
 
-  label_width = "1.5in" # Default!
+  label_width = ifelse(is.na(theme$format_label_column$col_width), "1.5in", paste0(theme$format_label_column$col_width, "in"))
+
   check = theme$format_label_column_exceptions[var$alias]
   check = ifelse(is.null(check), NA_real_, check)
 
@@ -651,21 +669,21 @@ calculateIfLongtable.default <- function(x, theme) {
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.CrossTabVar <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/25)) >
+calculateIfLongtable.CrossTabVar <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/25)) >
            theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineVar <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/90)) >
+calculateIfLongtable.ToplineVar <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/90)) >
            theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineCategoricalArray <- function(var, theme) {
-  return(sum(ceiling(nchar(var$rownames)/25)) >
+calculateIfLongtable.ToplineCategoricalArray <- function(x, theme) {
+  return(sum(ceiling(nchar(x$rownames)/25)) >
            theme$latex_max_lines_for_tabular)
 }

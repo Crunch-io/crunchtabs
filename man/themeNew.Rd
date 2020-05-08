@@ -18,6 +18,7 @@ themeNew(..., default_theme = themeDefaultExcel())
 
 \describe{
 \item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
+\item{digits_numeric}{A numeric. How many digits should continuous variable data be rounded to? (In Latex, , this is Latex styling.) Defaults to 2.}
 \item{digits_final}{In Excel, an optional numeric. How many digits should the data be rounded to before being added to Excel?}
 \item{excel_footer}{In Excel, an optional character vector of length 3.  The footer text of the file.}
 \item{excel_freeze_column}{In Excel, a numeric. What column should be the last frozen column? Defaults to 1.}
@@ -36,7 +37,7 @@ themeNew(..., default_theme = themeDefaultExcel())
      \item{\code{empty_col} In Excel, a logical. Should there be an empty column to separate banner variables? Defaults to FALSE.}
 }
 \item{format_headers}{An optional list. How headers should be formatted. If `NULL` headers will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, and wrap_text.}
-\item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
+\item{format_label_column}{In Excel, a list. How the labels column should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text. In LaTeX, allows you to set col_width only, in inches of the crosstab stub globally.}
 Includes:
 \itemize{
       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}

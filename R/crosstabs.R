@@ -11,6 +11,10 @@
 #' @param banner An optional object of class \code{Banner} that should be used to generate
 #' a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.
 #' @param codebook If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.
+#' @param include_numeric Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.
+#' @param include_datetime Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.
+#' @param include_verbatims Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.
+#' @param num_verbatims An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.
 #' @return A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
 #' summary of the input dataset.
 #' @examples
@@ -22,7 +26,7 @@
 #' @importFrom crunch name aliases allVariables is.Numeric is.dataset weight alias weightVariables is.variable
 #' @importFrom methods is
 #' @export
-crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE) {
+crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE, include_numeric = FALSE, include_datetime = FALSE, include_verbatims = FALSE, num_verbatims = 10) {
 
   # TODO: open ends
   wrong_class_error(dataset, "CrunchDataset", "dataset")
@@ -61,10 +65,11 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   vars_out <- if (codebook) { vars } else {
     intersect(vars, all_aliases[all_types %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
 
-  error_if_items(
-    unique(types(allVariables(dataset[setdiff(vars, vars_out)]))),
-    "`vars` of type(s) {items} are not supported and have been skipped.",
-    and = TRUE, error = FALSE)
+
+  # error_if_items(
+  #   unique(types(allVariables(dataset[setdiff(vars, vars_out)]))),
+  #   "`vars` of type(s) {items} are not supported and have been skipped.",
+  #   and = TRUE, error = FALSE)
 
   if (length(vars_out) == 0) {
     stop("No variables provided.")
@@ -79,7 +84,13 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     banner
   }
 
-  results <- tabBooks(dataset = dataset, vars = vars_out, banner = banner_use, weight = weight_var, topline = is.null(banner))
+  results <- tabBooks(
+    dataset = dataset,
+    vars = vars_out,
+    banner = banner_use,
+    weight = weight_var,
+    topline = is.null(banner)
+  )
 
   if (codebook) {
     res_class <- "Codebook"
@@ -106,12 +117,91 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     class(banner) <- 'Banner'
   }
 
+  # Here we create logic for including summaries
+  # for variable types that did not previously have
+  # summaries (Numeric, Datetime, Text)
+
+  var_types <- unlist(lapply(dataset[vars], class))
+  names(var_types) <- vars
+  numerics <- vars[var_types == "NumericVariable"]
+  datetimes <- vars[var_types == "DatetimeVariable"]
+  verbatims <- vars[var_types == "TextVariable"]
+
+  if (include_numeric & length(numerics) > 0) {
+    # drop weighting vars
+    weightVars <- unlist(
+      lapply(numerics, function(x) is.weightVariable(dataset[[x]]))
+    )
+
+    numerics <- numerics[!weightVars]
+
+    numRes <- lapply(numerics, function(x) {
+        prepareExtraSummary(
+          dataset[[x]],
+          weighted = !is.null(weight)
+        )
+    })
+    names(numRes) <- numerics
+
+    results = c(
+      results, numRes
+    )
+  }
+
+  if (include_datetime & length(datetimes) > 0) {
+
+    datetimeRes <- lapply(datetimes, function(x) {
+      prepareExtraSummary(
+        dataset[[x]],
+        weighted = !is.null(weight)
+      )
+    })
+
+    names(datetimeRes) <- datetimes
+    results = c(
+      results,
+      datetimeRes
+    )
+  }
+
+  if (include_verbatims & length(verbatims) > 0) {
+    verbatimRes <- lapply(verbatims, function(x) {
+      prepareExtraSummary(
+        dataset[[x]],
+        weighted = !is.null(weight)
+      )
+    })
+
+    names(verbatimRes) <- verbatims
+
+    results = c(
+      results,
+      verbatimRes
+    )
+  }
+
+  if (include_verbatims | include_datetime | include_numeric) {
+    # If we include new question types we must reflow question
+    # numbers because otherwise they will be missing from the
+    # faked objects
+
+    # First re-flow in dataset order
+    tmpResults <- list()
+    for (i in vars) { tmpResults[[i]] <- results[[i]] }
+    # Then re-flow question numbers
+    results = reflowQuestionNumbers(tmpResults)
+  }
+
   summary_data <- list(
     metadata = c(
       list(
         title = name(dataset), weight = weight,
         start_date = crunch::startDate(dataset), end_date = crunch::endDate(dataset),
-        description = crunch::description(dataset))), results = results, banner = banner
+        description = crunch::description(dataset)
+        )
+    ),
+    results = results,
+    banner = banner
   )
 
   class(summary_data) <- res_class

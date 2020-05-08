@@ -1,0 +1,206 @@
+---
+title: "Frequently Asked Questions"
+author: "Brandon Bertelsen"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## FAQ
+
+### How do I change the crosstab stub width?
+
+The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override. 
+
+```{r, eval = FALSE}
+myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column = list(col_width = 2)
+)
+```
+
+The code example above would set the stub width to 2 inches. For a PDF document, col_width is in inches. You can also create an exceptional stub width for one or more questions, as follows:
+
+```{r, eval = FALSE}
+myTheme = themeNew(
+  ... # your other theme optinos
+  format_label_column_exception = c("alias"=2.5, "otheralias"=1.25)
+)
+```
+
+In this case, you create a named numeric vector where the name is the question alias whose stub width you wish to change and the numeric value is the stub width in inches. 
+
+### How do I hide the question numbers?
+
+A number of theme options exist for this purpose, `format_var_alias`, `format_var_description`, `format_var_filtertext`, and `format_var_name`. In your format list, set an item `include_q_number = FALSE` as in the example below.
+
+```{r, eval = FALSE}
+myAwesomeTheme = themeNew(
+  ..., # your other theme options
+  format_var_description = list(include_q_number = FALSE),
+  format_var_filtertext = list(include_q_number = FALSE)
+)
+```
+
+### How do I make it so that there is more than one question per page?
+
+```{r, eval = FALSE}
+myAwesomeTheme = themeNew(
+  ...,
+  one_per_sheet = FALSE
+)
+```
+
+### How do I output numbers like 1,000 instead of 1000?
+
+```{r, eval = FALSE}
+format(1000, nsmall=0, big.mark=",")
+```
+
+### How do I add a subtitle to my document?
+
+A common usage of the subtitle is to include the survey's field window. Especially for studies that are run continuously.
+
+```{r, eval = FALSE}
+writeLatex(
+  ...,
+  subtitle = "My Amazing Subtitle"
+)
+```
+
+### How do I append more information?
+
+See the section about appending text in the [overview](articles/overview.html#appending-text-pdf-only)
+
+### How do I mask questions with low base sizes?
+
+Below is an example of masking responses where the base size is less than the central limit theorem with a "-" character.
+
+```{r, eval = FALSE} 
+myAwesomeTheme = themeNew(
+  ...,
+  format_min_base = list(mask = "-", min_base = 30)
+)
+```
+
+### How do I display questions with different weights in the same report?
+
+We can chain crosstabs objects easily to create the desired effect. Below, we create two crosstabs objects with the variables and the weighting we want applied and then we concatenate them together.
+
+```{r, eval = FALSE}
+# ...
+topline_summary = crosstabs(ds, vars = c("a", "b"), weight = "weightvar")
+chain_me = crosstabs(ds, vars = c("c"), weight = "other_weightvar")
+
+topline_summary$results = c(
+  topline_summary$results, 
+  chain_me$results
+)
+
+topline_summary$results = crunchtabs:::reflowQuestionNumbers(
+  topline_summary$results
+)
+
+writeLatex(topline_summary)
+```
+
+Re-weighting the same variable with another weight in the same report is possible but requires you to also adjust the names so that you can edit the question text appropriately to demonstrate the different weighting: 
+
+```{r, eval = FALSE}
+# ...
+topline_summary = crosstabs(ds, vars = c("a", "b"), weight = "weightvar")
+chain_me = crosstabs(ds, vars = c("a"), weight = "other_weightvar")
+
+names(chain_me$results) = "a_other_weight_var" # rename the alias
+chain_me$results$a_other_weight_var$description = "This is question text (weighted by other_weight_var)"
+
+topline_summary$results = c(
+  topline_summary$results, 
+  chain_me$results
+)
+
+topline_summary$results = crunchtabs:::reflowQuestionNumbers(
+  topline_summary$results
+)
+
+writeLatex(topline_summary)
+```
+
+### How do I install a different release of crunchtabs?
+
+In the code example below we show you how to install Release 1.2.1:
+
+```{r, eval = FALSE}
+remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
+```
+
+### How do I replace question numbers with question aliases?
+
+We can manipulate the crosstab object so that instead of displaying a number, we display the question alias. 
+
+```{r, eval = FALSE}
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if it doesn't work
+ct = crosstabs(ds)
+
+nms = names(ct$results)
+for(i in 1:results) {
+  ct$results[[i]]$number = i
+}
+
+writeLatex(ct, ...)
+```
+
+Instead of: 
+
+> 1. This is my question text
+
+You should see: 
+
+> question_alias. This is my question text
+
+### How do I install a different release of crunchtabs?
+
+In the code example below we show you how to install Release 1.2.1:
+
+```{r, eval = FALSE}
+remotes::install_github("Crunch-io/crunchtabs@v1.2.1")
+```
+
+See [releases](https://github.com/Crunch-io/crunchtabs/releases) for more information about the changes between releases.
+
+### How do I use a logo in Excel?
+
+You can control the height, width, dpi and start column (specified by a number). 
+
+```{r, eval = FALSE}
+library(crunchtabs)
+login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+ct_banner <- banner(ds, vars = list(`banner 1` = c('allpets')))
+ct_summary <- crosstabs(dataset = ds, banner = ct_banner)
+
+myTheme <- themeNew(
+  logo = list(
+    file = "yougov-logo.png", 
+    dpi = 100, 
+    height = 0.75, 
+    width = 3, 
+    startCol = 6)
+)
+
+writeExcel(ct_summary, filename = "output", theme = myTheme) 
+```
+>>>>>>> 184c119e47a746f5c41fdf89a6a1c40e768d82e1
+
+### How do I request a new feature? 
+
+We welcome features requests as new issues to the [crunchtabs github repository](https://github.com/Crunch-io/crunchtabs/issues)

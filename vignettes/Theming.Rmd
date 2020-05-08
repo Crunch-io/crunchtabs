@@ -1,0 +1,16 @@
+---
+title: "Theming"
+author: "Brandon Bertelsen"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Theming
+
+This page is under active development. Please see `?themeNew` for detailed documentation of theme objects. Specific solutions or cookbook examples are available in the [FAQ](articles/FAQ.html)

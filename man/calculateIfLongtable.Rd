@@ -12,11 +12,11 @@ calculateIfLongtable(x, theme)
 
 \method{calculateIfLongtable}{default}(x, theme)
 
-\method{calculateIfLongtable}{CrossTabVar}(var, theme)
+\method{calculateIfLongtable}{CrossTabVar}(x, theme)
 
-\method{calculateIfLongtable}{ToplineVar}(var, theme)
+\method{calculateIfLongtable}{ToplineVar}(x, theme)
 
-\method{calculateIfLongtable}{ToplineCategoricalArray}(var, theme)
+\method{calculateIfLongtable}{ToplineCategoricalArray}(x, theme)
 }
 \arguments{
 \item{x}{An object of type: CrossTabVar, ToplineVar, or ToplineCategoricalArray}
