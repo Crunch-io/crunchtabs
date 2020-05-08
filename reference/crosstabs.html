@@ -82,7 +82,7 @@ summaries of a Cruch dataset." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.5</span>
       </span>
     </div>
 
@@ -154,7 +154,11 @@ summaries of a Cruch dataset.</p>
   <span class='kw'>vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>dataset</span>),
   <span class='kw'>weight</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>),
   <span class='kw'>banner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>codebook</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>codebook</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>include_numeric</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>include_datetime</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>include_verbatims</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>num_verbatims</span> <span class='kw'>=</span> <span class='fl'>10</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -182,6 +186,22 @@ a Crosstabs summary. Defaults to <code>NULL</code> - a Toplines summary is produ
     <tr>
       <th>codebook</th>
       <td><p>If <code>TRUE</code>, codebook data summaries are prepared. Defaults to <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>include_numeric</th>
+      <td><p>Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.</p></td>
+    </tr>
+    <tr>
+      <th>include_datetime</th>
+      <td><p>Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.</p></td>
+    </tr>
+    <tr>
+      <th>include_verbatims</th>
+      <td><p>Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.</p></td>
+    </tr>
+    <tr>
+      <th>num_verbatims</th>
+      <td><p>An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.</p></td>
     </tr>
     </table>
 

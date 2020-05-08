@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.5</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
       <h1 data-toc-skip>Frequently Asked Questions</h1>
                         <h4 class="author">Brandon Bertelsen</h4>
             
-            <h4 class="date">2020-05-04</h4>
+            <h4 class="date">2020-05-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/FAQ.Rmd"><code>vignettes/FAQ.Rmd</code></a></small>
       <div class="hidden name"><code>FAQ.Rmd</code></div>
@@ -171,18 +171,86 @@
   <span class="kw">format_min_base</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">mask</span> <span class="kw">=</span> <span class="st">"-"</span>, <span class="kw">min_base</span> <span class="kw">=</span> <span class="fl">30</span>)
 )</pre></body></html></div>
 </div>
+<div id="how-do-i-display-questions-with-different-weights-in-the-same-report" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-display-questions-with-different-weights-in-the-same-report" class="anchor"></a>How do I display questions with different weights in the same report?</h3>
+<p>We can chain crosstabs objects easily to create the desired effect. Below, we create two crosstabs objects with the variables and the weighting we want applied and then we concatenate them together.</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># ...</span>
+<span class="no">topline_summary</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"weightvar"</span>)
+<span class="no">chain_me</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"other_weightvar"</span>)
+
+<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+  <span class="no">topline_summary</span>$<span class="no">results</span>,
+  <span class="no">chain_me</span>$<span class="no">results</span>
+)
+
+<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="kw pkg">crunchtabs</span><span class="kw ns">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span>(
+  <span class="no">topline_summary</span>$<span class="no">results</span>
+)
+
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">topline_summary</span>)</pre></body></html></div>
+<p>Re-weighting the same variable with another weight in the same report is possible but requires you to also adjust the names so that you can edit the question text appropriately to demonstrate the different weighting:</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># ...</span>
+<span class="no">topline_summary</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"weightvar"</span>)
+<span class="no">chain_me</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"other_weightvar"</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">chain_me</span>$<span class="no">results</span>) <span class="kw">=</span> <span class="st">"a_other_weight_var"</span> <span class="co"># rename the alias</span>
+<span class="no">chain_me</span>$<span class="no">results</span>$<span class="no">a_other_weight_var</span>$<span class="no">description</span> <span class="kw">=</span> <span class="st">"This is question text (weighted by other_weight_var)"</span>
+
+<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+  <span class="no">topline_summary</span>$<span class="no">results</span>,
+  <span class="no">chain_me</span>$<span class="no">results</span>
+)
+
+<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="kw pkg">crunchtabs</span><span class="kw ns">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span>(
+  <span class="no">topline_summary</span>$<span class="no">results</span>
+)
+
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">topline_summary</span>)</pre></body></html></div>
+</div>
 <div id="how-do-i-install-a-different-release-of-crunchtabs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-install-a-different-release-of-crunchtabs" class="anchor"></a>How do I install a different release of crunchtabs?</h3>
 <p>In the code example below we show you how to install Release 1.2.1:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
-<p>See <a href="https://github.com/Crunch-io/crunchtabs/releases">releases</a> for more information.</p>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
+</div>
+<div id="how-do-i-replace-question-numbers-with-question-aliases" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-replace-question-numbers-with-question-aliases" class="anchor"></a>How do I replace question numbers with question aliases?</h3>
+<p>We can manipulate the crosstab object so that instead of displaying a number, we display the question alias.</p>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
+<span class="co"># Use ds = newExampleDataset() if it doesn't work</span>
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>)
+
+<span class="no">nms</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">ct</span>$<span class="no">results</span>)
+<span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">results</span>) {
+  <span class="no">ct</span>$<span class="no">results</span><span class="kw">[[</span><span class="no">i</span>]]$<span class="no">number</span> <span class="kw">=</span> <span class="no">i</span>
+}
+
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+<p>Instead of:</p>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>This is my question text</li>
+</ol>
+</blockquote>
+<p>You should see:</p>
+<blockquote>
+<p>question_alias. This is my question text</p>
+</blockquote>
+</div>
+<div id="how-do-i-install-a-different-release-of-crunchtabs-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-install-a-different-release-of-crunchtabs-1" class="anchor"></a>How do I install a different release of crunchtabs?</h3>
+<p>In the code example below we show you how to install Release 1.2.1:</p>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
+<p>See <a href="https://github.com/Crunch-io/crunchtabs/releases">releases</a> for more information about the changes between releases.</p>
 </div>
 <div id="how-do-i-use-a-logo-in-excel" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-use-a-logo-in-excel" class="anchor"></a>How do I use a logo in Excel?</h3>
 <p>You can control the height, width, dpi and start column (specified by a number).</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">crunchtabs</span>)
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">crunchtabs</span>)
 <span class="fu">login</span>()
 
 <span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
@@ -201,6 +269,21 @@
 )
 
 <span class="fu"><a href="../reference/writeExcel.html">writeExcel</a></span>(<span class="no">ct_summary</span>, <span class="kw">filename</span> <span class="kw">=</span> <span class="st">"output"</span>, <span class="kw">theme</span> <span class="kw">=</span> <span class="no">myTheme</span>)</pre></body></html></div>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>184c119e47a746f5c41fdf89a6a1c40e768d82e1</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
 </div>
 <div id="how-do-i-request-a-new-feature" class="section level3">
 <h3 class="hasAnchor">
