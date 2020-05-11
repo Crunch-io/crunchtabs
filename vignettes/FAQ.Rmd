@@ -199,7 +199,6 @@ myTheme <- themeNew(
 
 writeExcel(ct_summary, filename = "output", theme = myTheme) 
 ```
->>>>>>> 184c119e47a746f5c41fdf89a6a1c40e768d82e1
 
 ### How do I request a new feature? 
 
