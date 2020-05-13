@@ -30,16 +30,24 @@ sortAliases <- function(ct, vars = NULL, descending = NULL,
   }
 
   for (nm in nms) {
-    ct$results[[nm]] = sortResults(ct$results[[nm]], descending = descending, alpha = alpha, fixed = fixed, pin_to_top = pin_to_top, pin_to_bottom = pin_to_bottom)
+    ct$results[[nm]] = sortResults(
+      ct$results[[nm]],
+      descending = descending,
+      alpha = alpha,
+      fixed = fixed,
+      pin_to_top = pin_to_top,
+      pin_to_bottom = pin_to_bottom
+    )
   }
   return(ct)
 }
 
 
 #' @param var An internal \link{crosstabs} results object.
-#' @param ... Further arguments passed from \link{sortAlias} to type based \link{sortResults} functions
+#' @param ... Further arguments passed from \link{sortAlias} to type
+#' based \link{sortResults} functions
 sortResults <- function(var, ...) {
-  if (var$type == "DateTimeVariable") {
+  if (var$type == "DatetimeVariable") {
     # No sorting applied
     return(var)
   }
@@ -49,14 +57,12 @@ sortResults <- function(var, ...) {
   }
   if (var$type == "multiple_response") {
     return(sortResults_categorical(var, ...))
-
   }
   if (var$type == "categorical") {
     return(sortResults_categorical(var, ...))
-    # Alphebetical and numeric possible
   }
   if (var$type == "TextVariable") {
-    return(sortResults_text(var, ...))
+    return(var)
   }
 }
 
@@ -65,12 +71,6 @@ sortResults <- function(var, ...) {
 sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
 
   r = as.data.frame(var$crosstabs$Results$`___total___`$proportions)
-
-  if (length(fixed) > 0) {
-    stopifnot(all(rownames(r) %in% fixed))
-    # Not yet implemented
-  }
-
 
   if (alpha) {
 
@@ -122,8 +122,18 @@ sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, p
 
   }
 
-  if (any(pin_to_top %in% pin_to_bottom)) {
-    stop("Ambiguous specification of pin_to_top and pin_to_bottom")
+  if (length(pin_to_top) & length(pin_to_bottom)) {
+    stop("Ambiguous specification of pin_to_top and pin_to_bottom. Use fixed=c() param instead.")
+  }
+
+  if (length(fixed) > 0) {
+    stopifnot(all(rownames(r) %in% fixed))
+    stopifnot(all(fixed %in% rownames(r)))
+
+    ord = unname(
+      sapply(fixed, function(x) which(rownames(r) %in% x))
+    )
+    r = r[ord,]
   }
 
   var$crosstabs$Results$`___total___`$proportions = r
@@ -146,5 +156,3 @@ sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, p
   attributes(var$crosstabs$Results$`___total___`$counts)$row.names = rownames(r)
   var
 }
-
-sortResults_text <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {}
