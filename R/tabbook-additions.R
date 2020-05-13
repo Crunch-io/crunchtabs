@@ -43,6 +43,7 @@ prepareExtraSummary.default <- function(x) {
 #'
 #' @param x A variable of class \link[crunch]{NumericVariable}
 #' @param weighted Logical. Are these data weighted?
+#' @importFrom stats median quantile
 #' @export
 prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE) {
   y = as.vector(x)
@@ -127,7 +128,7 @@ prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, tz = "UTC")
 #'
 #' @param x A variable of class \link[crunch]{TextVariable}
 #' @param weighted Logical. Are these data weighted?
-#' @param count The number of verbatim responses to present as a sample. Defaults to 10.
+#' @param num The number of verbatim responses to present as a sample. Defaults to 10.
 #' @export
 prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10L) {
   set.seed(42)

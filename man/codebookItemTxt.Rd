@@ -6,6 +6,9 @@
 \usage{
 codebookItemTxt(x)
 }
+\arguments{
+\item{x}{A dataset variable}
+}
 \description{
 Extracts the following:
 }

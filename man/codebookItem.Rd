@@ -29,6 +29,8 @@ codebookItem(x, ...)
 }
 \arguments{
 \item{x}{An object of one of the types listed}
+
+\item{...}{Additional arguents passed to codebookItem methods}
 }
 \description{
 A passthrough function that creates a table header appropriate to the class

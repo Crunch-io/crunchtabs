@@ -43,6 +43,11 @@ sortAliases <- function(ct, vars = NULL, descending = NULL,
 }
 
 
+#' Sort Results
+#'
+#' An internal function used to apply custom sorting individual questions
+#' in a LateX topline report.
+#'
 #' @param var An internal \link{crosstabs} results object.
 #' @param ... Further arguments passed from \link{sortAlias} to type
 #' based \link{sortResults} functions
@@ -66,8 +71,11 @@ sortResults <- function(var, ...) {
   }
 }
 
-#' Sort a categorical result
+#' Sort a categorical or multiple_response result in a crosstabs
+#' object.
+#'
 #' @rdname sortAliases
+#' @inheritParams sortResults
 sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
 
   r = as.data.frame(var$crosstabs$Results$`___total___`$proportions)

@@ -14,6 +14,7 @@
 #'
 #' @md
 #' @param x An object of one of the types listed
+#' @param ... Additional arguents passed to codebookItem methods
 #' @export
 codebookItem <- function(x, ...) {
   UseMethod("codebookItem", x)
@@ -35,6 +36,7 @@ codebookItem.default <- function(x) {
 #' * notes or filter text
 #' * id
 #'
+#' @param x A dataset variable
 #' @md
 #' @export
 codebookItemTxt <- function(x) {
@@ -98,9 +100,6 @@ codebookItem.CategoricalVariable <- function(x) {
     ifelse(txt$meta$filter_text == "", "None", txt$meta$filter_text)
     )
   latexTop <- gsub("    ", "", latexTop)
-
-  latexResponse
-
   latexTop
 }
 
@@ -122,10 +121,8 @@ codebookItem.MultipleResponseVariable <- function(x) {
 #' @describeIn codebookItem Prepares a codebookitem for a NumericVariable
 #' @export
 codebookItem.NumericVariable <- function(x) {
-  tmp <- c(summary(c_var), SD = sd(c_var, na.rm = TRUE))
-  tmp <- tibble::rownames_to_column(as.data.frame(tmp))
-  colnames(tmp) <- c("Summary", "Value")
-  tmp$Value <- round(tmp$Value, 2)
+
+
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a TextVariable
@@ -145,14 +142,11 @@ codebookItem.DatetimeVariable <- function(x) {
 #' \code{writeCodebook} produces publication-quality LaTeX reports
 #'
 #' @param ds A crunch dataset
-#' @param ds
 #'
 #' @param ... Additional arguments passed to writeLatx
 #'
 #' @importFrom utils installed.packages
 #' @export
 writeCodebook <- function(...) {
-
   writeLatex(...)
-
 }

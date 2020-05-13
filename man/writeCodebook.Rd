@@ -9,7 +9,7 @@ writeCodebook(...)
 \arguments{
 \item{...}{Additional arguments passed to writeLatx}
 
-\item{ds}{}
+\item{ds}{A crunch dataset}
 }
 \description{
 \code{writeCodebook} produces publication-quality LaTeX reports
