@@ -105,11 +105,16 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     filename <- paste0(filename, ".tex")
     cat(out, sep = "\n", file = filename)
     if (pdf) {
-      if (logging) {
-        print("PDF-ing")
-      }
       if ("tinytex" %in% rownames(installed.packages())) {
         tinytex::pdflatex(filename, bib_engine = NULL)
+        if (!logging) {
+          files <- list.files(path = getwd())
+          files <- grep("out$|log$|aux$", files, value = TRUE)
+          if (length(files)) {
+            file.remove(file.path(getwd(), files))
+          }
+        }
+
         if (open) {
           file.open(gsub(".tex", ".pdf", filename, fixed = TRUE))
         }
