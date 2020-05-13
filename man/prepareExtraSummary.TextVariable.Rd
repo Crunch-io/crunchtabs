@@ -11,7 +11,7 @@
 
 \item{weighted}{Logical. Are these data weighted?}
 
-\item{count}{The number of verbatim responses to present as a sample. Defaults to 10.}
+\item{num}{The number of verbatim responses to present as a sample. Defaults to 10.}
 }
 \description{
 tabBook does not report an appropriate date time summary without
