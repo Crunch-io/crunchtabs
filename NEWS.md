@@ -1,3 +1,10 @@
+## crunchtabs 1.2.6
+ 
+- tinytex enforcement does not respect logging = FALSE (#132)
+- sorting for categoricals / multiple response in toplines (#104)
+- sorting for crosstabs objects (#143)
+- updated FAQ with sorting examples (#104)
+
 ## crunchtabs 1.2.5
 
 * Add summarization for continuous variables (NumericVariable) in toplines (#80)
