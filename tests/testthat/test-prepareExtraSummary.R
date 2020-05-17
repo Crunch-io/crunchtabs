@@ -37,7 +37,12 @@ with_api_fixture("fixtures-1-2-5", {
     expect_true(exists("ds"))
   })
 
-  ct <- crosstabs(ds)
+  ct <- crosstabs(
+     ds # ,
+    # include_numeric = TRUE,
+    # include_datetime = TRUE,
+    # include_verbatims = TRUE
+  )
 
 })
 
