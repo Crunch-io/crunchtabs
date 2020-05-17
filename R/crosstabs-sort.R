@@ -75,7 +75,12 @@ sortResults <- function(var, ...) {
 #' object.
 #'
 #' @rdname sortAliases
-#' @inheritParams sortResults
+#' @param var An internal crosstabs elements (Usually ct$results[[x]])
+#' @param pin_to_top A character vector of response values to pin to the top of the result presentation
+#' @param pin_to_bottom A character vector of response values to pin to the bottom of the result presentation
+#' @param fixed A character vector representing a set order of presentation
+#' @param alpha Logical. Defaults to FALSE. Should data be sorted alphabetically?
+#' @param descending Logical, defaults to NULL. If data are of type TextVariable or DateTimeVariable, default to ascending, if numeric defaults to descending. If FALSE, enforces ascending. If TRUE, enforces descending.
 sortResults_outer <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
 
   # If Results, this is a topline report and we only have to take
@@ -126,8 +131,8 @@ sortResults_outer <- function(var, descending, alpha, fixed, pin_to_top, pin_to_
 #' is that a topline only has a crosstab called "Results" contained within it.
 #' Otherwise, the crosstab object has an embedded summary object per each banner defined
 #'
-#' @rdName sortAliases
-#' @inheritParams sortResults
+#' @rdname sortAliases
+#' @inheritParams sortResults_outer
 #' @param r The results of a specific banner or Results
 sortResults_inner <- function(r, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
   if (alpha) {
