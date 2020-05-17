@@ -2,7 +2,7 @@
 % Please edit documentation in R/crosstabs-sort.R
 \name{sortAliases}
 \alias{sortAliases}
-\alias{sortResults_categorical}
+\alias{sortResults_outer}
 \title{Sort Aliases}
 \usage{
 sortAliases(
@@ -15,14 +15,7 @@ sortAliases(
   pin_to_bottom = NULL
 )
 
-sortResults_categorical(
-  var,
-  descending,
-  alpha,
-  fixed,
-  pin_to_top,
-  pin_to_bottom
-)
+sortResults_outer(var, descending, alpha, fixed, pin_to_top, pin_to_bottom)
 }
 \arguments{
 \item{ct}{A \link{crosstabs} object}

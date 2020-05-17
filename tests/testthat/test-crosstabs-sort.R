@@ -199,7 +199,7 @@ context("sorting pin_to_top")
 
 test_that("Pin to top works as expected", {
   ct = readRDS("fixtures/toplines_summary.RDS")
-  ct = sortAliases(ct, var="allpets", alpha = TRUE, descending = TRUE, pin_to_top = "Bird")
+  ct = sortAliases(ct, var = "allpets", alpha = TRUE, descending = TRUE, pin_to_top = "Bird")
   # alpha + descending = Dog, Bird, Cat
   # pin to top should be = Bird, Dog, Cat
 
@@ -274,4 +274,69 @@ test_that("NumericVariable does nothing", {
   after = sortAliases(before, var="allpets")
 
   expect_equal(before$results$allpets, after$results$allpets)
+})
+
+
+context("crosstabs also apply sorting as expected")
+
+test_that("Alpha sorts with banner", {
+  ct = readRDS("fixtures/ct_allpets.rds")
+  ct = sortAliases(ct, vars = "allpets", alpha = TRUE)
+
+  expect_equal(
+    rownames(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    c("Bird", "Cat", "Dog")
+  )
+
+  expect_equal(
+    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    c(5,4,5)
+  )
+})
+
+test_that("Alpha sorts with banner, descending", {
+  ct = readRDS("fixtures/ct_allpets.rds")
+  ct = sortAliases(ct, vars = "allpets", alpha = TRUE, descending = TRUE)
+
+  expect_equal(
+    rownames(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    rev(c("Bird", "Cat", "Dog"))
+  )
+
+  expect_equal(
+    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    c(5,4,5)
+  )
+})
+
+
+test_that("Numeric sorts with banner", {
+  ct = readRDS("fixtures/ct_allpets.rds")
+  ct = sortAliases(ct, vars = "allpets")
+
+  expect_equal(
+    rownames(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    c("Dog", "Cat", "Bird")
+  )
+
+  expect_equal(
+    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions)[1:3,],
+    c(0.625, 0.5, 0.454545454545455)
+  )
+})
+
+
+test_that("Numeric sorts with banner", {
+  ct = readRDS("fixtures/ct_allpets.rds")
+  ct = sortAliases(ct, vars = "allpets", descending = FALSE)
+
+  expect_equal(
+    rownames(ct$results$allpets$crosstabs$`banner 1`$`___total___`$counts),
+    rev(c("Dog", "Cat", "Bird"))
+  )
+
+  expect_equal(
+    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions)[1:3,],
+    rev(c(0.625, 0.5, 0.454545454545455))
+  )
 })
