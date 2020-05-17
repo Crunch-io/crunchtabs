@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare Text Content — prepareExtraSummary.TextVariable • crunchtabs</title>
+<title>Sort Results — sortResults • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,10 +48,9 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Prepare Text Content — prepareExtraSummary.TextVariable" />
-<meta property="og:description" content="tabBook does not report an appropriate date time summary without
-being provided with a multitable. So we &quot;fake&quot; a date time summary
-by overwriting the structure of a categorical object." />
+<meta property="og:title" content="Sort Results — sortResults" />
+<meta property="og:description" content="An internal function used to apply custom sorting individual questions
+in a LateX topline report." />
 
 
 
@@ -140,41 +139,32 @@ by overwriting the structure of a categorical object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare Text Content</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tabbook-additions.R'><code>R/tabbook-additions.R</code></a></small>
-    <div class="hidden name"><code>prepareExtraSummary.TextVariable.Rd</code></div>
+    <h1>Sort Results</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/crosstabs-sort.R'><code>R/crosstabs-sort.R</code></a></small>
+    <div class="hidden name"><code>sortResults.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>tabBook does not report an appropriate date time summary without
-being provided with a multitable. So we "fake" a date time summary
-by overwriting the structure of a categorical object.</p>
+    <p>An internal function used to apply custom sorting individual questions
+in a LateX topline report.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for TextVariable</span>
-<span class='fu'><a href='prepareExtraSummary.html'>prepareExtraSummary</a></span>(<span class='no'>x</span>, <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fl'>10L</span>)</pre>
+    <pre class="usage"><span class='fu'>sortResults</span>(<span class='no'>var</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A variable of class <a href='http://crunch.io/r/crunch//reference/CrunchVariable.html'>TextVariable</a></p></td>
+      <th>var</th>
+      <td><p>An internal <a href='crosstabs.html'>crosstabs</a> results object.</p></td>
     </tr>
     <tr>
-      <th>weighted</th>
-      <td><p>Logical. Are these data weighted?</p></td>
-    </tr>
-    <tr>
-      <th>num</th>
-      <td><p>The number of verbatim responses to present as a sample. Defaults to 10.</p></td>
+      <th>...</th>
+      <td><p>Further arguments passed from sortAlias to type
+based sortResults functions</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>If data are weighted we display Weighted N instead of Unweighted
-N</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare Text Content — prepareExtraSummary.TextVariable • crunchtabs</title>
+<title>Sort Aliases — sortAliases • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,10 +48,12 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Prepare Text Content — prepareExtraSummary.TextVariable" />
-<meta property="og:description" content="tabBook does not report an appropriate date time summary without
-being provided with a multitable. So we &quot;fake&quot; a date time summary
-by overwriting the structure of a categorical object." />
+<meta property="og:title" content="Sort Aliases — sortAliases" />
+<meta property="og:description" content="Given a crosstabs object, sort the named
+variables alphabetically.
+The difference between a topline and a crosstabe from the perspective of tabbook
+is that a topline only has a crosstab called &quot;Results&quot; contained within it.
+Otherwise, the crosstab object has an embedded summary object per each banner defined" />
 
 
 
@@ -140,41 +142,74 @@ by overwriting the structure of a categorical object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare Text Content</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tabbook-additions.R'><code>R/tabbook-additions.R</code></a></small>
-    <div class="hidden name"><code>prepareExtraSummary.TextVariable.Rd</code></div>
+    <h1>Sort Aliases</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/crosstabs-sort.R'><code>R/crosstabs-sort.R</code></a></small>
+    <div class="hidden name"><code>sortAliases.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>tabBook does not report an appropriate date time summary without
-being provided with a multitable. So we "fake" a date time summary
-by overwriting the structure of a categorical object.</p>
+    <p>Given a <a href='crosstabs.html'>crosstabs</a> object, sort the named
+variables alphabetically.</p>
+<p>The difference between a topline and a crosstabe from the perspective of tabbook
+is that a topline only has a crosstab called "Results" contained within it.
+Otherwise, the crosstab object has an embedded summary object per each banner defined</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for TextVariable</span>
-<span class='fu'><a href='prepareExtraSummary.html'>prepareExtraSummary</a></span>(<span class='no'>x</span>, <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fl'>10L</span>)</pre>
+    <pre class="usage"><span class='fu'>sortAliases</span>(
+  <span class='no'>ct</span>,
+  <span class='kw'>vars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>descending</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>fixed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pin_to_top</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pin_to_bottom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)
+
+<span class='fu'>sortResults_outer</span>(<span class='no'>var</span>, <span class='no'>descending</span>, <span class='no'>alpha</span>, <span class='no'>fixed</span>, <span class='no'>pin_to_top</span>, <span class='no'>pin_to_bottom</span>)
+
+<span class='fu'>sortResults_inner</span>(<span class='no'>r</span>, <span class='no'>descending</span>, <span class='no'>alpha</span>, <span class='no'>fixed</span>, <span class='no'>pin_to_top</span>, <span class='no'>pin_to_bottom</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A variable of class <a href='http://crunch.io/r/crunch//reference/CrunchVariable.html'>TextVariable</a></p></td>
+      <th>ct</th>
+      <td><p>A <a href='crosstabs.html'>crosstabs</a> object</p></td>
     </tr>
     <tr>
-      <th>weighted</th>
-      <td><p>Logical. Are these data weighted?</p></td>
+      <th>vars</th>
+      <td><p>A character vector of variable aliases that should be sorted. Or a single alias if pin_to_top or pin_to_bottom are specified.</p></td>
     </tr>
     <tr>
-      <th>num</th>
-      <td><p>The number of verbatim responses to present as a sample. Defaults to 10.</p></td>
+      <th>descending</th>
+      <td><p>Logical, defaults to NULL. If data are of type TextVariable or DateTimeVariable, default to ascending, if numeric defaults to descending. If FALSE, enforces ascending. If TRUE, enforces descending.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>Logical. Defaults to FALSE. Should data be sorted alphabetically?</p></td>
+    </tr>
+    <tr>
+      <th>fixed</th>
+      <td><p>A character vector representing a set order of presentation</p></td>
+    </tr>
+    <tr>
+      <th>pin_to_top</th>
+      <td><p>A character vector of response values to pin to the top of the result presentation</p></td>
+    </tr>
+    <tr>
+      <th>pin_to_bottom</th>
+      <td><p>A character vector of response values to pin to the bottom of the result presentation</p></td>
+    </tr>
+    <tr>
+      <th>var</th>
+      <td><p>An internal crosstabs elements (Usually ct$results[[x]])</p></td>
+    </tr>
+    <tr>
+      <th>r</th>
+      <td><p>The results of a specific banner or Results</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>If data are weighted we display Weighted N instead of Unweighted
-N</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

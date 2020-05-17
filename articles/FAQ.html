@@ -98,7 +98,7 @@
       <h1 data-toc-skip>Frequently Asked Questions</h1>
                         <h4 class="author">Brandon Bertelsen</h4>
             
-            <h4 class="date">2020-05-08</h4>
+            <h4 class="date">2020-05-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/FAQ.Rmd"><code>vignettes/FAQ.Rmd</code></a></small>
       <div class="hidden name"><code>FAQ.Rmd</code></div>
@@ -269,6 +269,25 @@
 )
 
 <span class="fu"><a href="../reference/writeExcel.html">writeExcel</a></span>(<span class="no">ct_summary</span>, <span class="kw">filename</span> <span class="kw">=</span> <span class="st">"output"</span>, <span class="kw">theme</span> <span class="kw">=</span> <span class="no">myTheme</span>)</pre></body></html></div>
+</div>
+<div id="how-do-i-sort-a-categorical-or-multiple-response-questions-presenation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-sort-a-categorical-or-multiple-response-questions-presenation" class="anchor"></a>How do I sort a categorical or multiple response question’s presenation?</h3>
+<p>You can sort response categories alphabetically or by proportion. You can apply a fixed presentation order and you can pin response categories to the top or bottom.</p>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
+<span class="co"># Use ds = newExampleDataset() if it doesn't work</span>
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>)
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>)
+
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+<p>The default behaviour sorts all questions that can be sorted, descending by order of proportion. But we can apply a variety of different sorting options by using the <code>sortAliases</code> function repeatedly.</p>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="co"># load ds, define theme ...</span>
+
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># sort a/b by alpha</span>
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="st">"c"</span>) <span class="co"># sort c by numeric</span>
+<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="st">"d"</span>, <span class="kw">pin_to_bottom</span> <span class="kw">=</span> <span class="st">"Don't know"</span>)
+
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
 </div>
 <div id="how-do-i-request-a-new-feature" class="section level3">
 <h3 class="hasAnchor">
