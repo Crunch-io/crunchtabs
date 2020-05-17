@@ -15,6 +15,31 @@ test_that("LaTeX escaping", {
     expect_identical(texEscape(bad_description), "Q. \\newline and")
 })
 
+test_that("Does not delete log/aux/out files if logging = TRUE", {
+  system("echo 'This is an out file' >> text.out")
+  system("echo 'This is a log file' >> text.log")
+  system("echo 'This is an aux file' >> text.aux")
+  writeLatex(cs, logging = TRUE, pdf = TRUE)
+  expect_true(file.exists("text.out"))
+  expect_true(file.exists("text.log"))
+  expect_true(file.exists("text.aux"))
+})
+
+
+test_that("Deletes log/aux/out files if logging = FALSE (the default)", {
+  system("echo 'This is an out file' >> text.out")
+  system("echo 'This is a log file' >> text.log")
+  system("echo 'This is an aux file' >> text.aux")
+
+  expect_true(file.exists("text.out"))
+  expect_true(file.exists("text.log"))
+  expect_true(file.exists("text.aux"))
+  writeLatex(cs, pdf = TRUE, logging = FALSE)
+  expect_true(!file.exists("text.out"))
+  expect_true(!file.exists("text.log"))
+  expect_true(!file.exists("text.aux"))
+})
+
 with_temp_dir({
     test_that("Write Latex error handling", {
         expect_error(writeLatex("stuff"))
@@ -43,7 +68,7 @@ with_temp_dir({
         skip_on_appveyor()
         writeLatex(cs, pdf = TRUE)
         expect_true(file.exists("Example Dataset with Nets.pdf"))
-        expect_output(writeLatex(cs, pdf = TRUE, logging = TRUE), "PDF-ing")
+        # expect_output(writeLatex(cs, pdf = TRUE, logging = TRUE), "PDF-ing") # Kind of useless just for one tiny message
         writeLatex(cs, subtitle = "something", pdf = TRUE)
         writeLatex(cs, sample_desc = "Adults", pdf = TRUE)
         writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
