@@ -12,8 +12,9 @@ with_api_fixture <- function(fixture_path, expr) {
         `crunch::crPOST` = function(...) {
           args <- list(...)
           args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
-          message(unlist(args))
-          args$url <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$url)
+          message(str(args))
+          message(args[[1]])
+          args[[1]] <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args[[1]])
           do.call(
             function(...) crunch:::crunchAPI("POST", ...),
             args
