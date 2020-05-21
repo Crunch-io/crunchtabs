@@ -30,25 +30,54 @@ codebookItem.default <- function(x) {
 #'
 #' Extracts the following:
 #'
-#' * body
 #' * alias
 #' * description or question text
 #' * notes or filter text
-#' * id
 #'
 #' @param x A dataset variable
 #' @md
+#' @importFrom glue glue
 #' @export
 codebookItemTxt <- function(x) {
   txt <- x@tuple@body
-  l <- list()
-  l$title <- txt$alias
-  l$alias <- txt$alias
-  l$name <- txt$name
-  l$id <- txt$id
-  l$filter_text <- txt$notes
-  l$question <- txt$description
-  l
+
+  if (txt$description == "") {
+    warning(txt$alias, " is missing a description.")
+  }
+
+  alias_name <- glue(
+    "\\begin{tabularx}{\\textwidth}{lXXr} ",
+    "[<<<txt$alias>>>] &  &  & <<<txt$name>>>  \\\\ ",
+    "\\end{tabularx}",
+    .open = "<<<", .close = ">>>", .sep = "\n"
+  )
+
+  question <- glue(
+    "",
+    "\\begin{tabularx}{\\textwidth}{lXXr} ",
+    "& <<<txt$description>>>  &  &  & \\\\ ",
+    "\\end{tabularx}) "
+    , .open = "<<<", .close = ">>>", .sep = "\n"
+  )
+
+  if (txt$notes != "") {
+    notes <- glue(
+      "\\begin{tabularx}{\\textwidth}{lllr} ",
+       "& Notes &  <<<txt$notes>>> &  \\\\ ",
+       "& & & & \\\\ ",
+      "\\end{tabularx} "
+      , .open = "<<<", .close = ">>>", .sep = "\n"
+    )
+  } else {
+    notes <- ""
+  }
+
+  paste(
+    alias_name,
+    question,
+    notes,
+    sep = "\n\n"
+  )
 }
 
 #'
@@ -67,75 +96,95 @@ codebookItemSubVars <- function(x) {
 }
 
 
+
 #' @describeIn codebookItem Prepares a codebookItem for a CategoricalVariable
 #' @export
 codebookItem.CategoricalVariable <- function(x) {
-  txt <- codebookItemTxt(x)
-  cats <- categories(x)
-  responses <- do.call(rbind, cats@.Data)
-  responses <- as.data.frame(responses[!unlist(responses[, "missing"]), ])
-  responses <- lapply(responses, unlist)
-  if (all(is.null(responses$numeric_value)))
-    responses$numeric_value = responses$id
-  responses <- as.data.frame(lapply(responses, unlist)[c("name", "numeric_value")])
-  names(responses) <- c("Response", "Value")
+  header <- codebookItemTxt(x)
+  res <- as.data.frame(x)
 
-  latexTop <- sprintf("
-    \\thispagestyle{fancy}
-    \\lhead{%s}
-    \\setlength{\\extrarowheight}{20pt}
-    \\begin{tabular*}{7in}{p{2.5in}p{4.5in}}
-    Question  & %s \\\\
-    Name  & %s \\\\
-    Alias  & %s \\\\
-    ID  & %s \\\\
-    Filtering Notes  & %s \\\\
-    \\end{tabular*}
-    ",
-    txt$meta$name,
-    txt$meta$question,
-    txt$meta$name,
-    txt$meta$alias,
-    txt$meta$id,
-    ifelse(txt$meta$filter_text == "", "None", txt$meta$filter_text)
+  top = "\\begin{tabularx}{\\textwidth}{llcXrr} \n"
+  bottom = "\n\\end{tabularx}"
+
+  l = 1:nrow(res)
+  for (i in 1:nrow(res)) {
+    l[i] <- glue(
+      '
+      & <<<res$value[i]>>> & <<<res$name[i]>>> & \\dotfill & <<<res$n[i]>>> & \\\\
+      ',
+      .open = "<<<", .close = ">>>"
     )
-  latexTop <- gsub("    ", "", latexTop)
-  latexTop
+  }
+
+  paste0(
+    header,
+    top,
+    paste0(
+      l,
+      collapse = "\n"
+    ),
+    bottom, collapse = "\n"
+  )
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a CategoricalArrayVariable
 #' @export
 codebookItem.CategoricalArrayVariable <- function(x) {
-  txt = codebookItemTxt(x)
+  header = codebookItemTxt(x)
   subvars = codebookItemSubVars(x)
-
-
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a MultipleResponseVariable
 #' @export
 codebookItem.MultipleResponseVariable <- function(x) {
+  header = codebookItemTxt(x)
 
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a NumericVariable
 #' @export
 codebookItem.NumericVariable <- function(x) {
+  header = codebookItemTxt(x)
 
+  top = "\\begin{tabularx}{\\textwidth}{llXr}"
+  bottom = "\\end{tabularx}"
+
+  minima <- min(x, na.rm = T)
+  maxima <- max(x, na.rm = T)
+
+  missings <- sum(is.na(as.vector(x)))
+  type_row <- glue("& Type & Numeric & \\\\")
+  range_row <- glue("& Range & [<<<minima>>>, <<<maxima>>>] & \\\\",
+                    .open = "<<<", .close = ">>>")
+  if (missings > 0)
+    missings_row <- glue("& Missing & <<<missings>>> & \\\\",
+                         .open = "<<<", .close = ">>>")
+
+
+  paste0(
+    header,
+    top,
+    "\n",
+    paste(
+      type_row,
+      if (missings > 0) missings_row,
+      range_row, sep = "\n"),
+    "\n",
+    bottom,
+    sep = "\n"
+  )
 
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a TextVariable
 #' @export
 codebookItem.TextVariable <- function(x) {
-
+  header = codebookItemTxt(x)
 }
 
 #' @describeIn codebookItem Prepares a codebookitem for a DatetimeVariable
 #' @export
-codebookItem.DatetimeVariable <- function(x) {
-
-}
+codebookItem.DatetimeVariable <- codebookItem.NumericVariable
 
 #' Generate LaTeX CodeBooks
 #'
@@ -149,4 +198,54 @@ codebookItem.DatetimeVariable <- function(x) {
 #' @export
 writeCodebook <- function(...) {
   writeLatex(...)
+}
+
+#' Categorical Variable to data.frame
+#'
+#' Manipulate categorical into a results object without hitting the tabBook
+#' endpoint. For the purpose of creating a codebookItem.
+#'
+#' @param x A CategoricalVariable from a crunch \link[crunch]{loadDataset}
+#' @param ... Ignored
+as.data.frame.CategoricalVariable <- function(x, ...) {
+  cats <- crunch::categories(x)
+  responses <- do.call(rbind, cats@.Data)
+  l <- list()
+  for (i in 1:nrow(responses)) {
+
+    if (is.null(responses[i, ]$numeric_value)) {
+      responses[i,]$numeric_value <- NA_integer_
+    }
+
+    l[[i]] <- as.data.frame(
+      matrix(
+        unlist(responses[i,]),
+        ncol = dim(responses)[2]
+      )
+    )
+  }
+
+  l <- do.call(rbind, l)
+  # CategoricalVariable
+  if (ncol(l) == 4) {
+    names(l) <- c("id", "missing", "name", "value")
+  }
+
+  # MultipleResponseVariable
+  if (ncol(l) == 5) {
+    names(l) <- c("id", "missing", "value", "a", "b")
+
+  }
+
+  for (i in 1:ncol(l)) { l[[i]] <- type.convert(l[[i]], as.is = T) }
+
+  s <- data.frame(crunch::table(x, useNA = "ifany"))
+  names(s) <- c("name", "n")
+
+  res <- merge(l, s)
+  res[with(res, order(value)),]
+}
+
+as.data.frame.MultipleResponseVariable <- function(x, ...) {
+  responses = lapply(x, as.data.frame.CategoricalVariable)
 }

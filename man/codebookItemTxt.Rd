@@ -14,10 +14,8 @@ Extracts the following:
 }
 \details{
 \itemize{
-\item body
 \item alias
 \item description or question text
 \item notes or filter text
-\item id
 }
 }

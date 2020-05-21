@@ -22,7 +22,8 @@ Imports:
     openxlsx,
     digest,
     methods,
-    tinytex
+    tinytex,
+    glue
 Suggests:
     covr,
     httptest (>= 2.0.0),

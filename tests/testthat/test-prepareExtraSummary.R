@@ -1,32 +1,3 @@
-# If testing locally,
-# with_api_fixture expects that the current working directory
-# is tests/testthat
-with_api_fixture <- function(fixture_path, expr) {
-  with(
-    crunch::temp.options(
-      crunch.api = "https://app.crunch.io/api/",
-      httptest.mock.paths = fixture_path,
-      crunch.show.progress = FALSE
-    ),
-    httptest::with_mock_api(
-      # Also need to redact UUIDs as is done in POSTs
-      with_mock(
-        `crunch::crPOST` = function(...) {
-          args <- list(...)
-          # Necessary for post
-          args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
-          args[[1]] <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args[[1]])
-          do.call(
-            function(...) crunch:::crunchAPI("POST", ...),
-            args
-          )
-        },
-        expr
-      )
-    )
-  )
-}
-
 context("prepareExtraSummary NumericVariable")
 
 with_api_fixture("fixtures-1-2-5", {
