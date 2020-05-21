@@ -1,0 +1,41 @@
+{
+    "element": "shoji:order",
+    "self": "https://app.crunch.io/api/datasets/e6d1e7/variables/hier/?relative=on",
+    "description": "Hierarchical order from folder structure of dataset variables",
+    "graph": [
+        {
+            "Key Pet Indicators": [
+                "../4D9ueMTv4l7Y73adCnN2Y0000000/",
+                "../4D9ueMTv4l7Y73adCnN2Y0000007/",
+                "../4D9ueMTv4l7Y73adCnN2Y0000006/"
+            ]
+        },
+        {
+            "Dog Metrics": [
+                "../4D9ueMTv4l7Y73adCnN2Y0000003/",
+                {
+                    "Number of dogs by type": [
+                        "../4D9ueMTv4l7Y73adCnN2Y0000004/",
+                        "../4D9ueMTv4l7Y73adCnN2Y0000005/"
+                    ]
+                }
+            ]
+        },
+        {
+            "Details": [
+                "../4D9ueMTv4l7Y73adCnN2Y0000008/"
+            ]
+        },
+        {
+            "Dimensions": [
+                "../4D9ueMTv4l7Y73adCnN2Y0000002/",
+                "../4D9ueMTv4l7Y73adCnN2Y0000009/"
+            ]
+        },
+        {
+            "__hidden__": [
+                "../4D9ueMTv4l7Y73adCnN2Y0000001/"
+            ]
+        }
+    ]
+}
