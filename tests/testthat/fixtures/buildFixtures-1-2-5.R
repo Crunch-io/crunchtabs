@@ -21,7 +21,12 @@ ct_banner <- banner(
   vars = list(`banner 1` = 'allpets')
 )
 
-topline_unweighted <- crosstabs(ds)
+topline_unweighted <- crosstabs(
+  ds,
+  include_numeric = TRUE,
+  include_datetime = TRUE,
+  include_verbatims = TRUE
+)
 
 ct_unweighted <- crosstabs(
   dataset = ds,

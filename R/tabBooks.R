@@ -142,7 +142,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
 #' @param dataset A CrunchDataset from \link[crunch]{loadDataset}
 getMultitable <- function(banner_flatten, dataset) {
   mtvars <- paste0("`", setdiff(names(banner_flatten), "___total___"), "`")
-  mt_name <- digest::digest(sort(mtvars), "md5")
+  mt_name <- substr(digest::digest(sort(mtvars), "md5"), 1, 15)
   multitable <- multitables(dataset)[[mt_name]]
   if (is.null(multitable)) {
     multitable <- newMultitable(paste("~", paste(mtvars, collapse = " + ")),

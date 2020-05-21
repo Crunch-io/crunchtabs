@@ -1,4 +1,6 @@
-
+# If testing locally,
+# with_api_fixture expects that the current working directory
+# is tests/testthat
 with_api_fixture <- function(fixture_path, expr) {
   with(
     crunch::temp.options(
@@ -11,7 +13,9 @@ with_api_fixture <- function(fixture_path, expr) {
       with_mock(
         `crunch::crPOST` = function(...) {
           args <- list(...)
+          # Necessary for post
           args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
+          args[[1]] <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args[[1]])
           do.call(
             function(...) crunch:::crunchAPI("POST", ...),
             args
@@ -37,7 +41,9 @@ with_api_fixture("fixtures-1-2-5", {
     expect_true(exists("ds"))
   })
 
-  ct <- crosstabs(ds)
+  ct <- crosstabs(ds, include_numeric = TRUE,
+                  include_datetime = TRUE,
+                  include_verbatims = TRUE)
 
 })
 
