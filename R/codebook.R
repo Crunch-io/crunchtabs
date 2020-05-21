@@ -52,7 +52,7 @@ codebookItemTxt <- function(x) {
 }
 
 #'
-codebookItemSubVars <- function (x) {
+codebookItemSubVars <- function(x) {
   sv <- subvariables(x)
   als <- unname(unlist(lapply(sv@index, getElement, "alias")))
   resp <- unname(unlist(lapply(sv@index, getElement, "name")))
