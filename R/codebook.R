@@ -209,12 +209,21 @@ writeCodebook <- function(...) {
 #' @param ... Ignored
 as.data.frame.CategoricalVariable <- function(x, ...) {
   cats <- crunch::categories(x)
-  responses <- do.call(rbind, cats@.Data)
+  responses <- suppressWarnings(do.call(rbind, cats@.Data))
   l <- list()
   for (i in 1:nrow(responses)) {
 
     if (is.null(responses[i, ]$numeric_value)) {
-      responses[i,]$numeric_value <- NA_integer_
+      # CategoricalVariable within MultipleResponseVariable
+      if (responses[i, ]$name %in% c("not selected", "selected")) {
+        responses[i,]$numeric_value <- ifelse(
+          responses[i, ]$name == "selected",
+          1L,
+          2L
+        )
+      } else {
+        responses[i,]$numeric_value <- NA_integer_
+      }
     }
 
     l[[i]] <- as.data.frame(
@@ -231,18 +240,18 @@ as.data.frame.CategoricalVariable <- function(x, ...) {
     names(l) <- c("id", "missing", "name", "value")
   }
 
-  # MultipleResponseVariable
+  # CategoricalVariable within MultipleResponseVariable
   if (ncol(l) == 5) {
-    names(l) <- c("id", "missing", "value", "a", "b")
+    names(l) <- c("id", "missing", "name", "value", "drop")
 
   }
 
   for (i in 1:ncol(l)) { l[[i]] <- type.convert(l[[i]], as.is = T) }
 
-  s <- data.frame(crunch::table(x, useNA = "ifany"))
-  names(s) <- c("name", "n")
+  smry <- data.frame(crunch::table(x, useNA = "ifany"))
+  names(smry) <- c("name", "n")
 
-  res <- merge(l, s)
+  res <- merge(l, smry)
   res[with(res, order(value)),]
 }
 
