@@ -21,6 +21,13 @@ ct_banner <- banner(
   vars = list(`banner 1` = 'allpets')
 )
 
+# For codebookItemTxt
+codebookItemTxt(ds$q1)
+codebookItemTxt(ds$allpets)
+codebookItemTxt(ds$ndogs)
+codebookItemTxt(ds$wave)
+codebookItemTxt(ds$q3)
+
 topline_unweighted <- crosstabs(
   ds,
   include_numeric = TRUE,

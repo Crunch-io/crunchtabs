@@ -1,0 +1,55 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/6b2eb5/variables/",
+        "folder": "https://app.crunch.io/api/datasets/6b2eb5/folders/6bab07/"
+    },
+    "fragments": {
+        "missing_rules": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/missing_rules/",
+        "user_settings": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/user_settings/",
+        "dataset": "https://app.crunch.io/api/datasets/6b2eb5/"
+    },
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/frequencies/",
+        "summary": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/summary/",
+        "values": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/values/",
+        "cast": "https://app.crunch.io/api/datasets/6b2eb5/variables/22dOpNBlKMRBmwvFfv087O000005/cast/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Number of dogs -- Mutts",
+        "format": {
+            "data": {
+                "digits": 2
+            },
+            "summary": {
+                "digits": 2
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "ndogs_b",
+        "dataset_id": "6b2eb5",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "column_width": null
+        },
+        "type": "numeric",
+        "id": "22dOpNBlKMRBmwvFfv087O000005",
+        "categories": [
+
+        ],
+        "description": "How many dogs do you have?"
+    },
+    "description": "Details for a given Variable",
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/6b2eb5/"
+    }
+}
