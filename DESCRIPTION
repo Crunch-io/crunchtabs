@@ -17,7 +17,8 @@ BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: LGPL (>= 3)
 Depends:
     R (>= 3.3.0),
-    crunch
+    crunch,
+    kableExtra
 Imports:
     openxlsx,
     digest,

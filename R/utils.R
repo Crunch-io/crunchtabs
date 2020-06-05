@@ -161,6 +161,7 @@ collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
 #'
 #' @param fixture_path A full path to fixtures
 #' @param expr An expression to be run within the api fixture
+#' @export
 with_api_fixture <- function(fixture_path, expr) {
   with(
     crunch::temp.options(

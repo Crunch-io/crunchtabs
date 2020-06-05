@@ -3,15 +3,16 @@ library(httptest)
 
 # We build two sets of exmaples. Unweighted and weighted
 
-login()
+
 
 # Assumes your wd is project dir
 rm(list = ls())
-ds <- newExampleDataset()
+
+# ds <- newExampleDataset()
 
 httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
-
+login()
 ds <- loadDataset("Example dataset")
 
 # Unweighted ----
@@ -21,12 +22,19 @@ ct_banner <- banner(
   vars = list(`banner 1` = 'allpets')
 )
 
-# For codebookItemTxt
-codebookItemTxt(ds$q1)
-codebookItemTxt(ds$allpets)
-codebookItemTxt(ds$ndogs)
-codebookItemTxt(ds$wave)
-codebookItemTxt(ds$q3)
+# For codeBookItemTxt
+
+codeBookItemTxt(ds$q1)
+codeBookItemTxt(ds$allpets)
+codeBookItemTxt(ds$ndogs)
+codeBookItemTxt(ds$wave)
+codeBookItemTxt(ds$q3)
+
+codeBookSummary(ds$q1)
+codeBookSummary(ds$allpets)
+codeBookSummary(ds$ndogs)
+codeBookSummary(ds$wave)
+codeBookSummary(ds$q3)
 
 topline_unweighted <- crosstabs(
   ds,
