@@ -4,12 +4,18 @@
 \alias{prepareExtraSummary.NumericVariable}
 \title{Prepare Numeric Content}
 \usage{
-\method{prepareExtraSummary}{NumericVariable}(x, weighted = TRUE)
+\method{prepareExtraSummary}{NumericVariable}(x, weighted = TRUE, num = 10, tz = "UTC", ...)
 }
 \arguments{
 \item{x}{A variable of class \link[crunch]{NumericVariable}}
 
 \item{weighted}{Logical. Are these data weighted?}
+
+\item{num}{The number of verbatim responses to present as a sample. Defaults to 10.}
+
+\item{tz}{A timezone. Defaults to UTC.}
+
+\item{...}{Additional arguments passed to methods}
 }
 \description{
 \link[crunch]{tabBook} does not report an appropriate numeric summary

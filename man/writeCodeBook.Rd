@@ -16,8 +16,6 @@ writeCodeBook(ds, url = NULL, rmd = TRUE, pdf = TRUE, ...)
 \item{pdf}{Should we write directly to pdf? Defaults to TRUE}
 
 \item{...}{Additional arguments. Unused.}
-
-\item{output}{Defaults to being named after the dataset}
 }
 \description{
 Create a codebook

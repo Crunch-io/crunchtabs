@@ -9,6 +9,7 @@
 #' * notes or filter text
 #'
 #' @param x A dataset variable
+#' @param ... Additional arguments passed to \link{kable_styling_defaults}
 #' @md
 #' @export
 codeBookItemTxtDescription <- function(x, ...) {
@@ -30,6 +31,11 @@ codeBookItemTxtDescription <- function(x, ...) {
     kable_styling_defaults(...)
 }
 
+#' codeBook Item Text Header
+#'
+#' Creates a text header for a codebook item
+#'
+#' @inheritParams codeBookItemTxtDescription
 #' @export
 codeBookItemTxtHeader <- function(x, ...)  {
   txt <- list()
@@ -46,11 +52,19 @@ codeBookItemTxtHeader <- function(x, ...)  {
 
 # Item Body ----
 
+#' codeBookItemBody
+#'
+#' Create codebook item body.
+#'
+#' @param x A crunch dataset object
+#' @param ... Further arguments, not used.
 #' @export
 codeBookItemBody <- function(x, ...) {
-  UseMethod("codeBookItemBody", x)
+  UseMethod("codeBookItemBody")
 }
 
+#' @describeIn codeBookItemBody Default codeBookItemBody.
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.default <- function(x, ...) {
   wrong_class_error(x, c(
@@ -64,6 +78,8 @@ codeBookItemBody.default <- function(x, ...) {
   )
 }
 
+#' @describeIn codeBookItemBody Creates item body for CategoricalVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.CategoricalVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -75,6 +91,8 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     column_spec(c(1,3), width = "4em")
 }
 
+#' @describeIn codeBookItemBody Creates item body for CategoricalArrayVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -86,6 +104,8 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
     column_spec(c(3:ncol(k)), width = "3em")
 }
 
+#' @describeIn codeBookItemBody Creates item body for MultipleResponseVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.MultipleResponseVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -97,6 +117,8 @@ codeBookItemBody.MultipleResponseVariable <- function(x, ...) {
     column_spec(c(3:ncol(k)), width = "3em")
 }
 
+#' @describeIn codeBookItemBody Creates item body for DatetimeVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.DatetimeVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -106,6 +128,8 @@ codeBookItemBody.DatetimeVariable <- function(x, ...) {
     column_spec(1, width = "10em")
 }
 
+#' @describeIn codeBookItemBody Creates item body for NumericVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.NumericVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -115,6 +139,8 @@ codeBookItemBody.NumericVariable <- function(x, ...) {
     column_spec(1, width = "10em")
 }
 
+#' @describeIn codeBookItemBody Creates item body for TextVariable
+#' @inheritParams codeBookItemBody
 #' @export
 codeBookItemBody.TextVariable <- function(x, ...) {
   k = codeBookSummary(x)
@@ -130,7 +156,6 @@ codeBookItemBody.TextVariable <- function(x, ...) {
 #' @param url A crunch dataset url
 #' @param rmd Should we create an interim Rmd file? Defaults to TRUE
 #' @param pdf Should we write directly to pdf? Defaults to TRUE
-#' @param output Defaults to being named after the dataset
 #' @param ... Additional arguments. Unused.
 #' @export
 writeCodeBook <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, ...) {

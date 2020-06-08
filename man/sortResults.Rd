@@ -9,7 +9,7 @@ sortResults(var, ...)
 \arguments{
 \item{var}{An internal \link{crosstabs} results object.}
 
-\item{...}{Further arguments passed from \link{sortAlias} to type
+\item{...}{Further arguments passed from \link{sortAliases} to type
 based \link{sortResults} functions}
 }
 \description{

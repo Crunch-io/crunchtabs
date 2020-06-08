@@ -23,7 +23,8 @@ Imports:
     openxlsx,
     digest,
     methods,
-    tinytex
+    tinytex,
+    magrittr
 Suggests:
     covr,
     httptest (>= 2.0.0),

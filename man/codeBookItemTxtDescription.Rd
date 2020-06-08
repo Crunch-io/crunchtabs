@@ -8,6 +8,8 @@ codeBookItemTxtDescription(x, ...)
 }
 \arguments{
 \item{x}{A dataset variable}
+
+\item{...}{Additional arguments passed to \link{kable_styling_defaults}}
 }
 \description{
 Extracts the following:
