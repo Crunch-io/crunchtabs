@@ -88,7 +88,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
   kableExtra::kable(
     k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
     kable_styling_defaults(...) %>%
-    column_spec(c(1,3), width = "4em")
+    column_spec(c(1,3), width = "1in")
 }
 
 #' @describeIn codeBookItemBody Creates item body for CategoricalArrayVariable
@@ -97,25 +97,22 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   k = codeBookSummary(x)
   alignment <- c(rep("l",2),rep("c", ncol(k) - 2))
-  col_one <- paste0(max(nchar(k[,1]))*0.5, "em")
+  col_one <- round(max(nchar(k[,1]))*0.07, 2)
+
+  space_remaining = 5.5 - col_one - ((ncol(k) - 2)*0.60)
+  col_two <- space_remaining
+
   kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
     kable_styling_defaults(...) %>%
-    column_spec(c(1,2), width = col_one) %>%
-    column_spec(c(3:ncol(k)), width = "3em")
+    column_spec(1, width = paste0(col_one, "in")) %>%
+    column_spec(2, width = paste0(col_two, "in")) %>%
+    column_spec(c(3:ncol(k)), width = "0.60in")
 }
 
 #' @describeIn codeBookItemBody Creates item body for MultipleResponseVariable
 #' @inheritParams codeBookItemBody
 #' @export
-codeBookItemBody.MultipleResponseVariable <- function(x, ...) {
-  k = codeBookSummary(x)
-  alignment <- c(rep("l",2),"X",rep("c", ncol(k) - 2))
-  col_one <- paste0(max(nchar(k[,1]))*0.5, "em")
-  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
-    kable_styling_defaults(...) %>%
-    column_spec(c(1,2), width = col_one) %>%
-    column_spec(c(3:ncol(k)), width = "3em")
-}
+codeBookItemBody.MultipleResponseVariable <- codeBookItemBody.CategoricalArrayVariable
 
 #' @describeIn codeBookItemBody Creates item body for DatetimeVariable
 #' @inheritParams codeBookItemBody
