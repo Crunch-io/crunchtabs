@@ -61,10 +61,10 @@ sortResults <- function(var, ...) {
     return(var)
   }
   if (var$type == "multiple_response") {
-    return(sortResults_categorical(var, ...))
+    return(sortResults_outer(var, ...))
   }
   if (var$type == "categorical") {
-    return(sortResults_categorical(var, ...))
+    return(sortResults_outer(var, ...))
   }
   if (var$type == "TextVariable") {
     return(var)
@@ -75,11 +75,66 @@ sortResults <- function(var, ...) {
 #' object.
 #'
 #' @rdname sortAliases
-#' @inheritParams sortResults
-sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
+#' @param var An internal crosstabs elements (Usually ct$results[[x]])
+#' @param pin_to_top A character vector of response values to pin to the top of the result presentation
+#' @param pin_to_bottom A character vector of response values to pin to the bottom of the result presentation
+#' @param fixed A character vector representing a set order of presentation
+#' @param alpha Logical. Defaults to FALSE. Should data be sorted alphabetically?
+#' @param descending Logical, defaults to NULL. If data are of type TextVariable or DateTimeVariable, default to ascending, if numeric defaults to descending. If FALSE, enforces ascending. If TRUE, enforces descending.
+sortResults_outer <- function(var, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
 
-  r = as.data.frame(var$crosstabs$Results$`___total___`$proportions)
+  # If Results, this is a topline report and we only have to take
+  # action once. However, if this is a crosstab, we have to run
+  # this function on a per banner basis.
 
+  if ("Results" %in% names(var$crosstabs)) {
+    nms = "Results"
+  } else {
+    nms <- names(var$crosstabs)
+  }
+
+  for (nm in nms) {
+    srt = sortResults_inner(
+      as.data.frame(var$crosstabs[[nm]]$`___total___`$proportions),
+      descending, alpha, fixed, pin_to_top, pin_to_bottom)
+
+    r = srt$r
+    ord = srt$ord
+
+    var$crosstabs[[nm]]$`___total___`$proportions = r
+
+    # Reorder base presentations to match
+    bs = var$crosstabs[[nm]]$`___total___`$base
+    wbs = var$crosstabs[[nm]]$`___total___`$weighted_base
+
+    var$crosstabs[[nm]]$`___total___`$base = bs[ord]
+    var$crosstabs[[nm]]$`___total___`$weighted_base = wbs[ord]
+    cnts = var$crosstabs[[nm]]$`___total___`$counts
+    cnts = cnts[ord]
+
+    obj = structure(
+      cnts,
+      .Dim = c(as.integer(length(rownames(r))),1L),
+      .Dimnames = list(rownames(r), "Total")
+    )
+    var$crosstabs[[nm]]$`___total___`$counts = obj
+    attributes(var$crosstabs[[nm]]$`___total___`$counts)$row.names = rownames(r)
+
+  }
+  return(var)
+}
+
+
+#' sortResults Generic
+#'
+#' The difference between a topline and a crosstabe from the perspective of tabbook
+#' is that a topline only has a crosstab called "Results" contained within it.
+#' Otherwise, the crosstab object has an embedded summary object per each banner defined
+#'
+#' @rdname sortAliases
+#' @inheritParams sortResults_outer
+#' @param r The results of a specific banner or Results
+sortResults_inner <- function(r, descending, alpha, fixed, pin_to_top, pin_to_bottom) {
   if (alpha) {
 
     r$X = NA # Trick for single col
@@ -144,23 +199,9 @@ sortResults_categorical <- function(var, descending, alpha, fixed, pin_to_top, p
     r = r[ord,]
   }
 
-  var$crosstabs$Results$`___total___`$proportions = r
-
-  # Reorder base presentations to match
-  bs = var$crosstabs$Results$`___total___`$base
-  wbs = var$crosstabs$Results$`___total___`$weighted_base
-
-  var$crosstabs$Results$`___total___`$base = bs[ord]
-  var$crosstabs$Results$`___total___`$weighted_base = wbs[ord]
-  cnts = var$crosstabs$Results$`___total___`$counts
-  cnts = cnts[ord]
-
-  obj = structure(
-    cnts,
-    .Dim = c(as.integer(length(rownames(r))),1L),
-    .Dimnames = list(rownames(r), "Total")
+  # Return the r and object
+  list(
+    r = r,
+    ord = ord
   )
-  var$crosstabs$Results$`___total___`$counts = obj
-  attributes(var$crosstabs$Results$`___total___`$counts)$row.names = rownames(r)
-  var
 }

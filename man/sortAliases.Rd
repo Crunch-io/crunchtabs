@@ -2,7 +2,8 @@
 % Please edit documentation in R/crosstabs-sort.R
 \name{sortAliases}
 \alias{sortAliases}
-\alias{sortResults_categorical}
+\alias{sortResults_outer}
+\alias{sortResults_inner}
 \title{Sort Aliases}
 \usage{
 sortAliases(
@@ -15,14 +16,9 @@ sortAliases(
   pin_to_bottom = NULL
 )
 
-sortResults_categorical(
-  var,
-  descending,
-  alpha,
-  fixed,
-  pin_to_top,
-  pin_to_bottom
-)
+sortResults_outer(var, descending, alpha, fixed, pin_to_top, pin_to_bottom)
+
+sortResults_inner(r, descending, alpha, fixed, pin_to_top, pin_to_bottom)
 }
 \arguments{
 \item{ct}{A \link{crosstabs} object}
@@ -39,9 +35,15 @@ sortResults_categorical(
 
 \item{pin_to_bottom}{A character vector of response values to pin to the bottom of the result presentation}
 
-\item{var}{An internal \link{crosstabs} results object.}
+\item{var}{An internal crosstabs elements (Usually ct$results[[x]])}
+
+\item{r}{The results of a specific banner or Results}
 }
 \description{
 Given a \link{crosstabs} object, sort the named
 variables alphabetically.
+
+The difference between a topline and a crosstabe from the perspective of tabbook
+is that a topline only has a crosstab called "Results" contained within it.
+Otherwise, the crosstab object has an embedded summary object per each banner defined
 }
