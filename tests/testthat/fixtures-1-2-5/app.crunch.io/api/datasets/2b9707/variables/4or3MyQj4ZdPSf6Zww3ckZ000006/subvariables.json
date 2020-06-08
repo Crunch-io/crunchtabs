@@ -1,0 +1,33 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/2b9707/variables/4or3MyQj4ZdPSf6Zww3ckZ000006/subvariables/",
+    "description": "Contains the subvariables for this array variable.",
+    "index": {
+        "https://app.crunch.io/api/datasets/2b9707/variables/4or3MyQj4ZdPSf6Zww3ckZ000006/subvariables/0001/": {
+            "secure": false,
+            "derived": false,
+            "id": "0001",
+            "description": "",
+            "scale": "interval",
+            "name": "Home",
+            "notes": "",
+            "discarded": false,
+            "alias": "petloc_home",
+            "hidden": false,
+            "type": "categorical"
+        },
+        "https://app.crunch.io/api/datasets/2b9707/variables/4or3MyQj4ZdPSf6Zww3ckZ000006/subvariables/0002/": {
+            "secure": false,
+            "derived": false,
+            "id": "0002",
+            "description": "",
+            "scale": "interval",
+            "name": "Work",
+            "notes": "",
+            "discarded": false,
+            "alias": "petloc_work",
+            "hidden": false,
+            "type": "categorical"
+        }
+    }
+}

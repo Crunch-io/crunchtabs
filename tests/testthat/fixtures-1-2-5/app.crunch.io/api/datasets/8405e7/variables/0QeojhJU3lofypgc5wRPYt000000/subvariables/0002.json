@@ -1,0 +1,86 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/subvariables/0002/",
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/subvariables/0002/frequencies/",
+        "values": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/subvariables/0002/values/",
+        "summary": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/subvariables/0002/summary/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Dog",
+        "format": {
+            "summary": {
+                "digits": 0
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1,
+            "skipped": 8,
+            "not asked": 9
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "allpets_2",
+        "dataset_id": "8405e7",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "show_numeric_values": false,
+            "include_missing": false,
+            "show_counts": false,
+            "column_width": null,
+            "include_noneoftheabove": false
+        },
+        "type": "categorical",
+        "id": "0002",
+        "categories": [
+            {
+                "numeric_value": null,
+                "selected": false,
+                "id": 2,
+                "missing": false,
+                "name": "not selected"
+            },
+            {
+                "numeric_value": null,
+                "selected": true,
+                "id": 1,
+                "missing": false,
+                "name": "selected"
+            },
+            {
+                "numeric_value": 9,
+                "id": 9,
+                "name": "not asked",
+                "missing": true
+            },
+            {
+                "numeric_value": 8,
+                "id": 8,
+                "name": "skipped",
+                "missing": true
+            },
+            {
+                "numeric_value": null,
+                "id": -1,
+                "name": "No Data",
+                "missing": true
+            }
+        ],
+        "description": ""
+    },
+    "description": "Details for a given Variable",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/subvariables/"
+    },
+    "fragments": {
+        "variable": "https://app.crunch.io/api/datasets/8405e7/variables/0QeojhJU3lofypgc5wRPYt000000/",
+        "dataset": "https://app.crunch.io/api/datasets/8405e7/"
+    },
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/8405e7/"
+    }
+}

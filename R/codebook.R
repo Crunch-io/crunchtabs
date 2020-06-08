@@ -1,152 +1,215 @@
-#' Generate a codebook item
-#'
-#' A passthrough function that creates a table header appropriate to the class
-#' of the data object being passed. Expected classes are:
-#'
-#' * CategoricalVariable
-#' * CategoricalArrayVariable
-#' * MultipleResponseVariable
-#' * NumericVariable
-#' * TextVariable
-#' * DatetimeVariable
-#'
-#' Importantly, this also controls the relative widths of the columns.
-#'
-#' @md
-#' @param x An object of one of the types listed
-#' @param ... Additional arguents passed to codebookItem methods
-#' @export
-codebookItem <- function(x, ...) {
-  UseMethod("codebookItem", x)
-}
-
-#' @rdname codebookItem
-codebookItem.default <- function(x) {
-  wrong_class_error(x, c("CategoricalVariable", "CategoricalArrayVariable", "MultipleResponseVariable", "TextVariable", "NumericVariable", "DatetimeVariable"), "codebookItem")
-}
-
+# Txt Elements -----
 
 #' Extract basic question information
 #'
 #' Extracts the following:
 #'
-#' * body
 #' * alias
 #' * description or question text
 #' * notes or filter text
-#' * id
 #'
 #' @param x A dataset variable
 #' @md
 #' @export
-codebookItemTxt <- function(x) {
-  txt <- x@tuple@body
-  l <- list()
-  l$title <- txt$alias
-  l$alias <- txt$alias
-  l$name <- txt$name
-  l$id <- txt$id
-  l$filter_text <- txt$notes
-  l$question <- txt$description
-  l
+codeBookItemTxtDescription <- function(x, ...) {
+  txt <- list()
+  txt$description <- crunch::description(x)
+  txt$notes <- crunch::notes(x)
+
+  if (txt$description == "") {
+    txt$description <- "No question text"
+  }
+
+  question_align = c("l")
+  question <- c(txt$description)
+  notes_txt <- c(txt$notes)
+
+  k = matrix(c(question, notes_txt), ncol = 1)
+
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = question_align) %>%
+    kable_styling_defaults(...)
 }
 
-#'
-codebookItemSubVars <- function (x) {
-  sv <- subvariables(x)
-  als <- unname(unlist(lapply(sv@index, getElement, "alias")))
-  resp <- unname(unlist(lapply(sv@index, getElement, "name")))
-  sv <- data.frame(`Sub Alias` = als, Name = resp)
-  sv_responses <- categories(x)
+#' @export
+codeBookItemTxtHeader <- function(x, ...)  {
+  txt <- list()
+  txt$name <- crunch::name(x)
+  txt$alias <- crunch::alias(x)
+  alignment <- c("l", "r")
 
-  list(
-    key = sv,
-    key2 = setNames(sv_responses, c("Response", "Value"))
+  heading <- c(paste0("[", txt$alias, "]", collapse = ""), txt$name)
+  k = matrix(heading, ncol = 2)
+
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...)
+}
+
+# Item Body ----
+
+#' @export
+codeBookItemBody <- function(x, ...) {
+  UseMethod("codeBookItemBody", x)
+}
+
+#' @export
+codeBookItemBody.default <- function(x, ...) {
+  wrong_class_error(x, c(
+    "CategoricalVariable",
+    "CategoricalArrayVariable",
+    "MultipleResponseVariable",
+    "TextVariable",
+    "NumericVariable",
+    "DatetimeVariable"),
+    "codeBookItemBody"
   )
-
 }
 
-
-#' @describeIn codebookItem Prepares a codebookItem for a CategoricalVariable
 #' @export
-codebookItem.CategoricalVariable <- function(x) {
-  txt <- codebookItemTxt(x)
-  cats <- categories(x)
-  responses <- do.call(rbind, cats@.Data)
-  responses <- as.data.frame(responses[!unlist(responses[, "missing"]), ])
-  responses <- lapply(responses, unlist)
-  if (all(is.null(responses$numeric_value)))
-    responses$numeric_value = responses$id
-  responses <- as.data.frame(lapply(responses, unlist)[c("name", "numeric_value")])
-  names(responses) <- c("Response", "Value")
-
-  latexTop <- sprintf("
-    \\thispagestyle{fancy}
-    \\lhead{%s}
-    \\setlength{\\extrarowheight}{20pt}
-    \\begin{tabular*}{7in}{p{2.5in}p{4.5in}}
-    Question  & %s \\\\
-    Name  & %s \\\\
-    Alias  & %s \\\\
-    ID  & %s \\\\
-    Filtering Notes  & %s \\\\
-    \\end{tabular*}
-    ",
-    txt$meta$name,
-    txt$meta$question,
-    txt$meta$name,
-    txt$meta$alias,
-    txt$meta$id,
-    ifelse(txt$meta$filter_text == "", "None", txt$meta$filter_text)
-    )
-  latexTop <- gsub("    ", "", latexTop)
-  latexTop
+codeBookItemBody.CategoricalVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  k = k[order(as.numeric(k[,1])),]
+  alignment = c("c","l", "r")
+  kableExtra::kable(
+    k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(c(1,3), width = "4em")
 }
 
-#' @describeIn codebookItem Prepares a codebookitem for a CategoricalArrayVariable
 #' @export
-codebookItem.CategoricalArrayVariable <- function(x) {
-  txt = codebookItemTxt(x)
-  subvars = codebookItemSubVars(x)
-
-
+codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  alignment <- c(rep("l",2),rep("c", ncol(k) - 2))
+  col_one <- paste0(max(nchar(k[,1]))*0.5, "em")
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(c(1,2), width = col_one) %>%
+    column_spec(c(3:ncol(k)), width = "3em")
 }
 
-#' @describeIn codebookItem Prepares a codebookitem for a MultipleResponseVariable
 #' @export
-codebookItem.MultipleResponseVariable <- function(x) {
-
+codeBookItemBody.MultipleResponseVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  alignment <- c(rep("l",2),"X",rep("c", ncol(k) - 2))
+  col_one <- paste0(max(nchar(k[,1]))*0.5, "em")
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(c(1,2), width = col_one) %>%
+    column_spec(c(3:ncol(k)), width = "3em")
 }
 
-#' @describeIn codebookItem Prepares a codebookitem for a NumericVariable
 #' @export
-codebookItem.NumericVariable <- function(x) {
-
-
+codeBookItemBody.DatetimeVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  alignment <- c("l", "l")
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(1, width = "10em")
 }
 
-#' @describeIn codebookItem Prepares a codebookitem for a TextVariable
 #' @export
-codebookItem.TextVariable <- function(x) {
-
+codeBookItemBody.NumericVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  alignment <- c("l", "l")
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(1, width = "10em")
 }
 
-#' @describeIn codebookItem Prepares a codebookitem for a DatetimeVariable
 #' @export
-codebookItem.DatetimeVariable <- function(x) {
-
+codeBookItemBody.TextVariable <- function(x, ...) {
+  k = codeBookSummary(x)
+  alignment <- c("l","l")
+  kableExtra::kable(k, "latex", booktabs = TRUE, align = alignment) %>%
+    kable_styling_defaults(...) %>%
+    column_spec(1, width = "10em")
 }
 
-#' Generate LaTeX CodeBooks
-#'
-#' \code{writeCodebook} produces publication-quality LaTeX reports
+#' Create a codebook
 #'
 #' @param ds A crunch dataset
-#'
-#' @param ... Additional arguments passed to writeLatx
-#'
-#' @importFrom utils installed.packages
+#' @param url A crunch dataset url
+#' @param rmd Should we create an interim Rmd file? Defaults to TRUE
+#' @param pdf Should we write directly to pdf? Defaults to TRUE
+#' @param output Defaults to being named after the dataset
+#' @param ... Additional arguments. Unused.
 #' @export
-writeCodebook <- function(...) {
-  writeLatex(...)
+writeCodeBook <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, ...) {
+
+  preamble <- readLines(
+    system.file(
+      "codebook_header.Rmd",
+      package = "crunchtabs"
+      )
+  )
+
+  # Some datasets are not visible using their name
+  if (is.null(url)) {
+    dataset = sprintf(
+      '```{r} \nds = loadDataset("%s") \n```\n\n',
+      name(ds)
+    )
+  } else {
+    dataset = sprintf(
+      '```{r} \nds = loadDataset("%s") \n```\n\n',
+      url
+    )
+  }
+
+
+  kables <- list()
+  nms <- names(ds)
+  for (nm in nms) {
+    kables[[nm]] <- sprintf(trimws(
+      "```{r}
+      codeBookItemTxtHeader(ds[['%s']]) ++ kable_strip_rules
+      codeBookItemTxtDescription(ds[['%s']]) ++ kable_strip_rules
+      codeBookItemBody(ds[['%s']]) ++ kable_strip_rules
+      ```\n\n
+      \\begin{center}\\rule{\\linewidth}{0.5pt}\\end{center}"),
+      nm, nm, nm
+    )
+
+    kables[[nm]] <- gsub("      ", "", kables[[nm]])
+    kables[[nm]] <- gsub("++", "%>%", kables[[nm]], fixed = TRUE)
+  }
+
+  write(
+    c(
+      preamble,
+      dataset,
+      paste0(kables, collapse = "\n\n")
+    ), file = paste0(name(ds), ".Rmd")
+  )
+  if (pdf) {
+    rmarkdown::render(paste0(name(ds), ".Rmd"))
+    file.open(paste0(name(ds), ".pdf"))
+  }
+
+}
+
+# utils ----
+
+#' Defaults for kableExtra
+#'
+#' Default styling for kable extra
+#'
+#' @param x A kable object
+#' @param ... Additional arguments passed to \link[kableExtra]{kable_styling}
+kable_styling_defaults <- function(x, ...) {
+  kableExtra::kable_styling(x, full_width = TRUE, ...)
+}
+
+#' Strip rules
+#'
+#' Strip horizontal lines (also called rules) from
+#' codebooks generated for latex
+#'
+#' @param x A character string
+#' @export
+kable_strip_rules <- function(x) {
+  x <- gsub("\\toprule", "", x, fixed = TRUE)
+  x <- gsub("\\bottomrule", "", x, fixed = TRUE)
+  x <- gsub("\\midrule", "", x, fixed = TRUE)
+
+  x
 }

@@ -1,3 +1,8 @@
+## crunchtabs 1.2.7
+
+- Initial support for latex codebooks 
+- 
+
 ## crunchtabs 1.2.6
  
 - tinytex enforcement does not respect logging = FALSE (#132)
