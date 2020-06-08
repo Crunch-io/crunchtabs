@@ -10,7 +10,6 @@
 #'
 #' @param x A dataset variable
 #' @md
-#' @importFrom glue glue
 #' @export
 codeBookItemTxtDescription <- function(x, ...) {
   txt <- list()
