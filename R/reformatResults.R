@@ -127,6 +127,11 @@ getItemData <- function(data, item_name, empty_col, round){
 #' @param banner_info A meta data object from \link{getBannerInfo}
 #' @param latex A logical identifying if this code is for LaTex or Excel. If TRUE, LaTeX
 reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex) {
+
+  # if (!identical(names(var$crosstabs[[1]]), names(banner_info$names))) {
+  #   return(NULL) #
+  # } # could be used in a future where we chain different banners
+
   possible <- c("weighted_n", "unweighted_n", "totals_row", "means", "medians")
   if (var$no_totals) {
     possible <- setdiff(possible, "totals_row")

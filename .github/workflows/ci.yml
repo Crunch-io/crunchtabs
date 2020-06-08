@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Add kableExtra
+      run: Rscript -e 'install.packages("kableExtra")'
     - name: Build
       run: R CMD build --no-build-vignettes --no-manual .
     - name: Check

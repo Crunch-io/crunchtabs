@@ -61,7 +61,7 @@
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
 #' \itemize{
-#'     \item{\code{file} An optional character path to the file that should be used for the logo.}
+#'     \item{\code{file} The path to a PNG file that should be used for the logo. Include the extension (.png) for an Excel theme. Exclude the extension for a Latex theme }
 #'     \item{\code{dpi} In Excel, a numeric. The image resolution used for conversion between units. Defaults to 300.}
 #'     \item{\code{height} In Excel, a numeric. The height of the logo. Defaults to 2.}
 #'     \item{\code{width} In Excel, a numeric. The width of the logo. Defaults to 4.}
@@ -483,7 +483,8 @@ theme_validator <- function(theme) {
 
   # Issue 88
   if ("logo" %in% names(theme)) {
-    if (!file.exists(paste0(theme$logo$file, ".png"))) {
+    if (!file.exists(paste0(theme$logo$file, ".png")) & !file.exists(theme$logo$file)) {
+      # Adding new conditional for excel fills
       stop("Logo file not found, check path to file or current working directory.")
     }
   }
