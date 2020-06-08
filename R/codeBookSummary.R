@@ -20,7 +20,7 @@ codeBookSummary.default <- function(x, ...) {
                       "TextVariable",
                       "NumericVariable",
                       "DatetimeVariable"),
-                    "codebookItem")
+                    "codeBookSummary")
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a CategoricalVariable
@@ -72,18 +72,13 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
   res <- merge(l, smry)
 
   if (multiple) {
-    res[with(res, order(value)),]
+    res[with(res, order(id)),]
   } else {
-    ln <- length(res$name)
-
-    matrix(c(
-      rep("", ln),
-      res$value,
+    res = matrix(c(
+      res$id,
       res$name,
-      rep("", ln),
-      res$n,
-      rep("", ln)
-    ), ncol = 6)
+      res$n
+    ), ncol = 3)
   }
 
 }
@@ -98,14 +93,18 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   }
 
   names(responses) <- subvars
-  nms <- c("", "", paste(responses[[1]]$value, responses[[1]]$name))
+
   rws <- length(responses)
-  cols <- nrow(responses[[1]])
+  frame = unique(do.call(rbind, responses)[,c('name', 'id')])
+  nms <- c("", "", paste(frame$id, frame$name))
+  cols <- nrow(frame)
   m <- matrix(rep(NA, (rws)*(cols + 2)), ncol = cols + 2, nrow = rws)
 
-
   for (i in 1:rws) {
-    m[i,3:length(nms)] <- responses[[i]]$n
+    # We merge on a complete frame because responses
+    # can be missing from categories
+    responses_adj <- merge(frame, responses[[i]], all.x = TRUE)$n
+    m[i,3:(cols + 2)] <- responses_adj
   }
 
   r <- data.frame(m)
@@ -126,11 +125,11 @@ codeBookSummary.NumericVariable <- function(x, ...) {
   maxima <- round(max(x, na.rm = T), 2)
   missings <- sum(is.na(as.vector(x)))
 
-  type_row <- c("", "Type", "Numeric", "")
-  range_row <- c("", "Range", paste0("[", minima,", ", maxima,"]"), "")
+  type_row <- c("Type", "Numeric")
+  range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
 
   if (missings > 0) {
-    missings_row <- c("", "Missing", missings, "")
+    missings_row <- c("Missing", missings)
     r <- rbind(
       type_row, missings_row, range_row
     )
@@ -149,9 +148,9 @@ codeBookSummary.NumericVariable <- function(x, ...) {
 #' @export
 codeBookSummary.TextVariable <- function(x, ...) {
 
-  filled <- sum(as.vector(x) != "" | !is.na(as.vector(x)))
-  type_row <- c("", "Type", "Text", "")
-  filled <- c("", "Filled", filled, "")
+  filled <- sum(as.vector(x) != "" | !is.na(as.vector(x)), na.rm = TRUE)
+  type_row <- c("Type", "Text")
+  filled <- c("Filled", filled)
 
   r <- rbind(type_row, filled)
   rownames(r) <- NULL
@@ -160,4 +159,26 @@ codeBookSummary.TextVariable <- function(x, ...) {
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a DatetimeVaraible
 #' @export
-codeBookSummary.DatetimeVariable <- codeBookSummary.NumericVariable
+codeBookSummary.DatetimeVariable <- function(x, ...) {
+  minima <- min(x, na.rm = T)
+  maxima <- max(x, na.rm = T)
+  missings <- sum(is.na(as.vector(x)))
+
+  type_row <- c("Type", "Datetime")
+  range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
+
+  if (missings > 0) {
+    missings_row <- c("Missing", missings)
+    r <- rbind(
+      type_row, missings_row, range_row
+    )
+  } else {
+    r <- rbind(
+      type_row, range_row
+    )
+  }
+
+  rownames(r) <- NULL
+  r
+
+}

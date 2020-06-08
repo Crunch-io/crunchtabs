@@ -1,20 +1,14 @@
 library(crunchtabs)
 library(httptest)
 
-# We build two sets of exmaples. Unweighted and weighted
-
-
-
-# Assumes your wd is project dir
 rm(list = ls())
-
-# ds <- newExampleDataset()
-
+login()
 httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
 login()
-ds <- loadDataset("Example dataset")
 
+ds = newExampleDataset()
+ds = loadDataset("Example dataset")
 # Unweighted ----
 
 ct_banner <- banner(
@@ -24,14 +18,23 @@ ct_banner <- banner(
 
 # For codeBookItemTxt
 
-codeBookItemTxt(ds$q1)
-codeBookItemTxt(ds$allpets)
-codeBookItemTxt(ds$ndogs)
-codeBookItemTxt(ds$wave)
-codeBookItemTxt(ds$q3)
+codeBookItemBody(ds$q1)
+codeBookItemBody(ds$allpets)
+codeBookItemBody(ds$petloc)
+codeBookItemBody(ds$ndogs)
+codeBookItemBody(ds$wave)
+codeBookItemBody(ds$q3)
+
+codeBookItemTxtDescription(ds$q1)
+codeBookItemTxtDescription(ds$allpets)
+codeBookItemTxtDescription(ds$petloc)
+codeBookItemTxtDescription(ds$ndogs)
+codeBookItemTxtDescription(ds$wave)
+codeBookItemTxtDescription(ds$q3)
 
 codeBookSummary(ds$q1)
 codeBookSummary(ds$allpets)
+codeBookSummary(ds$petloc)
 codeBookSummary(ds$ndogs)
 codeBookSummary(ds$wave)
 codeBookSummary(ds$q3)
@@ -96,4 +99,7 @@ stop_capturing()
 # )
 #
 # stop_capturing()
+#
 with_consent(deleteDataset("Example dataset"))
+
+rm(list = ls())
