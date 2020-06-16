@@ -152,9 +152,10 @@ codeBookSummary.TextVariable <- function(x, ...) {
 
   filled <- sum(as.vector(x) != "" | !is.na(as.vector(x)), na.rm = TRUE)
   type_row <- c("Type", "Text")
+  missing <- c("Blank", length(as.vector(x)) - filled)
   filled <- c("Filled", filled)
 
-  r <- rbind(type_row, filled)
+  r <- rbind(type_row, missing, filled)
   rownames(r) <- NULL
   r
 }
