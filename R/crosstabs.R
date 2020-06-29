@@ -122,6 +122,15 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   # summaries (Numeric, Datetime, Text)
 
   var_types <- unlist(lapply(dataset[vars], class))
+
+  if (length(setdiff(vars,names(dataset))) > 0) {
+    # Edge case where variable specified does not exist in dataset
+    stop(paste0("One or more variables are specified in the crosstab but not
+         available in the dataset: ",
+         paste0(setdiff(vars, names(dataset)), collapse = ", "))
+    )
+  }
+
   names(var_types) <- vars
   numerics <- vars[var_types == "NumericVariable"]
   datetimes <- vars[var_types == "DatetimeVariable"]

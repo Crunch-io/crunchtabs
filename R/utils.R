@@ -187,3 +187,13 @@ with_api_fixture <- function(fixture_path, expr) {
     )
   )
 }
+
+
+#' Default Logo
+#'
+#' Use YouGov's default logo. All trademarks are property of their respective owners.
+#'
+#' @export
+default_yg_logo <- function() {
+  system.file("YouGov.png", package = "crunchtabs", mustWork = TRUE)
+}

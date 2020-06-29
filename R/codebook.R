@@ -9,6 +9,7 @@
 #' * notes or filter text
 #'
 #' @param x A dataset variable
+#' @param ... Additional arguments passed to \link{kable_styling_defaults}
 #' @md
 #' @export
 codeBookItemTxtDescription <- function(x, ...) {

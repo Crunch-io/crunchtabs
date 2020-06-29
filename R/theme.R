@@ -483,8 +483,12 @@ theme_validator <- function(theme) {
 
   # Issue 88
   if ("logo" %in% names(theme)) {
-    if (!file.exists(paste0(theme$logo$file, ".png")) & !file.exists(theme$logo$file)) {
-      # Adding new conditional for excel fills
+    # Check if version of logo exists:
+
+    wo_png = file.exists(paste0(theme$logo$file,".png"))
+    w_png = file.exists(paste0(theme$logo$file))
+
+    if (!(wo_png | w_png)) {
       stop("Logo file not found, check path to file or current working directory.")
     }
   }
