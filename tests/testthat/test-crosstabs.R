@@ -11,8 +11,8 @@ test_that("Error handling", {
   expect_error(crosstabs(ds, vars = c("a", "b")),
                "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.",
                fixed = TRUE)
-  expect_error(crosstabs(ds, weight = "a_weight"),
-               "`weight`, if provided, must be a valid variable in `dataset`. 'a_weight' is not found.")
+  # expect_error(crosstabs(ds, weight = "a_weight"),
+  #              "`weight`, if provided, must be a valid variable in `dataset`. 'a_weight' is not found.")
   expect_error(with_mock(weightVariables = function(x) "weight", crosstabs(ds, weight = "age")),
                "`weight`, if provided, must be a valid weight variable in `dataset`. 'age' is not a weight variable.")
 

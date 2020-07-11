@@ -8,13 +8,8 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$contents,
-      c(
-        "1 & Cat & 6",
-        "2 & Dog & 4",
-        "3 & Bird & 3",
-        "8 & Skipped & 3",
-        "9 & Not Asked & 4"
-      )
+      c("Code & Label & Count", "1 & Cat & 6", "2 & Dog & 4", "3 & Bird & 3",
+        "8 & Skipped & 3", "9 & Not Asked & 4")
     )
 
     expect_equal(
@@ -28,11 +23,10 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$contents,
-      c(" &  & 1 Cat & 2 Dog & 3 Bird & 8 Skipped & 9 Not Asked",
-        "petloc\\\\_home & Home & 3 & 5 & 3 & 5 & 4",
-        "petloc\\\\_work & Work & 6 & 6 & 4 & 1 & 3"
+      c("Variable & Label & 1 Cat & 2 Dog & 3 Bird & 8 Skipped & 9 Not Asked",
+        "\\\\ttfamily\\{petloc\\\\_home\\} & Home & 3 & 5 & 3 & 5 & 4",
+        "\\\\ttfamily\\{petloc\\\\_work\\} & Work & 6 & 6 & 4 & 1 & 3"
       )
-
     )
 
     expect_equal(
@@ -46,16 +40,14 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$contents,
-        c(" &  & 1 selected & 2 not selected & 8 skipped & 9 not asked",
-          "allpets\\\\_1 & Cat & 8 & 4 & 4 & 4",
-          "allpets\\\\_2 & Dog & 8 & 3 & 5 & 4",
-          "allpets\\\\_3 & Bird & 3 & 6 & 5 & 6"
-        )
+      c("Variable & Label & 1 selected & 2 not selected & 8 skipped & 9 not asked",
+        "\\\\ttfamily\\{allpets\\\\_1\\} & Cat & 8 & 4 & 4 & 4", "\\\\ttfamily\\{allpets\\\\_2\\} & Dog & 8 & 3 & 5 & 4",
+        "\\\\ttfamily\\{allpets\\\\_3\\} & Bird & 3 & 6 & 5 & 6")
     )
 
     expect_equal(
       attributes(res)$kable_meta$align_vector_origin,
-      c("l", "l", "X", "c", "c", "c")
+      c("l", "l", "c", "c", "c", "c")
     )
   })
 
@@ -73,7 +65,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$align_vector_origin,
-      c("l", "l")
+      c("c", "l")
     )
   })
 
@@ -90,7 +82,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$align_vector_origin,
-      c("l", "l")
+      c("c", "l")
     )
   })
 
@@ -99,12 +91,12 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$contents,
-      c("Type & Text", "Filled & 16")
+      c("Type & Text","Blank & 4",  "Filled & 16")
     )
 
     expect_equal(
       attributes(res)$kable_meta$align_vector_origin,
-      c("l", "l")
+      c("c", "l")
     )
   })
 

@@ -58,9 +58,10 @@ with_api_fixture("fixtures-1-2-5", {
 
   expect_equal(
     r,
-    structure(c("Type", "Filled", "Text", "16"),
-              .Dim = c(2L, 2L),
-              .Dimnames = list(NULL, NULL))
+    structure(c("Type", "Blank", "Filled", "Text", "4", "16"),
+              .Dim = 3:2,
+              .Dimnames = list(
+      NULL, NULL))
   )
   })
 

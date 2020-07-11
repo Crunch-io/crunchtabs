@@ -4,14 +4,18 @@
 \alias{prepareExtraSummary.DatetimeVariable}
 \title{Prepare Datetime Content}
 \usage{
-\method{prepareExtraSummary}{DatetimeVariable}(x, weighted = TRUE, tz = "UTC")
+\method{prepareExtraSummary}{DatetimeVariable}(x, weighted = TRUE, num = 10, tz = "UTC", ...)
 }
 \arguments{
 \item{x}{A variable of class \link[crunch]{DatetimeVariable}}
 
 \item{weighted}{Logical. Are these data weighted?}
 
+\item{num}{The number of verbatim responses to present as a sample. Defaults to 10.}
+
 \item{tz}{A timezone. Defaults to UTC.}
+
+\item{...}{Additional arguments passed to methods}
 }
 \description{
 tabBook does not report an appropriate date time summary without

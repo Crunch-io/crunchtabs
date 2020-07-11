@@ -1,6 +1,8 @@
 library(crunchtabs)
 library(httptest)
 
+system("rm -rf tests/testthat/fixtures-1-2-5")
+
 rm(list = ls())
 login()
 httpcache::clearCache()

@@ -24,6 +24,8 @@ codeBookSummary.default <- function(x, ...) {
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a CategoricalVariable
+#' @importFrom utils type.convert
+#' @param multiple Is this a MultipleResponse or CategoricalArray variable?
 #' @export
 codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
   cats <- crunch::categories(x)
@@ -79,6 +81,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
       res$name,
       res$n
     ), ncol = 3)
+    res
   }
 
 }
@@ -150,9 +153,10 @@ codeBookSummary.TextVariable <- function(x, ...) {
 
   filled <- sum(as.vector(x) != "" | !is.na(as.vector(x)), na.rm = TRUE)
   type_row <- c("Type", "Text")
+  missing <- c("Blank", length(as.vector(x)) - filled)
   filled <- c("Filled", filled)
 
-  r <- rbind(type_row, filled)
+  r <- rbind(type_row, missing, filled)
   rownames(r) <- NULL
   r
 }
