@@ -95,6 +95,7 @@
 #' \item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
 #' \item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
 #' \item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+#' \item{pagebreak_in_banner}{A logical. Allow a banner to be broken midway across pages. Defaults to TRUE. If FALSE, Pushes the page breaking banner sub-table to the next page similar to manually using clearpage}
 #' \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
 #' \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
 #' }
@@ -264,7 +265,8 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     latex_foottext = "",
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
-    latex_max_lines_for_tabular = 0
+    latex_max_lines_for_tabular = 0,
+    pagebreak_in_banner = TRUE
   )
 
   class(defaults) <- "Theme"
@@ -429,6 +431,7 @@ validators_to_use <- list(
   position_fixed = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   position_top = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   repeat_for_subs = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
+  pagebreak_in_banner = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
   excel_show_grid_lines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   startCol = c(class = "numeric", len = 1, missing = FALSE, default = 1),
   startRow = c(class = "numeric", len = 1, missing = FALSE, default = 1),
@@ -460,7 +463,7 @@ theme_validator <- function(theme) {
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
     "latex_multirowheaderlines", "latex_round_percentages",
     "latex_round_percentages_exception", "latex_table_align", "logo",
-    "one_per_sheet", "valign")
+    "one_per_sheet","valign", "pagebreak_in_banner")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {
@@ -483,8 +486,12 @@ theme_validator <- function(theme) {
 
   # Issue 88
   if ("logo" %in% names(theme)) {
-    if (!file.exists(paste0(theme$logo$file, ".png")) & !file.exists(theme$logo$file)) {
-      # Adding new conditional for excel fills
+    # Check if version of logo exists:
+
+    wo_png = file.exists(paste0(theme$logo$file,".png"))
+    w_png = file.exists(paste0(theme$logo$file))
+
+    if (!(wo_png | w_png)) {
       stop("Logo file not found, check path to file or current working directory.")
     }
   }

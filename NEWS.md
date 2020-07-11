@@ -1,7 +1,14 @@
+## crunchtabs 1.2.8
+
+- Additional refinements for codebooks such as title, subtitle, sample description (#152)
+- Fixes for warnings in existing code (#158)
+- Bugfix for logo assignment in excel (#155)
+
 ## crunchtabs 1.2.7
 
-- Initial support for latex codebooks 
-- 
+- Initial support for latex codebooks (#122 and #152)
+- Adjustments for categorical array presentation
+- Fixes for problems related to logos (#155)
 
 ## crunchtabs 1.2.6
  

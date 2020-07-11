@@ -108,6 +108,7 @@ Includes:
 \item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
 \item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
 \item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+\item{pagebreak_in_banner}{A logical. Allow a banner to be broken midway across pages. Defaults to TRUE. If FALSE, Pushes the page breaking banner sub-table to the next page similar to manually using clearpage}
 \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
 \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
 }

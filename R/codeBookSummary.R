@@ -81,6 +81,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
       res$name,
       res$n
     ), ncol = 3)
+    res
   }
 
 }
