@@ -431,7 +431,7 @@ validators_to_use <- list(
   position_fixed = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   position_top = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   repeat_for_subs = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
-  pagebreak_in_banner = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
+  pagebreak_in_banner = c(class = "logical", len = 1, missing = TRUE, default = TRUE),
   excel_show_grid_lines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   startCol = c(class = "numeric", len = 1, missing = FALSE, default = 1),
   startRow = c(class = "numeric", len = 1, missing = FALSE, default = 1),

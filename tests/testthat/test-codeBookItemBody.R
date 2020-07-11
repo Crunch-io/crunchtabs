@@ -91,7 +91,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       attributes(res)$kable_meta$contents,
-      c("Type & Text", "Filled & 16")
+      c("Type & Text","Blank & 4",  "Filled & 16")
     )
 
     expect_equal(

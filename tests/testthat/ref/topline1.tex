@@ -44,6 +44,11 @@
 \newcommand{\formatvarfiltertext}[1]{\fontsize{8}{12}\textit{#1}}
 \newcommand{\formatvarsubname}[1]{#1}
 \usepackage{amsmath}
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
 
 
 \begin{document}
@@ -63,7 +68,7 @@
 \begin{longtable}{p{0.3in}p{5.5in}}
 \addcontentsline{lot}{table}{ 1. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{6.5in}{
-\formatvardescription{1. Do you have any of these animals as pets? Please select all that apply.}\\
+\formatvardescription{1. Do you have any of these animals as pets? Please select all that apply.}\\ 
 \formatvarfiltertext{Uniform base is True.}} \\
 \longtablesep
 
@@ -104,7 +109,7 @@
 \hangindent=0em \parbox{6.5in}{
 \formatvardescription{3. Name the kinds of pets you have at these locations.}} \\
 \\
- &  & Cat & Dog & Bird & Net: Cat/Dog &
+ &  & Cat & Dog & Bird & Net: Cat/Dog & 
 \endfirsthead
 \multicolumn{6}{c}{\textit{}} \\
 \\
@@ -326,7 +331,7 @@
 \begin{longtable}{p{0.3in}p{5.5in}}
 \addcontentsline{lot}{table}{ 14. Numeric data with values less then 0.}
 \hangindent=0em \parbox{6.5in}{
-\formatvardescription{14. Numeric data with values less then 0.}\\
+\formatvardescription{14. Numeric data with values less then 0.}\\ 
 \formatvarfiltertext{Not useful.}} \\
 \longtablesep
 
@@ -348,7 +353,7 @@
 \begin{longtable}{p{0.3in}p{5.5in}}
 \addcontentsline{lot}{table}{ 15. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{6.5in}{
-\formatvardescription{15. Do you have any of these animals as pets? Please select all that apply.}\\
+\formatvardescription{15. Do you have any of these animals as pets? Please select all that apply.}\\ 
 \formatvarfiltertext{Uniform base is False.}} \\
 \longtablesep
 
