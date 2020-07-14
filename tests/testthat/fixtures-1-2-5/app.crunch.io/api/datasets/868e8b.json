@@ -1,0 +1,102 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/868e8b/",
+    "catalogs": {
+        "folders": "https://app.crunch.io/api/datasets/868e8b/folders/",
+        "users": "https://app.crunch.io/api/datasets/868e8b/users/",
+        "views": "https://app.crunch.io/api/datasets/868e8b/views/",
+        "variables": "https://app.crunch.io/api/datasets/868e8b/variables/",
+        "actions": "https://app.crunch.io/api/datasets/868e8b/actions/",
+        "boxdata": "https://app.crunch.io/api/datasets/868e8b/boxdata/",
+        "filters": "https://app.crunch.io/api/datasets/868e8b/filters/",
+        "scripts": "https://app.crunch.io/api/datasets/868e8b/scripts/",
+        "permissions": "https://app.crunch.io/api/datasets/868e8b/permissions/",
+        "batches": "https://app.crunch.io/api/datasets/868e8b/batches/",
+        "tags": "https://app.crunch.io/api/datasets/868e8b/tags/",
+        "teams": "https://app.crunch.io/api/datasets/868e8b/teams/",
+        "savepoints": "https://app.crunch.io/api/datasets/868e8b/savepoints/",
+        "multitables": "https://app.crunch.io/api/datasets/868e8b/multitables/",
+        "forks": "https://app.crunch.io/api/datasets/868e8b/forks/",
+        "decks": "https://app.crunch.io/api/datasets/868e8b/decks/",
+        "parent": "https://app.crunch.io/api/datasets/",
+        "project": "https://app.crunch.io/api/projects/shared/",
+        "variables_private": "https://app.crunch.io/api/datasets/868e8b/variables/private/"
+    },
+    "fragments": {
+        "preferences": "https://app.crunch.io/api/datasets/868e8b/preferences/",
+        "stream": "https://app.crunch.io/api/datasets/868e8b/stream/",
+        "settings": "https://app.crunch.io/api/datasets/868e8b/settings/",
+        "exclusion": "https://app.crunch.io/api/datasets/868e8b/exclusion/",
+        "publish": "https://app.crunch.io/api/datasets/868e8b/publish/",
+        "state": "https://app.crunch.io/api/datasets/868e8b/state/",
+        "table": "https://app.crunch.io/api/datasets/868e8b/table/",
+        "pk": "https://app.crunch.io/api/datasets/868e8b/pk/",
+        "schema": "https://app.crunch.io/api/datasets/868e8b/schema/"
+    },
+    "views": {
+        "second_order_analysis": "https://app.crunch.io/api/datasets/868e8b/second_order_analysis/",
+        "cube": "https://app.crunch.io/api/datasets/868e8b/cube/",
+        "export": "https://app.crunch.io/api/datasets/868e8b/export/",
+        "summary": "https://app.crunch.io/api/datasets/868e8b/summary/",
+        "applied_filters": "https://app.crunch.io/api/datasets/868e8b/filters/applied/"
+    },
+    "description": "Detail for a given dataset",
+    "body": {
+        "maintainer": "https://app.crunch.io/api/users/f0df1f/",
+        "current_editor": null,
+        "creation_time": "2018-06-19T14:47:29.181000",
+        "streaming": "no",
+        "owner": "https://app.crunch.io/api/projects/4f0879/",
+        "logo": {
+            "large": "https://s.crunch.io/act_app_icons/account-yougov-lrhfua-large.png",
+            "small": "https://s.crunch.io/act_app_icons/account-yougov-wmgadi-small.png",
+            "favicon": "https://s.crunch.io/act_app_icons/account-yougov-slyzix-favicon.ico"
+        },
+        "id": "868e8b",
+        "size": {
+            "rows": 600,
+            "unfiltered_rows": 600,
+            "columns": 1298
+        },
+        "palette": {
+            "brand": {
+                "message": "#722580",
+                "primary": "#0064a4",
+                "secondary": "#107f65"
+            }
+        },
+        "app_settings": {
+            "crunch": {
+                "discarded_to_hidden": true,
+                "deleted_rogue_vp": true
+            }
+        },
+        "start_date": "2018-06-19T00:00:00",
+        "owner_name": "crunchtabs",
+        "description": "",
+        "end_date": null,
+        "access_time": "2020-07-14T18:14:38.213000",
+        "current_editor_name": null,
+        "view_of": null,
+        "modification_time": "2019-06-25T20:51:31.649000",
+        "archived": false,
+        "permissions": {
+            "edit": true,
+            "view": true
+        },
+        "account": "https://app.crunch.io/api/accounts/b7a990/",
+        "name": "YouGov crunchtabs_example monkeys (starttime: from 2018-06-19)",
+        "notes": "",
+        "is_published": true
+    },
+    "orders": {
+        "variables_weights": "https://app.crunch.io/api/datasets/868e8b/variables/weights/",
+        "variables_hier": "https://app.crunch.io/api/datasets/868e8b/variables/hier/",
+        "variables_personal": "https://app.crunch.io/api/datasets/868e8b/variables/personal/"
+    },
+    "urls": {
+        "owner_url": "https://app.crunch.io/api/projects/4f0879/",
+        "editor_url": null,
+        "user_url": "https://app.crunch.io/api/users/0740cc/"
+    }
+}

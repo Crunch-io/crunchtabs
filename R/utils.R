@@ -177,8 +177,8 @@ with_api_fixture <- function(fixture_path, expr) {
           # Necessary for post
           args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
           args[[1]] <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args[[1]])
-          args$body <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args$body)
-          args[[1]] <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args[[1]])
+          #args$body <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args$body)
+          #args[[1]] <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args[[1]])
           do.call(
             function(...) crunch:::crunchAPI("POST", ...),
             args

@@ -1,0 +1,396 @@
+{
+    "meta": {
+        "multitable_id": "0eccd0",
+        "user_id": "0740cc",
+        "doc_layout": {
+            "toc": false,
+            "variable_sheets": "many_sheets",
+            "measure_sheets": "wide"
+        },
+        "dataset": {
+            "name": "YouGov crunchtabs_example monkeys (starttime: from 2018-06-19)",
+            "notes": "",
+            "min_base_size": {
+                "suppress": true,
+                "size": 0
+            },
+            "population_size": null,
+            "dataset_id": "868e8b",
+            "description": ""
+        },
+        "template": [
+            {
+                "query": [
+                    {
+                        "variable": "000126"
+                    }
+                ]
+            }
+        ],
+        "analyses": [
+            {
+                "name": "Like Books",
+                "weight": null,
+                "title": null,
+                "format": {
+                    "show_empty": false,
+                    "decimal_places": 0,
+                    "pval_colors": false
+                },
+                "measures": [
+                    "col_percent"
+                ],
+                "page_layout": {
+                    "rows": {
+                        "alias": false,
+                        "notes": false,
+                        "description": true,
+                        "bottom": [
+
+                        ]
+                    },
+                    "columns": {
+                        "alias": false,
+                        "notes": false,
+                        "right": [
+
+                        ],
+                        "description": false,
+                        "merge_ranges": true
+                    }
+                },
+                "filters": null
+            }
+        ]
+    },
+    "sheets": [
+        {
+            "result": [
+                {
+                    "result": {
+                        "dimensions": [
+                            {
+                                "derived": false,
+                                "references": {
+                                    "alias": "books1",
+                                    "name": "Like Books",
+                                    "description": "Do you like to read books?"
+                                },
+                                "type": {
+                                    "ordinal": false,
+                                    "class": "categorical",
+                                    "categories": [
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 1,
+                                            "name": "Yes"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 2,
+                                            "name": "No"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 9,
+                                            "name": "not asked"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 8,
+                                            "name": "skipped"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": -1,
+                                            "name": "No Data"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "measures": {
+                            "count": {
+                                "data": [
+                                    309,
+                                    291,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "n_missing": 0,
+                                "metadata": {
+                                    "references": {
+
+                                    },
+                                    "derived": true,
+                                    "type": {
+                                        "integer": true,
+                                        "missing_rules": {
+
+                                        },
+                                        "missing_reasons": {
+                                            "No Data": -1
+                                        },
+                                        "class": "numeric"
+                                    }
+                                }
+                            }
+                        },
+                        "n": 600,
+                        "filter_stats": {
+                            "filtered_complete": {
+                                "unweighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                },
+                                "weighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                }
+                            },
+                            "filtered": {
+                                "unweighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                },
+                                "weighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                }
+                            }
+                        },
+                        "unfiltered": {
+                            "unweighted_n": 600,
+                            "weighted_n": 600
+                        },
+                        "filtered": {
+                            "unweighted_n": 600,
+                            "weighted_n": 600
+                        },
+                        "counts": [
+                            309,
+                            291,
+                            0,
+                            0,
+                            0
+                        ]
+                    }
+                },
+                {
+                    "result": {
+                        "dimensions": [
+                            {
+                                "derived": false,
+                                "references": {
+                                    "alias": "books1",
+                                    "name": "Like Books",
+                                    "description": "Do you like to read books?"
+                                },
+                                "type": {
+                                    "ordinal": false,
+                                    "class": "categorical",
+                                    "categories": [
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 1,
+                                            "name": "Yes"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 2,
+                                            "name": "No"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 9,
+                                            "name": "not asked"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 8,
+                                            "name": "skipped"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": -1,
+                                            "name": "No Data"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "derived": false,
+                                "references": {
+                                    "alias": "books1",
+                                    "name": "Like Books",
+                                    "description": "Do you like to read books?"
+                                },
+                                "type": {
+                                    "ordinal": false,
+                                    "class": "categorical",
+                                    "categories": [
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 1,
+                                            "name": "Yes"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": false,
+                                            "id": 2,
+                                            "name": "No"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 9,
+                                            "name": "not asked"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": 8,
+                                            "name": "skipped"
+                                        },
+                                        {
+                                            "numeric_value": null,
+                                            "missing": true,
+                                            "id": -1,
+                                            "name": "No Data"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "measures": {
+                            "count": {
+                                "data": [
+                                    309,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    291,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "n_missing": 0,
+                                "metadata": {
+                                    "references": {
+
+                                    },
+                                    "derived": true,
+                                    "type": {
+                                        "integer": true,
+                                        "missing_rules": {
+
+                                        },
+                                        "missing_reasons": {
+                                            "No Data": -1
+                                        },
+                                        "class": "numeric"
+                                    }
+                                }
+                            }
+                        },
+                        "n": 600,
+                        "filter_stats": {
+                            "filtered_complete": {
+                                "unweighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                },
+                                "weighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                }
+                            },
+                            "filtered": {
+                                "unweighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                },
+                                "weighted": {
+                                    "selected": 600,
+                                    "other": 0,
+                                    "missing": 0
+                                }
+                            }
+                        },
+                        "unfiltered": {
+                            "unweighted_n": 600,
+                            "weighted_n": 600
+                        },
+                        "filtered": {
+                            "unweighted_n": 600,
+                            "weighted_n": 600
+                        },
+                        "counts": [
+                            309,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            291,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
