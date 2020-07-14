@@ -98,6 +98,17 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     # If we have more than 20 hide counts
     # only show codes. Use multiple tables
     # row-wise
+
+    une_duex_trois <- suppressWarnings(matrix(1:nrow(k), nrow = 3))
+    une_duex_trois[which(duplicated(as.vector(une_duex_trois)))] <- NA
+    une_duex_trois <- t(une_duex_trois)
+    cbind(
+      k[une_duex_trois[,1],],
+      k[une_duex_trois[,2],],
+      k[une_duex_trois[,3],]
+    )
+
+
     num_splits = round(nrow(k) / 5, 0)
     splits = split(1:nrow(k), sort(rep_len(1:num_splits, nrow(k))))
 

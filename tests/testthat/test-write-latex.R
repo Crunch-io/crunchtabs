@@ -103,7 +103,7 @@ with_temp_dir({
         # Test that fix for #36: previously failed to generate PDF
         bad <- ts
         ts$results[[1]]$description <- bad_description
-        writeLatex(ts, pdf = TRUE, file="topline2")
+        writeLatex(ts, pdf = TRUE, file = "topline2")
         expect_true(file.exists("topline2.pdf"))
     })
 })

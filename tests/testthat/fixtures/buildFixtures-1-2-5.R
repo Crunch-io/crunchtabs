@@ -4,12 +4,11 @@ library(httptest)
 system("rm -rf tests/testthat/fixtures-1-2-5")
 
 rm(list = ls())
-login()
 httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
 login()
 
-ds = newExampleDataset()
+# ds = newExampleDataset()
 ds = loadDataset("Example dataset")
 # Unweighted ----
 
@@ -52,6 +51,14 @@ ct_unweighted <- crosstabs(
   dataset = ds,
   banner = ct_banner
 )
+
+
+ds = loadDataset("https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/")
+crosstabs_data <- crosstabs(ds, vars = c("movies2_a_1", "movies2_a_2", "books1"))
+crosstabs_data <- crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime")))
+crosstabs_data <- crosstabs(ds, vars = c("books1", "starttime", "movies2_a_1"))
+crosstabs_data <- crosstabs(ds, vars = c("books1", "starttime", "endtime", "movies2_a_1"))
 
 stop_capturing()
 
@@ -102,6 +109,6 @@ stop_capturing()
 #
 # stop_capturing()
 #
-with_consent(deleteDataset("Example dataset"))
+# with_consent(deleteDataset("Example dataset"))
 
 rm(list = ls())

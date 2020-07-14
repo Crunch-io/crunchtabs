@@ -1,6 +1,8 @@
 context("Generating Toplines and Crosstabs data summaries")
 
-ds = readRDS("fixtures/banner_ds.rds")
+ds = readRDS("fixtures/banner_ds_new.rds")
+# This fixture is from:
+# https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/
 
 test_that("Error handling - not a dataset", {
     expect_error(crosstabs(NULL),
@@ -11,14 +13,14 @@ test_that("Error handling", {
   expect_error(crosstabs(ds, vars = c("a", "b")),
                "Variables in `vars` must be valid aliases in aliases(allVariables(dataset)). This is not true for 'a' and 'b'.",
                fixed = TRUE)
-  # expect_error(crosstabs(ds, weight = "a_weight"),
-  #              "`weight`, if provided, must be a valid variable in `dataset`. 'a_weight' is not found.")
+  expect_error(crosstabs(ds, weight = "a_weight"),
+               "`weight`, if provided, must be a valid variable in `dataset`. 'a_weight' is not found.")
   expect_error(with_mock(weightVariables = function(x) "weight", crosstabs(ds, weight = "age")),
                "`weight`, if provided, must be a valid weight variable in `dataset`. 'age' is not a weight variable.")
 
 })
 
-with_test_authentication({
+with_api_fixture("fixtures-1-2-5", {
     ds <- loadDataset("https://app.crunch.io/api/datasets/868e8b3e01834c45b73e56e80160d3c3/")
 
     test_that("Warnings", {
