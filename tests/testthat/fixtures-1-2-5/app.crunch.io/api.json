@@ -16,8 +16,7 @@
         "datasets_by_name": "https://app.crunch.io/api/datasets/by_name/{name}/"
     },
     "views": {
-        "progress": "https://app.crunch.io/api/progress/",
-        "search": "https://app.crunch.io/api/search/",
+        "progress": "https://app.crunch.io/api/progress//app.crunch.io/api/search/",
         "feature_flag": "https://app.crunch.io/api/feature_flag/",
         "migration": "https://app.crunch.io/api/migration/",
         "account": "https://app.crunch.io/api/account/",

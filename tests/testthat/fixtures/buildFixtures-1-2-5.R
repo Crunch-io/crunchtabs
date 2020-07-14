@@ -4,12 +4,11 @@ library(httptest)
 system("rm -rf tests/testthat/fixtures-1-2-5")
 
 rm(list = ls())
-login()
 httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
 login()
 
-ds = newExampleDataset()
+# ds = newExampleDataset()
 ds = loadDataset("Example dataset")
 # Unweighted ----
 
@@ -52,6 +51,25 @@ ct_unweighted <- crosstabs(
   dataset = ds,
   banner = ct_banner
 )
+
+
+ds = loadDataset("https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/")
+crosstabs_data <- crosstabs(ds, vars = c("movies2_a_1", "movies2_a_2", "books1"))
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime")), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime", "movies2_a_1")), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime", "endtime", "movies2_a_1")), error = function(e) e)
+
+banner_data <- banner(ds, vars = list(c("profile_gender", "age5")))
+tabBook_vars <- c(
+  "age", "age4", "profile_socialgrade_cie", "profile_ethnicity",
+  "sports1", "books1", "books2", "books3_book", "books4", "books5", "movies1",
+  "movies4", "movies5", "tv1", "tv2", "tv3", "tv4", "tv5", "art1_a", "art2",
+  "art3", "art4", "art5", "art5_nonUniform", "media1_a", "media1_b", "misc1_a",
+  "misc2", "misc2_dk", "misc3_a", "misc3_b", "misc3_c", "misc3_d", "misc3_e"
+)
+
+crosstabs_data <- crosstabs(ds, weight = NULL, vars = tabBook_vars, banner = banner_data)
 
 stop_capturing()
 
@@ -102,6 +120,6 @@ stop_capturing()
 #
 # stop_capturing()
 #
-with_consent(deleteDataset("Example dataset"))
+# with_consent(deleteDataset("Example dataset"))
 
 rm(list = ls())

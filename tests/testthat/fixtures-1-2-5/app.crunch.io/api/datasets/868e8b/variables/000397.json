@@ -1,0 +1,85 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/868e8b/variables/000397/",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/868e8b/variables/",
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/801b43/"
+    },
+    "fragments": {
+        "user_settings": "https://app.crunch.io/api/datasets/868e8b/variables/000397/user_settings/",
+        "dataset": "https://app.crunch.io/api/datasets/868e8b/"
+    },
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/868e8b/variables/000397/frequencies/",
+        "summary": "https://app.crunch.io/api/datasets/868e8b/variables/000397/summary/",
+        "values": "https://app.crunch.io/api/datasets/868e8b/variables/000397/values/",
+        "cast": "https://app.crunch.io/api/datasets/868e8b/variables/000397/cast/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Gender",
+        "format": {
+            "summary": {
+                "digits": 0
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1,
+            "skipped": 8,
+            "not asked": 9
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "profile_gender",
+        "dataset_id": "868e8b",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "show_counts": false,
+            "show_numeric_values": false,
+            "include_missing": false,
+            "column_width": null
+        },
+        "type": "categorical",
+        "id": "000397",
+        "categories": [
+            {
+                "numeric_value": null,
+                "id": 1,
+                "name": "Male",
+                "missing": false
+            },
+            {
+                "numeric_value": null,
+                "id": 2,
+                "name": "Female",
+                "missing": false
+            },
+            {
+                "numeric_value": null,
+                "id": 9,
+                "name": "not asked",
+                "missing": true
+            },
+            {
+                "numeric_value": null,
+                "id": 8,
+                "name": "skipped",
+                "missing": true
+            },
+            {
+                "numeric_value": null,
+                "id": -1,
+                "name": "No Data",
+                "missing": true
+            }
+        ],
+        "description": "Are you male or female?"
+    },
+    "description": "Details for a given Variable",
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/868e8b/"
+    }
+}

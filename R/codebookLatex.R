@@ -98,6 +98,17 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     # If we have more than 20 hide counts
     # only show codes. Use multiple tables
     # row-wise
+
+    une_duex_trois <- suppressWarnings(matrix(1:nrow(k), nrow = 3))
+    une_duex_trois[which(duplicated(as.vector(une_duex_trois)))] <- NA
+    une_duex_trois <- t(une_duex_trois)
+    cbind(
+      k[une_duex_trois[,1],],
+      k[une_duex_trois[,2],],
+      k[une_duex_trois[,3],]
+    )
+
+
     num_splits = round(nrow(k) / 5, 0)
     splits = split(1:nrow(k), sort(rep_len(1:num_splits, nrow(k))))
 
@@ -125,7 +136,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     kableExtra::kable(
       k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
       kable_styling_defaults(...) %>%
-      column_spec(c(1,3), width = "1in")
+      kableExtra::column_spec(c(1,3), width = "1in")
   }
 
 
@@ -145,9 +156,7 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   col_two <- 1.5
 
 
-  k <- k %>% dplyr::mutate(
-    Variable = cell_spec(Variable, "latex", monospace = TRUE)
-  )
+  k$Variable <- kableExtra::cell_spec(k$Variable, "latex", monospace = TRUE)
 
   ln = ncol(k) - 2
 
@@ -159,10 +168,10 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
     align = alignment,
     escape = F) %>%
     # kable_styling_defaults(...) %>%
-    column_spec(1, width = paste0(col_one, "in")) %>%
-    column_spec(2, width = paste0(col_two, "in")) %>%
+    kableExtra::column_spec(1, width = paste0(col_one, "in")) %>%
+    kableExtra::column_spec(2, width = paste0(col_two, "in")) %>%
     # column_spec(c(3:ncol(k)), width = paste0(header_width[-1], "in")) %>%
-    add_header_above(c("", "", "Codes" = ln))
+    kableExtra::add_header_above(c("", "", "Codes" = ln))
 }
 
 #' @describeIn codeBookItemBody Creates item body for MultipleResponseVariable
@@ -176,7 +185,7 @@ codeBookItemBody.DatetimeVariable <- function(x, ...) {
   alignment <- c("c", "l")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
     kable_styling_defaults(...) %>%
-    column_spec(1, width = "1in")
+    kableExtra::column_spec(1, width = "1in")
 }
 
 #' @describeIn codeBookItemBody Creates item body for NumericVariable
@@ -186,7 +195,7 @@ codeBookItemBody.NumericVariable <- function(x, ...) {
   alignment <- c("c", "l")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
     kable_styling_defaults(...) %>%
-    column_spec(1, width = "1in")
+    kableExtra::column_spec(1, width = "1in")
 }
 
 #' @describeIn codeBookItemBody Creates item body for TextVariable
@@ -196,7 +205,7 @@ codeBookItemBody.TextVariable <- function(x, ...) {
   alignment <- c("c","l")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
     kable_styling_defaults(...) %>%
-    column_spec(1, width = "1in")
+    kableExtra::column_spec(1, width = "1in")
 }
 
 # utils ----
