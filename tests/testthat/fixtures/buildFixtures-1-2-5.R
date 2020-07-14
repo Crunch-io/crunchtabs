@@ -55,10 +55,10 @@ ct_unweighted <- crosstabs(
 
 ds = loadDataset("https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/")
 crosstabs_data <- crosstabs(ds, vars = c("movies2_a_1", "movies2_a_2", "books1"))
-crosstabs_data <- crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL)
-crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime")))
-crosstabs_data <- crosstabs(ds, vars = c("books1", "starttime", "movies2_a_1"))
-crosstabs_data <- crosstabs(ds, vars = c("books1", "starttime", "endtime", "movies2_a_1"))
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime")), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime", "movies2_a_1")), error = function(e) e)
+crosstabs_data <- tryCatch(crosstabs(ds, vars = c("books1", "starttime", "endtime", "movies2_a_1")), error = function(e) e)
 
 stop_capturing()
 
