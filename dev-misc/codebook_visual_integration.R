@@ -49,6 +49,7 @@ ct = crosstabs(ds)
 
 writeLatex(ct, theme = localTheme, pdf = TRUE, title = "A", subtitle = "B")
 writeExcel(ct, theme = localTheme)
+
 # DFN
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
@@ -57,7 +58,7 @@ writeCodeBook(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70
 # DFN Long question
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
-writeCodeBook(ds[1], url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
+writeCodeBookLatex(ds[1:4], url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
 
 
 # CBS

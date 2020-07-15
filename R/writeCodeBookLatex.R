@@ -64,7 +64,15 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
     items[[nm]] = list()
     items[[nm]]$txtHeader <- codeBookItemTxtHeader(ds[[nm]]) # tex
     items[[nm]]$txtDescription <- codeBookItemTxtDescription(ds[[nm]]) # tex
-    items[[nm]]$body <- codeBookItemBody(ds[[nm]]) # A kable
+
+    body <- codeBookItemBody(ds[[nm]]) # A kable
+
+    if (is.list(body)) {
+      items[[nm]]$body <- do.call(paste, body)
+    } else {
+      items[[nm]]$body <- body
+    }
+
   }
 
   # Assign Codebook ----
@@ -72,7 +80,13 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
   codebook[codebook == "<<sample_description>>"] <- sample_description
 
   # Non breaking blocks
-  items = lapply(items, function(x) noBreaks(paste0(unlist(x), collapse = "\n")))
+  items = lapply(items, function(x) {
+    if (any(grepl("longtabu", x))) {
+      return(x)
+    } else {
+      noBreaks(paste0(unlist(x), collapse = "\n"))
+    }
+  })
 
   codebook[codebook == "<<body>>"] <- paste0(unname(unlist(items)), collapse = "\n")
 
