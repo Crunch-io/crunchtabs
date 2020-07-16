@@ -66,7 +66,12 @@ writeCodeBookLatex(ds[1:4], url = "https://app.crunch.io/dataset/10c3c3cbd28b420
 ds = loadDataset("CBS News Poll - April 10, 2020 - FOR TESTING")
 writeCodeBook(ds)
 
-# Huff
+# Codebook Latex
 
-ds = loadDataset("HuffPost Daily Survey #20200331")
-writeCodeBook(ds)
+
+
+ds = loadDataset("CBS News Poll - April 10, 2020 - FOR TESTING")
+writeCodeBookLatex(ds, table_of_contents = TRUE, sample_desc = "US Voting Adults")
+
+ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
+writeCodeBookLatex(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/", table_of_contents = TRUE)
