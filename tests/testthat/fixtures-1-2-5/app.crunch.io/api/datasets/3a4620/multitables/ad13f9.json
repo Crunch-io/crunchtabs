@@ -1,0 +1,37 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/3a4620/multitables/ad13f9/",
+    "views": {
+        "applied": "https://app.crunch.io/api/datasets/3a4620/multitables/ad13f9/applied/",
+        "tabbook": "https://app.crunch.io/api/datasets/3a4620/multitables/ad13f9/tabbook/",
+        "export": "https://app.crunch.io/api/datasets/3a4620/multitables/ad13f9/export/"
+    },
+    "description": "Detail information for one multitable definition",
+    "body": {
+        "name": "c4cae4937918ee0",
+        "user": "https://app.crunch.io/api/users/27a158/",
+        "template": [
+            {
+                "query": [
+                    {
+                        "each": "https://app.crunch.io/api/datasets/3a4620/variables/000000/"
+                    },
+                    {
+                        "function": "as_selected",
+                        "args": [
+                            {
+                                "variable": "https://app.crunch.io/api/datasets/3a4620/variables/000000/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "team": null,
+        "is_public": false,
+        "display_settings": {
+
+        },
+        "id": "ad13f9"
+    }
+}
