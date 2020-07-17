@@ -1,0 +1,57 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/e3537e/variables/000003/",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/e3537e/variables/",
+        "folder": "https://app.crunch.io/api/datasets/e3537e/folders/e3f795/"
+    },
+    "fragments": {
+        "missing_rules": "https://app.crunch.io/api/datasets/e3537e/variables/000003/missing_rules/",
+        "user_settings": "https://app.crunch.io/api/datasets/e3537e/variables/000003/user_settings/",
+        "dataset": "https://app.crunch.io/api/datasets/e3537e/"
+    },
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/e3537e/variables/000003/frequencies/",
+        "summary": "https://app.crunch.io/api/datasets/e3537e/variables/000003/summary/",
+        "values": "https://app.crunch.io/api/datasets/e3537e/variables/000003/values/",
+        "cast": "https://app.crunch.io/api/datasets/e3537e/variables/000003/cast/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Number of dogs",
+        "format": {
+            "data": {
+                "digits": 2
+            },
+            "summary": {
+                "digits": 2
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1,
+            "skipped": 1,
+            "not asked": 2
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "ndogs",
+        "dataset_id": "e3537e",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "column_width": null
+        },
+        "type": "numeric",
+        "id": "000003",
+        "categories": [
+
+        ],
+        "description": ""
+    },
+    "description": "Details for a given Variable",
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/e3537e/"
+    }
+}

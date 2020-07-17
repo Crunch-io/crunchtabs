@@ -1,0 +1,1 @@
+list(body = "{\"element\":\"shoji:entity\",\"body\":{\"template\":[{\"query\":[{\"each\":\"https://app.crunch.io/api/datasets/e3537e/variables/000000/\"},{\"function\":\"as_selected\",\"args\":[{\"variable\":\"https://app.crunch.io/api/datasets/e3537e/variables/000000/\"}]}]}],\"name\":\"c4cae4937918ee0\"}}")
