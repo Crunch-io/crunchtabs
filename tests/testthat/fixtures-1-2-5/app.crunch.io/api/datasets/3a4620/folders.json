@@ -1,0 +1,44 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/3a4620/folders/",
+    "catalogs": {
+        "personal": "https://app.crunch.io/api/datasets/3a4620/variables/personal/",
+        "hidden": "https://app.crunch.io/api/datasets/3a4620/folders/hidden/",
+        "trash": "https://app.crunch.io/api/datasets/3a4620/folders/trash/",
+        "parents": "https://app.crunch.io/api/datasets/3a4620/folders/parents/",
+        "secure": "https://app.crunch.io/api/datasets/3a4620/folders/secure/"
+    },
+    "description": "This is the variables' folder root",
+    "index": {
+        "d1fd41/": {
+            "type": "folder",
+            "name": "Key Pet Indicators",
+            "size": 3
+        },
+        "837d24/": {
+            "type": "folder",
+            "name": "Dimensions",
+            "size": 2
+        },
+        "7af60a/": {
+            "type": "folder",
+            "name": "Details",
+            "size": 1
+        },
+        "93a789/": {
+            "type": "folder",
+            "name": "Dog Metrics",
+            "size": 3
+        }
+    },
+    "body": {
+        "name": "Root"
+    },
+    "graph": [
+        "d1fd41/",
+        "93a789/",
+        "7af60a/",
+        "837d24/"
+    ],
+    "size": 9
+}

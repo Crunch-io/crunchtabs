@@ -1,0 +1,81 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/28b58a/",
+    "index": {
+        "../../variables/000177/": {
+            "discarded": false,
+            "alias": "has_profanity",
+            "secure": true,
+            "name": "Has Profanity",
+            "id": "000177",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "Does the question have profanity?"
+        },
+        "../../variables/001022/": {
+            "discarded": false,
+            "alias": "has_media_error",
+            "secure": true,
+            "name": "Has Media Error",
+            "id": "001022",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "Were there problems reproducing media?"
+        },
+        "../../variables/000614/": {
+            "discarded": false,
+            "alias": "ip_address_hash",
+            "secure": true,
+            "name": "IP address hash",
+            "id": "000614",
+            "type": "text",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "What is your IP address hash? "
+        },
+        "../../variables/001162/": {
+            "discarded": false,
+            "alias": "has_test",
+            "secure": true,
+            "name": "Has Test",
+            "id": "001162",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "Does the answer has \"test\" in it?"
+        },
+        "../../variables/000465/": {
+            "discarded": false,
+            "alias": "panman_source",
+            "secure": true,
+            "name": "Panman Source",
+            "id": "000465",
+            "type": "numeric",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "Panman Source"
+        }
+    },
+    "body": {
+        "name": "Other",
+        "id": "28b58a"
+    },
+    "graph": [
+        "../../variables/000465/",
+        "../../variables/000614/",
+        "../../variables/000177/",
+        "../../variables/001022/",
+        "../../variables/001162/"
+    ],
+    "size": 5,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/789e9a/"
+    }
+}

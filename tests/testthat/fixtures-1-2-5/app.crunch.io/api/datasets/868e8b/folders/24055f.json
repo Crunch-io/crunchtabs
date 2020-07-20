@@ -1,0 +1,74 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/24055f/",
+    "index": {
+        "../../variables/000182/": {
+            "secure": true,
+            "derived": false,
+            "rollup_resolution": null,
+            "id": "000182",
+            "description": "What was the last time you visited this questionnaire?",
+            "name": "Questionnaire Last Modified Time",
+            "resolution": "ms",
+            "notes": "",
+            "discarded": false,
+            "alias": "lastmodified",
+            "hidden": false,
+            "type": "datetime"
+        },
+        "../../variables/000864/": {
+            "secure": true,
+            "derived": false,
+            "rollup_resolution": null,
+            "id": "000864",
+            "description": "When did you complete this qx (epoch seconds)?",
+            "name": "Questionnaire End Time",
+            "resolution": "ms",
+            "notes": "",
+            "discarded": false,
+            "alias": "endtime",
+            "hidden": false,
+            "type": "datetime"
+        },
+        "../../variables/001287/": {
+            "discarded": false,
+            "alias": "perc_skipped",
+            "secure": true,
+            "name": "Percentage of skipped questions",
+            "id": "001287",
+            "type": "numeric",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": "What percentage of questions did you skip?"
+        },
+        "../../variables/000757/": {
+            "secure": true,
+            "derived": false,
+            "rollup_resolution": null,
+            "id": "000757",
+            "description": "When did you start this qx (epoch seconds)?",
+            "name": "Questionnaire Start Time",
+            "resolution": "ms",
+            "notes": "",
+            "discarded": false,
+            "alias": "starttime",
+            "hidden": false,
+            "type": "datetime"
+        }
+    },
+    "body": {
+        "name": "Questionnaire Progress",
+        "id": "24055f"
+    },
+    "graph": [
+        "../../variables/000757/",
+        "../../variables/000864/",
+        "../../variables/000182/",
+        "../../variables/001287/"
+    ],
+    "size": 4,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/789e9a/"
+    }
+}
