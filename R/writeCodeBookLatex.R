@@ -11,11 +11,12 @@
 #' of the report Defaults to \code{FALSE}.
 #' @param sample_desc A character string describing the sample.
 #' @param field_period A character string describing the field period.
+#' @param preamble A latex string, usually a methodological statement.
 #' @param ... Additional arguments. Unused.
 #' @export
 writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL,
   subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
-  field_period = NULL, ...) {
+  field_period = NULL, preamble = NULL, ...) {
 
   # Initialize Codebook Latex ----
   codebook <- readLines(system.file(
@@ -62,17 +63,38 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
 
   for (nm in nms) {
     items[[nm]] = list()
-    items[[nm]]$txtHeader <- codeBookItemTxtHeader(ds[[nm]]) # tex
-    items[[nm]]$txtDescription <- codeBookItemTxtDescription(ds[[nm]]) # tex
-    items[[nm]]$body <- codeBookItemBody(ds[[nm]]) # A kable
+    items[[nm]]$header <- noBreaks(paste0(
+      codeBookItemTxtHeader(ds[[nm]]),
+      codeBookItemTxtDescription(ds[[nm]]),
+      collapse = "\n"
+      )
+    )
+
+    body <- codeBookItemBody(ds[[nm]]) # A kable
+
+    if (is.list(body)) {
+      items[[nm]]$body <- noBreaks(paste0(unlist(body), collapse = "\n"))
+    } else {
+      items[[nm]]$body <- body
+    }
+
   }
 
   # Assign Codebook ----
+
+  codebook[codebook == "<<methods>>"] <- ifelse(!is.null(preamble), preamble, "")
+  codebook[codebook == "<<toc>>"] <- ifelse(table_of_contents, "\\listoftables\n\\clearpage", "")
   codebook[codebook == "<<fh>>"] <- fh
   codebook[codebook == "<<sample_description>>"] <- sample_description
 
   # Non breaking blocks
-  items = lapply(items, function(x) noBreaks(paste0(unlist(x), collapse = "\n")))
+  items = lapply(items, function(x) {
+    if (any(grepl("longtabu", x))) {
+      return(x)
+    } else {
+      noBreaks(paste0(unlist(x), collapse = "\n"))
+    }
+  })
 
   codebook[codebook == "<<body>>"] <- paste0(unname(unlist(items)), collapse = "\n")
 

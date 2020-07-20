@@ -8,7 +8,9 @@
 \usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}
 \usepackage[scaled]{helvet}
 \renewcommand*\familydefault{\sfdefault}
-\usepackage{booktabs, dcolumn, longtable}
+\usepackage{booktabs}
+\usepackage{tabu}
+\usepackage{longtable}
 \usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}
 \usepackage{array}
 \usepackage[english]{babel}
@@ -56,11 +58,15 @@
 
 <<sample_description>>
 
+<<methods>>
+
 \begin{document}
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{\fill}
 \setlength{\LTcapwidth}{\textwidth}
 \vspace{.25in}
+
+<<toc>>
 
 <<body>>
 

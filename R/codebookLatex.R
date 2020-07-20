@@ -13,8 +13,6 @@ codeBookItemTxtHeader <- function(x, ...)  {
 
   tex = "\\textbf{%s}\\hfill\\textbf{\\ttfamily{%s}}"
 
-
-
   sprintf(
     tex,
     fixUnderscore(txt$name),
@@ -42,16 +40,18 @@ codeBookItemTxtDescription <- function(x, ...) {
   txt$notes <- crunch::notes(x)
 
   if (txt$notes != "") {
-    tex = "\\vskip 0.10in\n\\addcontentsline{lot}{table}{%s}\n\\vskip 0.10in\n\\emph{%s}"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{%s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
+      txt$description,
       txt$description,
       txt$notes
     )
   } else {
-    tex = "\\vskip 0.10in\n\\addcontentsline{lot}{table}{%s}"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{%s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
+      txt$description,
       txt$description
     )
   }
@@ -92,6 +92,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
   k = codeBookSummary(x)
   k = k[order(as.numeric(k[,1])),] %>% as.data.frame(stringsAsFactors = F)
 
+
   names(k) = c("Code", "Label", "Count")
 
   if (nrow(k) > 20) {
@@ -99,47 +100,42 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     # only show codes. Use multiple tables
     # row-wise
 
-    une_duex_trois <- suppressWarnings(matrix(1:nrow(k), nrow = 3))
+    une_duex_trois <- suppressWarnings(matrix(1:nrow(k), nrow = 2))
     une_duex_trois[which(duplicated(as.vector(une_duex_trois)))] <- NA
     une_duex_trois <- t(une_duex_trois)
-    cbind(
+    k = cbind(
       k[une_duex_trois[,1],],
       k[une_duex_trois[,2],],
-      k[une_duex_trois[,3],]
+      stringsAsFactors = FALSE
     )
 
+    rownames(k) = NULL
+    names(k) = rep(c("Code", "Label", "Count"),2)
+    k[is.na(k)] = " "
 
-    num_splits = round(nrow(k) / 5, 0)
-    splits = split(1:nrow(k), sort(rep_len(1:num_splits, nrow(k))))
 
-    k = lapply(splits, function(x) k[x,c("Code", "Label")])
-    k = lapply(k, function(x) { rownames(x) = NULL; return(x) })
-
-    j = list()
-
-    for (i in seq(1, length(k), 2)) {
-      j[[as.character(i)]] = tryCatch({
-        cbind(k[[i]], k[[i + 1]])
-      },
-      error = function(e) k[[i]])
-    }
-
-    alignment = c("c","l", "c", "l")
+    alignment = "clcclc"
 
     knitr::kable(
-      j, "latex", booktabs = TRUE, align = alignment) %>%
-      kable_styling(full_width = TRUE)
-
+      k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
+      kableExtra::kable_styling(full_width = TRUE) %>%
+      kableExtra::column_spec(c(2,5), width = "1.75in") %>%
+      # {gsub(
+      #   "\\midrule",
+      #   "\\cmidrule{1-3}\n\\cmidrule{4-6}", .,
+      #   fixed = TRUE) } %>%
+      {gsub(
+        "\\addlinespace",
+        "", .,
+        fixed = TRUE) }
 
   } else {
     alignment = c("c","l", "r")
     kableExtra::kable(
-      k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
+      k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
       kable_styling_defaults(...) %>%
       kableExtra::column_spec(c(1,3), width = "1in")
   }
-
-
 
 }
 
@@ -152,26 +148,59 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   names(k) = c("Variable", "Label", names(k)[-c(1,2)])
   header_width = round(nchar(names(k)[-c(1,2)])*0.08,2)
 
-  space_remaining = 5.5 - col_one - sum(header_width)
-  col_two <- 1.5
-
-
+  space_remaining = 6.0 - col_one - sum(header_width)*1.5
+  message(name(x), space_remaining)
   k$Variable <- kableExtra::cell_spec(k$Variable, "latex", monospace = TRUE)
 
   ln = ncol(k) - 2
 
-  kableExtra::kable(
-    k,
-    "latex",
-    booktabs = TRUE,
-    longtable = TRUE,
-    align = alignment,
-    escape = F) %>%
-    # kable_styling_defaults(...) %>%
-    kableExtra::column_spec(1, width = paste0(col_one, "in")) %>%
-    kableExtra::column_spec(2, width = paste0(col_two, "in")) %>%
-    # column_spec(c(3:ncol(k)), width = paste0(header_width[-1], "in")) %>%
-    kableExtra::add_header_above(c("", "", "Codes" = ln))
+  if ((sum(nchar(k$Label) > 45) < 2) & (space_remaining >= 1.5)) {
+
+    kableExtra::kable(
+      k,
+      "latex",
+      booktabs = TRUE,
+      longtable = F,
+      align = alignment,
+      escape = F,
+      linesep = " ") %>%
+      # kable_styling_defaults(...) %>%
+      kableExtra::column_spec(column = 1, width = paste0(col_one, "in")) %>%
+      kableExtra::column_spec(column = 2, width = paste0(col_two, "in")) %>%
+      kableExtra::add_header_above(c("", "", "Codes" = ln))
+
+
+  } else {
+
+    k_adj <- dplyr::select(k, names(k)[!names(k) %in% "Label"])
+
+    label_table <- kableExtra::kable(
+      k[1:2],
+      "latex",
+      booktabs = TRUE,
+      longtable = FALSE,
+      align = "ll",
+      escape = F, linesep = " ") %>%
+      kableExtra::column_spec(column = 1, width = paste0(col_one, "in")) %>%
+      kableExtra::column_spec(column = 2, width = paste0(6 - col_one, "in"))
+
+    counts_table <- kableExtra::kable(
+      k_adj,
+      "latex",
+      booktabs = TRUE,
+      longtable = F,
+      align = alignment,
+      escape = F, linesep = "") %>%
+      # kable_styling_defaults(...) %>%
+      kableExtra::column_spec(column = 1, width = paste0(col_one, "in")) %>%
+      # kableExtra::column_spec(2, width = paste0(col_two, "in")) %>%
+      kableExtra::add_header_above(c(" ", "Codes" = ncol(k_adj) - 1))
+
+
+    list(label_table, "\\vspace{2em}", counts_table, "\\vspace{2em}")
+  }
+
+
 }
 
 #' @describeIn codeBookItemBody Creates item body for MultipleResponseVariable
@@ -183,7 +212,7 @@ codeBookItemBody.MultipleResponseVariable <- codeBookItemBody.CategoricalArrayVa
 codeBookItemBody.DatetimeVariable <- function(x, ...) {
   k = codeBookSummary(x)
   alignment <- c("c", "l")
-  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
+  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) %>%
     kableExtra::column_spec(1, width = "1in")
 }
@@ -193,7 +222,7 @@ codeBookItemBody.DatetimeVariable <- function(x, ...) {
 codeBookItemBody.NumericVariable <- function(x, ...) {
   k = codeBookSummary(x)
   alignment <- c("c", "l")
-  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
+  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) %>%
     kableExtra::column_spec(1, width = "1in")
 }
@@ -203,7 +232,7 @@ codeBookItemBody.NumericVariable <- function(x, ...) {
 codeBookItemBody.TextVariable <- function(x, ...) {
   k = codeBookSummary(x)
   alignment <- c("c","l")
-  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment) %>%
+  kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) %>%
     kableExtra::column_spec(1, width = "1in")
 }
@@ -259,7 +288,7 @@ noBreaks <- function(tex) {
     stop("Sorry, noBreaks only works on a string of length 1")
 
   paste0(
-    "\\begin{absolutelynopagebreak}",
+    "\\begin{absolutelynopagebreak}\n",
     tex, "",
     "\\end{absolutelynopagebreak}",
     collapse = "\n"

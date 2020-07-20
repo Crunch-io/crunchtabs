@@ -106,7 +106,12 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   for (i in 1:rws) {
     # We merge on a complete frame because responses
     # can be missing from categories
-    responses_adj <- merge(frame, responses[[i]], all.x = TRUE)$n
+    responses_adj <- merge(
+      frame,
+      responses[[i]],
+      all.x = TRUE,
+      sort = FALSE)$n # merge unintuitive sort behaviour!
+
     m[i,3:(cols + 2)] <- responses_adj
   }
 
