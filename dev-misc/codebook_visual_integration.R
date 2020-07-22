@@ -50,6 +50,11 @@ ct = crosstabs(ds)
 writeLatex(ct, theme = localTheme, pdf = TRUE, title = "A", subtitle = "B")
 writeExcel(ct, theme = localTheme)
 
+# Example
+
+ds = loadDataset("Example dataset")
+writeCodeBookLatex(ds)
+
 # DFN
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
@@ -58,13 +63,13 @@ writeCodeBook(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70
 # DFN Long question
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
-writeCodeBookLatex(ds[1:4], url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
+writeCodeBookLatex(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/", appendix = FALSE, suppres_zero_counts = TRUE)
 
 
 # CBS
 
 ds = loadDataset("CBS News Poll - April 10, 2020 - FOR TESTING")
-writeCodeBook(ds)
+writeCodeBookLatex(ds)
 
 # Codebook Latex
 
