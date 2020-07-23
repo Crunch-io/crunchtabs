@@ -15,6 +15,7 @@
 #' LaTeX should be escaped.
 #' @param supress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
 #' @param appendix Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.
+#' @param logo A logical or path to a logo file. If FALSE, no logo. If TRUE, includes the standard YouGov logo. If a path, will include the logo file found at the path. Recommend using a PNG file that is 240px x 50px.
 #' @param ... Additional arguments. Unused.
 #' @export
 writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL,

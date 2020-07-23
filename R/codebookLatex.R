@@ -47,7 +47,6 @@ codeBookItemTxtHeader <- function(x, ...)  {
 }
 
 
-
 #' Extract basic question information
 #'
 #' Extracts the following:
@@ -116,6 +115,7 @@ codeBookItemBody.default <- function(x, ...) {
 #' @export
 codeBookItemBody.CategoricalVariable <- function(x, ...) {
   k = codeBookSummary(x)
+
   if (nrow(k) > 1) {
     k = k[order(as.numeric(k[,1])),] %>% as.data.frame(stringsAsFactors = F)
   } else {
@@ -123,6 +123,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 
   }
 
+  rownames(k) <- NULL
   names(k) = c("Code", "Label", "Count")
 
   if (nrow(k) > 20) {
@@ -144,27 +145,28 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     k[is.na(k)] = " "
 
 
-    alignment = "clcclc"
+    alignment = c("c", "l", "d")
 
-    knitr::kable(
-      k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
+    kableExtra::kable(
+      k, "latex", booktabs = TRUE, align = alignment, longtable = TRUE, linesep = "") %>%
       kableExtra::kable_styling(full_width = TRUE) %>%
-      kableExtra::column_spec(c(2,5), width = "1.75in") %>%
+      kableExtra::column_spec(c(2,5), width = "1.75in", latex_column_spec = NULL) %>%
+      kableExtra::column_spec(3, border_right = TRUE)
       # {gsub(
       #   "\\midrule",
       #   "\\cmidrule{1-3}\n\\cmidrule{4-6}", .,
       #   fixed = TRUE) } %>%
-      {gsub(
-        "\\addlinespace",
-        "", .,
-        fixed = TRUE) }
+      # {gsub(
+      #   "\\addlinespace",
+      #   "", .,
+      #   fixed = TRUE) }
 
   } else {
-    alignment = c("c","l", "r")
+    alignment = c("c", "l", "d")
     kableExtra::kable(
-      k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
-      kable_styling_defaults(...) %>%
-      kableExtra::column_spec(c(3), width = "1in")
+      k, "latex", booktabs = TRUE, longtable = TRUE,  align = alignment, linesep = "") %>%
+      kable_styling_defaults(...) # %>%
+      # kableExtra::column_spec(3, latex_column_spec = NULL)
   }
 
 }
@@ -173,7 +175,11 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 #' @export
 codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   k = codeBookSummary(x)
-  alignment <- c(rep("l",2),rep("c", ncol(k) - 2))
+
+  var_labels = k[,2]
+  code_labels = gsub("[0-9]+ ", "", names(k))[-c(1,2)]
+  rownames(k) <- NULL
+  alignment <- c(rep("l",1),rep("d", ncol(k) - 1))
   col_one <- round(max(nchar(k[,1]))*0.08, 2)
   col_two <- round(max(nchar(k[,2]))*0.08, 2)
   names(k) = c("Variable", "Label", names(k)[-c(1,2)])
@@ -248,7 +254,7 @@ codeBookItemBody.MultipleResponseVariable <- codeBookItemBody.CategoricalArrayVa
 #' @export
 codeBookItemBody.DatetimeVariable <- function(x, ...) {
   k = codeBookSummary(x)
-  alignment <- c("c", "l", "l")
+  alignment <- c("c", "c", "c")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) #%>%
     # kableExtra::column_spec(1, width = "1in")
@@ -258,7 +264,7 @@ codeBookItemBody.DatetimeVariable <- function(x, ...) {
 #' @export
 codeBookItemBody.NumericVariable <- function(x, ...) {
   k = codeBookSummary(x)
-  alignment <- c("c", "l")
+  alignment <- c("c")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) #%>%
     #kableExtra::column_spec(1, width = "1in")
@@ -268,7 +274,7 @@ codeBookItemBody.NumericVariable <- function(x, ...) {
 #' @export
 codeBookItemBody.TextVariable <- function(x, ...) {
   k = codeBookSummary(x)
-  alignment <- c("c","l", "l")
+  alignment <- c("c","l", "c")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = FALSE, align = alignment, linesep = "") %>%
     kable_styling_defaults(...) # %>%
     # kableExtra::column_spec(1:2, width = "0.5in") %>%
