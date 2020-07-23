@@ -14,6 +14,9 @@ writeCodeBookLatex(
   table_of_contents = FALSE,
   sample_desc = NULL,
   field_period = NULL,
+  preamble = NULL,
+  suppres_zero_counts = FALSE,
+  appendix = TRUE,
   ...
 )
 }
@@ -22,9 +25,9 @@ writeCodeBookLatex(
 
 \item{url}{A crunch dataset url}
 
-\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE}
+\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE.}
 
-\item{pdf}{Should we write directly to pdf? Defaults to TRUE
+\item{pdf}{Should we write directly to pdf? Defaults to TRUE.
 title = getName(data_summary),}
 
 \item{title}{An optional title. Defaults to the data summary title.}
@@ -38,7 +41,14 @@ of the report Defaults to \code{FALSE}.}
 
 \item{field_period}{A character string describing the field period.}
 
+\item{preamble}{A latex string, usually a methodological statement.
+LaTeX should be escaped.}
+
+\item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
+
 \item{...}{Additional arguments. Unused.}
+
+\item{supress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 }
 \description{
 Create a codebook
