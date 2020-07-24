@@ -49,6 +49,8 @@ LaTeX should be escaped.}
 \item{...}{Additional arguments. Unused.}
 
 \item{supress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
+
+\item{logo}{A logical or path to a logo file. If FALSE, no logo. If TRUE, includes the standard YouGov logo. If a path, will include the logo file found at the path. Recommend using a PNG file that is 240px x 50px.}
 }
 \description{
 Create a codebook
