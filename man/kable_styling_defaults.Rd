@@ -4,7 +4,7 @@
 \alias{kable_styling_defaults}
 \title{Defaults for kableExtra}
 \usage{
-kable_styling_defaults(x, full_width = FALSE, ...)
+kable_styling_defaults(x, full_width = FALSE, position = "left", ...)
 }
 \arguments{
 \item{x}{A kable object}

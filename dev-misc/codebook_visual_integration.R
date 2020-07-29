@@ -73,10 +73,14 @@ writeCodeBookLatex(ds)
 
 # Codebook Latex
 
-
-
 ds = loadDataset("CBS News Poll - April 10, 2020 - FOR TESTING")
-writeCodeBookLatex(ds, table_of_contents = TRUE, sample_desc = "US Voting Adults")
+writeCodeBookLatex(ds, table_of_contents = TRUE, sample_desc = "US Voting Adults", title = "CBS News Poll - April 10, 2020", logo = "yougov")
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
-writeCodeBookLatex(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/", table_of_contents = TRUE)
+writeCodeBookLatex(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/", table_of_contents = TRUE, logo = "ygblue", title="Data for Progress - Foreign Policy")
+
+ds = loadDataset("Example dataset")
+writeCodeBookLatex(ds)
+
+ds <- loadDataset("Forked Huffpost")
+writeCodeBookLatex(ds, logo = "yougov")
