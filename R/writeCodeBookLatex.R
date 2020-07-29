@@ -126,7 +126,7 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
 
 
     if (is.list(body)) {
-      items[[nm]]$body <- noBreaks(paste0(unlist(body), collapse = "\n"))
+      items[[nm]]$body <- paste(lapply(unlist(body), noBreaks), collapse = "\n")
     } else {
       items[[nm]]$body <- body
     }
@@ -144,13 +144,13 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
     "Important Note: Categories with no responses have been excluded from display.", "")
 
   # Non breaking blocks
-  items = lapply(items, function(x) {
-    if (any(grepl("longtabu", x))) {
-      return(x)
-    } else {
-      noBreaks(paste0(unlist(x), collapse = "\n"))
-    }
-  })
+  # items = lapply(items, function(x) {
+  #   if (any(grepl("longtabu", x))) {
+  #     return(x)
+  #   } else {
+  #     noBreaks(paste0(unlist(x), collapse = "\n"))
+  #   }
+  # })
 
   codebook[codebook == "<<body>>"] <- paste0(
     unname(unlist(items)), collapse = "\n")

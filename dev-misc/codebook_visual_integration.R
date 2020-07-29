@@ -58,7 +58,7 @@ writeCodeBookLatex(ds)
 # DFN
 
 ds = loadDataset("https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
-writeCodeBook(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
+writeCodeBookLatex(ds, url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/")
 
 # DFN Long question
 
