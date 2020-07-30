@@ -183,7 +183,7 @@ codeBookSummary.TextVariable <- function(x, ...) {
     matrix(c(
       filled,
       missing,
-      ifelse(filled == 0, "-", max(nchar(filled_verbs)))
+      ifelse(filled == 0, 0, max(nchar(filled_verbs)))
       ), nrow = 1, ncol = 3), stringsAsFactors = FALSE
   )
 

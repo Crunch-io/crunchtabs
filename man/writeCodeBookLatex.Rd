@@ -17,6 +17,8 @@ writeCodeBookLatex(
   preamble = NULL,
   suppres_zero_counts = FALSE,
   appendix = TRUE,
+  logo = NULL,
+  position = NULL,
   ...
 )
 }
@@ -46,7 +48,11 @@ LaTeX should be escaped.}
 
 \item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
 
-\item{...}{Additional arguments. Unused.}
+\item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.}
+
+\item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
+
+\item{...}{Additional arguments passed to \link{\code{kable_styling}} Unused.}
 
 \item{supress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 }
