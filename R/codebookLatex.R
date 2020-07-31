@@ -28,7 +28,7 @@ codeBookItemTxtHeader <- function(x, ...)  {
     softType = c(
       "Categorical",
       "Grid",
-      "Verbatim",
+      "Text",
       "Numeric",
       "Date",
       "Date",
@@ -138,24 +138,26 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     une_duex_trois <- t(une_duex_trois)
     k = cbind(
       k[une_duex_trois[,1],],
+      "",
       k[une_duex_trois[,2],],
       stringsAsFactors = FALSE
     )
 
     rownames(k) <- NULL
-    names(k) <- curlyWrap(rep(c("Code", "Label", "Count"),2))
+    names(k) <- curlyWrap(c("Code", "Label", "Count", "","Code", "Label", "Count"))
 
     k[is.na(k)] <- " "
 
 
-    alignment <- c("d", "l", "d")
+    alignment <- c("d", "l", "d", "c", "d", "l", "d")
     names(k) <- curlyWrap(names(k))
     kableExtra::kable(
       k, "latex", booktabs = TRUE, align = alignment, longtable = TRUE,
       linesep = "", escape = FALSE) %>%
       kable_styling_defaults(full_width = TRUE, ...) %>%
-      kableExtra::column_spec(c(2,5), width = "1.75in", latex_column_spec = NULL) %>%
-      kableExtra::column_spec(3, border_right = TRUE)
+      kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
+      row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>% { gsub("\\midrule", "", ., fixed = TRUE)}
+      # kableExtra::column_spec(3, border_right = TRUE) %>%
 
   } else {
 
@@ -294,6 +296,12 @@ codeBookItemBody.DatetimeVariable <- function(x, ...) {
 #' @export
 codeBookItemBody.NumericVariable <- function(x, ...) {
   k <- codeBookSummary(x)
+  if (k$Mean > 9999) {
+    k$Mean <- format(k$Mean, scientific = TRUE, digits = 3)
+    k$SD <- format(k$SD, scientific = TRUE, digits = 3)
+    k$Min <- format(k$Min, scientific = TRUE, digits = 3)
+    k$Max <- format(k$Max, scientific = TRUE, digits = 3)
+  }
   names(k) <- curlyWrap(names(k))
   alignment <- c("d")
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE,

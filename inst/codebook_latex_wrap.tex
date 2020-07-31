@@ -12,6 +12,10 @@
 \usepackage{tabu}
 \usepackage{longtable}
 \usepackage{siunitx}
+\sisetup{
+  round-mode          = places, % Rounds numbers
+  round-precision     = 2, % to 2 places
+}
 \usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}
 \usepackage{array}
 \usepackage[english]{babel}
@@ -23,7 +27,7 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
-\newcolumntype{d}{S[table-format=3.2]}
+\newcolumntype{d}{S}
 \usepackage{float}
 \usepackage{marginnote}
 \setlength\extrarowheight{2pt}
