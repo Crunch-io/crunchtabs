@@ -420,17 +420,16 @@ curlyWrap <- function(...) paste0("{", ..., "}")
 #' @param k A data.frame to be printed using kableExtra
 #' @param alignment A string vector of alignments
 scolumnAlign <- function(k, alignment) {
-  nchars <- unlist(lapply(k, function(x) max(nchar(x))))
+  nchars <- unlist(lapply(k, function(x) max(nchar(x), na.rm = TRUE)))
 
   for (i in 1:ncol(k)) {
     if (alignment[i] == "d") {
-      if (max(nchar(k[[i]])) > 3) {
-        alignment[i] <- sprintf("S[table-format=%s]", max(nchar(k[[i]])))
+      maxnchar <- max(nchar(k[[i]]), na.rm = TRUE)
+      if (maxnchar > 5) {
+        alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
-        alignment[i] <- c("J", "K", "d", "M")[max(nchar(k[[i]]))]
-      }
-
-
+        alignment[i] <- c("J", "K", "d", "M", "N", "O")[maxnchar]
+        }
     }
   }
   alignment
