@@ -148,12 +148,11 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 
     k[is.na(k)] <- " "
 
-
     alignment <- c("d", "l", "d", "c", "d", "l", "d")
     names(k) <- curlyWrap(names(k))
     kableExtra::kable(
-      k, "latex", booktabs = TRUE, align = alignment, longtable = TRUE,
-      linesep = "", escape = FALSE) %>%
+      k, "latex", booktabs = TRUE, align = scolumnAlign(k, alignment),
+      longtable = TRUE, linesep = "", escape = FALSE) %>%
       kable_styling_defaults(full_width = TRUE, ...) %>%
       kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
       row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>% { gsub("\\midrule", "", ., fixed = TRUE)}
@@ -164,15 +163,16 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     alignment <- c("d", "l", "d")
     names(k) <- curlyWrap(names(k))
     kab <- kableExtra::kable(
-      k, "latex", booktabs = TRUE, longtable = TRUE,  align = alignment,
-      linesep = "", escape = FALSE) %>%
-      kable_styling_defaults(...)
+      k, "latex", booktabs = TRUE, longtable = TRUE,  align = scolumnAlign(k, alignment),
+      linesep = "", escape = FALSE)
 
 
     if (max(nchar(k$`{Label}`)) > 80) {
-      kab %>% kableExtra::column_spec(2, width = "5.5in", latex_column_spec = NULL)
+      kab %>% kableExtra::column_spec(2, width = "5.25in") %>%
+        kable_styling_defaults(...)
     } else {
-      kab
+      kab %>%
+        kable_styling_defaults(...)
     }
 
   }
@@ -181,7 +181,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 
 #' @describeIn codeBookItemBody Creates item body for CategoricalArrayVariable
 #' @export
-codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
+ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   k <- codeBookSummary(x)
   k[,1] <- texEscape(k[,1])
   k[,2] <- texEscape(k[,2])
@@ -195,7 +195,7 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
   # Rows: variable, label
 
   krows <- data.frame(
-    Variable = k[,1],
+    Variable = k[,1] %>% monospaced,
     Label = k[,2],
     stringsAsFactors = F
   )
@@ -222,7 +222,8 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
       align = "ll",
       escape = F, linesep = " ") %>%
       kable_styling_defaults(...) %>%
-      kableExtra::add_header_above(c("Rows" = 2))
+      kableExtra::add_header_above(c("Rows" = 2)) %>%
+      kableExtra::column_spec(1, monospace = TRUE, latex_column_spec = NULL)
 
   }
 
@@ -242,7 +243,7 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
     "latex",
     booktabs = TRUE,
     longtable = TRUE,
-    align = "dl",
+    align = scolumnAlign(kcols, c("d","l")),
     escape = FALSE, linesep = " ") %>%
     kable_styling_defaults(...) %>%
     kableExtra::add_header_above(c("Columns" = 2))
@@ -255,15 +256,18 @@ codeBookItemBody.CategoricalArrayVariable <- function(x, ...) {
     stringAsFactors = FALSE
   )
 
+  kcounts[[1]] <- monospaced(kcounts[[1]])
+
 
   names(kcounts) <- curlyWrap(c("Variable", code_numbers))
 
+  alignment <- c("l", rep("d", ncol(kcounts) - 1))
   kcounts <- kableExtra::kable(
     kcounts,
     "latex",
     booktabs = TRUE,
     longtable = TRUE,
-    align = c("l", rep("d", ncol(kcounts) - 1)),
+    align = scolumnAlign(kcounts, alignment),
     escape = F, linesep = " ") %>%
     kable_styling_defaults(...) %>%
     kableExtra::add_header_above(c(" ","Counts" = ncol(kcounts) - 1))
@@ -303,7 +307,7 @@ codeBookItemBody.NumericVariable <- function(x, ...) {
     k$Max <- format(k$Max, scientific = TRUE, digits = 3)
   }
   names(k) <- curlyWrap(names(k))
-  alignment <- c("d")
+  alignment <- c("c") # No S/d columns here because of sci
   kableExtra::kable(k, "latex", booktabs = TRUE, longtable = TRUE,
                     align = alignment, linesep = "", escape = FALSE) %>%
     kable_styling_defaults(...) #%>%
@@ -390,9 +394,42 @@ noBreaks <- function(tex) {
 #' @param x A string containing an underscore
 fixUnderscore <- function(x) gsub("_", "\\_", x, fixed = TRUE)
 
+#' Fix ttf
+#'
+#' We must escape underscores in aliases because latex treats them
+#' like mathematical subtext
+#'
+#' @param x A string containing an underscore
+monospaced <- function(x) paste0("\\ttfamily{", x, "}")
+
 #' Header wrap
 #'
 #' Wrap a character vector in curly braces
 #'
 #' @param x
 curlyWrap <- function(...) paste0("{", ..., "}")
+
+#' scolumn_fix
+#'
+#' Given a data.frame and an alignment vector
+#' create dynamic S-Columns based on character
+#' width
+#'
+#' @param k A data.frame to be printed using kableExtra
+#' @param alignment A string vector of alignments
+scolumnAlign <- function(k, alignment) {
+  nchars <- unlist(lapply(k, function(x) max(nchar(x))))
+
+  for (i in 1:ncol(k)) {
+    if (alignment[i] == "d") {
+      if (max(nchar(k[[i]])) > 3) {
+        alignment[i] <- sprintf("S[table-format=%s]", max(nchar(k[[i]])))
+      } else {
+        alignment[i] <- c("J", "K", "d", "M")[max(nchar(k[[i]]))]
+      }
+
+
+    }
+  }
+  alignment
+}
