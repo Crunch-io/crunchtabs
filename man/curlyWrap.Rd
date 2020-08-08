@@ -4,7 +4,10 @@
 \alias{curlyWrap}
 \title{Header wrap}
 \usage{
-curlyWrap(...)
+curlyWrap(x)
+}
+\arguments{
+\item{x}{A character vector}
 }
 \description{
 Wrap a character vector in curly braces

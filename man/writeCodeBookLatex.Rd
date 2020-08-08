@@ -52,7 +52,7 @@ LaTeX should be escaped.}
 
 \item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
 
-\item{...}{Additional arguments passed to \link{\code{kable_styling}} Unused.}
+\item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 
 \item{supress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 }

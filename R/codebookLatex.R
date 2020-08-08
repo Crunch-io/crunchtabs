@@ -157,8 +157,8 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       longtable = TRUE, linesep = "", escape = FALSE) %>%
       kable_styling_defaults(full_width = TRUE, ...) %>%
       kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
-      row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>%
-      { gsub("\\midrule", "", ., fixed = TRUE)}
+      kableExtra::row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>%
+      { gsub("\\midrule", "", .data, fixed = TRUE)}
       # kableExtra::column_spec(3, border_right = TRUE) %>%
 
   } else {
@@ -410,8 +410,8 @@ monospaced <- function(x) paste0("\\ttfamily{", x, "}")
 #'
 #' Wrap a character vector in curly braces
 #'
-#' @param x
-curlyWrap <- function(...) paste0("{", ..., "}")
+#' @param x A character vector
+curlyWrap <- function(x) paste0("{", x, "}")
 
 #' scolumn_fix
 #'
@@ -419,7 +419,7 @@ curlyWrap <- function(...) paste0("{", ..., "}")
 #' create dynamic S-Columns based on character
 #' width
 #'
-#' @param k A data.frame to be printed using kableExtra
+#' @param k A data.frame to be printed using \link[kableExtra]{kable}
 #' @param alignment A string vector of alignments
 scolumnAlign <- function(k, alignment) {
   nchars <- unlist(lapply(k, function(x) max(nchar(x), na.rm = TRUE)))
@@ -427,7 +427,7 @@ scolumnAlign <- function(k, alignment) {
   for (i in 1:ncol(k)) {
     if (alignment[i] == "d") {
       maxnchar <- max(nchar(k[[i]]), na.rm = TRUE)
-      if (maxnchar > 5) {
+      if (maxnchar > 6) {
         alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
         alignment[i] <- c("J", "K", "d", "M", "N", "O")[maxnchar]
