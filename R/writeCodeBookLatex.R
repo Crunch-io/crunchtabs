@@ -97,11 +97,11 @@ writeCodeBookLatex <- function(
         description <- codeBookItemTxtDescription(ds[[nm]])
         description <- gsub(
           sprintf(
-            "addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{%s}",
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}",
             nm
           ),
           sprintf(
-            "addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{Appendix %s}}{%s -- ",
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{Appendix %s}}{%s -- ",
             length(appendices), nm),
           description, fixed = TRUE
         )

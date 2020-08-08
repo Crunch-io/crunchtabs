@@ -3,32 +3,32 @@
     "self": "https://app.crunch.io/api/datasets/by_name/Example%20dataset/",
     "description": "Datasets with a given name ",
     "index": {
-        "https://app.crunch.io/api/datasets/3a4620/": {
+        "https://app.crunch.io/api/datasets/92c51d/": {
             "size": {
                 "rows": 20,
                 "unfiltered_rows": 20,
                 "columns": 10
             },
-            "current_editor_name": "Greg",
-            "account": "https://app.crunch.io/api/accounts/00001/",
-            "owner_name": "Greg",
+            "current_editor_name": "Brandon Bertelsen",
+            "account": "https://app.crunch.io/api/accounts/b7a990/",
+            "owner_name": "Personal project for Brandon Bertelsen",
             "name": "Example dataset",
             "end_date": null,
             "streaming": "no",
-            "owner_id": "https://app.crunch.io/api/users/27a158/",
-            "current_editor": "https://app.crunch.io/api/users/27a158/",
-            "creation_time": "2020-07-17T20:23:31.126000+00:00",
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "current_editor": "https://app.crunch.io/api/users/0740cc/",
+            "creation_time": "2020-07-11T06:58:31.906000+00:00",
             "archived": false,
             "view_of": null,
             "start_date": null,
-            "modification_time": "2020-07-17T20:23:35.606000+00:00",
-            "access_time": "2020-07-17T20:23:30.967000+00:00",
+            "modification_time": "2020-07-11T06:58:35.505000+00:00",
+            "access_time": "2020-08-08T19:52:08.221000+00:00",
             "permissions": {
                 "edit": true,
                 "view": true
             },
             "is_published": true,
-            "id": "3a4620",
+            "id": "92c51d",
             "description": "A dataset to illustrate the API"
         }
     }
