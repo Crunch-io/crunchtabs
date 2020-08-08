@@ -12,17 +12,17 @@
     },
     "description": "List of Variables of this dataset",
     "index": {
-        "3Ites62miCtLscd6j4XiUt000000/": {
+        "000000/": {
             "secure": false,
             "derived": false,
             "subvariables": [
-                "3Ites62miCtLscd6j4XiUt000000/subvariables/0001/",
-                "3Ites62miCtLscd6j4XiUt000000/subvariables/0002/",
-                "3Ites62miCtLscd6j4XiUt000000/subvariables/0003/"
+                "000000/subvariables/0001/",
+                "000000/subvariables/0002/",
+                "000000/subvariables/0003/"
             ],
-            "id": "3Ites62miCtLscd6j4XiUt000000",
+            "id": "000000",
             "description": "Do you have any of these animals as pets? Please select all that apply.",
-            "subvariables_catalog": "3Ites62miCtLscd6j4XiUt000000/subvariables/",
+            "subvariables_catalog": "000000/subvariables/",
             "uniform_basis": false,
             "name": "All pets owned",
             "notes": "",
@@ -31,70 +31,70 @@
             "hidden": false,
             "type": "multiple_response"
         },
-        "3Ites62miCtLscd6j4XiUt000001/": {
+        "000001/": {
             "discarded": true,
             "alias": "caseid",
             "secure": false,
             "name": "Case ID",
-            "id": "3Ites62miCtLscd6j4XiUt000001",
+            "id": "000001",
             "type": "numeric",
             "notes": "",
             "derived": false,
             "hidden": true,
             "description": ""
         },
-        "3Ites62miCtLscd6j4XiUt000003/": {
+        "000003/": {
             "discarded": false,
             "alias": "ndogs",
             "secure": false,
             "name": "Number of dogs",
-            "id": "3Ites62miCtLscd6j4XiUt000003",
+            "id": "000003",
             "type": "numeric",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": ""
         },
-        "3Ites62miCtLscd6j4XiUt000002/": {
+        "000002/": {
             "discarded": false,
             "alias": "country",
             "secure": false,
             "name": "Country",
-            "id": "3Ites62miCtLscd6j4XiUt000002",
+            "id": "000002",
             "type": "categorical",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": ""
         },
-        "3Ites62miCtLscd6j4XiUt000004/": {
+        "000004/": {
             "discarded": false,
             "alias": "ndogs_a",
             "secure": false,
             "name": "Number of dogs -- With papers",
-            "id": "3Ites62miCtLscd6j4XiUt000004",
+            "id": "000004",
             "type": "numeric",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": "How many dogs do you have?"
         },
-        "3Ites62miCtLscd6j4XiUt000005/": {
+        "000005/": {
             "discarded": false,
             "alias": "ndogs_b",
             "secure": false,
             "name": "Number of dogs -- Mutts",
-            "id": "3Ites62miCtLscd6j4XiUt000005",
+            "id": "000005",
             "type": "numeric",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": "How many dogs do you have?"
         },
-        "3Ites62miCtLscd6j4XiUt000007/": {
+        "000007/": {
             "secure": false,
             "derived": false,
-            "id": "3Ites62miCtLscd6j4XiUt000007",
+            "id": "000007",
             "description": "What is your favorite pet?",
             "scale": "interval",
             "name": "Pet",
@@ -104,16 +104,16 @@
             "hidden": false,
             "type": "categorical"
         },
-        "3Ites62miCtLscd6j4XiUt000006/": {
+        "000006/": {
             "secure": false,
             "derived": false,
             "subvariables": [
-                "3Ites62miCtLscd6j4XiUt000006/subvariables/0001/",
-                "3Ites62miCtLscd6j4XiUt000006/subvariables/0002/"
+                "000006/subvariables/0001/",
+                "000006/subvariables/0002/"
             ],
-            "id": "3Ites62miCtLscd6j4XiUt000006",
+            "id": "000006",
             "description": "Name the kinds of pets you have at these locations.",
-            "subvariables_catalog": "3Ites62miCtLscd6j4XiUt000006/subvariables/",
+            "subvariables_catalog": "000006/subvariables/",
             "scale": "interval",
             "name": "Pets by location",
             "notes": "",
@@ -122,23 +122,23 @@
             "hidden": false,
             "type": "categorical_array"
         },
-        "3Ites62miCtLscd6j4XiUt000008/": {
+        "000008/": {
             "discarded": false,
             "alias": "q3",
             "secure": false,
             "name": "Pet name",
-            "id": "3Ites62miCtLscd6j4XiUt000008",
+            "id": "000008",
             "type": "text",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": "What is your favorite pet's maiden name?"
         },
-        "3Ites62miCtLscd6j4XiUt000009/": {
+        "000009/": {
             "secure": false,
             "derived": false,
             "rollup_resolution": null,
-            "id": "3Ites62miCtLscd6j4XiUt000009",
+            "id": "000009",
             "description": "",
             "name": "Wave",
             "resolution": "D",

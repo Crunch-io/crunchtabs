@@ -14,13 +14,13 @@
             {
                 "query": [
                     {
-                        "each": "https://app.crunch.io/api/datasets/92c51d/variables/3Ites62miCtLscd6j4XiUt000000/"
+                        "each": "https://app.crunch.io/api/datasets/92c51d/variables/000000/"
                     },
                     {
                         "function": "as_selected",
                         "args": [
                             {
-                                "variable": "https://app.crunch.io/api/datasets/92c51d/variables/3Ites62miCtLscd6j4XiUt000000/"
+                                "variable": "https://app.crunch.io/api/datasets/92c51d/variables/000000/"
                             }
                         ]
                     }

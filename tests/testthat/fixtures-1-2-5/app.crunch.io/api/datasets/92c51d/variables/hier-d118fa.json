@@ -5,36 +5,36 @@
     "graph": [
         {
             "Key Pet Indicators": [
-                "../3Ites62miCtLscd6j4XiUt000000/",
-                "../3Ites62miCtLscd6j4XiUt000007/",
-                "../3Ites62miCtLscd6j4XiUt000006/"
+                "../000000/",
+                "../000007/",
+                "../000006/"
             ]
         },
         {
             "Dog Metrics": [
-                "../3Ites62miCtLscd6j4XiUt000003/",
+                "../000003/",
                 {
                     "Number of dogs by type": [
-                        "../3Ites62miCtLscd6j4XiUt000004/",
-                        "../3Ites62miCtLscd6j4XiUt000005/"
+                        "../000004/",
+                        "../000005/"
                     ]
                 }
             ]
         },
         {
             "Details": [
-                "../3Ites62miCtLscd6j4XiUt000008/"
+                "../000008/"
             ]
         },
         {
             "Dimensions": [
-                "../3Ites62miCtLscd6j4XiUt000002/",
-                "../3Ites62miCtLscd6j4XiUt000009/"
+                "../000002/",
+                "../000009/"
             ]
         },
         {
             "__hidden__": [
-                "../3Ites62miCtLscd6j4XiUt000001/"
+                "../000001/"
             ]
         }
     ]

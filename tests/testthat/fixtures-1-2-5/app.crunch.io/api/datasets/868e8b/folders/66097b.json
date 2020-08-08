@@ -1,0 +1,18 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/66097b/",
+    "index": {
+
+    },
+    "body": {
+        "name": "Survey",
+        "id": "66097b"
+    },
+    "graph": [
+
+    ],
+    "size": 0,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/6edac7/"
+    }
+}
