@@ -13,7 +13,7 @@
 #' @param field_period A character string describing the field period.
 #' @param preamble A latex string, usually a methodological statement.
 #' LaTeX should be escaped.
-#' @param supress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
+#' @param suppress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
 #' @param appendix Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.
 #' @param logo Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.
 #' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.

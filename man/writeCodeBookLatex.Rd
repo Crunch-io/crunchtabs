@@ -54,7 +54,7 @@ LaTeX should be escaped.}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 
-\item{supress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
+\item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 }
 \description{
 Create a codebook

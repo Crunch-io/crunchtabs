@@ -11,6 +11,8 @@ kable_styling_defaults(x, full_width = FALSE, position = "left", ...)
 
 \item{full_width}{Defaults to TRUE.}
 
+\item{position}{The position of the table. Defaults to "left".}
+
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling}}
 }
 \description{
