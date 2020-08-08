@@ -22,11 +22,11 @@
 writeCodeBookLatex <- function(
   ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
-  preamble = NULL, suppres_zero_counts = FALSE, appendix = TRUE, logo = NULL,
+  preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
   position = NULL,
   ...) {
 
-  options("crunchtabs.codebook.supress.zeros" = suppres_zero_counts)
+  options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
   # Initialize Codebook Latex ----
   codebook <- readLines(system.file(

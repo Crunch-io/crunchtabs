@@ -52,6 +52,21 @@ ct_unweighted <- crosstabs(
   banner = ct_banner
 )
 
+# For writeCodeBookLatex
+
+writeCodeBookLatex(ds)
+x <- readLines("Example-dataset.tex")
+saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexFull.rds")
+writeCodeBookLatex(
+  ds,
+  title = "Hello",
+  subtitle = "Goodbye",
+  sample_desc = "US Voting Adults",
+  logo = "yougov")
+x <- readLines("Example-dataset.tex")
+saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexOne.rds")
+
+# For crosstabs
 
 ds = loadDataset("https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/")
 crosstabs_data <- crosstabs(ds, vars = c("movies2_a_1", "movies2_a_2", "books1"))

@@ -87,7 +87,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
     names(res) <- c("id","name", "n")
   }
 
-  if (getOption("crunchtabs.codebook.supress.zeros", default = FALSE)) {
+  if (getOption("crunchtabs.codebook.suppress.zeros", default = FALSE)) {
     warning('Zero count categoricals are supressed by options')
     res <- res[res$n != "0",]
   }
