@@ -21,6 +21,7 @@ Depends:
     crunch,
     kableExtra (>= 1.1.0.9000)
 Imports:
+    rlang,
     openxlsx,
     digest,
     methods,

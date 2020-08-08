@@ -340,6 +340,7 @@ codeBookItemBody.TextVariable <- function(x, ...) {
 #'
 #' @param x A kable object
 #' @param full_width Defaults to TRUE.
+#' @param position The position of the table. Defaults to "left".
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling}
 kable_styling_defaults <- function(x, full_width = FALSE, position="left", ...) {
   kableExtra::kable_styling(x, position = position, full_width = full_width, ...)
