@@ -8,8 +8,13 @@ with_api_fixture("fixtures-1-2-5", {
     r = codeBookSummary(ds$q1)
     expect_equal(
       r,
-      structure(c("3", "1", "2", "9", "8", "Bird", "Cat", "Dog", "Not Asked",
-                  "Skipped", "3", "6", "4", "4", "3"), .Dim = c(5L, 3L))
+      structure(
+        list(
+          id = c("1", "2", "3", "8", "9"),
+          name = c("Cat","Dog", "Bird", "Skipped", "Not Asked"),
+          n = c("6", "4", "3", "3", "4")),
+        class = "data.frame", row.names = c(NA, -5L)
+      )
     )
   })
 
@@ -18,13 +23,12 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       r,
-      structure(list(c("allpets_1", "allpets_2", "allpets_3"),
-                     c("Cat", "Dog", "Bird"),
-                     `1 selected` = c(8, 8, 3),
-                     `2 not selected` = c(4, 3, 6),
-                     `8 skipped` = c(4, 5, 5),
-                     `9 not asked` = c(4, 4, 6)), row.names = c(NA, -3L),
-                class = "data.frame")
+      structure(
+        list(c("allpets_1", "allpets_2", "allpets_3"), c("Cat",
+        "Dog", "Bird"), `1 selected` = c(4, 5, 5),
+        `2 not selected` = c(4, 3, 6), `8 skipped` = c(4, 4, 6),
+        `9 not asked` = c(8, 8, 3)), row.names = c(NA, -3L),
+        class = "data.frame")
     )
   })
 
@@ -33,8 +37,10 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       r,
-      structure(c("Type", "Missing", "Range", "Numeric", "4", "[0, 6]"
-      ), .Dim = 3:2, .Dimnames = list(NULL, NULL))
+      structure(list(
+        Mean = 2, SD = 1, Min = 0, Max = 6,
+        n = 16, Missing = 4), class = "data.frame",
+        row.names = c(NA, -1L))
     )
   })
 
@@ -44,8 +50,11 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       r,
-      structure(c("Type", "Range", "Datetime", "[2014-12-01, 2015-01-01]"
-      ), .Dim = c(2L, 2L), .Dimnames = list(NULL, NULL))
+      structure(
+        list(
+          Filled = 20L, Missing = 0L,
+          Range = "[2014-12-01, 2015-01-01]"),
+        class = "data.frame", row.names = c(NA, -1L))
     )
 
   })
@@ -58,10 +67,8 @@ with_api_fixture("fixtures-1-2-5", {
 
   expect_equal(
     r,
-    structure(c("Type", "Blank", "Filled", "Text", "4", "16"),
-              .Dim = 3:2,
-              .Dimnames = list(
-      NULL, NULL))
+    structure(list(Filled = 16L, Missing = 4L, `Max Length` = 8L),
+              class = "data.frame", row.names = c(NA, -1L))
   )
   })
 

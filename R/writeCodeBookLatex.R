@@ -13,20 +13,20 @@
 #' @param field_period A character string describing the field period.
 #' @param preamble A latex string, usually a methodological statement.
 #' LaTeX should be escaped.
-#' @param supress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
+#' @param suppress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
 #' @param appendix Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.
 #' @param logo Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.
 #' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.
-#' @param ... Additional arguments passed to \link{\code{kable_styling}} Unused.
+#' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
 #' @export
 writeCodeBookLatex <- function(
   ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
-  preamble = NULL, suppres_zero_counts = FALSE, appendix = TRUE, logo = NULL,
+  preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
   position = NULL,
   ...) {
 
-  options("crunchtabs.codebook.supress.zeros" = suppres_zero_counts)
+  options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
   # Initialize Codebook Latex ----
   codebook <- readLines(system.file(
@@ -97,11 +97,11 @@ writeCodeBookLatex <- function(
         description <- codeBookItemTxtDescription(ds[[nm]])
         description <- gsub(
           sprintf(
-            "addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{%s}",
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}",
             nm
           ),
           sprintf(
-            "addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{Appendix %s}}{%s -- ",
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{Appendix %s}}{%s -- ",
             length(appendices), nm),
           description, fixed = TRUE
         )
@@ -198,6 +198,6 @@ writeCodeBookLatex <- function(
 
   if (pdf) {
     tinytex::pdflatex(gsub(" ","-", paste0(name(ds), ".tex")))
-    file.open(paste0(name(ds), ".pdf"))
+    file.open(paste0(gsub(" ","-", paste0(name(ds))), ".pdf"))
   }
 }

@@ -83,4 +83,4 @@ ds = loadDataset("Example dataset")
 writeCodeBookLatex(ds)
 
 ds <- loadDataset("Forked Huffpost")
-writeCodeBookLatex(ds, logo = "yougov")
+writeCodeBookLatex(ds, logo = "yougov", table_of_contents = T)

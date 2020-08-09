@@ -21,10 +21,10 @@
         "feature_flag": "https://app.crunch.io/api/feature_flag/",
         "migration": "https://app.crunch.io/api/migration/",
         "account": "https://app.crunch.io/api/account/",
-        "user": "https://app.crunch.io/api/users/27a158/"
+        "user": "https://app.crunch.io/api/users/0740cc/"
     },
     "urls": {
-        "user_url": "https://app.crunch.io/api/users/27a158/",
+        "user_url": "https://app.crunch.io/api/users/0740cc/",
         "account_roles_url": "https://app.crunch.io/api/roles/accounts/",
         "notebook_url": "https://jupyter.crunch.io/",
         "logout_url": "https://app.crunch.io/api/logout/",

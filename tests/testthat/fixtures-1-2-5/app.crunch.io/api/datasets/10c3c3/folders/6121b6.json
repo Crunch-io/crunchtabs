@@ -1,0 +1,28 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/10c3c3/folders/6121b6/",
+    "index": {
+        "../95b1d8/": {
+            "type": "folder",
+            "name": "Other",
+            "size": 4
+        },
+        "../ad5936/": {
+            "type": "folder",
+            "name": "Questionnaire Progress",
+            "size": 2
+        }
+    },
+    "body": {
+        "name": "Survey Administration",
+        "id": "6121b6"
+    },
+    "graph": [
+        "../ad5936/",
+        "../95b1d8/"
+    ],
+    "size": 6,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/10c3c3/folders/hidden/"
+    }
+}

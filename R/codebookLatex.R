@@ -67,7 +67,7 @@ codeBookItemTxtDescription <- function(x, ...) {
   txt$name <- crunch::name(x)
 
   if (txt$notes != "") {
-    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
       txt$description,
@@ -76,7 +76,7 @@ codeBookItemTxtDescription <- function(x, ...) {
       txt$notes
     )
   } else {
-    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.75in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
       txt$description,
@@ -157,7 +157,8 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       longtable = TRUE, linesep = "", escape = FALSE) %>%
       kable_styling_defaults(full_width = TRUE, ...) %>%
       kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
-      row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>% { gsub("\\midrule", "", ., fixed = TRUE)}
+      kableExtra::row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>%
+      { gsub("\\midrule", "", ., fixed = TRUE)}
       # kableExtra::column_spec(3, border_right = TRUE) %>%
 
   } else {
@@ -189,7 +190,8 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
   k[,2] <- texEscape(k[,2])
   var_labels <- k[,2]
   code_labels <- texEscape(gsub("[0-9]+ ", "", names(k))[-c(1,2)])
-  code_numbers <- trimws(gsub("[a-zA-Z]+", "", names(k))[-c(1,2)])
+  code_numbers <- trimws(sub("\\D*(\\d+).*", "\\1", names(k)))[-c(1,2)]
+    # gsub("[a-zA-Z]+", "", names(k))[-c(1,2)])
   rownames(k) <- NULL
 
 
@@ -214,7 +216,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       escape = F, linesep = " ") %>%
       kable_styling_defaults(...) %>%
       kableExtra::add_header_above(c("Rows" = 2)) %>%
-      kableExtra::column_spec(2, width = "5.5in", latex_column_spec = NULL)
+      kableExtra::column_spec(2, width = "4.75in", latex_column_spec = NULL)
   } else {
     krows <- kableExtra::kable(
       krows,
@@ -225,7 +227,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       escape = F, linesep = " ") %>%
       kable_styling_defaults(...) %>%
       kableExtra::add_header_above(c("Rows" = 2)) %>%
-      kableExtra::column_spec(1, monospace = TRUE, latex_column_spec = NULL)
+      kableExtra::column_spec(1, latex_column_spec = NULL)
 
   }
 
@@ -338,6 +340,7 @@ codeBookItemBody.TextVariable <- function(x, ...) {
 #'
 #' @param x A kable object
 #' @param full_width Defaults to TRUE.
+#' @param position The position of the table. Defaults to "left".
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling}
 kable_styling_defaults <- function(x, full_width = FALSE, position="left", ...) {
   kableExtra::kable_styling(x, position = position, full_width = full_width, ...)
@@ -408,8 +411,8 @@ monospaced <- function(x) paste0("\\ttfamily{", x, "}")
 #'
 #' Wrap a character vector in curly braces
 #'
-#' @param x
-curlyWrap <- function(...) paste0("{", ..., "}")
+#' @param x A character vector
+curlyWrap <- function(x) paste0("{", x, "}")
 
 #' scolumn_fix
 #'
@@ -417,7 +420,7 @@ curlyWrap <- function(...) paste0("{", ..., "}")
 #' create dynamic S-Columns based on character
 #' width
 #'
-#' @param k A data.frame to be printed using kableExtra
+#' @param k A data.frame to be printed using \link[kableExtra]{kable}
 #' @param alignment A string vector of alignments
 scolumnAlign <- function(k, alignment) {
   nchars <- unlist(lapply(k, function(x) max(nchar(x), na.rm = TRUE)))
@@ -425,7 +428,7 @@ scolumnAlign <- function(k, alignment) {
   for (i in 1:ncol(k)) {
     if (alignment[i] == "d") {
       maxnchar <- max(nchar(k[[i]]), na.rm = TRUE)
-      if (maxnchar > 5) {
+      if (maxnchar > 6) {
         alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
         alignment[i] <- c("J", "K", "d", "M", "N", "O")[maxnchar]
