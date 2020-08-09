@@ -54,7 +54,7 @@ ct_unweighted <- crosstabs(
 
 # For writeCodeBookLatex
 
-writeCodeBookLatex(ds)
+writeCodeBookLatex(ds, pdf = FALSE)
 x <- readLines("Example-dataset.tex")
 saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexFull.rds")
 writeCodeBookLatex(
@@ -62,7 +62,7 @@ writeCodeBookLatex(
   title = "Hello",
   subtitle = "Goodbye",
   sample_desc = "US Voting Adults",
-  logo = "yougov")
+  logo = "yougov", pdf = FALSE)
 x <- readLines("Example-dataset.tex")
 saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexOne.rds")
 

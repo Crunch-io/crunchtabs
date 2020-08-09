@@ -1,13 +1,13 @@
 structure(list(url = "https://app.crunch.io/api/datasets/868e8b/multitables/d3cd84/export/", 
-    status_code = 202L, headers = structure(list(date = "Sat, 08 Aug 2020 22:10:37 GMT", 
+    status_code = 202L, headers = structure(list(date = "Sun, 09 Aug 2020 01:32:28 GMT", 
         `content-type` = "application/json;charset=utf-8", `content-length` = "169", 
-        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%2467bec7/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=gEvtRexrmauyyFB8Xl0efSh%2B2yo%3D&Expires=1596928236&AWSAccessKeyId=AKIA5IDTGVXEXZPZ6P4U", 
+        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%2467bec7/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=%2Bm3PctL2Oma%2FgKazMNGvjBuvvSo%3D&Expires=1596940348&AWSAccessKeyId=AKIA5IDTGVXE4HD42IM2", 
         server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
         allow = "OPTIONS, POST", `x-timing` = ""), class = c("insensitive", 
     "list")), all_headers = list(list(status = 202L, version = "HTTP/2", 
-        headers = structure(list(date = "Sat, 08 Aug 2020 22:10:37 GMT", 
+        headers = structure(list(date = "Sun, 09 Aug 2020 01:32:28 GMT", 
             `content-type` = "application/json;charset=utf-8", 
-            `content-length` = "169", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%2467bec7/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=gEvtRexrmauyyFB8Xl0efSh%2B2yo%3D&Expires=1596928236&AWSAccessKeyId=AKIA5IDTGVXEXZPZ6P4U", 
+            `content-length` = "169", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%2467bec7/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=%2Bm3PctL2Oma%2FgKazMNGvjBuvvSo%3D&Expires=1596940348&AWSAccessKeyId=AKIA5IDTGVXE4HD42IM2", 
             server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
             allow = "OPTIONS, POST", `x-timing` = ""), class = c("insensitive", 
         "list")))), cookies = structure(list(domain = logical(0), 
@@ -15,7 +15,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/868e8b/multitables/d3cd
         expiration = structure(numeric(0), class = c("POSIXct", 
         "POSIXt")), name = logical(0), value = logical(0)), row.names = integer(0), class = "data.frame"), 
     content = charToRaw("{\"element\": \"shoji:view\", \"self\": \"https://app.crunch.io/api/datasets/868e8b/multitables/d3cd84/export/\", \"value\": \"https://app.crunch.io/api/progress/\"}"), 
-    date = structure(1596924637, class = c("POSIXct", "POSIXt"
-    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 2.1e-05, 
-    connect = 2.2e-05, pretransfer = 8e-05, starttransfer = 8.1e-05, 
-    total = 0.555296)), class = "response")
+    date = structure(1596936748, class = c("POSIXct", "POSIXt"
+    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 4.4e-05, 
+    connect = 4.5e-05, pretransfer = 0.000128, starttransfer = 0.00013, 
+    total = 0.649098)), class = "response")

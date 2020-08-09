@@ -198,6 +198,6 @@ writeCodeBookLatex <- function(
 
   if (pdf) {
     tinytex::pdflatex(gsub(" ","-", paste0(name(ds), ".tex")))
-    file.open(paste0(name(ds), ".pdf"))
+    file.open(paste0(gsub(" ","-", paste0(name(ds))), ".pdf"))
   }
 }

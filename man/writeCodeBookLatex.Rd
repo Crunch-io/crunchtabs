@@ -15,7 +15,7 @@ writeCodeBookLatex(
   sample_desc = NULL,
   field_period = NULL,
   preamble = NULL,
-  suppres_zero_counts = FALSE,
+  suppress_zero_counts = FALSE,
   appendix = TRUE,
   logo = NULL,
   position = NULL,
@@ -46,6 +46,8 @@ of the report Defaults to \code{FALSE}.}
 \item{preamble}{A latex string, usually a methodological statement.
 LaTeX should be escaped.}
 
+\item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
+
 \item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
 
 \item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.}
@@ -53,8 +55,6 @@ LaTeX should be escaped.}
 \item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
-
-\item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 }
 \description{
 Create a codebook

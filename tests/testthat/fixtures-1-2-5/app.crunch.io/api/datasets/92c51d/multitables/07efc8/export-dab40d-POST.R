@@ -1,13 +1,13 @@
 structure(list(url = "https://app.crunch.io/api/datasets/92c51d/multitables/07efc8/export/", 
-    status_code = 202L, headers = structure(list(date = "Sat, 08 Aug 2020 22:10:08 GMT", 
+    status_code = 202L, headers = structure(list(date = "Sun, 09 Aug 2020 01:32:00 GMT", 
         `content-type` = "application/json;charset=utf-8", `content-length` = "169", 
-        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A92c51d%2433fe66/Example_dataset.json?Signature=%2BZaXlXJI%2FTp74l0%2BKP2Xx0JcDCg%3D&Expires=1596928208&AWSAccessKeyId=AKIA5IDTGVXER6L6ODE4", 
+        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A92c51d%2433fe66/Example_dataset.json?Signature=qbVyJx%2Bf44Hc8UCmLLWEL5f%2FLgc%3D&Expires=1596940320&AWSAccessKeyId=AKIA5IDTGVXE4HD42IM2", 
         server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
         allow = "OPTIONS, POST", `x-timing` = ""), class = c("insensitive", 
     "list")), all_headers = list(list(status = 202L, version = "HTTP/2", 
-        headers = structure(list(date = "Sat, 08 Aug 2020 22:10:08 GMT", 
+        headers = structure(list(date = "Sun, 09 Aug 2020 01:32:00 GMT", 
             `content-type` = "application/json;charset=utf-8", 
-            `content-length` = "169", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A92c51d%2433fe66/Example_dataset.json?Signature=%2BZaXlXJI%2FTp74l0%2BKP2Xx0JcDCg%3D&Expires=1596928208&AWSAccessKeyId=AKIA5IDTGVXER6L6ODE4", 
+            `content-length` = "169", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A92c51d%2433fe66/Example_dataset.json?Signature=qbVyJx%2Bf44Hc8UCmLLWEL5f%2FLgc%3D&Expires=1596940320&AWSAccessKeyId=AKIA5IDTGVXE4HD42IM2", 
             server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
             allow = "OPTIONS, POST", `x-timing` = ""), class = c("insensitive", 
         "list")))), cookies = structure(list(domain = logical(0), 
@@ -15,7 +15,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/92c51d/multitables/07ef
         expiration = structure(numeric(0), class = c("POSIXct", 
         "POSIXt")), name = logical(0), value = logical(0)), row.names = integer(0), class = "data.frame"), 
     content = charToRaw("{\"element\": \"shoji:view\", \"self\": \"https://app.crunch.io/api/datasets/92c51d/multitables/07efc8/export/\", \"value\": \"https://app.crunch.io/api/progress/\"}"), 
-    date = structure(1596924608, class = c("POSIXct", "POSIXt"
-    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 3.5e-05, 
-    connect = 3.5e-05, pretransfer = 0.000129, starttransfer = 0.000132, 
-    total = 0.552836)), class = "response")
+    date = structure(1596936720, class = c("POSIXct", "POSIXt"
+    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 2.1e-05, 
+    connect = 2.2e-05, pretransfer = 7.9e-05, starttransfer = 8.1e-05, 
+    total = 0.566669)), class = "response")
