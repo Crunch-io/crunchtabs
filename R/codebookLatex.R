@@ -158,7 +158,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       kable_styling_defaults(full_width = TRUE, ...) %>%
       kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
       kableExtra::row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>%
-      { gsub("\\midrule", "", .data, fixed = TRUE)}
+      { gsub("\\midrule", "", ., fixed = TRUE)}
       # kableExtra::column_spec(3, border_right = TRUE) %>%
 
   } else {

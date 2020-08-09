@@ -36,6 +36,42 @@ with_api_fixture("fixtures-1-2-5", {
   })
 })
 
+with_api_fixture("fixtures-1-2-5", {
+  ds = loadDataset(
+    "https://app.crunch.io/dataset/10c3c3/"
+  )
+
+  test_that("Default tex as expected", {
+    suppressWarnings(writeCodeBookLatex(
+      ds[1],
+      url = "https://app.crunch.io/dataset/10c3c3/",
+      appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
+    )
+    tex <- readLines("Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
+    original <- readRDS("fixtures/writeCodeBookLatexLongCat.rds")
+    expect_true(length(tex) == length(original))
+    expect_true(sum(tex %in% original)/length(tex) > 0.98)
+  })
+})
+
+# with_api_fixture("fixtures-1-2-5", {
+#   ds = loadDataset(
+#     "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/"
+#   )
+#
+#   test_that("Default tex as expected", {
+#     suppressWarnings(writeCodeBookLatex(
+#       ds[1],
+#       url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/",
+#       appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
+#     )
+#     tex <- readLines("Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
+#     original <- readRDS("fixtures/writeCodeBookLatexLongCat.rds")
+#     expect_true(length(tex) == length(original))
+#     expect_true(sum(tex %in% original)/length(tex) > 0.98)
+#   })
+# })
+
 context("codeBookItemBody")
 
 test_that("Errors appropriately when passed bad object", {

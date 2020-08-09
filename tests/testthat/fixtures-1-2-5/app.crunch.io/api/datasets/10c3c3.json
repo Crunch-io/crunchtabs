@@ -1,0 +1,101 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/10c3c3/",
+    "catalogs": {
+        "folders": "https://app.crunch.io/api/datasets/10c3c3/folders/",
+        "users": "https://app.crunch.io/api/datasets/10c3c3/users/",
+        "views": "https://app.crunch.io/api/datasets/10c3c3/views/",
+        "variables": "https://app.crunch.io/api/datasets/10c3c3/variables/",
+        "actions": "https://app.crunch.io/api/datasets/10c3c3/actions/",
+        "boxdata": "https://app.crunch.io/api/datasets/10c3c3/boxdata/",
+        "filters": "https://app.crunch.io/api/datasets/10c3c3/filters/",
+        "scripts": "https://app.crunch.io/api/datasets/10c3c3/scripts/",
+        "permissions": "https://app.crunch.io/api/datasets/10c3c3/permissions/",
+        "batches": "https://app.crunch.io/api/datasets/10c3c3/batches/",
+        "tags": "https://app.crunch.io/api/datasets/10c3c3/tags/",
+        "teams": "https://app.crunch.io/api/datasets/10c3c3/teams/",
+        "savepoints": "https://app.crunch.io/api/datasets/10c3c3/savepoints/",
+        "multitables": "https://app.crunch.io/api/datasets/10c3c3/multitables/",
+        "forks": "https://app.crunch.io/api/datasets/10c3c3/forks/",
+        "decks": "https://app.crunch.io/api/datasets/10c3c3/decks/",
+        "parent": "https://app.crunch.io/api/projects/429d92/datasets/",
+        "project": "https://app.crunch.io/api/projects/429d92/",
+        "variables_private": "https://app.crunch.io/api/datasets/10c3c3/variables/private/"
+    },
+    "fragments": {
+        "preferences": "https://app.crunch.io/api/datasets/10c3c3/preferences/",
+        "stream": "https://app.crunch.io/api/datasets/10c3c3/stream/",
+        "settings": "https://app.crunch.io/api/datasets/10c3c3/settings/",
+        "exclusion": "https://app.crunch.io/api/datasets/10c3c3/exclusion/",
+        "publish": "https://app.crunch.io/api/datasets/10c3c3/publish/",
+        "state": "https://app.crunch.io/api/datasets/10c3c3/state/",
+        "table": "https://app.crunch.io/api/datasets/10c3c3/table/",
+        "pk": "https://app.crunch.io/api/datasets/10c3c3/pk/",
+        "schema": "https://app.crunch.io/api/datasets/10c3c3/schema/"
+    },
+    "views": {
+        "second_order_analysis": "https://app.crunch.io/api/datasets/10c3c3/second_order_analysis/",
+        "cube": "https://app.crunch.io/api/datasets/10c3c3/cube/",
+        "export": "https://app.crunch.io/api/datasets/10c3c3/export/",
+        "summary": "https://app.crunch.io/api/datasets/10c3c3/summary/",
+        "applied_filters": "https://app.crunch.io/api/datasets/10c3c3/filters/applied/"
+    },
+    "description": "Detail for a given dataset",
+    "body": {
+        "maintainer": "https://app.crunch.io/api/users/10ec83/",
+        "current_editor": null,
+        "creation_time": "2019-08-22T20:06:32.079000",
+        "streaming": "no",
+        "owner": "https://app.crunch.io/api/projects/429d92/",
+        "logo": {
+            "large": "https://s.crunch.io/act_app_icons/account-yougov-lrhfua-large.png",
+            "small": "https://s.crunch.io/act_app_icons/account-yougov-wmgadi-small.png",
+            "favicon": "https://s.crunch.io/act_app_icons/account-yougov-slyzix-favicon.ico"
+        },
+        "id": "10c3c3",
+        "size": {
+            "rows": 1380,
+            "unfiltered_rows": 2373,
+            "columns": 681
+        },
+        "palette": {
+            "brand": {
+                "message": "#722580",
+                "primary": "#0064a4",
+                "secondary": "#107f65"
+            }
+        },
+        "app_settings": {
+            "crunch": {
+                "deleted_rogue_vp": true
+            }
+        },
+        "start_date": null,
+        "owner_name": "Wave 5",
+        "description": "Dataset of foreign policy polling items, including items on Israel, fielded from August 15-21st by YouGov Blue on behalf of Data for Progress.",
+        "end_date": null,
+        "access_time": "2020-08-09T06:42:24.422000",
+        "current_editor_name": null,
+        "view_of": null,
+        "modification_time": "2019-09-11T16:00:11.468000",
+        "archived": false,
+        "permissions": {
+            "edit": true,
+            "view": true
+        },
+        "account": "https://app.crunch.io/api/accounts/b7a990/",
+        "name": "Data for Progress National Issues Survey -- Foreign Policy",
+        "notes": "",
+        "is_published": true
+    },
+    "orders": {
+        "variables_weights": "https://app.crunch.io/api/datasets/10c3c3/variables/weights/",
+        "variables_hier": "https://app.crunch.io/api/datasets/10c3c3/variables/hier/",
+        "variables_personal": "https://app.crunch.io/api/datasets/10c3c3/variables/personal/"
+    },
+    "urls": {
+        "owner_url": "https://app.crunch.io/api/projects/429d92/",
+        "editor_url": null,
+        "user_url": "https://app.crunch.io/api/users/0740cc/"
+    }
+}
