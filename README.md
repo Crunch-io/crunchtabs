@@ -6,7 +6,7 @@ Crunchtabs allow for the automatic generation of toplines, crosstabulation and c
 
 ## Quick Start
 
-For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html). For codebooks, see [codebooks]((https://crunch-io.github.io/crunchtabs/articles/Codebooks.html))
+For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html). For codebooks, see [codebooks](https://crunch-io.github.io/crunchtabs/articles/Codebooks.html)
 
 ### 1. Install tinytex
 
