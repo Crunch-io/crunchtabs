@@ -229,7 +229,7 @@ writeLatex(ct, ...)
 
 In 1.2.8 a new feature was added that allows you to avoid page breaks within a banner. Some users were adding manual latex page breaks to avoid this behavior. Now, you can set the `pagebreak_in_banner` parameter to FALSE and crunchtabs will automatically push the banner to the next page to avoid a page break. 
 
-```{r}
+```{r, eval = FALSE}
 crosstabs_theme <- themeNew(..., pagebreak_in_banner = FALSE)
 ```
 
