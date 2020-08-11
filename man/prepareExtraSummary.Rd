@@ -5,12 +5,18 @@
 \alias{prepareExtraSummary.default}
 \title{Prepare Summary Content}
 \usage{
-prepareExtraSummary(x, ...)
+prepareExtraSummary(x, weighted = TRUE, num = 10, tz = "UTC", ...)
 
-\method{prepareExtraSummary}{default}(x)
+\method{prepareExtraSummary}{default}(x, weighted = TRUE, num = 10, tz = "UTC", ...)
 }
 \arguments{
 \item{x}{A variable of class NumericVariable, DatetimeVariable or TextVariable}
+
+\item{weighted}{Logical. Are these data weighted?}
+
+\item{num}{The number of verbatim responses to present as a sample. Defaults to 10.}
+
+\item{tz}{A timezone. Defaults to UTC.}
 
 \item{...}{Additional arguments passed to methods}
 }

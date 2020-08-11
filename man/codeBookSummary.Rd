@@ -31,6 +31,8 @@ codeBookSummary(x, ...)
 \item{x}{A single variable from a crunch dataset}
 
 \item{...}{Additional arguments, unused.}
+
+\item{multiple}{Is this a MultipleResponse or CategoricalArray variable?}
 }
 \description{
 This group of functions creates a summarized data.frame that can be cnoverted

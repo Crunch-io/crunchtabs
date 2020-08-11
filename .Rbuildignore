@@ -14,3 +14,5 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^research$
+^dev-misc$

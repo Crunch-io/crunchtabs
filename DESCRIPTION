@@ -15,22 +15,26 @@ Authors@R: c(
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: LGPL (>= 3)
+Remotes: haozhu233/kableExtra
 Depends:
-    R (>= 3.3.0),
-    crunch,
-    kableExtra
+    R (>= 3.5.0),
+    crunch
 Imports:
+    kableExtra,
+    rlang,
     openxlsx,
     digest,
     methods,
-    tinytex
+    tinytex,
+    magrittr
 Suggests:
     covr,
     httptest (>= 2.0.0),
     jsonlite,
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    kableExtra (>= 1.1.0.9000)
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 Encoding: UTF-8

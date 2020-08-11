@@ -1,0 +1,30 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/secure/",
+    "index": {
+        "../7e9398/": {
+            "type": "folder",
+            "name": "Timing",
+            "size": 34
+        },
+        "../10f78b/": {
+            "type": "folder",
+            "name": "Randomization",
+            "size": 1138
+        },
+        "../789e9a/": {
+            "type": "folder",
+            "name": "Survey Administration",
+            "size": 35
+        }
+    },
+    "body": {
+        "name": "Secure"
+    },
+    "graph": [
+        "../10f78b/",
+        "../7e9398/",
+        "../789e9a/"
+    ],
+    "size": 1207
+}

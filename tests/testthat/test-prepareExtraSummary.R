@@ -1,5 +1,6 @@
 context("prepareExtraSummary NumericVariable")
 
+# YANBF: Yet another broken fixture.
 with_api_fixture("fixtures-1-2-5", {
 
   ds <- loadDataset("Example dataset")
@@ -36,6 +37,7 @@ with_api_fixture("fixtures-1-2-5", {
 
 context("prepareExtraSummary DatetimeVariable")
 
+# NBF: Yet another broken fixture.
 with_api_fixture("fixtures-1-2-5", {
 
   ds <- loadDataset("Example dataset")

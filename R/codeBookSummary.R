@@ -24,6 +24,8 @@ codeBookSummary.default <- function(x, ...) {
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a CategoricalVariable
+#' @importFrom utils type.convert
+#' @param multiple Is this a MultipleResponse or CategoricalArray variable?
 #' @export
 codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
   cats <- crunch::categories(x)
@@ -69,18 +71,28 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
   smry <- data.frame(crunch::table(x, useNA = "ifany"))
   names(smry) <- c("name", "n")
 
-  res <- merge(l, smry)
+  res <- merge(l, smry, sort = FALSE)
 
   if (multiple) {
-    res[with(res, order(id)),]
+    res = res[with(res, order(id)),]
   } else {
-    res = matrix(c(
+    res = as.data.frame(
+      matrix(c(
       res$id,
       res$name,
       res$n
-    ), ncol = 3)
+    ), ncol = 3),
+    stringsAsFactors = FALSE
+  )
+    names(res) <- c("id","name", "n")
   }
 
+  if (getOption("crunchtabs.codebook.suppress.zeros", default = FALSE)) {
+    warning('Zero count categoricals are supressed by options')
+    res <- res[res$n != "0",]
+  }
+
+  res
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a MultipleResponseVariable
@@ -103,7 +115,12 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   for (i in 1:rws) {
     # We merge on a complete frame because responses
     # can be missing from categories
-    responses_adj <- merge(frame, responses[[i]], all.x = TRUE)$n
+    responses_adj <- merge(
+      frame,
+      responses[[i]],
+      all.x = TRUE,
+      sort = FALSE)$n # merge unintuitive sort behaviour!
+
     m[i,3:(cols + 2)] <- responses_adj
   }
 
@@ -121,24 +138,27 @@ codeBookSummary.CategoricalArrayVariable <- function(x, ...) codeBookSummary.Mul
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a NumericVariable
 #' @export
 codeBookSummary.NumericVariable <- function(x, ...) {
+  mu <- round(mean(x, na.rm = T), 2)
+  std <- round(sd(x, na.rm = TRUE))
   minima <- round(min(x, na.rm = T), 2)
   maxima <- round(max(x, na.rm = T), 2)
   missings <- sum(is.na(as.vector(x)))
+  n <- length(is.na(as.vector(x)))
 
-  type_row <- c("Type", "Numeric")
-  range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
+  #type_row <- c("Type", "Numeric")
+  #range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
 
-  if (missings > 0) {
-    missings_row <- c("Missing", missings)
-    r <- rbind(
-      type_row, missings_row, range_row
-    )
-  } else {
-    r <- rbind(
-      type_row, range_row
-    )
-  }
+  r <- as.data.frame(
+    matrix(c(
+      mu,
+      std,
+      minima,
+      maxima,
+      n - missings,
+      missings), nrow = 1)
+  )
 
+  names(r) <- c("Mean", "SD", "Min", "Max","n", "Missing")
   rownames(r) <- NULL
   r
 
@@ -148,11 +168,26 @@ codeBookSummary.NumericVariable <- function(x, ...) {
 #' @export
 codeBookSummary.TextVariable <- function(x, ...) {
 
-  filled <- sum(as.vector(x) != "" | !is.na(as.vector(x)), na.rm = TRUE)
-  type_row <- c("Type", "Text")
-  filled <- c("Filled", filled)
+  filled_verbs <- as.vector(x)
+  filled_verbs <- filled_verbs[!is.na(filled_verbs)]
+  filled_verbs <- filled_verbs[!filled_verbs %in% c("", "__NA__")]
+  #verbsamp <- sample(filled_verbs, 5, replace = TRUE)
+  #verbsamp <- paste0(substr(verbsamp, start = 1, stop = 27),
+  #       "...",
+  #       collapse = ", "
+  #)
+  filled <- length(filled_verbs)
+  missing <- length(as.vector(x)) - filled
 
-  r <- rbind(type_row, filled)
+  r <- as.data.frame(
+    matrix(c(
+      filled,
+      missing,
+      ifelse(filled == 0, 0, max(nchar(filled_verbs)))
+      ), nrow = 1, ncol = 3), stringsAsFactors = FALSE
+  )
+
+  names(r) <- c("Filled","Missing", "Max Length")
   rownames(r) <- NULL
   r
 }
@@ -164,19 +199,16 @@ codeBookSummary.DatetimeVariable <- function(x, ...) {
   maxima <- max(x, na.rm = T)
   missings <- sum(is.na(as.vector(x)))
 
-  type_row <- c("Type", "Datetime")
-  range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
+  filled <- sum(!is.na(as.vector(x)))
+  range_row <- c(paste0("[", minima,", ", maxima,"]"))
 
-  if (missings > 0) {
-    missings_row <- c("Missing", missings)
-    r <- rbind(
-      type_row, missings_row, range_row
-    )
-  } else {
-    r <- rbind(
-      type_row, range_row
-    )
-  }
+  r = data.frame(
+    Filled = filled,
+    Missing = missings,
+    Range = range_row,
+    stringsAsFactors = FALSE
+  )
+
 
   rownames(r) <- NULL
   r

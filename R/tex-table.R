@@ -269,8 +269,12 @@ tableHeader.CrossTabVar <- function(var, theme) {
     label_width = paste0(theme$format_label_column_exceptions[var$alias], "in")
   }
 
+  nopagebreak = NULL
+  if (!theme$pagebreak_in_banner)
+    nopagebreak = "\\begin{absolutelynopagebreak}"
 
   header <- paste(
+    nopagebreak,
     paste0("\\tbltopa[",label_width,"]"),
     latexTableName(var, theme),
     "\\addlinespace",
@@ -284,6 +288,7 @@ tableHeader.CrossTabVar <- function(var, theme) {
     # Subsequent banners don't get the same table name at the top, and the
     # negative vspace squeezes them closer to the one above
     next_headers <- paste(
+      nopagebreak,
       vspace("-.25in"),
       paste0("\\tbltop", letters[2:ntabs], "[", label_width ,"]"),
       "\\addlinespace",
@@ -442,6 +447,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     }
 
     check = theme$format_label_column_exceptions[var$alias]
+
     if (!is.na(check) & !is.null(check)) {
       label_width = theme$format_label_column_exceptions[var$alias]
     }

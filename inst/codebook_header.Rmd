@@ -20,6 +20,11 @@ header-includes:
 - \usepackage[normalem]{ulem}
 - \usepackage{makecell}
 - \usepackage{xcolor}
+- \usepackage[scaled]{helvet}
+- \usepackage{dcolumn}
+- \newcolumntype{d}{D{.}{.}{3.2}}
+- \newcolumntype{g}{D{\%}{\%}{3.0}}
+
 ---
 
 ```{r setup, include=FALSE}

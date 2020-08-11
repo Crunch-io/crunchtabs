@@ -13,5 +13,5 @@ with_api_fixture(fixture_path, expr)
 }
 \description{
 Use this to wrap tests that require access to
-the crunch api
+the crunch api.
 }

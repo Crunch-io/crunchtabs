@@ -47,7 +47,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     subnames <- if (is_array_type) getSubNames(crunch_cube)
     var_cats <- categories(cube_variable[[1]])
     inserts <- if (is_cat_type) {
-      crunch:::collateCats(crunch::transforms(cube_variable)[[1]]$insertions, var_cats)
+      collateCats <- get("collateCats", envir = asNamespace("crunch"), inherits = FALSE)
+      collateCats(crunch::transforms(cube_variable)[[1]]$insertions, var_cats)
     }
     show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
 

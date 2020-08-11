@@ -10,7 +10,7 @@ test_that("format_label_column_exceptions", {
   var$alias = "test"
   class(var) = "CrossTabVar"
   res = tableHeader(var, theme)
-  expect_equal(res, "\\tbltopa[2.5in]\n\\addcontentsline{lot}{table}{ . }\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. }} \\\\\n\\addlinespace\n\\bannera{}\n\n")
+  expect_equal(res, "\n\\tbltopa[2.5in]\n\\addcontentsline{lot}{table}{ . }\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. }} \\\\\n\\addlinespace\n\\bannera{}\n\n")
 })
 
 test_that("format_label_column_exceptions overwrites global", {
@@ -87,5 +87,5 @@ test_that("Global for crosstab works format_label_column_exceptions", {
   var$alias = "nottest"
   class(var) = "CrossTabVar"
   res = tableHeader(var, theme)
-  expect_equal(res, "\\tbltopa[3in]\n\\addcontentsline{lot}{table}{ . }\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. }} \\\\\n\\addlinespace\n\\bannera{}\n\n")
+  expect_equal(res, "\n\\tbltopa[3in]\n\\addcontentsline{lot}{table}{ . }\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. }} \\\\\n\\addlinespace\n\\bannera{}\n\n")
 })
