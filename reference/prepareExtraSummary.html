@@ -106,6 +106,9 @@ and TextVariable" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Codebooks.html">Codebooks</a>
+    </li>
+    <li>
       <a href="../articles/FAQ.html">Frequently Asked Questions</a>
     </li>
     <li>
@@ -151,10 +154,10 @@ are not covered by tabBook such as NumericVariable, DatetimeVariables
 and TextVariable</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prepareExtraSummary</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>prepareExtraSummary</span>(<span class='no'>x</span>, <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>prepareExtraSummary</span>(<span class='no'>x</span>)</pre>
+<span class='fu'>prepareExtraSummary</span>(<span class='no'>x</span>, <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +165,18 @@ and TextVariable</p>
     <tr>
       <th>x</th>
       <td><p>A variable of class NumericVariable, DatetimeVariable or TextVariable</p></td>
+    </tr>
+    <tr>
+      <th>weighted</th>
+      <td><p>Logical. Are these data weighted?</p></td>
+    </tr>
+    <tr>
+      <th>num</th>
+      <td><p>The number of verbatim responses to present as a sample. Defaults to 10.</p></td>
+    </tr>
+    <tr>
+      <th>tz</th>
+      <td><p>A timezone. Defaults to UTC.</p></td>
     </tr>
     <tr>
       <th>...</th>

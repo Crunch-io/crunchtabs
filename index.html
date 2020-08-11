@@ -65,6 +65,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/Codebooks.html">Codebooks</a>
+    </li>
+    <li>
       <a href="articles/FAQ.html">Frequently Asked Questions</a>
     </li>
     <li>
@@ -101,11 +104,12 @@
 <div id="crunchtabs" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#crunchtabs" class="anchor"></a>crunchtabs</h1></div>
-
+<p>Crunchtabs allow for the automatic generation of toplines, crosstabulation and codebooks directly from a crunch dataset.</p>
+<p><img src="https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=master" alt="CI"><a href="https://codecov.io/gh/Crunch-io/crunchtabs"><img src="https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg" alt="codecov"></a></p>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-start" class="anchor"></a>Quick Start</h2>
-<p>For a broader introduction please see our <a href="https://crunch-io.github.io/crunchtabs/articles/Overview.html">introductory vignette</a></p>
+<p>For a broader introduction please see our <a href="https://crunch-io.github.io/crunchtabs/articles/Overview.html">introductory vignette</a>. For codebooks, see <a href="(https://crunch-io.github.io/crunchtabs/articles/Codebooks.html)">codebooks</a></p>
 <div id="install-tinytex" class="section level3">
 <h3 class="hasAnchor">
 <a href="#install-tinytex" class="anchor"></a>1. Install tinytex</h3>
@@ -160,6 +164,20 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 # writeExcel(toplines_summary, filename = "output") # output.xlsx will be written </a></code></pre>
 <p><img src="articles/example-003-excel-ct.png" alt="Cross Tabulation Excel Example from the Example Dataset"></p>
 </div>
+<div id="generating-codebooks" class="section level2">
+<h2 class="hasAnchor">
+<a href="#generating-codebooks" class="anchor"></a>Generating Codebooks</h2>
+<p>To generate a codebook, you must install the development version of kableExtra</p>
+<pre><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("haozhu233/kableExtra")
+
+# library(crunchtabs)
+# login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+writeCodeBookLatex(ds)</a></code></pre>
+</div>
 <div id="for-developers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#for-developers" class="anchor"></a>For developers</h2>
@@ -199,13 +217,7 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://codecov.io/gh/Crunch-io/crunchtabs"><img src="https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg" alt="codecov"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 

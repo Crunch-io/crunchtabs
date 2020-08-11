@@ -104,6 +104,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Codebooks.html">Codebooks</a>
+    </li>
+    <li>
       <a href="../articles/FAQ.html">Frequently Asked Questions</a>
     </li>
     <li>
@@ -139,7 +142,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Defaults for kableExtra</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/codebook.R'><code>R/codebook.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/codebookLatex.R'><code>R/codebookLatex.R</code></a></small>
     <div class="hidden name"><code>kable_styling_defaults.Rd</code></div>
     </div>
 
@@ -147,7 +150,7 @@
     <p>Default styling for kable extra</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kable_styling_defaults</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>kable_styling_defaults</span>(<span class='no'>x</span>, <span class='kw'>full_width</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"left"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,6 +158,14 @@
     <tr>
       <th>x</th>
       <td><p>A kable object</p></td>
+    </tr>
+    <tr>
+      <th>full_width</th>
+      <td><p>Defaults to TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>position</th>
+      <td><p>The position of the table. Defaults to "left".</p></td>
     </tr>
     <tr>
       <th>...</th>

@@ -61,6 +61,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Codebooks.html">Codebooks</a>
+    </li>
+    <li>
       <a href="../articles/FAQ.html">Frequently Asked Questions</a>
     </li>
     <li>
@@ -98,7 +101,7 @@
       <h1 data-toc-skip>Frequently Asked Questions</h1>
                         <h4 class="author">Brandon Bertelsen</h4>
             
-            <h4 class="date">2020-06-08</h4>
+            <h4 class="date">2020-08-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/FAQ.Rmd"><code>vignettes/FAQ.Rmd</code></a></small>
       <div class="hidden name"><code>FAQ.Rmd</code></div>
@@ -288,6 +291,12 @@
 <span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="st">"d"</span>, <span class="kw">pin_to_bottom</span> <span class="kw">=</span> <span class="st">"Don't know"</span>)
 
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+</div>
+<div id="how-do-i-stop-crosstabs-from-breaking-in-the-middle-of-a-tab" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-stop-crosstabs-from-breaking-in-the-middle-of-a-tab" class="anchor"></a>How do I stop crosstabs from breaking in the middle of a tab?</h3>
+<p>In 1.2.8 a new feature was added that allows you to avoid page breaks within a banner. Some users were adding manual latex page breaks to avoid this behavior. Now, you can set the <code>pagebreak_in_banner</code> parameter to FALSE and crunchtabs will automatically push the banner to the next page to avoid a page break.</p>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">crosstabs_theme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(<span class="no">...</span>, <span class="kw">pagebreak_in_banner</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 </div>
 <div id="how-do-i-request-a-new-feature" class="section level3">
 <h3 class="hasAnchor">
