@@ -1,10 +1,12 @@
 # crunchtabs
 
+Crunchtabs allow for the automatic generation of toplines, crosstabulation and codebooks directly from a crunch dataset. 
+
 ![CI](https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=master) [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs)
 
 ## Quick Start
 
-For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html)
+For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html). For codebooks, see [codebooks]((https://crunch-io.github.io/crunchtabs/articles/Codebooks.html))
 
 ### 1. Install tinytex
 
@@ -72,6 +74,24 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 ```
 
 ![Cross Tabulation Excel Example from the Example Dataset](vignettes/example-003-excel-ct.png)
+
+
+## Generating Codebooks 
+
+To generate a codebook, you must install the development version of kableExtra
+
+```
+devtools::install_github("haozhu233/kableExtra")
+
+# library(crunchtabs)
+# login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+writeCodeBookLatex(ds)
+```
+
 
 ## For developers
 

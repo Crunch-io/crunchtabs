@@ -18,8 +18,7 @@ License: LGPL (>= 3)
 Remotes: haozhu233/kableExtra
 Depends:
     R (>= 3.5.0),
-    crunch,
-    kableExtra (>= 1.1.0.9000)
+    crunch
 Imports:
     rlang,
     openxlsx,
@@ -33,7 +32,8 @@ Suggests:
     jsonlite,
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    kableExtra (>= 1.1.0.9000)
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 Encoding: UTF-8
