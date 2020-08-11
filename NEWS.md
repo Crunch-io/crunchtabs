@@ -1,9 +1,13 @@
 ## crunchtabs 1.2.8
 
+- Documentation for generating codebooks (#180)
+- Tests and fixes for broken tests (#176)
+- Spacing and font type for codebooks (#178)
 - Additional refinements for codebooks such as title, subtitle, sample description (#152)
 - Fixes for warnings in existing code (#158)
 - Bugfix for logo assignment in excel (#155)
-- Added pagebreak_in_banner which stops multi-banner crosstabs from being spread across pages using "to be continued" (#161)
+- Added pagebreak_in_banner which stops multi-banner crosstabs from being spread across pages using "to be continued" (#161, #169)
+- Major rework of codebooks (#165, #172, #170, #160, #159)
 
 ## crunchtabs 1.2.7
 
