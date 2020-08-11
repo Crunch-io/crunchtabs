@@ -20,6 +20,7 @@ Depends:
     R (>= 3.5.0),
     crunch
 Imports:
+    kableExtra,
     rlang,
     openxlsx,
     digest,
