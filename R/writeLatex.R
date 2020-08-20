@@ -64,6 +64,10 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     toc <- NULL
   }
 
+  if (!is.null(append_text)) {
+    append_text <- paste0("\\vspace{0.5in}\n\n", append_text)
+  }
+
   # Now assemble the .tex document
   out <- c(
     latexDocHead(
