@@ -90,8 +90,7 @@ ds = loadDataset("https://app.crunch.io/dataset/2375608c53694a899213fe7daf7e2d1e
 writeCodeBookLatex(
   ds,
   url = "https://app.crunch.io/dataset/2375608c53694a899213fe7daf7e2d1e/",
-  table_of_contents = TRUE, logo = "ygblue",
-  title = "Data for Progress - Foreign Policy",
+  table_of_contents = TRUE, logo = "yougov",
   pdf = TRUE
 )
 
