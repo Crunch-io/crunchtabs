@@ -96,6 +96,7 @@ writeCodeBookLatex(
 
 
 ds <- loadDataset("BEB Fork STAN0138")
+weight(ds) <- NULL
 writeCodeBookLatex(ds, table_of_contents = TRUE, suppress_zero_counts = TRUE,
                    title = 'Presidential Election Study - August 2020',
                    field_period = 'August 24-31, 2020',

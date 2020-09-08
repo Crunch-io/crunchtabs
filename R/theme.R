@@ -417,6 +417,7 @@ validators_to_use <- list(
   latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
+  enforce_onehundred = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
   logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
                                              "width", "height", "units", "dpi")),
@@ -461,7 +462,7 @@ theme_validator <- function(theme) {
     "format_var_alias", "format_var_description", "format_var_filtertext",
     "format_var_name", "format_var_subname", "format_weighted_n", "halign",
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
-    "latex_multirowheaderlines", "latex_round_percentages",
+    "latex_multirowheaderlines", "latex_round_percentages", "enforce_onehundred",
     "latex_round_percentages_exception", "latex_table_align", "logo",
     "one_per_sheet","valign", "pagebreak_in_banner")
 
