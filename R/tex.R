@@ -34,16 +34,12 @@ texEscape <- function(string) {
   if (is.null(string)) {
     return("")
   }
-  # TODO: Change to one line rather than nested gsubs(), yuck.
-  gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", # Trim leading whitespace
-       gsub("([#$%&_])", "\\\\\\1", # Escape special characters
-            gsub("[\u00A3\uFFE1]", "\\\\pounds", # Handle GBP currency
-                 gsub("\n", " \\\\newline ", # Turn newlines into \newlines
-                      string
-                 )
-            )
-       )
-  )
+  s
+  string <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", string)
+  string <- gsub("([#$%&_])", "\\\\\\1", string)
+  string <- gsub("[\u00A3\uFFE1]", "\\\\pounds", string)
+  string <- gsub("\n", " \\\\newline ", string)
+  string
 }
 
 #' Font Size

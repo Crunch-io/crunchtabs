@@ -1,12 +1,12 @@
 ---
 title: "Frequently Asked Questions"
 author: "Brandon Bertelsen"
-date: "`r Sys.Date()`"
+date: "Last Update: 2020-09-08"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Frequently Asked Questions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---

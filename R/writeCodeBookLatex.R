@@ -18,13 +18,15 @@
 #' @param logo Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.
 #' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.
 #' @param path The path to place .tex and .pdf files.
+#' @param logging Leave logs in the working directory, defaults to FALSE
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
+#'
 #' @export
 writeCodeBookLatex <- function(
   ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
   preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
-  position = NULL, path = NULL,
+  position = NULL, path = NULL, logging = FALSE,
   ...) {
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
@@ -211,6 +213,15 @@ writeCodeBookLatex <- function(
 
   if (pdf) {
     tinytex::pdflatex(texname, pdf_file = pdfname)
+
+    if (!logging) {
+      files <- list.files(path = getwd())
+      files <- grep("out$|log$|aux$", files, value = TRUE)
+      if (length(files)) {
+        file.remove(file.path(getwd(), files))
+      }
+    }
+
     file.open(pdfname)
   }
 }
