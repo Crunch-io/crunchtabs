@@ -34,7 +34,7 @@ texEscape <- function(string) {
   if (is.null(string)) {
     return("")
   }
-  s
+
   string <- gsub("^ *(\\[)", "\\\\hspace\\*\\{0in\\}\\1", string)
   string <- gsub("([#$%&_])", "\\\\\\1", string)
   string <- gsub("[\u00A3\uFFE1]", "\\\\pounds", string)

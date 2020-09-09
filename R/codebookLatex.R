@@ -80,7 +80,7 @@ codeBookItemTxtDescription <- function(x, ...) {
 
 
   if (txt$notes != "") {
-    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s }} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
       texEscape(txt$description),
@@ -89,7 +89,7 @@ codeBookItemTxtDescription <- function(x, ...) {
       txt$notes
     )
   } else {
-    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s }} %s}\n\\vskip 0.10in"
+    tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
       texEscape(txt$description),

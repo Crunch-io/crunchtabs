@@ -209,6 +209,7 @@ themeDefaultExcel <- function(
     digits_numeric = 2,
     one_per_sheet = FALSE,
     latex_round_percentages = TRUE,
+    enforce_onehundred = FALSE,
     latex_headtext = "",
     latex_foottext = "",
     latex_table_align = "r",
