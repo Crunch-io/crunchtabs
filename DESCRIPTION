@@ -15,7 +15,6 @@ Authors@R: c(
 URL: https://github.com/Crunch-io/crunchtabs
 BugReports: https://github.com/Crunch-io/crunchtabs/issues
 License: LGPL (>= 3)
-Remotes: haozhu233/kableExtra
 Depends:
     R (>= 3.5.0),
     crunch
