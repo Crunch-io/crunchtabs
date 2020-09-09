@@ -22,6 +22,60 @@ with_api_fixture("fixtures-1-2-5", {
     expect_true(sum(tex %in% original)/length(tex) > 0.98)
 
   })
+
+  test_that("Tex result as expected with features", {
+
+    suppressWarnings(
+      writeCodeBookLatex(
+        ds,
+        title = "Hello",
+        subtitle = "Goodbye",
+        sample_desc = "US Voting Adults",
+        logo = "ygblue",
+        pdf = FALSE)
+    )
+
+    tex <- readLines("Example-dataset.tex")
+    original <- readRDS("fixtures/writeCodeBookLatexOne.rds")
+
+    expect_true(length(tex) == length(original))
+    expect_true(sum(tex %in% original)/length(tex) > 0.98)
+
+  })
+
+  test_that("Creates pdf output", {
+
+
+    with_mock(suppressWarnings(
+      writeCodeBookLatex(
+        ds,
+        title = "Hello",
+        subtitle = "Goodbye",
+        sample_desc = "US Voting Adults",
+        logo = "ygblue",
+        pdf = TRUE)
+    ), "crunchtabs::file.open" = function(x) return(TRUE))
+
+    expect_true(file.exists("Example-dataset.pdf"))
+    expect_true(file.remove("Example-dataset.pdf"))
+
+  })
+
+  test_that("Tex result set position as expected", {
+    suppressWarnings(
+      writeCodeBookLatex(
+        ds,
+        title = "Hello",
+        subtitle = "Goodbye",
+        sample_desc = "US Voting Adults",
+        logo = "ygblue",
+        position = "c",
+        pdf = FALSE)
+    )
+
+    tex <- readLines("Example-dataset.tex")
+    expect_true(any(grepl("\\begin{longtable}[c]", tex, fixed = TRUE)))
+  })
 })
 
 with_api_fixture("fixtures-1-2-5", {
