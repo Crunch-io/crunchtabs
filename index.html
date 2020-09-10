@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.9</span>
       </span>
     </div>
 
@@ -167,16 +167,14 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 <div id="generating-codebooks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generating-codebooks" class="anchor"></a>Generating Codebooks</h2>
-<p>To generate a codebook, you must install the development version of kableExtra</p>
-<pre><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("haozhu233/kableExtra")
-
-# library(crunchtabs)
+<p>Generating a codebook is easy!</p>
+<pre><code># library(crunchtabs)
 # login()
 
 ds = loadDataset("Example dataset")
 # Use ds = newExampleDataset() if not found!
 
-writeCodeBookLatex(ds)</a></code></pre>
+writeCodeBookLatex(ds)</code></pre>
 </div>
 <div id="for-developers" class="section level2">
 <h2 class="hasAnchor">

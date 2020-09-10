@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.9</span>
       </span>
     </div>
 
@@ -165,6 +165,8 @@
   <span class='kw'>appendix</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>logo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>logging</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -229,6 +231,14 @@ LaTeX should be escaped.</p></td>
     <tr>
       <th>position</th>
       <td><p>Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.</p></td>
+    </tr>
+    <tr>
+      <th>path</th>
+      <td><p>The path to place .tex and .pdf files.</p></td>
+    </tr>
+    <tr>
+      <th>logging</th>
+      <td><p>Leave logs in the working directory, defaults to FALSE</p></td>
     </tr>
     <tr>
       <th>...</th>
