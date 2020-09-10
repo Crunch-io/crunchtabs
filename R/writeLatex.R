@@ -20,7 +20,7 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param logging add log messages
+#' @param logging Leave logs in the working directory, defaults to FALSE
 #'
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
@@ -65,7 +65,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
   }
 
   if (!is.null(append_text)) {
-    append_text <- paste0("\\vspace{0.5in}\n\n", append_text)
+    append_text <- paste0("\\vspace{0.5in}\n\n", paste0(append_text, collapse = "\n"))
   }
 
   # Now assemble the .tex document

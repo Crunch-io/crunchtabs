@@ -19,6 +19,8 @@ writeCodeBookLatex(
   appendix = TRUE,
   logo = NULL,
   position = NULL,
+  path = NULL,
+  logging = FALSE,
   ...
 )
 }
@@ -53,6 +55,10 @@ LaTeX should be escaped.}
 \item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.}
 
 \item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
+
+\item{path}{The path to place .tex and .pdf files.}
+
+\item{logging}{Leave logs in the working directory, defaults to FALSE}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }

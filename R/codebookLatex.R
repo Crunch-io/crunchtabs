@@ -64,24 +64,37 @@ codeBookItemTxtDescription <- function(x, ...) {
   txt$description <- crunch::description(x)
   txt$notes <- crunch::notes(x)
   txt$alias <- crunch::alias(x)
+  txt$alias_toc <- ifelse(
+    nchar(txt$alias) > 20,
+    paste0(substr(txt$alias, 1, 22), "..."),
+    txt$alias
+  )
+
   txt$name <- crunch::name(x)
+
+  txt$name_toc <- ifelse(
+    nchar(txt$name) > 65,
+    paste0(substr(txt$name, 1, 65), "..."),
+    txt$name
+  )
+
 
   if (txt$notes != "") {
     tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
-      txt$description,
-      texEscape(txt$alias),
-      texEscape(txt$name),
+      texEscape(txt$description),
+      texEscape(txt$alias_toc),
+      texEscape(txt$name_toc),
       txt$notes
     )
   } else {
     tex = "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in"
     tex = sprintf(
       tex,
-      txt$description,
-      texEscape(txt$alias),
-      texEscape(txt$name)
+      texEscape(txt$description),
+      texEscape(txt$alias_toc),
+      texEscape(txt$name_toc)
     )
   }
 

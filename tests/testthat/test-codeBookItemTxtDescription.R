@@ -51,4 +51,12 @@ with_api_fixture("fixtures-1-2-5", {
     )
   })
 
+  test_that("codebookItemTxtDescription notes", {
+    res = with_mock(codeBookItemTxtDescription(ds$q1), "crunch::notes" = function(x) "This is a note!")
+    expect_equal(
+      res,
+      "\\vskip 0.10in\nWhat is your favorite pet?\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{q1}} Pet}\n\\vskip 0.10in\n\\emph{This is a note!}\n\\vskip 0.10in")
+
+  })
+
 })

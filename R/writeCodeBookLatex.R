@@ -17,13 +17,16 @@
 #' @param appendix Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.
 #' @param logo Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.
 #' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.
+#' @param path The path to place .tex and .pdf files.
+#' @param logging Leave logs in the working directory, defaults to FALSE
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
+#'
 #' @export
 writeCodeBookLatex <- function(
   ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
   preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
-  position = NULL,
+  position = NULL, path = NULL, logging = FALSE,
   ...) {
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
@@ -194,10 +197,31 @@ writeCodeBookLatex <- function(
     # codebook <- gsub("\\begin{longtabu}", paste0("\\begin{longtabu}", replacement), codebook, fixed = TRUE)
   }
 
-  write(codebook, gsub(" ","-", paste0(name(ds), ".tex")))
+
+  # Issue 185 - Specify a path
+  if (!is.null(path)) {
+    basename <- gsub(" ","-", name(ds))
+    texname <- paste0(path,"/", basename, ".tex")
+    pdfname <- paste0(path, "/", basename, ".pdf")
+  } else {
+    basename <- gsub(" ","-", name(ds))
+    texname <- paste0(basename, ".tex")
+    pdfname <- paste0(basename, ".pdf")
+  }
+
+  write(codebook, texname)
 
   if (pdf) {
-    tinytex::pdflatex(gsub(" ","-", paste0(name(ds), ".tex")))
-    file.open(paste0(gsub(" ","-", paste0(name(ds))), ".pdf"))
+    tinytex::pdflatex(texname, pdf_file = pdfname)
+
+    if (!logging) {
+      files <- list.files(path = getwd())
+      files <- grep("out$|log$|aux$", files, value = TRUE)
+      if (length(files)) {
+        file.remove(file.path(getwd(), files))
+      }
+    }
+
+    file.open(pdfname)
   }
 }

@@ -1,3 +1,13 @@
+## crunchtabs 1.2.9
+
+- Codebook question descriptions now appropriately escape special characters (#187)
+- Added option enforce_onehundred which allows one to avoid rounding errors in totals rows (#189)
+- Codebook table of contents overruns, cutting text and adding "..." (#186)
+- Codebook generation now supports a filepath (#185)
+- Added vertical space before append_text (#182)
+- Bugfix: append_text that is multiple lines du0lpicated vertical space. Collapsing. (#191)
+- Remove requirement for dev version of kableExtra (#184)
+
 ## crunchtabs 1.2.8
 
 - Documentation for generating codebooks (#180)

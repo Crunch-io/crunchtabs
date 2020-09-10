@@ -78,11 +78,9 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 
 ## Generating Codebooks 
 
-To generate a codebook, you must install the development version of kableExtra
+Generating a codebook is easy! 
 
 ```
-devtools::install_github("haozhu233/kableExtra")
-
 # library(crunchtabs)
 # login()
 

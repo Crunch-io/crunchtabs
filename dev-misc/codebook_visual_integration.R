@@ -84,3 +84,21 @@ writeCodeBookLatex(ds)
 
 ds <- loadDataset("Forked Huffpost")
 writeCodeBookLatex(ds, logo = "yougov", table_of_contents = T)
+
+ds = loadDataset("https://app.crunch.io/dataset/2375608c53694a899213fe7daf7e2d1e/")
+
+writeCodeBookLatex(
+  ds,
+  url = "https://app.crunch.io/dataset/2375608c53694a899213fe7daf7e2d1e/",
+  table_of_contents = TRUE, logo = "yougov",
+  pdf = TRUE
+)
+
+
+ds <- loadDataset("BEB Fork STAN0138")
+weight(ds) <- NULL
+writeCodeBookLatex(ds, table_of_contents = TRUE, suppress_zero_counts = TRUE,
+                   title = 'Presidential Election Study - August 2020',
+                   field_period = 'August 24-31, 2020',
+                   sample_desc = paste0(nrow(ds), ' Adults'),
+                   rmd=FALSE)
