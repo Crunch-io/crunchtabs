@@ -1,12 +1,12 @@
 ---
 title: "Frequently Asked Questions"
 author: "Brandon Bertelsen"
-date: "`r Sys.Date()`"
+date: "Last Update: 2020-09-08"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Frequently Asked Questions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -224,6 +224,15 @@ ct = sortAliases(ct, var = "d", pin_to_bottom = "Don't know")
 
 writeLatex(ct, ...)
 ```
+
+### How do I stop crosstabs from breaking in the middle of a tab?
+
+In 1.2.8 a new feature was added that allows you to avoid page breaks within a banner. Some users were adding manual latex page breaks to avoid this behavior. Now, you can set the `pagebreak_in_banner` parameter to FALSE and crunchtabs will automatically push the banner to the next page to avoid a page break. 
+
+```{r, eval = FALSE}
+crosstabs_theme <- themeNew(..., pagebreak_in_banner = FALSE)
+```
+
 
 ### How do I request a new feature? 
 

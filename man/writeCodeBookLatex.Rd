@@ -14,6 +14,13 @@ writeCodeBookLatex(
   table_of_contents = FALSE,
   sample_desc = NULL,
   field_period = NULL,
+  preamble = NULL,
+  suppress_zero_counts = FALSE,
+  appendix = TRUE,
+  logo = NULL,
+  position = NULL,
+  path = NULL,
+  logging = FALSE,
   ...
 )
 }
@@ -22,9 +29,9 @@ writeCodeBookLatex(
 
 \item{url}{A crunch dataset url}
 
-\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE}
+\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE.}
 
-\item{pdf}{Should we write directly to pdf? Defaults to TRUE
+\item{pdf}{Should we write directly to pdf? Defaults to TRUE.
 title = getName(data_summary),}
 
 \item{title}{An optional title. Defaults to the data summary title.}
@@ -38,7 +45,22 @@ of the report Defaults to \code{FALSE}.}
 
 \item{field_period}{A character string describing the field period.}
 
-\item{...}{Additional arguments. Unused.}
+\item{preamble}{A latex string, usually a methodological statement.
+LaTeX should be escaped.}
+
+\item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
+
+\item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
+
+\item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.}
+
+\item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
+
+\item{path}{The path to place .tex and .pdf files.}
+
+\item{logging}{Leave logs in the working directory, defaults to FALSE}
+
+\item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }
 \description{
 Create a codebook

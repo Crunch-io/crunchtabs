@@ -1,8 +1,0 @@
-{
-    "element": "shoji:order",
-    "self": "https://app.crunch.io/api/datasets/3a4620/variables/weights/",
-    "description": "Order of the weight variables for this dataset",
-    "graph": [
-
-    ]
-}

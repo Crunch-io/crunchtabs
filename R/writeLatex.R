@@ -20,7 +20,7 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param logging add log messages
+#' @param logging Leave logs in the working directory, defaults to FALSE
 #'
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
@@ -62,6 +62,10 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     toc <- c("\\listoftables", "\\newpage")
   } else {
     toc <- NULL
+  }
+
+  if (!is.null(append_text)) {
+    append_text <- paste0("\\vspace{0.5in}\n\n", paste0(append_text, collapse = "\n"))
   }
 
   # Now assemble the .tex document
@@ -212,10 +216,13 @@ latexReportTables <- function(results, banner, theme) {
     }
 
     # beb: Enclose if pagebreak_in_banner = FALSE
+    # For some reason that I don't care about
+    # bottomrule gets wiped out by nopagebreak environment
+    # adding one manually
     if (!theme$pagebreak_in_banner)
       table = gsub(
         "\\end{longtable}",
-        "\\end{longtable}\n\\end{absolutelynopagebreak}",
+        "\\bottomrule\\end{longtable}\n\\end{absolutelynopagebreak}",
         table, fixed = TRUE)
 
     table_bodies[[i]] = table

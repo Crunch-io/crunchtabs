@@ -52,7 +52,7 @@ if \code{FALSE} the report shows counts.}
 \item{open}{logical. If PDF document was produced, open it with
 the default application? Only implemented for MacOS.}
 
-\item{logging}{add log messages}
+\item{logging}{Leave logs in the working directory, defaults to FALSE}
 }
 \value{
 If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce

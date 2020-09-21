@@ -203,6 +203,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     if (dt %in% "totals_row") {
       if (proportions) {
         data_tmp <- colSums(data)
+        if (theme$enforce_onehundred) {
+          data_tmp[data_tmp < 100 | data_tmp > 100] = 100
+        }
       } else {
         data_tmp <-  getItemData(
           data = var$crosstabs[[banner_name]],

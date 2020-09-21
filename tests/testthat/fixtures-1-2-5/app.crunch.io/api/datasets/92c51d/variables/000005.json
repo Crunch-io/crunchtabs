@@ -1,0 +1,55 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/92c51d/variables/000005/",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/92c51d/variables/",
+        "folder": "https://app.crunch.io/api/datasets/92c51d/folders/0c513d/"
+    },
+    "fragments": {
+        "missing_rules": "https://app.crunch.io/api/datasets/92c51d/variables/000005/missing_rules/",
+        "user_settings": "https://app.crunch.io/api/datasets/92c51d/variables/000005/user_settings/",
+        "dataset": "https://app.crunch.io/api/datasets/92c51d/"
+    },
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/92c51d/variables/000005/frequencies/",
+        "summary": "https://app.crunch.io/api/datasets/92c51d/variables/000005/summary/",
+        "values": "https://app.crunch.io/api/datasets/92c51d/variables/000005/values/",
+        "cast": "https://app.crunch.io/api/datasets/92c51d/variables/000005/cast/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Number of dogs -- Mutts",
+        "format": {
+            "data": {
+                "digits": 2
+            },
+            "summary": {
+                "digits": 2
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "ndogs_b",
+        "dataset_id": "92c51d",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "column_width": null
+        },
+        "type": "numeric",
+        "id": "000005",
+        "categories": [
+
+        ],
+        "description": "How many dogs do you have?"
+    },
+    "description": "Details for a given Variable",
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/92c51d/"
+    }
+}

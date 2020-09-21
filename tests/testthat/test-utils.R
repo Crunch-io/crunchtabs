@@ -34,3 +34,15 @@ test_that("error_if_that", {
 test_that("Paths appropriately on different OS", {
   # Too much effort, ignoring tests.
 })
+
+context("custom theme tests")
+
+test_that("huffpost theme as expected", {
+  r <- themeHuffPoCrosstabs(logo = list(file = default_yg_logo()))
+  expect_is(r, "Theme")
+})
+
+test_that("huffpost theme as expected", {
+  r <- themeHuffPoToplines(logo = list(file = default_yg_logo()))
+  expect_is(r, "Theme")
+})

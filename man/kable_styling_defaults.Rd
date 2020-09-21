@@ -4,12 +4,14 @@
 \alias{kable_styling_defaults}
 \title{Defaults for kableExtra}
 \usage{
-kable_styling_defaults(x, full_width = FALSE, ...)
+kable_styling_defaults(x, full_width = FALSE, position = "left", ...)
 }
 \arguments{
 \item{x}{A kable object}
 
 \item{full_width}{Defaults to TRUE.}
+
+\item{position}{The position of the table. Defaults to "left".}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling}}
 }
