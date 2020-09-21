@@ -30,7 +30,7 @@
 #'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
 #'       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 #' }
-#' #' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
+#' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 #' \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -209,6 +209,7 @@ themeDefaultExcel <- function(
     digits_numeric = 2,
     one_per_sheet = FALSE,
     latex_round_percentages = TRUE,
+    enforce_onehundred = FALSE,
     latex_headtext = "",
     latex_foottext = "",
     latex_page_numbers = TRUE,
@@ -262,6 +263,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     excel_freeze_column = 0,
     excel_orientation = "portrait",
     latex_round_percentages = FALSE,
+    enforce_onehundred = FALSE,
     latex_headtext = "",
     latex_foottext = "",
     latex_table_align = "r",
@@ -420,6 +422,7 @@ validators_to_use <- list(
   latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_page_numbers = c(class = "logical", len = 1, missing = TRUE, default = TRUE),
   latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
+  enforce_onehundred = c(class = "logical", len = 1, missing = TRUE, default = FALSE),
   latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
   logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
                                              "width", "height", "units", "dpi")),
@@ -464,10 +467,9 @@ theme_validator <- function(theme) {
     "format_var_alias", "format_var_description", "format_var_filtertext",
     "format_var_name", "format_var_subname", "format_weighted_n", "halign",
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
-    "latex_multirowheaderlines", "latex_round_percentages",
-    "latex_round_percentages_exception","latex_page_numbers",
-    "latex_table_align", "logo", "one_per_sheet","valign",
-    "pagebreak_in_banner")
+    "latex_multirowheaderlines", "latex_round_percentages", "enforce_onehundred",
+    "latex_round_percentages_exception","latex_page_numbers", 
+    "latex_table_align", "logo", "one_per_sheet","valign", "pagebreak_in_banner")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {

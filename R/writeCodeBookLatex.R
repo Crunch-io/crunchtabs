@@ -2,8 +2,8 @@
 #'
 #' @param ds A crunch dataset
 #' @param url A crunch dataset url
-#' @param rmd Should we create an interim Rmd file? Defaults to TRUE
-#' @param pdf Should we write directly to pdf? Defaults to TRUE
+#' @param rmd Should we create an interim Rmd file? Defaults to TRUE.
+#' @param pdf Should we write directly to pdf? Defaults to TRUE.
 #'  title = getName(data_summary),
 #' @param title An optional title. Defaults to the data summary title.
 #' @param subtitle An optional character subtitle. Defaults to an empty string.
@@ -12,11 +12,24 @@
 #' @param sample_desc A character string describing the sample.
 #' @param field_period A character string describing the field period.
 #' @param preamble A latex string, usually a methodological statement.
-#' @param ... Additional arguments. Unused.
+#' LaTeX should be escaped.
+#' @param suppress_zero_counts Should zero count categories be supressed? Defaults to FALSE.
+#' @param appendix Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.
+#' @param logo Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.
+#' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.
+#' @param path The path to place .tex and .pdf files.
+#' @param logging Leave logs in the working directory, defaults to FALSE
+#' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
+#'
 #' @export
-writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL,
-  subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
-  field_period = NULL, preamble = NULL, ...) {
+writeCodeBookLatex <- function(
+  ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
+  table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
+  preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
+  position = NULL, path = NULL, logging = FALSE,
+  ...) {
+
+  options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
   # Initialize Codebook Latex ----
   codebook <- readLines(system.file(
@@ -59,23 +72,74 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
 
   # Generate codebook items ----
   items <- list()
+  headers <- list()
   nms <- names(ds)
 
+  appendices <- list()
+
   for (nm in nms) {
+    message("Preparing: ", nm)
+
     items[[nm]] = list()
-    items[[nm]]$header <- noBreaks(paste0(
-      codeBookItemTxtHeader(ds[[nm]]),
-      codeBookItemTxtDescription(ds[[nm]]),
-      collapse = "\n"
+    headers[[nm]] <- noBreaks(
+      paste0(
+        ifelse(nm != nms[1], "\n\\vskip 0.25in\n", ""),
+        codeBookItemTxtHeader(ds[[nm]]),
+        codeBookItemTxtDescription(ds[[nm]]),
+        collapse = "\n"
       )
     )
 
-    body <- codeBookItemBody(ds[[nm]]) # A kable
+    body <- codeBookItemBody(ds[[nm]], ...) # A kable
+
+    if (appendix & !is.list(body)) {
+      if (attributes(body)$kable_meta$nrow > 21) {
+
+        appendices[[nm]] <- list()
+
+        description <- codeBookItemTxtDescription(ds[[nm]])
+        description <- gsub(
+          sprintf(
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}",
+            nm
+          ),
+          sprintf(
+            "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{Appendix %s}}{%s -- ",
+            length(appendices), nm),
+          description, fixed = TRUE
+        )
+
+        appendices[[nm]]$header <- noBreaks(
+          paste0(
+            ifelse(nm != nms[1], "\n\\vskip 0.25in\n", ""),
+            codeBookItemTxtHeader(ds[[nm]]),
+            description,
+            collapse = "\n"
+          )
+        )
+        appendices[[nm]]$body <- body
+
+        body <- sprintf(
+          "\\textit{There are more than 20 categories. Please see Appendix %s}",
+          length(appendices)
+        )
+
+      }
+    }
+
 
     if (is.list(body)) {
-      items[[nm]]$body <- noBreaks(paste0(unlist(body), collapse = "\n"))
+      # If grid header should be wrapped with first table so as not to allow
+      # pagebreaks (ie, we don't want header and first body to be on separate
+      # pages)
+      #
+      # Our body, is a list of three tables we need to pre-pend the first
+      # table with the header for this codebook item
+      body[[1]] <- paste(headers[[nm]], body[[1]], collapse = "\n")
+      items[[nm]]$body <- paste(lapply(unlist(body), noBreaks), collapse = "\n")
+
     } else {
-      items[[nm]]$body <- body
+      items[[nm]]$body <- noBreaks(paste(headers[[nm]],body, collapse = "\n"))
     }
 
   }
@@ -86,22 +150,78 @@ writeCodeBookLatex <- function(ds, url = NULL, rmd = TRUE, pdf = TRUE, title = N
   codebook[codebook == "<<toc>>"] <- ifelse(table_of_contents, "\\listoftables\n\\clearpage", "")
   codebook[codebook == "<<fh>>"] <- fh
   codebook[codebook == "<<sample_description>>"] <- sample_description
+  codebook[codebook == "<<drop_zero_notification>>"] <- ifelse(
+    getOption("crunchtabs.codebook.supress.zeros", default = FALSE),
+    "Important Note: Categories with no responses have been excluded from display.", "")
 
-  # Non breaking blocks
-  items = lapply(items, function(x) {
-    if (any(grepl("longtabu", x))) {
-      return(x)
-    } else {
-      noBreaks(paste0(unlist(x), collapse = "\n"))
+  # Logo ----
+
+  if (is.null(logo)) {
+    codebook[codebook == "<<logo>>"] <- ""
+  } else {
+
+    if (logo == "yougov") {
+      tex <- "\\fancyhead[R]{\\includegraphics[scale=.4]{%s}}"
+      path_to_logo <- system.file("YouGov.png", package = "crunchtabs")
+      codebook[codebook == "<<logo>>"] <- sprintf(tex, path_to_logo)
     }
-  })
 
-  codebook[codebook == "<<body>>"] <- paste0(unname(unlist(items)), collapse = "\n")
+    if (logo == "ygblue") {
+      tex <- "\\fancyhead[R]{\\includegraphics[scale=.4]{%s}}"
+      path_to_logo <- system.file("YouGovBlue_small.png", package = "crunchtabs")
+      codebook[codebook == "<<logo>>"] <- sprintf(tex, path_to_logo)
+    }
+  }
 
-  write(codebook, gsub(" ","-", paste0(name(ds), ".tex")))
+  # Body ----
+
+  codebook[codebook == "<<body>>"] <- paste0(
+    unname(unlist(items)), collapse = "\n")
+  if (length(appendices) > 0) {
+    codebook[codebook == "<<appendices>>"] <- paste0(
+      unname(unlist(appendices)), collapse = "\n")
+
+    tex = "\\clearpage\n\\fancyhead{}\n\\fancyhead[L]{{\\fontsize{16}{24}\\textbf{Appendix}}}\n"
+    codebook[codebook == "<<fh_appendix>>"] <- tex
+  } else {
+    codebook[codebook == "<<fh_appendix>>"] <- ""
+    codebook[codebook == "<<appendices>>"] <- ""
+  }
+
+  # Table Positioning
+
+  if (!is.null(position)) {
+    stopifnot(position %in% c("c", "l", "r"))
+    replacement <- sprintf("[%s]", position)
+    codebook <- gsub("\\begin{longtable}[l]", paste0("\\begin{longtable}", replacement), codebook, fixed = TRUE)
+    # codebook <- gsub("\\begin{longtabu}", paste0("\\begin{longtabu}", replacement), codebook, fixed = TRUE)
+  }
+
+
+  # Issue 185 - Specify a path
+  if (!is.null(path)) {
+    basename <- gsub(" ","-", name(ds))
+    texname <- paste0(path,"/", basename, ".tex")
+    pdfname <- paste0(path, "/", basename, ".pdf")
+  } else {
+    basename <- gsub(" ","-", name(ds))
+    texname <- paste0(basename, ".tex")
+    pdfname <- paste0(basename, ".pdf")
+  }
+
+  write(codebook, texname)
 
   if (pdf) {
-    tinytex::pdflatex(gsub(" ","-", paste0(name(ds), ".tex")))
-    file.open(paste0(name(ds), ".pdf"))
+    tinytex::pdflatex(texname, pdf_file = pdfname)
+
+    if (!logging) {
+      files <- list.files(path = getwd())
+      files <- grep("out$|log$|aux$", files, value = TRUE)
+      if (length(files)) {
+        file.remove(file.path(getwd(), files))
+      }
+    }
+
+    file.open(pdfname)
   }
 }

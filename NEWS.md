@@ -1,9 +1,23 @@
+## crunchtabs 1.2.9
+
+- Codebook question descriptions now appropriately escape special characters (#187)
+- Added option enforce_onehundred which allows one to avoid rounding errors in totals rows (#189)
+- Codebook table of contents overruns, cutting text and adding "..." (#186)
+- Codebook generation now supports a filepath (#185)
+- Added vertical space before append_text (#182)
+- Bugfix: append_text that is multiple lines du0lpicated vertical space. Collapsing. (#191)
+- Remove requirement for dev version of kableExtra (#184)
+
 ## crunchtabs 1.2.8
 
+- Documentation for generating codebooks (#180)
+- Tests and fixes for broken tests (#176)
+- Spacing and font type for codebooks (#178)
 - Additional refinements for codebooks such as title, subtitle, sample description (#152)
 - Fixes for warnings in existing code (#158)
 - Bugfix for logo assignment in excel (#155)
-- Added pagebreak_in_banner which stops multi-banner crosstabs from being spread across pages using "to be continued" (#161)
+- Added pagebreak_in_banner which stops multi-banner crosstabs from being spread across pages using "to be continued" (#161, #169)
+- Major rework of codebooks (#165, #172, #170, #160, #159)
 
 ## crunchtabs 1.2.7
 

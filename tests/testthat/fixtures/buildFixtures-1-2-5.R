@@ -52,6 +52,34 @@ ct_unweighted <- crosstabs(
   banner = ct_banner
 )
 
+# For writeCodeBookLatex
+
+writeCodeBookLatex(ds, pdf = FALSE)
+x <- readLines("Example-dataset.tex")
+saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexFull.rds")
+writeCodeBookLatex(
+  ds,
+  title = "Hello",
+  subtitle = "Goodbye",
+  sample_desc = "US Voting Adults",
+  logo = "yougov", pdf = FALSE)
+x <- readLines("Example-dataset.tex")
+saveRDS(x, "tests/testthat/fixtures/writeCodeBookLatexOne.rds")
+
+ds = loadDataset(
+  "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/"
+)
+
+suppressWarnings(writeCodeBookLatex(
+  ds[1],
+  url = "https://app.crunch.io/dataset/10c3c3cbd28b420aaa4976b70caba851/",
+  appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
+)
+
+x <- readLines("Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
+saveRDS(x, file = "tests/testthat/fixtures/writeCodeBookLatexLongCat.rds")
+
+# For crosstabs
 
 ds = loadDataset("https://app.crunch.io/datasets/868e8b3e01834c45b73e56e80160d3c3/")
 crosstabs_data <- crosstabs(ds, vars = c("movies2_a_1", "movies2_a_2", "books1"))

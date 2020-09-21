@@ -1,5 +1,6 @@
 #' @importFrom kableExtra column_spec kable_styling
 #' @importFrom magrittr `%>%`
+#' @importFrom rlang .data
 #' @keywords internal
 "_PACKAGE"
 

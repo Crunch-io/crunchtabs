@@ -8,7 +8,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       res,
-      "\\vskip 0.10in\n\\addcontentsline{lot}{table}{What is your favorite pet?}"
+      "\\vskip 0.10in\nWhat is your favorite pet?\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{q1}} Pet}\n\\vskip 0.10in"
     )
   })
 
@@ -17,7 +17,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
      res,
-     "\\vskip 0.10in\n\\addcontentsline{lot}{table}{Name the kinds of pets you have at these locations.}"
+     "\\vskip 0.10in\nName the kinds of pets you have at these locations.\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{petloc}} Pets by location}\n\\vskip 0.10in"
     )
 
   })
@@ -27,7 +27,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       res,
-      "\\vskip 0.10in\n\\addcontentsline{lot}{table}{Do you have any of these animals as pets? Please select all that apply.}"
+      "\\vskip 0.10in\nDo you have any of these animals as pets? Please select all that apply.\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{allpets}} All pets owned}\n\\vskip 0.10in"
     )
 
   })
@@ -37,7 +37,7 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       res,
-      "\\vskip 0.10in\n\\addcontentsline{lot}{table}{}"
+      "\\vskip 0.10in\n\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{ndogs}} Number of dogs}\n\\vskip 0.10in"
     )
 
   })
@@ -47,8 +47,16 @@ with_api_fixture("fixtures-1-2-5", {
 
     expect_equal(
       res,
-      "\\vskip 0.10in\n\\addcontentsline{lot}{table}{}"
+      "\\vskip 0.10in\n\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{wave}} Wave}\n\\vskip 0.10in"
     )
+  })
+
+  test_that("codebookItemTxtDescription notes", {
+    res = with_mock(codeBookItemTxtDescription(ds$q1), "crunch::notes" = function(x) "This is a note!")
+    expect_equal(
+      res,
+      "\\vskip 0.10in\nWhat is your favorite pet?\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{q1}} Pet}\n\\vskip 0.10in\n\\emph{This is a note!}\n\\vskip 0.10in")
+
   })
 
 })

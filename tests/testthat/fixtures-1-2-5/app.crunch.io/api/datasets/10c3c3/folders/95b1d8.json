@@ -1,0 +1,71 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/10c3c3/folders/95b1d8/",
+    "index": {
+        "../../variables/000524/": {
+            "discarded": true,
+            "alias": "panman_source",
+            "secure": false,
+            "name": "Panman Source",
+            "id": "000524",
+            "type": "numeric",
+            "notes": "",
+            "derived": false,
+            "hidden": true,
+            "description": "Panman Source"
+        },
+        "../../variables/000206/": {
+            "secure": false,
+            "derived": false,
+            "id": "000206",
+            "description": "Does the question have profanity?",
+            "scale": "interval",
+            "name": "Has Profanity",
+            "notes": "",
+            "discarded": true,
+            "alias": "has_profanity",
+            "hidden": true,
+            "type": "categorical"
+        },
+        "../../variables/000205/": {
+            "secure": false,
+            "derived": false,
+            "id": "000205",
+            "description": "Were there problems reproducing media?",
+            "scale": "interval",
+            "name": "Has Media Error",
+            "notes": "",
+            "discarded": true,
+            "alias": "has_media_error",
+            "hidden": true,
+            "type": "categorical"
+        },
+        "../../variables/000207/": {
+            "secure": false,
+            "derived": false,
+            "id": "000207",
+            "description": "Does the answer has \"test\" in it?",
+            "scale": "interval",
+            "name": "Has Test",
+            "notes": "",
+            "discarded": true,
+            "alias": "has_test",
+            "hidden": true,
+            "type": "categorical"
+        }
+    },
+    "body": {
+        "name": "Other",
+        "id": "95b1d8"
+    },
+    "graph": [
+        "../../variables/000524/",
+        "../../variables/000206/",
+        "../../variables/000205/",
+        "../../variables/000207/"
+    ],
+    "size": 4,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/10c3c3/folders/6121b6/"
+    }
+}

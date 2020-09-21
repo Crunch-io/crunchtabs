@@ -1,0 +1,54 @@
+{
+    "element": "shoji:entity",
+    "self": "https://app.crunch.io/api/datasets/92c51d/variables/000008/",
+    "catalogs": {
+        "parent": "https://app.crunch.io/api/datasets/92c51d/variables/",
+        "folder": "https://app.crunch.io/api/datasets/92c51d/folders/ed673f/"
+    },
+    "fragments": {
+        "missing_rules": "https://app.crunch.io/api/datasets/92c51d/variables/000008/missing_rules/",
+        "user_settings": "https://app.crunch.io/api/datasets/92c51d/variables/000008/user_settings/",
+        "dataset": "https://app.crunch.io/api/datasets/92c51d/"
+    },
+    "views": {
+        "frequencies": "https://app.crunch.io/api/datasets/92c51d/variables/000008/frequencies/",
+        "summary": "https://app.crunch.io/api/datasets/92c51d/variables/000008/summary/",
+        "values": "https://app.crunch.io/api/datasets/92c51d/variables/000008/values/",
+        "cast": "https://app.crunch.io/api/datasets/92c51d/variables/000008/cast/"
+    },
+    "body": {
+        "secure": false,
+        "name": "Pet name",
+        "format": {
+            "summary": {
+                "digits": 0
+            }
+        },
+        "notes": "",
+        "derived": false,
+        "missing_reasons": {
+            "No Data": -1,
+            "Not asked": 1
+        },
+        "private": false,
+        "discarded": false,
+        "alias": "q3",
+        "dataset_id": "92c51d",
+        "owner": null,
+        "hidden": false,
+        "view": {
+            "show_counts": true,
+            "column_width": null
+        },
+        "type": "text",
+        "id": "000008",
+        "categories": [
+
+        ],
+        "description": "What is your favorite pet's maiden name?"
+    },
+    "description": "Details for a given Variable",
+    "urls": {
+        "dataset_url": "https://app.crunch.io/api/datasets/92c51d/"
+    }
+}

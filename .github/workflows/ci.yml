@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Add kableExtra
-      run: Rscript -e 'install.packages("kableExtra")'
+      run: Rscript -e 'devtools::install_github("haozhu233/kableExtra")'
     - name: CRAN crunch
       run: Rscript -e 'install.packages("crunch")'
     - name: Build

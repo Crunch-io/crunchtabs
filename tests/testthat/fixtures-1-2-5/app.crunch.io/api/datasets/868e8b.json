@@ -75,7 +75,7 @@
         "owner_name": "crunchtabs",
         "description": "",
         "end_date": null,
-        "access_time": "2020-07-14T16:26:10.477000",
+        "access_time": "2020-08-09T06:47:21.415000",
         "current_editor_name": null,
         "view_of": null,
         "modification_time": "2019-06-25T20:51:31.649000",
@@ -97,6 +97,6 @@
     "urls": {
         "owner_url": "https://app.crunch.io/api/projects/4f0879/",
         "editor_url": null,
-        "user_url": "https://app.crunch.io/api/users/27a158/"
+        "user_url": "https://app.crunch.io/api/users/0740cc/"
     }
 }
