@@ -14,6 +14,7 @@ writeCodeBookLatex(
   table_of_contents = FALSE,
   sample_desc = NULL,
   field_period = NULL,
+  preamble = NULL,
   ...
 )
 }
@@ -37,6 +38,8 @@ of the report Defaults to \code{FALSE}.}
 \item{sample_desc}{A character string describing the sample.}
 
 \item{field_period}{A character string describing the field period.}
+
+\item{preamble}{A latex string, usually a methodological statement.}
 
 \item{...}{Additional arguments. Unused.}
 }

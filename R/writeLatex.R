@@ -325,7 +325,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     "\\captionsetup[table]{labelformat=empty}", #topline
     "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #topline
     "\\fancyfoot{}",
-    "\\fancyfoot[R]{\\thepage}",
+    ifelse(theme$latex_page_numbers, "\\fancyfoot[R]{\\thepage}",""),
     newcommand("PreserveBackslash", args = 1, "\\let\\temp=\\\\#1\\let\\\\=\\temp"),
     "\\let\\PBS=\\PreserveBackslash",
     newcommand("longtablesep", paste(

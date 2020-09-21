@@ -2,9 +2,22 @@
 % Please edit documentation in R/crosstabs.R
 \name{crosstabs}
 \alias{crosstabs}
+\alias{toplines}
 \title{Toplines and Crosstabs Summaries}
 \usage{
 crosstabs(
+  dataset,
+  vars = names(dataset),
+  weight = crunch::weight(dataset),
+  banner = NULL,
+  codebook = FALSE,
+  include_numeric = FALSE,
+  include_datetime = FALSE,
+  include_verbatims = FALSE,
+  num_verbatims = 10
+)
+
+toplines(
   dataset,
   vars = names(dataset),
   weight = crunch::weight(dataset),
@@ -46,6 +59,11 @@ summary of the input dataset.
 \code{crosstabs} produces Toplines (one-way frequency tables) or Crosstabs (cross tabulations)
 summaries of a Cruch dataset.
 }
+\section{Functions}{
+\itemize{
+\item \code{toplines}: An alias for \code{crosstabs}
+}}
+
 \examples{
 \dontrun{
 toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')

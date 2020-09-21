@@ -211,6 +211,7 @@ themeDefaultExcel <- function(
     latex_round_percentages = TRUE,
     latex_headtext = "",
     latex_foottext = "",
+    latex_page_numbers = TRUE,
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
     latex_max_lines_for_tabular = 0)
@@ -266,6 +267,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
     latex_max_lines_for_tabular = 0,
+    latex_page_numbers = TRUE,
     pagebreak_in_banner = TRUE
   )
 
@@ -416,6 +418,7 @@ validators_to_use <- list(
   latex_max_lines_for_tabular = c(class = "numeric", len = 1, missing = FALSE, default = 0),
   latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+  latex_page_numbers = c(class = "logical", len = 1, missing = TRUE, default = TRUE),
   latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
   latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
   logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
@@ -462,8 +465,9 @@ theme_validator <- function(theme) {
     "format_var_name", "format_var_subname", "format_weighted_n", "halign",
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
     "latex_multirowheaderlines", "latex_round_percentages",
-    "latex_round_percentages_exception", "latex_table_align", "logo",
-    "one_per_sheet","valign", "pagebreak_in_banner")
+    "latex_round_percentages_exception","latex_page_numbers",
+    "latex_table_align", "logo", "one_per_sheet","valign",
+    "pagebreak_in_banner")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {
