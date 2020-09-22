@@ -28,7 +28,6 @@
 #' @export
 crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(dataset), banner = NULL, codebook = FALSE, include_numeric = FALSE, include_datetime = FALSE, include_verbatims = FALSE, num_verbatims = 10) {
 
-  # TODO: open ends
   wrong_class_error(dataset, "CrunchDataset", "dataset")
 
   all_types = crunch::types(crunch::allVariables(dataset))
@@ -64,12 +63,6 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
 
   vars_out <- if (codebook) { vars } else {
     intersect(vars, all_aliases[all_types %in% c("categorical", "multiple_response", "categorical_array", "numeric")]) }
-
-
-  # error_if_items(
-  #   unique(types(allVariables(dataset[setdiff(vars, vars_out)]))),
-  #   "`vars` of type(s) {items} are not supported and have been skipped.",
-  #   and = TRUE, error = FALSE)
 
   if (length(vars_out) == 0) {
     stop("No variables provided.")
@@ -217,3 +210,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
 
   return(summary_data)
 }
+
+#' @describeIn crosstabs An alias for \code{crosstabs}
+#' @export
+toplines <- crosstabs
