@@ -45,6 +45,9 @@ of the report Defaults to \code{FALSE}.}
 
 \item{field_period}{A character string describing the field period.}
 
+\item{preamble}{A latex string, usually a methodological statement.
+LaTeX should be escaped.}
+
 \item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 
 \item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
@@ -57,10 +60,7 @@ of the report Defaults to \code{FALSE}.}
 
 \item{logging}{Leave logs in the working directory, defaults to FALSE}
 
-\item{...}{Additional arguments. Unused.}
-\item{preamble}{A latex string, usually a methodological statement.
-LaTeX should be escaped.}
-
+\item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }
 \description{
 Create a codebook
