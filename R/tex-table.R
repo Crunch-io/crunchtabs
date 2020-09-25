@@ -156,7 +156,7 @@ latexTableBody <- function(df, theme) {
   # Turn each table in `data` into a LaTeX table string
   if (topline_catarray) {
 
-    if(TRUE) { # replace with theme option
+    if(theme$latex_flip_grids) { # replace with theme option
       data$body <- as.data.frame(t(data$body), check.names = FALSE, stringsAsFactors = FALSE)
     }
     # Apparently you can't have any extra table members for these, only "body"
@@ -327,7 +327,7 @@ tableHeader.ToplineVar <- function(var, theme) {
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
 
-  if (TRUE) {
+  if (theme$latex_flip_grids) {
     col_names <- var$subnames
   } else {
     col_names <- sapply(var$inserts_obj, name)
