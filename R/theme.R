@@ -58,6 +58,7 @@
 #' \item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100\% where necessary? Defaults to FALSE.}
 #' \item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 #' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
+#' \item{latex_flip_grids}{In Latex, a logical. Categorical arrays will be flipped so that there rows are now transposed to columns.}
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
 #' \itemize{
@@ -215,6 +216,7 @@ themeDefaultExcel <- function(
     latex_page_numbers = TRUE,
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
+    latex_flip_grids = FALSE,
     latex_max_lines_for_tabular = 0)
 
   class(defaults) <- "Theme"
@@ -270,6 +272,7 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     latex_multirowheaderlines = TRUE,
     latex_max_lines_for_tabular = 0,
     latex_page_numbers = TRUE,
+    latex_flip_grids = FALSE,
     pagebreak_in_banner = TRUE
   )
 
@@ -424,6 +427,7 @@ validators_to_use <- list(
   latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
   enforce_onehundred = c(class = "logical", len = 1, missing = TRUE, default = FALSE),
   latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
+  latex_flip_grids = c(class = "logical", len = 1, missing = TRUE, default = FALSE),
   logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
                                              "width", "height", "units", "dpi")),
   mask = c(class = "character", len = 1, missing = TRUE),
@@ -468,7 +472,7 @@ theme_validator <- function(theme) {
     "format_var_name", "format_var_subname", "format_weighted_n", "halign",
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
     "latex_multirowheaderlines", "latex_round_percentages", "enforce_onehundred",
-    "latex_round_percentages_exception","latex_page_numbers", 
+    "latex_flip_grids","latex_round_percentages_exception","latex_page_numbers",
     "latex_table_align", "logo", "one_per_sheet","valign", "pagebreak_in_banner")
 
   ignore <- setdiff(names(theme), theme_required)

@@ -34,6 +34,7 @@ latexTableBody <- function(df, theme) {
   #  - attr(*, "class")= chr [1:2] "MultipleResponseCrossTabVar" "CrossTabVar"
 
   data <- df$data_list
+
   # So `data` is a list of data frames
 
   topline <- theme$topline
@@ -154,6 +155,10 @@ latexTableBody <- function(df, theme) {
 
   # Turn each table in `data` into a LaTeX table string
   if (topline_catarray) {
+
+    if(theme$latex_flip_grids) { # replace with theme option
+      data$body <- as.data.frame(t(data$body), check.names = FALSE, stringsAsFactors = FALSE)
+    }
     # Apparently you can't have any extra table members for these, only "body"
 
     # Also, IMPORTANT: cat arrays get displayed transposed. First, paste
@@ -321,7 +326,13 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
-  col_names <- sapply(var$inserts_obj, name)
+
+  if (theme$latex_flip_grids) {
+    col_names <- var$subnames
+  } else {
+    col_names <- sapply(var$inserts_obj, name)
+  }
+
   col_names_len <- length(col_names)
   col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
 

@@ -7,7 +7,6 @@
 writeCodeBookLatex(
   ds,
   url = NULL,
-  rmd = TRUE,
   pdf = TRUE,
   title = NULL,
   subtitle = NULL,
@@ -20,6 +19,7 @@ writeCodeBookLatex(
   logo = NULL,
   position = NULL,
   path = NULL,
+  filename = NULL,
   logging = FALSE,
   ...
 )
@@ -28,8 +28,6 @@ writeCodeBookLatex(
 \item{ds}{A crunch dataset}
 
 \item{url}{A crunch dataset url}
-
-\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE.}
 
 \item{pdf}{Should we write directly to pdf? Defaults to TRUE.
 title = getName(data_summary),}
@@ -45,6 +43,9 @@ of the report Defaults to \code{FALSE}.}
 
 \item{field_period}{A character string describing the field period.}
 
+\item{preamble}{A latex string, usually a methodological statement.
+LaTeX should be escaped.}
+
 \item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 
 \item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
@@ -55,12 +56,11 @@ of the report Defaults to \code{FALSE}.}
 
 \item{path}{The path to place .tex and .pdf files.}
 
+\item{filename}{A string. The desired basename of the resulting file with no extension (i.e, "mycodebook")}
+
 \item{logging}{Leave logs in the working directory, defaults to FALSE}
 
-\item{...}{Additional arguments. Unused.}
-\item{preamble}{A latex string, usually a methodological statement.
-LaTeX should be escaped.}
-
+\item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }
 \description{
 Create a codebook

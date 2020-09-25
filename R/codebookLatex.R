@@ -184,12 +184,14 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
 
 
     if (max(nchar(k$`{Label}`)) > 80) {
-      kab %>% kableExtra::column_spec(2, width = "5.25in") %>%
+      kab <- kab %>% kableExtra::column_spec(2, width = "5.25in") %>%
         kable_styling_defaults(...)
     } else {
-      kab %>%
+      kab <- kab %>%
         kable_styling_defaults(...)
     }
+    # Fix for square braces in options
+    gsub("\\hspace*{0in}", "", kab, fixed = TRUE)
 
   }
 
@@ -436,11 +438,17 @@ curlyWrap <- function(x) paste0("{", x, "}")
 #' @param k A data.frame to be printed using \link[kableExtra]{kable}
 #' @param alignment A string vector of alignments
 scolumnAlign <- function(k, alignment) {
-  nchars <- unlist(lapply(k, function(x) max(nchar(x), na.rm = TRUE)))
+  nchars <- unlist(lapply(k, function(x) suppressWarnings(max(nchar(x), na.rm = TRUE))))
 
   for (i in 1:ncol(k)) {
     if (alignment[i] == "d") {
-      maxnchar <- max(nchar(k[[i]]), na.rm = TRUE)
+      # If entire column is NA, set to two
+      if (all(is.na(k[[i]]))) {
+        maxnchar <- 2
+      } else {
+        maxnchar <- max(nchar(k[[i]]), na.rm = TRUE)
+      }
+
       if (maxnchar > 6) {
         alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
