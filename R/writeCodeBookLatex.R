@@ -18,6 +18,7 @@
 #' @param position Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.
 #' @param path The path to place .tex and .pdf files.
 #' @param logging Leave logs in the working directory, defaults to FALSE
+#' @param filename A string. The desired basename of the resulting file with no extension (i.e, "mycodebook")
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
 #'
 #' @export

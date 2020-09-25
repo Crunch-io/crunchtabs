@@ -56,6 +56,8 @@ LaTeX should be escaped.}
 
 \item{path}{The path to place .tex and .pdf files.}
 
+\item{filename}{A string. The desired basename of the resulting file with no extension (i.e, "mycodebook")}
+
 \item{logging}{Leave logs in the working directory, defaults to FALSE}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
