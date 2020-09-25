@@ -7,7 +7,6 @@
 writeCodeBookLatex(
   ds,
   url = NULL,
-  rmd = TRUE,
   pdf = TRUE,
   title = NULL,
   subtitle = NULL,
@@ -20,6 +19,7 @@ writeCodeBookLatex(
   logo = NULL,
   position = NULL,
   path = NULL,
+  filename = NULL,
   logging = FALSE,
   ...
 )
@@ -28,8 +28,6 @@ writeCodeBookLatex(
 \item{ds}{A crunch dataset}
 
 \item{url}{A crunch dataset url}
-
-\item{rmd}{Should we create an interim Rmd file? Defaults to TRUE.}
 
 \item{pdf}{Should we write directly to pdf? Defaults to TRUE.
 title = getName(data_summary),}
