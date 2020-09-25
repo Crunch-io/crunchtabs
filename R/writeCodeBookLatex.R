@@ -2,7 +2,6 @@
 #'
 #' @param ds A crunch dataset
 #' @param url A crunch dataset url
-#' @param rmd Should we create an interim Rmd file? Defaults to TRUE.
 #' @param pdf Should we write directly to pdf? Defaults to TRUE.
 #'  title = getName(data_summary),
 #' @param title An optional title. Defaults to the data summary title.
@@ -23,10 +22,10 @@
 #'
 #' @export
 writeCodeBookLatex <- function(
-  ds, url = NULL, rmd = TRUE, pdf = TRUE, title = NULL, subtitle = NULL,
+  ds, url = NULL, pdf = TRUE, title = NULL, subtitle = NULL,
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
   preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
-  position = NULL, path = NULL, logging = FALSE,
+  position = NULL, path = NULL, filename = NULL, logging = FALSE,
   ...) {
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
@@ -198,13 +197,20 @@ writeCodeBookLatex <- function(
   }
 
 
+  # Issue 204 - Sanitize name(ds)
+  if (is.null(filename)) {
+    filename <- gsub(" ", "-", name(ds))
+    filename <- gsub("[[:punct:]]","-", filename)
+    filename <- gsub("[-]$", "", filename)
+  }
+
   # Issue 185 - Specify a path
   if (!is.null(path)) {
-    basename <- gsub(" ","-", name(ds))
+    basename <- gsub(" ","-", filename)
     texname <- paste0(path,"/", basename, ".tex")
     pdfname <- paste0(path, "/", basename, ".pdf")
   } else {
-    basename <- gsub(" ","-", name(ds))
+    basename <- gsub(" ","-", filename)
     texname <- paste0(basename, ".tex")
     pdfname <- paste0(basename, ".pdf")
   }
