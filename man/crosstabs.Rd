@@ -35,8 +35,11 @@ toplines(
 \item{vars}{An optional vector of aliases of the non-hidden variables that shoulds be used.
 Defaults to all non-hidden variables.}
 
-\item{weight}{The alias of a numeric variable that should be used for data weighting.
-Defaults to current weight variable. For unweighted, set to \code{NULL}}
+\item{weight}{The alias of a numeric variable that should be used for data
+weighting. Alternatively a named list where the name is the alias of the weight
+and the contents of the list component are a character vector of aliases to
+which that weight should apply. Defaults to current weight variable. For
+unweighted, set to \code{NULL}}
 
 \item{banner}{An optional object of class \code{Banner} that should be used to generate
 a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.}

@@ -4,7 +4,14 @@
 \alias{tabBooks}
 \title{Create a tabBook}
 \usage{
-tabBooks(dataset, vars, banner, weight = NULL, topline = FALSE)
+tabBooks(
+  dataset,
+  vars,
+  banner,
+  weight = NULL,
+  topline = FALSE,
+  include_original_weighted = FALSE
+)
 }
 \arguments{
 \item{dataset}{A crunch dataset name}
@@ -16,6 +23,9 @@ tabBooks(dataset, vars, banner, weight = NULL, topline = FALSE)
 \item{weight}{A weighting variable passed to \link[crunch]{tabBook}}
 
 \item{topline}{Logical identifying if this is a topline only}
+
+\item{include_original_weighted}{Logical, if you have specified complex weights
+should the original weighted variable be included or only the custom weighted version?}
 }
 \description{
 Prepares the actual data for tabulation
