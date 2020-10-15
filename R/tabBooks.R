@@ -26,51 +26,69 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     default_weight <- alias(weight(dataset))
   }
 
+
   if (is.list(weight)) {
-    tab_frame <- crunch::tabFramePrepare(
-      dataset = dataset,
-      weight = weight,
-      include_original_weighted = include_original_weighted
+    tab_frame <- crunch::tabBookWeightSpec(dataset, weight, append_default_wt = include_original_weighted)
+    tab_frame <- tab_frame[tab_frame$alias %in% vars,]
+
+    book <- suppressWarnings(
+      crunch::tabBook(
+        multitable,
+        dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
+        weight = weight,
+        output_format = "json"
+      )
     )
-    tab_frame <- tab_frame[tab_frame$values %in% vars,]
+
+  } else {
+    tab_frame <- data.frame(alias = vars, weight = default_weight)
+
+    book <- suppressWarnings(
+      crunch::tabBook(
+        multitable,
+        dataset = dataset[vars],
+        weight = weight,
+        output_format = "json"
+      )
+    )
 
   }
 
-  book <- crunch::tabBook(
-    multitable,
-    dataset = dataset[unique(c(vars, unique(tab_frame$ind)))],
-    weight = weight,
-    output_format = "json"
-  )
-
+  # Put tab_frame in vars order
+  tab_frame <- tab_frame[
+    rev(
+      order(tab_frame$alias, factor(vars, levels = vars)
+            )
+      ),
+  ]
 
   banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
     crunch::aliases(crunch::variables(book[[1]][[ix]]))[2] })
   banner_var_names[1] <- "___total___"
-  var_nums <- seq_len(nrow(tab_frame))
-  # var_nums <- setdiff(match(vars, crunch::aliases(book)), NA)
+  # var_nums <- seq_len(nrow(tab_frame))
+  var_nums <- setdiff(match(vars, crunch::aliases(book)), NA)
 
-  structure(unlist(lapply(var_nums, function(vi) {
+  structure(unlist(lapply(seq_along(var_nums), function(tab_frame_pos) {
+    vi <- var_nums[tab_frame_pos]
     crunch_cube <- book[[vi]][[1]]
 
     ## Metadata
     cube_variable <- crunch::variables(crunch_cube)[1]
 
-    default_weighted <- tab_frame$ind[vi] == default_weight
+    default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
 
     if (default_weighted) {
       alias <- aliases(cube_variable)
     } else {
-      alias <- paste0(aliases(cube_variable), "_", tab_frame$ind[vi])
+      alias <- paste0(aliases(cube_variable), "_", tab_frame$weight[tab_frame_pos])
     }
 
     if (alias == "total") {
-      alias <- tab_frame$values[vi]
+      alias <- tab_frame$alias[tab_frame_pos]
       var_type <- type(dataset[[alias]])
     } else {
       var_type <- type(dataset[[aliases(cube_variable)]])
     }
-
 
     if (getOption("testing_crunchtabs", default = FALSE)) print(alias)
 
@@ -82,7 +100,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
 
 
     if (is_crosstabs_array) {
-        valiases <- getSubAliases(crunch_cube)
+      valiases <- getSubAliases(crunch_cube)
     } else {
       valiases <- crunch::aliases(cube_variable)
       if (valiases == "total") {
@@ -90,7 +108,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
       }
     }
 
-    if (!default_weighted) valiases <- paste0(valiases, "_", tab_frame$ind[vi])
+    if (!default_weighted) valiases <- paste0(valiases, "_", tab_frame$weight[tab_frame_pos])
 
     subnames <- if (is_array_type) getSubNames(crunch_cube)
     var_cats <- categories(cube_variable[[1]])
