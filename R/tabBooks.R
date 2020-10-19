@@ -41,7 +41,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     )
 
   } else {
-    tab_frame <- data.frame(alias = vars, weight = default_weight)
+    if (is.null(default_weight)) {
+      tab_frame <- data.frame(alias = vars, weight = NA_character_)
+    } else {
+      tab_frame <- data.frame(alias = vars, weight = default_weight)
+    }
 
     book <- suppressWarnings(
       crunch::tabBook(
@@ -75,7 +79,11 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     ## Metadata
     cube_variable <- crunch::variables(crunch_cube)[1]
 
-    default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+    if (all(is.na(tab_frame$weight))) {
+      default_weighted <- TRUE
+    } else {
+      default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+    }
 
     if (default_weighted) {
       alias <- aliases(cube_variable)
