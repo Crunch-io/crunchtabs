@@ -1,0 +1,124 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/72c94d/folders/",
+    "catalogs": {
+        "personal": "https://app.crunch.io/api/datasets/72c94d/variables/personal/",
+        "hidden": "https://app.crunch.io/api/datasets/72c94d/folders/hidden/",
+        "trash": "https://app.crunch.io/api/datasets/72c94d/folders/trash/",
+        "parents": "https://app.crunch.io/api/datasets/72c94d/folders/parents/",
+        "secure": "https://app.crunch.io/api/datasets/72c94d/folders/secure/"
+    },
+    "description": "This is the variables' folder root",
+    "index": {
+        "../variables/834ea1/": {
+            "secure": false,
+            "derived": false,
+            "id": "834ea1",
+            "description": "What is your favorite pet?",
+            "scale": "interval",
+            "name": "Pet name post",
+            "notes": "",
+            "discarded": false,
+            "alias": "q1_post",
+            "hidden": false,
+            "type": "categorical"
+        },
+        "../variables/2b4a81/": {
+            "discarded": false,
+            "alias": "country_post",
+            "secure": false,
+            "name": "Country post",
+            "id": "2b4a81",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": ""
+        },
+        "../variables/02561c/": {
+            "discarded": false,
+            "alias": "weight1",
+            "secure": false,
+            "name": "weight1",
+            "id": "02561c",
+            "type": "numeric",
+            "notes": "",
+            "derived": true,
+            "hidden": false,
+            "description": "Raked weighting based on: Pet"
+        },
+        "49ef46/": {
+            "type": "folder",
+            "name": "Details",
+            "size": 1
+        },
+        "../variables/efb6dc/": {
+            "discarded": false,
+            "alias": "weight2",
+            "secure": false,
+            "name": "weight2",
+            "id": "efb6dc",
+            "type": "numeric",
+            "notes": "",
+            "derived": true,
+            "hidden": false,
+            "description": "Raked weighting based on: Pet"
+        },
+        "8be319/": {
+            "type": "folder",
+            "name": "Dog Metrics",
+            "size": 3
+        },
+        "a90615/": {
+            "type": "folder",
+            "name": "Dimensions",
+            "size": 2
+        },
+        "../variables/31df7d/": {
+            "secure": false,
+            "derived": false,
+            "id": "31df7d",
+            "description": "What is your favorite pet?",
+            "scale": "interval",
+            "name": "Pet name pre",
+            "notes": "",
+            "discarded": false,
+            "alias": "q1_pre",
+            "hidden": false,
+            "type": "categorical"
+        },
+        "18a467/": {
+            "type": "folder",
+            "name": "Key Pet Indicators",
+            "size": 3
+        },
+        "../variables/f4549c/": {
+            "discarded": false,
+            "alias": "country_pre",
+            "secure": false,
+            "name": "Country pre",
+            "id": "f4549c",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": ""
+        }
+    },
+    "body": {
+        "name": "Root"
+    },
+    "graph": [
+        "18a467/",
+        "8be319/",
+        "49ef46/",
+        "a90615/",
+        "../variables/02561c/",
+        "../variables/efb6dc/",
+        "../variables/31df7d/",
+        "../variables/834ea1/",
+        "../variables/f4549c/",
+        "../variables/2b4a81/"
+    ],
+    "size": 15
+}

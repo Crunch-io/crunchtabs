@@ -1,15 +1,15 @@
 structure(list(url = "https://app.crunch.io/api/datasets/868e8b/multitables/0eccd0/export/", 
-    status_code = 202L, headers = structure(list(date = "Mon, 19 Oct 2020 16:58:41 GMT", 
+    status_code = 202L, headers = structure(list(date = "Tue, 20 Oct 2020 00:58:02 GMT", 
         `content-type` = "application/json;charset=utf-8", `content-length` = "165", 
-        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%24bcb3e0/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=W8Dcshjn64U1n37nyitgRxNb1EY%3D&Expires=1603130321&AWSAccessKeyId=AKIA5IDTGVXE7MLDN5WX", 
+        location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%24bcb3e0/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=LivG%2FdO5foKXJS0cGGwW3mCNbgM%3D&Expires=1603159081&AWSAccessKeyId=AKIA5IDTGVXER5OTHXQT", 
         server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
         allow = "OPTIONS, POST", `x-timing` = "", `x-xss-protection` = "1; mode=block", 
         `strict-transport-security` = "max-age=31536000; includeSubDomains", 
         `x-content-type-options` = "nosniff"), class = c("insensitive", 
     "list")), all_headers = list(list(status = 202L, version = "HTTP/2", 
-        headers = structure(list(date = "Mon, 19 Oct 2020 16:58:41 GMT", 
+        headers = structure(list(date = "Tue, 20 Oct 2020 00:58:02 GMT", 
             `content-type` = "application/json;charset=utf-8", 
-            `content-length` = "165", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%24bcb3e0/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=W8Dcshjn64U1n37nyitgRxNb1EY%3D&Expires=1603130321&AWSAccessKeyId=AKIA5IDTGVXE7MLDN5WX", 
+            `content-length` = "165", location = "https://player-crunch-io.s3.amazonaws.com/export/tabbooks/export_tabbook%3A868e8b%24bcb3e0/YouGov_crunchtabs_example_monkeys_starttime_from_2018-06-19.json?Signature=LivG%2FdO5foKXJS0cGGwW3mCNbgM%3D&Expires=1603159081&AWSAccessKeyId=AKIA5IDTGVXER5OTHXQT", 
             server = "nginx", `content-encoding` = "gzip", vary = "Cookie, Accept-Encoding", 
             allow = "OPTIONS, POST", `x-timing` = "", `x-xss-protection` = "1; mode=block", 
             `strict-transport-security` = "max-age=31536000; includeSubDomains", 
@@ -19,7 +19,7 @@ structure(list(url = "https://app.crunch.io/api/datasets/868e8b/multitables/0ecc
         expiration = structure(numeric(0), class = c("POSIXct", 
         "POSIXt")), name = logical(0), value = logical(0)), row.names = integer(0), class = "data.frame"), 
     content = charToRaw("{\"element\": \"shoji:view\", \"self\": \"https://app.crunch.io/api/datasets/868e8b/multitables/0eccd0/export/\", \"value\": \"https://app.crunch.io/api/progress/\"}"), 
-    date = structure(1603126721, class = c("POSIXct", "POSIXt"
-    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 2.8e-05, 
-    connect = 2.9e-05, pretransfer = 8e-05, starttransfer = 8.1e-05, 
-    total = 0.691019)), class = "response")
+    date = structure(1603155482, class = c("POSIXct", "POSIXt"
+    ), tzone = "GMT"), times = c(redirect = 0, namelookup = 2.2e-05, 
+    connect = 2.2e-05, pretransfer = 8.7e-05, starttransfer = 8.9e-05, 
+    total = 1.31575)), class = "response")
