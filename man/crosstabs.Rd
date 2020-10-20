@@ -14,7 +14,8 @@ crosstabs(
   include_numeric = FALSE,
   include_datetime = FALSE,
   include_verbatims = FALSE,
-  num_verbatims = 10
+  num_verbatims = 10,
+  include_original_weighted = TRUE
 )
 
 toplines(
@@ -26,7 +27,8 @@ toplines(
   include_numeric = FALSE,
   include_datetime = FALSE,
   include_verbatims = FALSE,
-  num_verbatims = 10
+  num_verbatims = 10,
+  include_original_weighted = TRUE
 )
 }
 \arguments{
@@ -35,8 +37,11 @@ toplines(
 \item{vars}{An optional vector of aliases of the non-hidden variables that shoulds be used.
 Defaults to all non-hidden variables.}
 
-\item{weight}{The alias of a numeric variable that should be used for data weighting.
-Defaults to current weight variable. For unweighted, set to \code{NULL}}
+\item{weight}{The alias of a numeric variable that should be used for data
+weighting. Alternatively a named list where the name is the alias of the weight
+and the contents of the list component are a character vector of aliases to
+which that weight should apply. Defaults to current weight variable. For
+unweighted, set to \code{NULL}}
 
 \item{banner}{An optional object of class \code{Banner} that should be used to generate
 a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.}
@@ -50,6 +55,8 @@ a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced an
 \item{include_verbatims}{Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.}
 
 \item{num_verbatims}{An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.}
+
+\item{include_original_weighted}{Logical. When providing list of weights to apply, should we include the default weighted vars? Defaults to TRUE.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)

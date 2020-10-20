@@ -22,6 +22,7 @@ test_that("Error handling", {
 
 with_api_fixture("fixtures-1-2-5", {
   ds <- loadDataset("https://app.crunch.io/api/datasets/868e8b/")
+
     # ds <- loadDataset("https://app.crunch.io/api/datasets/868e8b3e01834c45b73e56e80160d3c3/")
 
     # test_that("Warnings", {
@@ -44,7 +45,8 @@ with_api_fixture("fixtures-1-2-5", {
     })
 
     test_that("Toplines", {
-        crosstabs_data <- crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL)
+      crosstabs_data <- crosstabs(ds, vars = c("art3", "books1", "movies1"), weight = NULL)
+
         expect_s3_class(crosstabs_data, "Toplines")
         expect_named(crosstabs_data, c("metadata", "results", "banner"))
         expect_named(crosstabs_data$metadata, c("title", "weight", "start_date", "end_date", "description"))

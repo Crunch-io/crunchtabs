@@ -46,6 +46,7 @@
         "current_editor": null,
         "creation_time": "2019-08-22T20:06:32.079000",
         "streaming": "no",
+        "archived": false,
         "owner": "https://app.crunch.io/api/projects/429d92/",
         "logo": {
             "large": "https://s.crunch.io/act_app_icons/account-yougov-lrhfua-large.png",
@@ -63,7 +64,28 @@
                 "message": "#722580",
                 "primary": "#0064a4",
                 "secondary": "#107f65"
-            }
+            },
+            "analysis": [
+                {
+                    "default": true,
+                    "palette": [
+                        "#7c64c3",
+                        "#f372a1",
+                        "#29cdca",
+                        "#ae61c4",
+                        "#ff6352",
+                        "#00b7b4",
+                        "#6048a7",
+                        "#eb4f3e",
+                        "#ca85de",
+                        "#00a3a0",
+                        "#dc4c81",
+                        "#ad97ed"
+                    ],
+                    "type": "qualitative",
+                    "name": "YouGov standard"
+                }
+            ]
         },
         "app_settings": {
             "crunch": {
@@ -74,11 +96,12 @@
         "owner_name": "Wave 5",
         "description": "Dataset of foreign policy polling items, including items on Israel, fielded from August 15-21st by YouGov Blue on behalf of Data for Progress.",
         "end_date": null,
-        "access_time": "2020-08-09T06:42:24.422000",
+        "access_time": "2020-10-19T16:58:13.200000",
+        "view_cols": null,
         "current_editor_name": null,
         "view_of": null,
         "modification_time": "2019-09-11T16:00:11.468000",
-        "archived": false,
+        "view_rows": null,
         "permissions": {
             "edit": true,
             "view": true

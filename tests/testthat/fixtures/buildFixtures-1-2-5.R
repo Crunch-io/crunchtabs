@@ -3,12 +3,15 @@ library(httptest)
 
 system("rm -rf tests/testthat/fixtures-1-2-5")
 
+with_consent(deleteDataset("Example Dataset"))
+ds <- newExampleDataset()
+
 rm(list = ls())
 httpcache::clearCache()
 start_capturing("tests/testthat/fixtures-1-2-5")
 login()
 
-# ds = newExampleDataset()
+
 ds = loadDataset("Example dataset")
 # Unweighted ----
 

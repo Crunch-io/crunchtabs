@@ -19,7 +19,7 @@ Depends:
     R (>= 3.5.0),
     crunch
 Imports:
-    kableExtra,
+    kableExtra (>= 1.1.0.9000),
     rlang,
     openxlsx,
     digest,
@@ -31,9 +31,9 @@ Suggests:
     httptest (>= 2.0.0),
     jsonlite,
     knitr,
+    httpcache,
     rmarkdown,
-    testthat (>= 2.1.0),
-    kableExtra (>= 1.1.0.9000)
+    testthat (>= 2.1.0)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
