@@ -90,6 +90,8 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
 #'
 #' @param q1 The results object for the first question
 #' @param q2 The results onject second question
+#' @param labels Two character strings used to describe the pre and post waves
+#' @param weights A single alias, list, or NULL
 as.ToplineCategoricalArray <- function(q1, q2, labels = c("Pre", "Post"), weights) {
 
   q1$subnames <- labels

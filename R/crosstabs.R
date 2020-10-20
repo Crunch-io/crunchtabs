@@ -17,6 +17,7 @@
 #' @param include_numeric Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.
 #' @param include_datetime Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.
 #' @param include_verbatims Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.
+#' @param include_original_weighted Logical. When providing list of weights to apply, should we include the default weighted vars? Defaults to TRUE.
 #' @param num_verbatims An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.
 #' @return A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
 #' summary of the input dataset.

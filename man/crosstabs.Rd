@@ -14,7 +14,8 @@ crosstabs(
   include_numeric = FALSE,
   include_datetime = FALSE,
   include_verbatims = FALSE,
-  num_verbatims = 10
+  num_verbatims = 10,
+  include_original_weighted = TRUE
 )
 
 toplines(
@@ -26,7 +27,8 @@ toplines(
   include_numeric = FALSE,
   include_datetime = FALSE,
   include_verbatims = FALSE,
-  num_verbatims = 10
+  num_verbatims = 10,
+  include_original_weighted = TRUE
 )
 }
 \arguments{
@@ -53,6 +55,8 @@ a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced an
 \item{include_verbatims}{Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.}
 
 \item{num_verbatims}{An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.}
+
+\item{include_original_weighted}{Logical. When providing list of weights to apply, should we include the default weighted vars? Defaults to TRUE.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)

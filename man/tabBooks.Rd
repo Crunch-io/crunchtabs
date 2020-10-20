@@ -10,7 +10,7 @@ tabBooks(
   banner,
   weight = NULL,
   topline = FALSE,
-  include_original_weighted = FALSE
+  include_original_weighted = TRUE
 )
 }
 \arguments{
