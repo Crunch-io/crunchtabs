@@ -506,7 +506,12 @@ toplineTableDef <- function(var, tab_definition, header_row, theme) {
 #' @param theme An object created by \link{themeNew}
 latexTableName <- function(var, theme) {
   var_info <- getVarInfo(var, theme)
-  bg_color <- theme[[names(var_info)[1]]]$background_color
+  if (length(var_info) > 0) {
+    bg_color <- theme[[names(var_info)[1]]]$background_color
+  } else {
+    bg_color <- NULL
+  }
+
   if (inherits(var, "ToplineVar")) {
     page_width <- 6.5
   } else {
@@ -520,11 +525,13 @@ latexTableName <- function(var, theme) {
     var_info[[1]] <- paste0(var_info[[1]], " \u2014 ", var_info$formatvarsubname)
     var_info$formatvarsubname <- NULL
   }
-  if (length(var_info) == 0) {
-    # TODO: This shouldn't ever happen. User should be warned
-    warning("Missing variable: ", alias(var))
-    var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
-  }
+  # if (length(var_info) == 0) {
+  #   # TODO: This shouldn't ever happen. User should be warned
+  #   warning("Missing variable: ", var$alias)
+  #   if(!is.null(bg_color)) {
+  #     var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
+  #   }
+  # }
   out <- paste0(
     "\\addcontentsline{lot}{table}{ ", texEscape(var_info[[1]]), "}\n",
     "\\hangindent=0em \\parbox{", page_width, "in}{\n",
