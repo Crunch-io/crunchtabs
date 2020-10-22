@@ -24,8 +24,14 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
   names(groupings) <- questions
   vars <- unlist(groupings)
 
+  get_weights <- function(dataset) {
+    list(
+      weight_spec <- alias()
+    )
+  }
+
   if (is.null(weights)) {
-    weight_spec <- weight(ds)
+    weight_spec <- weight(dataset)
   } else {
     weight_spec <- lapply(suffixes, function(x) vars[grepl(x, vars)])
     names(weight_spec) <- weights
