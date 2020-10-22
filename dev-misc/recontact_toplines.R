@@ -36,7 +36,7 @@ weight(ds) <- ds$weight1
 ds$q1_pre <- copyVariable(ds$q1, deep = TRUE, name = "Pet name pre")
 ds$q1_post <- copyVariable(ds$q1, deep = TRUE, name = "Pet name post")
 ds$country_pre <- copyVariable(ds$country, deep = TRUE, name = "Country pre")
-ds$country_post <- copyVariable(ds$country, deep = TRUE, name = "Country post")
+ds$country_post <- copyVariable(ds$country, deep = TRUE, name = "Country post")``
 
 questions = c("q1", "country")
 suffixes = c("_pre", "_post")
