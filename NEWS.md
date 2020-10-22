@@ -1,3 +1,16 @@
+## crunchtabs 1.3.0
+
+- Fixes problems with enforce_onehundred (#195)
+- Adds option to remove page numbers from toplines/crosstabs (#200)
+- Add toplines() function as an alias to crosstabs() (#201)
+- Add functionality for flipping grids and presenting recontact questions (#103 )
+- Fixes two new issues with codebooks where kableExtra added breaking elements and an issue with the basename of a dataaset containing special characters (#204, #205 )
+- Adds support for custom weights (#209)
+- Adds support for recontact_toplines (#199)
+- Adds functionality for flipping grids on an exceptional basis (#212)
+- Fixes a bug with include_q_number = FALSE (#207)
+- Vignettes for recontact toplines, custom weights and other (#218)
+
 ## crunchtabs 1.2.9
 
 - Codebook question descriptions now appropriately escape special characters (#187)
