@@ -13,7 +13,7 @@
 #' all variables with the default survey weighting `weight(ds)`. Your weights
 #' should be in the same order as your suffixies.
 recontact_toplines <- function(dataset, questions, suffixes, labels,
-                               weights = NULL) {
+                               weights = weight(dataset), default_weight = alias(weight(dataset))) {
 
   stopifnot(is.dataset(dataset))
   stopifnot(is.character(questions))
@@ -24,9 +24,7 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
   names(groupings) <- questions
   vars <- unlist(groupings)
 
-  if (is.null(weights)) {
-    weight_spec <- weight(dataset)
-  } else {
+  if (length(weights) > 1) {
     weight_spec <- lapply(suffixes, function(x) vars[grepl(x, vars)])
     names(weight_spec) <- weights
   }
@@ -37,8 +35,6 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
     weight = weight_spec,
     include_original_weighted = FALSE
   )
-
-  default_weight <- alias(weight(dataset))
 
   for (question in questions) {
     # TODO: Here we have to rename because the non-default weighted
