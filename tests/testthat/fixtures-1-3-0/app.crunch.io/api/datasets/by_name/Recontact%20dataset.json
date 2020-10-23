@@ -3,7 +3,7 @@
     "self": "https://app.crunch.io/api/datasets/by_name/Recontact%20dataset/",
     "description": "Datasets with a given name ",
     "index": {
-        "https://app.crunch.io/api/datasets/72c94d/": {
+        "https://app.crunch.io/api/datasets/033bb5/": {
             "size": {
                 "rows": 20,
                 "unfiltered_rows": 20,
@@ -17,46 +17,18 @@
             "streaming": "no",
             "owner_id": "https://app.crunch.io/api/users/0740cc/",
             "current_editor": "https://app.crunch.io/api/users/0740cc/",
-            "creation_time": "2020-10-20T02:53:37.407000+00:00",
+            "creation_time": "2020-10-23T15:37:47.183000+00:00",
             "archived": false,
             "view_of": null,
             "start_date": null,
-            "modification_time": "2020-10-20T02:54:12.854000+00:00",
-            "access_time": "2020-10-20T02:53:37.184000+00:00",
+            "modification_time": "2020-10-23T15:38:30.901000+00:00",
+            "access_time": "2020-10-23T15:37:46.967000+00:00",
             "permissions": {
                 "edit": true,
                 "view": true
             },
             "is_published": true,
-            "id": "72c94d",
-            "description": "A dataset to illustrate the API"
-        },
-        "https://app.crunch.io/api/datasets/feddc4/": {
-            "size": {
-                "rows": 20,
-                "unfiltered_rows": 20,
-                "columns": 16
-            },
-            "current_editor_name": "Brandon Bertelsen",
-            "account": "https://app.crunch.io/api/accounts/b7a990/",
-            "owner_name": "Personal project for Brandon Bertelsen",
-            "name": "Recontact dataset",
-            "end_date": null,
-            "streaming": "no",
-            "owner_id": "https://app.crunch.io/api/users/0740cc/",
-            "current_editor": "https://app.crunch.io/api/users/0740cc/",
-            "creation_time": "2020-10-20T02:36:46.398000+00:00",
-            "archived": false,
-            "view_of": null,
-            "start_date": null,
-            "modification_time": "2020-10-20T02:51:50.187000+00:00",
-            "access_time": "2020-10-20T02:51:50.163000+00:00",
-            "permissions": {
-                "edit": true,
-                "view": true
-            },
-            "is_published": true,
-            "id": "feddc4",
+            "id": "033bb5",
             "description": "A dataset to illustrate the API"
         }
     }

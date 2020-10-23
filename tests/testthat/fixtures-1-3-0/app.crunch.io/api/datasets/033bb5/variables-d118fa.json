@@ -1,41 +1,17 @@
 {
     "element": "shoji:catalog",
-    "self": "https://app.crunch.io/api/datasets/72c94d/variables/?relative=on",
+    "self": "https://app.crunch.io/api/datasets/033bb5/variables/?relative=on",
     "catalogs": {
-        "applied": "https://app.crunch.io/api/datasets/72c94d/variables/applied/",
-        "private": "https://app.crunch.io/api/datasets/72c94d/variables/private/"
+        "applied": "https://app.crunch.io/api/datasets/033bb5/variables/applied/",
+        "private": "https://app.crunch.io/api/datasets/033bb5/variables/private/"
     },
     "orders": {
-        "personal": "https://app.crunch.io/api/datasets/72c94d/variables/personal/",
-        "weights": "https://app.crunch.io/api/datasets/72c94d/variables/weights/",
-        "hier": "https://app.crunch.io/api/datasets/72c94d/variables/hier/"
+        "personal": "https://app.crunch.io/api/datasets/033bb5/variables/personal/",
+        "weights": "https://app.crunch.io/api/datasets/033bb5/variables/weights/",
+        "hier": "https://app.crunch.io/api/datasets/033bb5/variables/hier/"
     },
     "description": "List of Variables of this dataset",
     "index": {
-        "2b4a81/": {
-            "discarded": false,
-            "alias": "country_post",
-            "secure": false,
-            "name": "Country post",
-            "id": "2b4a81",
-            "type": "categorical",
-            "notes": "",
-            "derived": false,
-            "hidden": false,
-            "description": ""
-        },
-        "000004/": {
-            "discarded": false,
-            "alias": "ndogs_a",
-            "secure": false,
-            "name": "Number of dogs -- With papers",
-            "id": "000004",
-            "type": "numeric",
-            "notes": "",
-            "derived": false,
-            "hidden": false,
-            "description": "How many dogs do you have?"
-        },
         "000005/": {
             "discarded": false,
             "alias": "ndogs_b",
@@ -48,10 +24,53 @@
             "hidden": false,
             "description": "How many dogs do you have?"
         },
-        "31df7d/": {
+        "000003/": {
+            "discarded": false,
+            "alias": "ndogs",
+            "secure": false,
+            "name": "Number of dogs",
+            "id": "000003",
+            "type": "numeric",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": ""
+        },
+        "000002/": {
+            "discarded": false,
+            "alias": "country",
+            "secure": false,
+            "name": "Country",
+            "id": "000002",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": ""
+        },
+        "000000/": {
             "secure": false,
             "derived": false,
-            "id": "31df7d",
+            "subvariables": [
+                "000000/subvariables/0001/",
+                "000000/subvariables/0002/",
+                "000000/subvariables/0003/"
+            ],
+            "id": "000000",
+            "description": "Do you have any of these animals as pets? Please select all that apply.",
+            "subvariables_catalog": "000000/subvariables/",
+            "uniform_basis": false,
+            "name": "All pets owned",
+            "notes": "",
+            "discarded": false,
+            "alias": "allpets",
+            "hidden": false,
+            "type": "multiple_response"
+        },
+        "a41c94/": {
+            "secure": false,
+            "derived": false,
+            "id": "a41c94",
             "description": "What is your favorite pet?",
             "scale": "interval",
             "name": "Pet name pre",
@@ -61,18 +80,29 @@
             "hidden": false,
             "type": "categorical"
         },
-        "000007/": {
-            "secure": false,
-            "derived": false,
-            "id": "000007",
-            "description": "What is your favorite pet?",
-            "scale": "interval",
-            "name": "Pet",
-            "notes": "",
+        "a2032f/": {
             "discarded": false,
-            "alias": "q1",
+            "alias": "country_post",
+            "secure": false,
+            "name": "Country post",
+            "id": "a2032f",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
             "hidden": false,
-            "type": "categorical"
+            "description": ""
+        },
+        "000001/": {
+            "discarded": true,
+            "alias": "caseid",
+            "secure": false,
+            "name": "Case ID",
+            "id": "000001",
+            "type": "numeric",
+            "notes": "",
+            "derived": false,
+            "hidden": true,
+            "description": ""
         },
         "000008/": {
             "discarded": false,
@@ -85,6 +115,31 @@
             "derived": false,
             "hidden": false,
             "description": "What is your favorite pet's maiden name?"
+        },
+        "f841a8/": {
+            "discarded": false,
+            "alias": "country_pre",
+            "secure": false,
+            "name": "Country pre",
+            "id": "f841a8",
+            "type": "categorical",
+            "notes": "",
+            "derived": false,
+            "hidden": false,
+            "description": ""
+        },
+        "608a5e/": {
+            "secure": false,
+            "derived": false,
+            "id": "608a5e",
+            "description": "What is your favorite pet?",
+            "scale": "interval",
+            "name": "Pet name post",
+            "notes": "",
+            "discarded": false,
+            "alias": "q1_post",
+            "hidden": false,
+            "type": "categorical"
         },
         "000009/": {
             "secure": false,
@@ -100,16 +155,16 @@
             "hidden": false,
             "type": "datetime"
         },
-        "834ea1/": {
+        "000007/": {
             "secure": false,
             "derived": false,
-            "id": "834ea1",
+            "id": "000007",
             "description": "What is your favorite pet?",
             "scale": "interval",
-            "name": "Pet name post",
+            "name": "Pet",
             "notes": "",
             "discarded": false,
-            "alias": "q1_post",
+            "alias": "q1",
             "hidden": false,
             "type": "categorical"
         },
@@ -131,91 +186,36 @@
             "hidden": false,
             "type": "categorical_array"
         },
-        "000000/": {
-            "secure": false,
-            "derived": false,
-            "subvariables": [
-                "000000/subvariables/0001/",
-                "000000/subvariables/0002/",
-                "000000/subvariables/0003/"
-            ],
-            "id": "000000",
-            "description": "Do you have any of these animals as pets? Please select all that apply.",
-            "subvariables_catalog": "000000/subvariables/",
-            "uniform_basis": false,
-            "name": "All pets owned",
-            "notes": "",
-            "discarded": false,
-            "alias": "allpets",
-            "hidden": false,
-            "type": "multiple_response"
-        },
-        "000001/": {
-            "discarded": true,
-            "alias": "caseid",
-            "secure": false,
-            "name": "Case ID",
-            "id": "000001",
-            "type": "numeric",
-            "notes": "",
-            "derived": false,
-            "hidden": true,
-            "description": ""
-        },
-        "f4549c/": {
-            "discarded": false,
-            "alias": "country_pre",
-            "secure": false,
-            "name": "Country pre",
-            "id": "f4549c",
-            "type": "categorical",
-            "notes": "",
-            "derived": false,
-            "hidden": false,
-            "description": ""
-        },
-        "000003/": {
-            "discarded": false,
-            "alias": "ndogs",
-            "secure": false,
-            "name": "Number of dogs",
-            "id": "000003",
-            "type": "numeric",
-            "notes": "",
-            "derived": false,
-            "hidden": false,
-            "description": ""
-        },
-        "efb6dc/": {
+        "696951/": {
             "discarded": false,
             "alias": "weight2",
             "secure": false,
             "name": "weight2",
-            "id": "efb6dc",
+            "id": "696951",
             "type": "numeric",
             "notes": "",
             "derived": true,
             "hidden": false,
             "description": "Raked weighting based on: Pet"
         },
-        "000002/": {
+        "000004/": {
             "discarded": false,
-            "alias": "country",
+            "alias": "ndogs_a",
             "secure": false,
-            "name": "Country",
-            "id": "000002",
-            "type": "categorical",
+            "name": "Number of dogs -- With papers",
+            "id": "000004",
+            "type": "numeric",
             "notes": "",
             "derived": false,
             "hidden": false,
-            "description": ""
+            "description": "How many dogs do you have?"
         },
-        "02561c/": {
+        "864b5f/": {
             "discarded": false,
             "alias": "weight1",
             "secure": false,
             "name": "weight1",
-            "id": "02561c",
+            "id": "864b5f",
             "type": "numeric",
             "notes": "",
             "derived": true,

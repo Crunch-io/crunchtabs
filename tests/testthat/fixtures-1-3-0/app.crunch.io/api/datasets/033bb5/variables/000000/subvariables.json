@@ -1,21 +1,21 @@
 {
     "element": "shoji:catalog",
-    "self": "https://app.crunch.io/api/datasets/72c94d/variables/000000/subvariables/",
+    "self": "https://app.crunch.io/api/datasets/033bb5/variables/000000/subvariables/",
     "description": "Contains the subvariables for this array variable.",
     "index": {
-        "https://app.crunch.io/api/datasets/72c94d/variables/000000/subvariables/0001/": {
+        "https://app.crunch.io/api/datasets/033bb5/variables/000000/subvariables/0003/": {
             "discarded": false,
-            "alias": "allpets_1",
+            "alias": "allpets_3",
             "secure": false,
-            "name": "Cat",
-            "id": "0001",
+            "name": "Bird",
+            "id": "0003",
             "type": "categorical",
             "notes": "",
             "derived": false,
             "hidden": false,
             "description": ""
         },
-        "https://app.crunch.io/api/datasets/72c94d/variables/000000/subvariables/0002/": {
+        "https://app.crunch.io/api/datasets/033bb5/variables/000000/subvariables/0002/": {
             "discarded": false,
             "alias": "allpets_2",
             "secure": false,
@@ -27,12 +27,12 @@
             "hidden": false,
             "description": ""
         },
-        "https://app.crunch.io/api/datasets/72c94d/variables/000000/subvariables/0003/": {
+        "https://app.crunch.io/api/datasets/033bb5/variables/000000/subvariables/0001/": {
             "discarded": false,
-            "alias": "allpets_3",
+            "alias": "allpets_1",
             "secure": false,
-            "name": "Bird",
-            "id": "0003",
+            "name": "Cat",
+            "id": "0001",
             "type": "categorical",
             "notes": "",
             "derived": false,

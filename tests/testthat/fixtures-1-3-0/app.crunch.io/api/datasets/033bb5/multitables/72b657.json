@@ -1,10 +1,10 @@
 {
     "element": "shoji:entity",
-    "self": "https://app.crunch.io/api/datasets/72c94d/multitables/c380b7/",
+    "self": "https://app.crunch.io/api/datasets/033bb5/multitables/72b657/",
     "views": {
-        "applied": "https://app.crunch.io/api/datasets/72c94d/multitables/c380b7/applied/",
-        "tabbook": "https://app.crunch.io/api/datasets/72c94d/multitables/c380b7/tabbook/",
-        "export": "https://app.crunch.io/api/datasets/72c94d/multitables/c380b7/export/"
+        "applied": "https://app.crunch.io/api/datasets/033bb5/multitables/72b657/applied/",
+        "tabbook": "https://app.crunch.io/api/datasets/033bb5/multitables/72b657/tabbook/",
+        "export": "https://app.crunch.io/api/datasets/033bb5/multitables/72b657/export/"
     },
     "description": "Detail information for one multitable definition",
     "body": {
@@ -14,13 +14,13 @@
             {
                 "query": [
                     {
-                        "each": "https://app.crunch.io/api/datasets/72c94d/variables/000000/"
+                        "each": "https://app.crunch.io/api/datasets/033bb5/variables/000000/"
                     },
                     {
                         "function": "as_selected",
                         "args": [
                             {
-                                "variable": "https://app.crunch.io/api/datasets/72c94d/variables/000000/"
+                                "variable": "https://app.crunch.io/api/datasets/033bb5/variables/000000/"
                             }
                         ]
                     }
@@ -32,6 +32,6 @@
         "display_settings": {
 
         },
-        "id": "c380b7"
+        "id": "72b657"
     }
 }

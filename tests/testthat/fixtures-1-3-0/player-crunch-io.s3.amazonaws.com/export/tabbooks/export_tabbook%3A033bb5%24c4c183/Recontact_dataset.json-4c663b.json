@@ -1,6 +1,6 @@
 {
     "meta": {
-        "multitable_id": "c380b7",
+        "multitable_id": "72b657",
         "user_id": "0740cc",
         "doc_layout": {
             "toc": false,
@@ -15,7 +15,7 @@
                 "size": 0
             },
             "population_size": null,
-            "dataset_id": "72c94d",
+            "dataset_id": "033bb5",
             "description": "A dataset to illustrate the API"
         },
         "template": [
@@ -363,14 +363,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -479,14 +479,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,
@@ -718,14 +718,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -834,14 +834,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,
@@ -963,7 +963,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "What is your favorite pet?",
@@ -973,54 +972,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Pet name pre",
                                     "alias": "q1_pre",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Pet name pre"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": 1,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Cat",
-                                            "missing": false
+                                            "name": "Cat"
                                         },
                                         {
                                             "numeric_value": 2,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Dog",
-                                            "missing": false
+                                            "name": "Dog"
                                         },
                                         {
                                             "numeric_value": 3,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Bird",
-                                            "missing": false
+                                            "name": "Bird"
                                         },
                                         {
                                             "numeric_value": 8,
+                                            "missing": true,
                                             "id": 8,
-                                            "name": "Skipped",
-                                            "missing": true
+                                            "name": "Skipped"
                                         },
                                         {
                                             "numeric_value": 9,
+                                            "missing": true,
                                             "id": 9,
-                                            "name": "Not Asked",
-                                            "missing": true
+                                            "name": "Not Asked"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -1104,7 +1104,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "What is your favorite pet?",
@@ -1114,54 +1113,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Pet name pre",
                                     "alias": "q1_pre",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Pet name pre"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": 1,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Cat",
-                                            "missing": false
+                                            "name": "Cat"
                                         },
                                         {
                                             "numeric_value": 2,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Dog",
-                                            "missing": false
+                                            "name": "Dog"
                                         },
                                         {
                                             "numeric_value": 3,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Bird",
-                                            "missing": false
+                                            "name": "Bird"
                                         },
                                         {
                                             "numeric_value": 8,
+                                            "missing": true,
                                             "id": 8,
-                                            "name": "Skipped",
-                                            "missing": true
+                                            "name": "Skipped"
                                         },
                                         {
                                             "numeric_value": 9,
+                                            "missing": true,
                                             "id": 9,
-                                            "name": "Not Asked",
-                                            "missing": true
+                                            "name": "Not Asked"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -1208,14 +1208,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -1324,14 +1324,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,
@@ -1543,7 +1543,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "What is your favorite pet?",
@@ -1553,54 +1552,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Pet name post",
                                     "alias": "q1_post",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Pet name post"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": 1,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Cat",
-                                            "missing": false
+                                            "name": "Cat"
                                         },
                                         {
                                             "numeric_value": 2,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Dog",
-                                            "missing": false
+                                            "name": "Dog"
                                         },
                                         {
                                             "numeric_value": 3,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Bird",
-                                            "missing": false
+                                            "name": "Bird"
                                         },
                                         {
                                             "numeric_value": 8,
+                                            "missing": true,
                                             "id": 8,
-                                            "name": "Skipped",
-                                            "missing": true
+                                            "name": "Skipped"
                                         },
                                         {
                                             "numeric_value": 9,
+                                            "missing": true,
                                             "id": 9,
-                                            "name": "Not Asked",
-                                            "missing": true
+                                            "name": "Not Asked"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -1684,7 +1684,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "What is your favorite pet?",
@@ -1694,54 +1693,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Pet name post",
                                     "alias": "q1_post",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Pet name post"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": 1,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Cat",
-                                            "missing": false
+                                            "name": "Cat"
                                         },
                                         {
                                             "numeric_value": 2,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Dog",
-                                            "missing": false
+                                            "name": "Dog"
                                         },
                                         {
                                             "numeric_value": 3,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Bird",
-                                            "missing": false
+                                            "name": "Bird"
                                         },
                                         {
                                             "numeric_value": 8,
+                                            "missing": true,
                                             "id": 8,
-                                            "name": "Skipped",
-                                            "missing": true
+                                            "name": "Skipped"
                                         },
                                         {
                                             "numeric_value": 9,
+                                            "missing": true,
                                             "id": 9,
-                                            "name": "Not Asked",
-                                            "missing": true
+                                            "name": "Not Asked"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -1788,14 +1788,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -1904,14 +1904,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,
@@ -2123,7 +2123,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "",
@@ -2133,54 +2132,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Country pre",
                                     "alias": "country_pre",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Country pre"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Argentina",
-                                            "missing": false
+                                            "name": "Argentina"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Australia",
-                                            "missing": false
+                                            "name": "Australia"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Austria",
-                                            "missing": false
+                                            "name": "Austria"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 4,
-                                            "name": "Belgium",
-                                            "missing": false
+                                            "name": "Belgium"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 5,
-                                            "name": "Brazil",
-                                            "missing": false
+                                            "name": "Brazil"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -2264,7 +2264,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "",
@@ -2274,54 +2273,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Country pre",
                                     "alias": "country_pre",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Country pre"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Argentina",
-                                            "missing": false
+                                            "name": "Argentina"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Australia",
-                                            "missing": false
+                                            "name": "Australia"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Austria",
-                                            "missing": false
+                                            "name": "Austria"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 4,
-                                            "name": "Belgium",
-                                            "missing": false
+                                            "name": "Belgium"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 5,
-                                            "name": "Brazil",
-                                            "missing": false
+                                            "name": "Brazil"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -2368,14 +2368,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -2484,14 +2484,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,
@@ -2703,7 +2703,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "",
@@ -2713,54 +2712,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Country post",
                                     "alias": "country_post",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Country post"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Argentina",
-                                            "missing": false
+                                            "name": "Argentina"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Australia",
-                                            "missing": false
+                                            "name": "Australia"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Austria",
-                                            "missing": false
+                                            "name": "Austria"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 4,
-                                            "name": "Belgium",
-                                            "missing": false
+                                            "name": "Belgium"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 5,
-                                            "name": "Brazil",
-                                            "missing": false
+                                            "name": "Brazil"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -2844,7 +2844,6 @@
                     "result": {
                         "dimensions": [
                             {
-                                "derived": false,
                                 "references": {
                                     "api_derivation": null,
                                     "description": "",
@@ -2854,54 +2853,55 @@
                                         }
                                     },
                                     "notes": "",
+                                    "name": "Country post",
                                     "alias": "country_post",
                                     "view": {
                                         "show_counts": false,
-                                        "show_numeric_values": false,
+                                        "column_width": null,
                                         "include_missing": false,
-                                        "column_width": null
-                                    },
-                                    "name": "Country post"
+                                        "show_numeric_values": false
+                                    }
                                 },
+                                "derived": false,
                                 "type": {
                                     "ordinal": false,
                                     "class": "categorical",
                                     "categories": [
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 1,
-                                            "name": "Argentina",
-                                            "missing": false
+                                            "name": "Argentina"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 2,
-                                            "name": "Australia",
-                                            "missing": false
+                                            "name": "Australia"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 3,
-                                            "name": "Austria",
-                                            "missing": false
+                                            "name": "Austria"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 4,
-                                            "name": "Belgium",
-                                            "missing": false
+                                            "name": "Belgium"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": false,
                                             "id": 5,
-                                            "name": "Brazil",
-                                            "missing": false
+                                            "name": "Brazil"
                                         },
                                         {
                                             "numeric_value": null,
+                                            "missing": true,
                                             "id": -1,
-                                            "name": "No Data",
-                                            "missing": true
+                                            "name": "No Data"
                                         }
                                     ]
                                 }
@@ -2948,14 +2948,14 @@
                                         }
                                     ],
                                     "notes": "",
+                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    },
-                                    "name": "All pets owned"
+                                    }
                                 },
                                 "derived": true,
                                 "type": {
@@ -3064,14 +3064,14 @@
                                         }
                                     ],
                                     "notes": "",
-                                    "name": "All pets owned",
                                     "alias": "allpets",
                                     "view": {
                                         "show_counts": false,
                                         "include_noneoftheabove": false,
                                         "include_missing": false,
                                         "column_width": null
-                                    }
+                                    },
+                                    "name": "All pets owned"
                                 },
                                 "type": {
                                     "ordinal": false,

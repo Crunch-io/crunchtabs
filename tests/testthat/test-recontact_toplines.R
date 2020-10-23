@@ -63,7 +63,7 @@ with_api_fixture("fixtures-1-3-0", {
   httpcache::clearCache()
   test_that("End to end", {
     ds <- loadDataset("Recontact dataset")
-    aliases(allVariables(ds))
+    # aliases(allVariables(ds))
 
     r <- recontact_toplines(
         ds,
