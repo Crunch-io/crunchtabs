@@ -4,7 +4,14 @@
 \alias{recontact_toplines}
 \title{Recontact Toplines}
 \usage{
-recontact_toplines(dataset, questions, suffixes, labels, weights = NULL)
+recontact_toplines(
+  dataset,
+  questions,
+  suffixes,
+  labels,
+  weights = crunch::weight(dataset),
+  default_weight = crunch::alias(crunch::weight(dataset))
+)
 }
 \arguments{
 \item{dataset}{A crunch dataset}
