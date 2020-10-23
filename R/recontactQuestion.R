@@ -13,7 +13,7 @@
 #' all variables with the default survey weighting `weight(ds)`. Your weights
 #' should be in the same order as your suffixies.
 recontact_toplines <- function(dataset, questions, suffixes, labels,
-                               weights = weight(dataset), default_weight = alias(weight(dataset))) {
+                               weights = crunch::weight(dataset), default_weight = crunch::alias(crunch::weight(dataset))) {
 
   stopifnot(is.dataset(dataset))
   stopifnot(is.character(questions))
@@ -37,11 +37,6 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
   )
 
   for (question in questions) {
-    # TODO: Here we have to rename because the non-default weighted
-    # variable is appended with it's weight. This could cause problems
-    # if the pre_ variable has a weight that is not the default.
-    #
-    # Surely there's a more elegant way to do this.
 
     if (!is.null(weights)) {
 

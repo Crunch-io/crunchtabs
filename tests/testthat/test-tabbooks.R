@@ -101,3 +101,48 @@ with_test_authentication({
         })
     })
 })
+
+
+context("tab_frame_generate")
+
+test_that("If default_weight null", {
+  r <- tab_frame_generate(NULL, "hello")
+  expect_equal(nrow(r), 1)
+  expect_true(is.na(r$weight))
+})
+
+test_that("If default_weight not null", {
+  r <- tab_frame_generate("weight1", "hello")
+  expect_equal(nrow(r), 1)
+  expect_equal(as.character(r$weight), "weight1")
+  expect_equal(as.character(r$alias), "hello")
+})
+
+context("valiases_tabbook_extract")
+
+test_that("if is_crosstabs_array", {
+  r <- with_mock(
+    valiases_tabbook_extract(TRUE, "cube", "cube_var", "question_name"),
+    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
+    `crunch::aliases` = function(...) "from_crunchaliases"
+  )
+  expect_equal(r, "from_getSubAliases")
+})
+
+test_that("if not is_crosstabs_array", {
+  r <- with_mock(
+    valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name"),
+    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
+    `crunch::aliases` = function(...) "from_crunchaliases"
+  )
+  expect_equal(r,"from_crunchaliases")
+})
+
+test_that("if not is_crosstabs_array but total", {
+  r <- with_mock(
+    valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name"),
+    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
+    `crunch::aliases` = function(...) "total"
+  )
+  expect_equal(r,"question_name")
+})
