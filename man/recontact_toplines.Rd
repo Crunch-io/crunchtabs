@@ -26,9 +26,11 @@ leave that out.}
 the election", "After the election".}
 
 \item{weights}{A character vector of equal to the length of suffixes. You may
-specify a unique weight per recontact period. The default, NULL, would return
+specify a unique weight per recontact period. The default would return
 all variables with the default survey weighting `weight(ds)`. Your weights
 should be in the same order as your suffixies.}
+
+\item{default_weight}{The default weight of the dataset, if any.}
 }
 \description{
 Allows the user to create a simple report that shows recontact question.

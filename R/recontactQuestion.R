@@ -9,9 +9,10 @@
 #' @param labels Formal labels for your recontact period. For example, "Before
 #' the election", "After the election".
 #' @param weights A character vector of equal to the length of suffixes. You may
-#' specify a unique weight per recontact period. The default, NULL, would return
+#' specify a unique weight per recontact period. The default would return
 #' all variables with the default survey weighting `weight(ds)`. Your weights
 #' should be in the same order as your suffixies.
+#' @param default_weight The default weight of the dataset, if any.
 recontact_toplines <- function(dataset, questions, suffixes, labels,
                                weights = crunch::weight(dataset), default_weight = crunch::alias(crunch::weight(dataset))) {
 
