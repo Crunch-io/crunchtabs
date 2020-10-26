@@ -6,7 +6,7 @@
 #' report. If your recontact has been named using a suffix such as _pre, _post
 #' leave that out.
 #' @param suffixes The suffixes of recontact questions, for example _pre, _post
-#' @param labels Formal labels for your recontact period. For example, "Before
+#' @param labels Formal labels for
 #' the election", "After the election".
 #' @param weights A character vector of equal to the length of suffixes. You may
 #' specify a unique weight per recontact period. The default would return
@@ -62,6 +62,7 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
     ct$results[[question]] <- as.ToplineCategoricalArray(
       ct$results[[p1]],
       ct$results[[p2]],
+      question,
       labels,
       weights
     )
@@ -81,11 +82,13 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
 #' distinct code to write it to latex.
 #'
 #' @param q1 The results object for the first question
-#' @param q2 The results onject second question
+#' @param q2 The results object for the second question
+#' @param question_alias A string specifying the resulting alias.
 #' @param labels Two character strings used to describe the pre and post waves
 #' @param weights A single alias, list, or NULL
-as.ToplineCategoricalArray <- function(q1, q2, labels = c("Pre", "Post"), weights) {
+as.ToplineCategoricalArray <- function(q1, q2, question_alias = NULL, labels = c("Pre", "Post"), weights) {
 
+  q1$alias <- question_alias
   q1$subnames <- labels
   q1$notes <- paste0(labels, " is weighted by ", weights, collapse = " : ")
   q1$type <- "categorical_array"

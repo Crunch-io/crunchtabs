@@ -157,7 +157,7 @@ latexReportTables <- function(results, banner, theme) {
 
       # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
       header <- tableHeader(x, theme)
-      body <- sapply(content, latexTableBody, theme = theme, alias = x$alias)
+      body <- sapply(content, latexTableBody, theme = theme, question_alias = x$alias)
 
       footer <- ifelse(
         x$longtable | !theme$topline,

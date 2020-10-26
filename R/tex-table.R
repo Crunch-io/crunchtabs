@@ -6,7 +6,7 @@
 #' @param df An object from \link{reformatLatexResults}
 #' @param theme A theme object from \link{themeNew}
 #' @param alias The variable's alias
-latexTableBody <- function(df, theme, alias = NULL) {
+latexTableBody <- function(df, theme, question_alias = NULL) {
   # The input "df" object is shaped like this:
   # List of 9
   #  $ top            : NULL
@@ -157,7 +157,7 @@ latexTableBody <- function(df, theme, alias = NULL) {
   # Turn each table in `data` into a LaTeX table string
   if (topline_catarray) {
 
-    if (theme$latex_flip_grids | alias %in% theme$latex_flip_specific_grids) {
+    if (theme$latex_flip_grids | question_alias %in% theme$latex_flip_specific_grids) {
       data$body <- as.data.frame(t(data$body), check.names = FALSE, stringsAsFactors = FALSE)
     }
     # Apparently you can't have any extra table members for these, only "body"
@@ -327,8 +327,9 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
-
+  print(var$alias)
   if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
+
     col_names <- var$subnames
   } else {
     col_names <- sapply(var$inserts_obj, name)
