@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply bold tex — bold • crunchtabs</title>
+<title>' tab_frame_generate — tab_frame_generate • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,9 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Apply bold tex — bold" />
-<meta property="og:description" content="Appliy Bold to all tex within" />
+<meta property="og:title" content="' tab_frame_generate — tab_frame_generate" />
+<meta property="og:description" content="Given a default_weight and a vector of vars, return a tab_frame
+that can be used to organize the result of `tabBooks`" />
 
 
 
@@ -141,26 +142,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply bold tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>bold.Rd</code></div>
+    <h1>' tab_frame_generate</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tabBooks.R'><code>R/tabBooks.R</code></a></small>
+    <div class="hidden name"><code>tab_frame_generate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Appliy Bold to all tex within</p>
+    <p>Given a default_weight and a vector of vars, return a tab_frame
+that can be used to organize the result of `tabBooks`</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bold</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>tab_frame_generate</span>(<span class='kw'>default_weight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>vars</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A list of other tex to be wrapped</p></td>
+      <th>default_weight</th>
+      <td><p>A string identifying the default weight</p></td>
+    </tr>
+    <tr>
+      <th>vars</th>
+      <td><p>A character vector of aliases</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Mainly for testing.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply bold tex — bold • crunchtabs</title>
+<title>Combine two questions as a categorical array — as.ToplineCategoricalArray • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,10 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Apply bold tex — bold" />
-<meta property="og:description" content="Appliy Bold to all tex within" />
+<meta property="og:title" content="Combine two questions as a categorical array — as.ToplineCategoricalArray" />
+<meta property="og:description" content="Here we manipulate the tabBook results so that they match the layout
+of a categoricalArray, which has the benefit of already having
+distinct code to write it to latex." />
 
 
 
@@ -141,23 +143,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply bold tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>bold.Rd</code></div>
+    <h1>Combine two questions as a categorical array</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/recontactQuestion.R'><code>R/recontactQuestion.R</code></a></small>
+    <div class="hidden name"><code>as.ToplineCategoricalArray.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Appliy Bold to all tex within</p>
+    <p>Here we manipulate the tabBook results so that they match the layout
+of a categoricalArray, which has the benefit of already having
+distinct code to write it to latex.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bold</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>as.ToplineCategoricalArray</span>(<span class='no'>q1</span>, <span class='no'>q2</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Pre"</span>, <span class='st'>"Post"</span>), <span class='no'>weights</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A list of other tex to be wrapped</p></td>
+      <th>q1</th>
+      <td><p>The results object for the first question</p></td>
+    </tr>
+    <tr>
+      <th>q2</th>
+      <td><p>The results onject second question</p></td>
+    </tr>
+    <tr>
+      <th>labels</th>
+      <td><p>Two character strings used to describe the pre and post waves</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>A single alias, list, or NULL</p></td>
     </tr>
     </table>
 

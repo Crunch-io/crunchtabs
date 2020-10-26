@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply bold tex — bold • crunchtabs</title>
+<title>Recontact Toplines — recontact_toplines • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Apply bold tex — bold" />
-<meta property="og:description" content="Appliy Bold to all tex within" />
+<meta property="og:title" content="Recontact Toplines — recontact_toplines" />
+<meta property="og:description" content="Allows the user to create a simple report that shows recontact question." />
 
 
 
@@ -141,23 +141,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply bold tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>bold.Rd</code></div>
+    <h1>Recontact Toplines</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/recontactQuestion.R'><code>R/recontactQuestion.R</code></a></small>
+    <div class="hidden name"><code>recontact_toplines.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Appliy Bold to all tex within</p>
+    <p>Allows the user to create a simple report that shows recontact question.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bold</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>recontact_toplines</span>(
+  <span class='no'>dataset</span>,
+  <span class='no'>questions</span>,
+  <span class='no'>suffixes</span>,
+  <span class='no'>labels</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>),
+  <span class='kw'>default_weight</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/describe-entity.html'>alias</a></span>(<span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>))
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A list of other tex to be wrapped</p></td>
+      <th>dataset</th>
+      <td><p>A crunch dataset</p></td>
+    </tr>
+    <tr>
+      <th>questions</th>
+      <td><p>A character vector of aliases that should be included in the
+report. If your recontact has been named using a suffix such as _pre, _post
+leave that out.</p></td>
+    </tr>
+    <tr>
+      <th>suffixes</th>
+      <td><p>The suffixes of recontact questions, for example _pre, _post</p></td>
+    </tr>
+    <tr>
+      <th>labels</th>
+      <td><p>Formal labels for your recontact period. For example, "Before
+the election", "After the election".</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>A character vector of equal to the length of suffixes. You may
+specify a unique weight per recontact period. The default would return
+all variables with the default survey weighting `weight(ds)`. Your weights
+should be in the same order as your suffixies.</p></td>
+    </tr>
+    <tr>
+      <th>default_weight</th>
+      <td><p>The default weight of the dataset, if any.</p></td>
     </tr>
     </table>
 

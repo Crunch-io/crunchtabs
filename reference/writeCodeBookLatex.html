@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -153,7 +153,6 @@
     <pre class="usage"><span class='fu'>writeCodeBookLatex</span>(
   <span class='no'>ds</span>,
   <span class='kw'>url</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rmd</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>pdf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -166,6 +165,7 @@
   <span class='kw'>logo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filename</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>logging</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
@@ -180,10 +180,6 @@
     <tr>
       <th>url</th>
       <td><p>A crunch dataset url</p></td>
-    </tr>
-    <tr>
-      <th>rmd</th>
-      <td><p>Should we create an interim Rmd file? Defaults to TRUE.</p></td>
     </tr>
     <tr>
       <th>pdf</th>
@@ -235,6 +231,10 @@ LaTeX should be escaped.</p></td>
     <tr>
       <th>path</th>
       <td><p>The path to place .tex and .pdf files.</p></td>
+    </tr>
+    <tr>
+      <th>filename</th>
+      <td><p>A string. The desired basename of the resulting file with no extension (i.e, "mycodebook")</p></td>
     </tr>
     <tr>
       <th>logging</th>

@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -136,6 +136,39 @@ ds = loadDataset("Example dataset")
 toplines_summary &lt;- crosstabs(dataset = ds)
 writeLatex(toplines_summary, filename = "output", pdf = TRUE) # output.pdf will be written </code></pre>
 <p><img src="articles/example-001-topline.png" alt="Topline Example from the Example Dataset"></p>
+</div>
+<div id="create-a-recontact-or-prepost-topline" class="section level3">
+<h3 class="hasAnchor">
+<a href="#create-a-recontact-or-prepost-topline" class="anchor"></a>Create a recontact or pre/post Topline</h3>
+<p>Letâs say you have a datasaet where you have asked the same question twice. Once âbeforeâ and once âafterâ. <code>recontact_topline</code> generates a report that shows these two side by side as if they were a categorical array. Making it easier for reviewers to identify differences over time.</p>
+<p>The function assumes your âbeforeâ and âafterâ questions are named in the same way with a suffix.</p>
+<ul>
+<li>q1_pre</li>
+<li>q1_post</li>
+<li>q3_pre</li>
+<li>q3_post</li>
+</ul>
+<pre><code># library(crunchtabs)
+# login()
+ds &lt;- loadDataset("Your Recontact Survey")
+rc &lt;- recontact_toplines(
+  ds, 
+  questions = c("q1", "q3"), # The base question name without suffixes
+  suffixes = c("_pre", "_post"), # The suffixes
+  labels = c("Pre", "Post"), # The labels associated with the pre/post
+  weights = c("weight1", "weight2") # The weights associated with the pre/post
+)
+
+writeLatex(rc, pdf = TRUE)</code></pre>
+<p><img src="articles/example-012-recontact-default.png" alt="Recontact Example"></p>
+<p>Depending on your preferences you can also flip grids if have more categories than waves:</p>
+<pre><code>theme &lt;- themeNew(
+  default_theme = themeDefaultLatex(), 
+  latex_flip_specific_grids = c("q1")
+)
+
+writeLatex(rc, theme = theme, pdf = TRUE)</code></pre>
+<p><img src="articles/example-013-recontact-flipped-grid.png" alt="Recontact Example - Flipped Grid"></p>
 </div>
 <div id="create-a-cross-tabulation" class="section level3">
 <h3 class="hasAnchor">

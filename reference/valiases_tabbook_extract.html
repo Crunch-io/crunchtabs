@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply bold tex — bold • crunchtabs</title>
+<title>valiases_tabbook_extract — valiases_tabbook_extract • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,9 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Apply bold tex — bold" />
-<meta property="og:description" content="Appliy Bold to all tex within" />
+<meta property="og:title" content="valiases_tabbook_extract — valiases_tabbook_extract" />
+<meta property="og:description" content="Mainly for testing.
+Extracts valiases" />
 
 
 
@@ -141,23 +142,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply bold tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>bold.Rd</code></div>
+    <h1>valiases_tabbook_extract</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tabBooks.R'><code>R/tabBooks.R</code></a></small>
+    <div class="hidden name"><code>valiases_tabbook_extract.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Appliy Bold to all tex within</p>
+    <p>Mainly for testing.
+Extracts valiases</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bold</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>valiases_tabbook_extract</span>(
+  <span class='no'>is_crosstabs_array</span>,
+  <span class='no'>crunch_cube</span>,
+  <span class='no'>cube_variable</span>,
+  <span class='no'>question_name</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>A list of other tex to be wrapped</p></td>
+      <th>is_crosstabs_array</th>
+      <td><p>A logical identifying if the variable is an array</p></td>
+    </tr>
+    <tr>
+      <th>crunch_cube</th>
+      <td><p>A sub-cube of a `crunch::tabBook`</p></td>
+    </tr>
+    <tr>
+      <th>cube_variable</th>
+      <td><p>A sub-cube of a `crunch::tabBook`</p></td>
     </tr>
     </table>
 
