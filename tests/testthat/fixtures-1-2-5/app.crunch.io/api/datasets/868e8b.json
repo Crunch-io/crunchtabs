@@ -46,6 +46,7 @@
         "current_editor": null,
         "creation_time": "2018-06-19T14:47:29.181000",
         "streaming": "no",
+        "archived": false,
         "owner": "https://app.crunch.io/api/projects/4f0879/",
         "logo": {
             "large": "https://s.crunch.io/act_app_icons/account-yougov-lrhfua-large.png",
@@ -63,7 +64,28 @@
                 "message": "#722580",
                 "primary": "#0064a4",
                 "secondary": "#107f65"
-            }
+            },
+            "analysis": [
+                {
+                    "default": true,
+                    "palette": [
+                        "#7c64c3",
+                        "#f372a1",
+                        "#29cdca",
+                        "#ae61c4",
+                        "#ff6352",
+                        "#00b7b4",
+                        "#6048a7",
+                        "#eb4f3e",
+                        "#ca85de",
+                        "#00a3a0",
+                        "#dc4c81",
+                        "#ad97ed"
+                    ],
+                    "type": "qualitative",
+                    "name": "YouGov standard"
+                }
+            ]
         },
         "app_settings": {
             "crunch": {
@@ -75,11 +97,12 @@
         "owner_name": "crunchtabs",
         "description": "",
         "end_date": null,
-        "access_time": "2020-08-09T06:47:21.415000",
+        "access_time": "2020-10-19T16:58:21.152000",
+        "view_cols": null,
         "current_editor_name": null,
         "view_of": null,
         "modification_time": "2019-06-25T20:51:31.649000",
-        "archived": false,
+        "view_rows": null,
         "permissions": {
             "edit": true,
             "view": true

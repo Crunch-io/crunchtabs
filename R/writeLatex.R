@@ -157,7 +157,7 @@ latexReportTables <- function(results, banner, theme) {
 
       # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
       header <- tableHeader(x, theme)
-      body <- sapply(content, latexTableBody, theme = theme)
+      body <- sapply(content, latexTableBody, theme = theme, question_alias = x$alias)
 
       footer <- ifelse(
         x$longtable | !theme$topline,
@@ -190,7 +190,7 @@ latexReportTables <- function(results, banner, theme) {
       x$longtable <- calculateIfLongtable(x, theme)
 
       header <- tableHeader(x, theme)
-      body <- latexTableBody(x, theme)
+      body <- latexTableBody(x, theme, x$alias)
       footer <- ifelse(
         x$longtable | !theme$topline,
         "\n\\end{longtable}",
@@ -332,7 +332,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     "\\captionsetup[table]{labelformat=empty}", #topline
     "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #topline
     "\\fancyfoot{}",
-    "\\fancyfoot[R]{\\thepage}",
+    ifelse(theme$latex_page_numbers, "\\fancyfoot[R]{\\thepage}",""),
     newcommand("PreserveBackslash", args = 1, "\\let\\temp=\\\\#1\\let\\\\=\\temp"),
     "\\let\\PBS=\\PreserveBackslash",
     newcommand("longtablesep", paste(

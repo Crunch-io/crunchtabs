@@ -13,6 +13,27 @@ vignette: >
 
 ## FAQ
 
+### How do I relabel the table of contents in an excel crosstab?
+
+Unfortunately there is not yet a built in way to relabel the table of contents. However, there is a straight forward solution using the `openxls` package. 
+
+```{r, eval = FALSE}
+library(openxlsx)
+wb <- openxlsx::loadWorkbook("wb.xlsx")
+lapply(
+  1:length(names(wb)), function(row) { 
+    writeFormula(
+      wb = wb, 
+      sheet = 1, 
+      startCol = 1, 
+      startRow = 4 + row, 
+      x = paste0(
+        '=HYPERLINK("', 
+        names(wb)[row], '!A5", "', names(wb)[row], '")'
+  }
+)
+```
+
 ### How do I change the crosstab stub width?
 
 The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override. 

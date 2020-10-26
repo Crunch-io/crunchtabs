@@ -73,3 +73,23 @@ with_api_fixture("fixtures-1-2-5", {
   })
 
 })
+
+test_that("Fails when passed a garbage object", {
+  expect_error(codeBookSummary("Hello"), "The expected class for")
+})
+
+context("scolumnAlign")
+
+test_that("scolumnAlign works as expected", {
+  k <- data.frame(a = c(1,2,3,4), b = rep(NA, 4))
+  align <- scolumnAlign(k, c("d", "d"))
+  expect_equal(align, c("J", "K"))
+  align <- scolumnAlign(k, c("d", "l"))
+  expect_equal(align, c("J", "l"))
+})
+
+test_that("scolumnAlign uses S when maxnchar > 6", {
+  k <- data.frame(a = c("aasdfasdfadsf","asfhashfjkldsafjdk","sahsdfadjkfladsfhklf","asfhjasfjklhsaf"), b = rep(NA, 4), stringsAsFactors = F)
+  align <- scolumnAlign(k, c("d", "l"))
+  expect_equal(align, c("S[table-format=20]","l"))
+})

@@ -9,7 +9,9 @@
 #' @param banner A banner object from \link{banner}
 #' @param weight A weighting variable passed to \link[crunch]{tabBook}
 #' @param topline Logical identifying if this is a topline only
-tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
+#' @param include_original_weighted Logical, if you have specified complex weights
+#' should the original weighted variable be included or only the custom weighted version?
+tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, include_original_weighted = TRUE) {
 
   banner_flatten <- unique(unlist(banner, recursive = FALSE))
   names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
@@ -17,21 +19,85 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
   if (topline) { banner_use$Results[[2]] <- NULL }
 
   multitable <- getMultitable(banner_flatten, dataset)
-  book <- crunch::tabBook(multitable, dataset = dataset[vars], weight = weight, output_format = "json")
+
+  if (is.null(weight) | is.null(weight(dataset))) {
+    default_weight <- NULL
+  } else {
+    default_weight <- alias(weight(dataset))
+  }
+
+
+  if (is.list(weight)) {
+    tab_frame <- crunch::tabBookWeightSpec(
+      dataset, weight,
+      append_default_wt = include_original_weighted
+    )
+    tab_frame <- tab_frame[tab_frame$alias %in% vars,]
+
+    book <- suppressWarnings(
+      crunch::tabBook(
+        multitable,
+        dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
+        weight = weight,
+        output_format = "json"
+      )
+    )
+
+  } else {
+
+    tab_frame <- tab_frame_generate(default_weight, vars)
+
+
+    book <- suppressWarnings(
+      crunch::tabBook(
+        multitable,
+        dataset = dataset[vars],
+        weight = weight,
+        output_format = "json"
+      )
+    )
+
+  }
+
+  # Put tab_frame in vars order
+  tab_frame <- tab_frame[
+    rev(
+      order(tab_frame$alias, factor(vars, levels = vars)
+            )
+      ),
+  ]
+
   banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
     crunch::aliases(crunch::variables(book[[1]][[ix]]))[2] })
   banner_var_names[1] <- "___total___"
+  # var_nums <- seq_len(nrow(tab_frame))
   var_nums <- setdiff(match(vars, crunch::aliases(book)), NA)
 
-  structure(unlist(lapply(var_nums, function(vi) {
+  structure(unlist(lapply(seq_along(var_nums), function(tab_frame_pos) {
+    vi <- var_nums[tab_frame_pos]
     crunch_cube <- book[[vi]][[1]]
 
     ## Metadata
     cube_variable <- crunch::variables(crunch_cube)[1]
-    alias <- aliases(cube_variable)
-    var_type <- type(dataset[[aliases(cube_variable)]])
 
-    if (getOption("testing_crunchtabs", default = FALSE)) print(alias)
+    if (all(is.na(tab_frame$weight))) {
+      default_weighted <- TRUE
+    } else {
+      default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+    }
+
+    if (default_weighted) {
+      alias <- aliases(cube_variable)
+    } else {
+      alias <- paste0(aliases(cube_variable), "_", tab_frame$weight[tab_frame_pos])
+    }
+
+    if (alias == "total") {
+      alias <- tab_frame$alias[tab_frame_pos]
+      var_type <- type(dataset[[alias]])
+    } else {
+      var_type <- type(dataset[[aliases(cube_variable)]])
+    }
 
     is_mr_type <- var_type == "multiple_response"
     is_cat_type <- var_type %in% c("categorical", "categorical_array")
@@ -39,11 +105,13 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
     is_toplines_array <- is_array_type && topline
     is_crosstabs_array <- is_array_type && !topline
 
-    valiases <- if (is_crosstabs_array) {
-      getSubAliases(crunch_cube)
-    } else {
-      crunch::aliases(cube_variable)
-    }
+
+    valiases <- valiases_tabbook_extract(
+      is_crosstabs_array, crunch_cube, cube_variable, question_name
+    )
+
+    if (!default_weighted) valiases <- paste0(valiases, "_", tab_frame$weight[tab_frame_pos])
+
     subnames <- if (is_array_type) getSubNames(crunch_cube)
     var_cats <- categories(cube_variable[[1]])
     inserts <- if (is_cat_type) {
@@ -133,6 +201,43 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE) {
                           if (topline) "ToplineVar", "CrossTabVar"))
     }, simplify = FALSE)
   }), recursive = FALSE), class = c(if (topline) "ToplineResults", "CrosstabsResults", "list"))
+}
+
+#'' tab_frame_generate
+#'
+#' Given a default_weight and a vector of vars, return a tab_frame
+#' that can be used to organize the result of `tabBooks`
+#'
+#' Mainly for testing.
+#'
+#' @param default_weight A string identifying the default weight
+#' @param vars A character vector of aliases
+tab_frame_generate <- function(default_weight = NULL, vars) {
+  if (is.null(default_weight)) {
+    tab_frame <- data.frame(alias = vars, weight = NA_character_)
+  } else {
+    tab_frame <- data.frame(alias = vars, weight = default_weight)
+  }
+  tab_frame
+}
+
+#' valiases_tabbook_extract
+#'
+#' Mainly for testing.
+#' Extracts valiases
+#' @param is_crosstabs_array A logical identifying if the variable is an array
+#' @param crunch_cube A sub-cube of a `crunch::tabBook`
+#' @param cube_variable A sub-cube of a `crunch::tabBook`
+valiases_tabbook_extract <- function(is_crosstabs_array, crunch_cube, cube_variable, question_name) {
+    if (is_crosstabs_array) {
+        valiases <- getSubAliases(crunch_cube)
+    } else {
+        valiases <- crunch::aliases(cube_variable)
+      if (valiases == "total") {
+        valiases <- question_name
+      }
+    }
+  valiases
 }
 
 #' Get Multitable
