@@ -4,7 +4,7 @@
 \alias{latexTableBody}
 \title{Create Tex of Table Body}
 \usage{
-latexTableBody(df, theme, alias = NULL)
+latexTableBody(df, theme, question_alias = NULL)
 }
 \arguments{
 \item{df}{An object from \link{reformatLatexResults}}

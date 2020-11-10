@@ -4,12 +4,20 @@
 \alias{as.ToplineCategoricalArray}
 \title{Combine two questions as a categorical array}
 \usage{
-as.ToplineCategoricalArray(q1, q2, labels = c("Pre", "Post"), weights)
+as.ToplineCategoricalArray(
+  q1,
+  q2,
+  question_alias = NULL,
+  labels = c("Pre", "Post"),
+  weights
+)
 }
 \arguments{
 \item{q1}{The results object for the first question}
 
-\item{q2}{The results onject second question}
+\item{q2}{The results object for the second question}
+
+\item{question_alias}{A string specifying the resulting alias.}
 
 \item{labels}{Two character strings used to describe the pre and post waves}
 

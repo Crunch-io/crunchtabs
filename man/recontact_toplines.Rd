@@ -22,7 +22,7 @@ leave that out.}
 
 \item{suffixes}{The suffixes of recontact questions, for example _pre, _post}
 
-\item{labels}{Formal labels for your recontact period. For example, "Before
+\item{labels}{Formal labels for
 the election", "After the election".}
 
 \item{weights}{A character vector of equal to the length of suffixes. You may
