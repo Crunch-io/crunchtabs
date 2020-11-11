@@ -327,7 +327,7 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
-  print(var$alias)
+  
   if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
 
     col_names <- var$subnames
