@@ -265,7 +265,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     min_cell_bottom <- NULL
   }
   if (is(var, "ToplineCategoricalArray") && latex) {
-    if (rownames(data_list$body) == as.character(1:nrow(data_list$body))) {
+    if (all(rownames(data_list$body) == as.character(1:nrow(data_list$body)))) {
       rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
     }
     

@@ -14,21 +14,22 @@
 as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels = NULL) {
   
   if (is.null(labels))
-    labels <- paste0("Wave ", seq_len(length(results)))
+    labels <- paste0("Wave ", seq_len(length(questions)))
   
-  if (length(results) != length(labels))
+  if (length(questions) != length(labels))
     stop("Number of labels provided does not match number of result sets")
-
+  
   # Use the first result item as a skeleton
   obj <- questions[[1]]
   obj$subnames <- labels
+  obj$rownames <- attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
   obj$notes <- questions[[1]]$notes
   obj$type <- "categorical_array"
   
   matrix_rows <- length(
     attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
   )
-
+  
   # We pull out counts per result item in wide format  
   m <- sapply(
     questions, 
@@ -49,7 +50,7 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
   m <- sapply(
     questions, 
     function(x) as.numeric(x$crosstabs$Results$`___total___`$proportions))
-
+  
   if (questions[[1]]$type == "multiple_response")
     m <- t(m)
   

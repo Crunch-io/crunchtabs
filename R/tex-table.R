@@ -329,10 +329,12 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
   
   if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
-
     col_names <- var$subnames
   } else {
     col_names <- sapply(var$inserts_obj, name)
+    if(length(col_names) == 0) {
+      col_names <- var$subnames
+    }
   }
 
   col_names_len <- length(col_names)
