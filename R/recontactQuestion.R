@@ -60,11 +60,9 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
     }
 
     ct$results[[question]] <- as.ToplineCategoricalArray(
-      ct$results[[p1]],
-      ct$results[[p2]],
-      question,
-      labels,
-      weights
+      questions = list(ct$results[[p1]],ct$results[[p2]]),
+      question_alias = question,
+      labels = labels
     )
 
     ct$results[[p1]] <- NULL
@@ -73,63 +71,4 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
   }
 
   ct
-}
-
-#' Combine two questions as a categorical array
-#'
-#' Here we manipulate the tabBook results so that they match the layout
-#' of a categoricalArray, which has the benefit of already having
-#' distinct code to write it to latex.
-#'
-#' @param q1 The results object for the first question
-#' @param q2 The results object for the second question
-#' @param question_alias A string specifying the resulting alias.
-#' @param labels Two character strings used to describe the pre and post waves
-#' @param weights A single alias, list, or NULL
-as.ToplineCategoricalArray2 <- function(q1, q2, question_alias = NULL, labels = c("Pre", "Post"), weights) {
-
-  q1$alias <- question_alias
-  q1$subnames <- labels
-  q1$notes <- paste0(labels, " is weighted by ", weights, collapse = " : ")
-  q1$type <- "categorical_array"
-
-  matrix_rows <- length(
-    attr(q1$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
-  )
-
-  # Build counts
-  m <- matrix(
-    c(
-      as.numeric(q1$crosstabs$Results$`___total___`$counts),
-      as.numeric(q2$crosstabs$Results$`___total___`$counts)),
-      nrow = matrix_rows
-  )
-
-  dimnames(m) <- list(
-    attr(q1$crosstabs$Results$`___total___`$counts, "dimnames")[[1]],
-    labels
-  )
-
-  q1$crosstabs$Results$`___total___`$counts <- m
-
-  # Build proportions
-  m <- matrix(
-    c(
-      as.numeric(q1$crosstabs$Results$`___total___`$proportions),
-      as.numeric(q2$crosstabs$Results$`___total___`$proportions)
-      ),
-      nrow = matrix_rows
-  )
-
-  dimnames(m) <- list(
-    attr(q1$crosstabs$Results$`___total___`$counts, "dimnames")[[1]],
-    labels
-  )
-
-  q1$crosstabs$Results$`___total___`$proportions <- m
-
-  class(q1) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
-
-  q1
-
 }
