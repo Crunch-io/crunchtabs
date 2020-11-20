@@ -145,6 +145,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
   )
   bottom <- unlist(sapply(rev(possible), function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_bottom) return(p)))
   data_order <- c(top, "body", bottom)
+  
   piece_names <- list(
     "body" = ifelse(proportions, "proportions", "counts"),
     "totals_row" = ifelse(proportions, "proportions", "counts"),

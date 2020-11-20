@@ -34,13 +34,8 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
   props <- obj$crosstabs$Results$`___total___`$proportions
   counts <- obj$crosstabs$Results$`___total___`$counts
   second_label <- attr(counts, "dimnames")[[1]]
-
-  if (is_mr) {
-    obj$subnames <- second_label
-  } else {
-    obj$subnames <- labels
-  }
-
+  
+  obj$subnames <- labels
   obj$rownames <- attr(counts, "dimnames")[[1]]
   obj$notes <- questions[[1]]$notes
   obj$type <- "categorical_array"
@@ -61,10 +56,6 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
     labels
   )
   
-  # if (is_mr) {
-  #   m <- t(m)
-  # }
-  
   obj$crosstabs$Results$`___total___`$counts <- m
   
   # We pull out proportions per result item in wide format
@@ -77,10 +68,6 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
     second_label,
     labels
   )
-  
-  # if (is_mr) {
-  #   m <- t(m)
-  # }
   
   obj$crosstabs$Results$`___total___`$proportions <- m
   

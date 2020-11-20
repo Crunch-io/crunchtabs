@@ -41,7 +41,9 @@ tracking_report <- function(dataset_list, vars, wave_labels = NULL, weight = NUL
     }
 
   }
-  # TODO: Renumber!
+  
+  rebuilt_results$results <- reflowQuestionNumbers(rebuilt_results$results)
+  
   rebuilt_results
 }
 
