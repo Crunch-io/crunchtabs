@@ -21,13 +21,33 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
   
   # Use the first result item as a skeleton
   obj <- questions[[1]]
-  obj$subnames <- labels
-  obj$rownames <- attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
+  
+  is_mr <- questions[[1]]$type == "multiple_response"
+  is_catarray <- questions[[1]]$type == "categorical_array"
+  
+  if(is_catarray) {
+    return(
+      catArrayToCategorical(questions, question_alias, labels)
+    )
+  }
+  
+  props <- obj$crosstabs$Results$`___total___`$proportions
+  counts <- obj$crosstabs$Results$`___total___`$counts
+  second_label <- attr(counts, "dimnames")[[1]]
+
+  if (is_mr) {
+    obj$subnames <- second_label
+  } else {
+    obj$subnames <- labels
+  }
+
+  obj$rownames <- attr(counts, "dimnames")[[1]]
   obj$notes <- questions[[1]]$notes
   obj$type <- "categorical_array"
+  obj$labels <- labels
   
   matrix_rows <- length(
-    attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
+    attr(counts, "dimnames")[[1]]
   )
   
   # We pull out counts per result item in wide format  
@@ -36,32 +56,124 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
     function(x) as.numeric(x$crosstabs$Results$`___total___`$counts)
   )
   
-  if (questions[[1]]$type == "multiple_response")
-    m <- t(m)
-  
   dimnames(m) <- list(
-    attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]],
+    second_label,
     labels
   )
+  
+  # if (is_mr) {
+  #   m <- t(m)
+  # }
   
   obj$crosstabs$Results$`___total___`$counts <- m
   
   # We pull out proportions per result item in wide format
   m <- sapply(
     questions, 
-    function(x) as.numeric(x$crosstabs$Results$`___total___`$proportions))
-  
-  if (questions[[1]]$type == "multiple_response")
-    m <- t(m)
+    function(x) as.numeric(x$crosstabs$Results$`___total___`$proportions)
+    )
   
   dimnames(m) <- list(
-    attr(obj$crosstabs$Results$`___total___`$proportions, "dimnames")[[1]],
+    second_label,
     labels
   )
+  
+  # if (is_mr) {
+  #   m <- t(m)
+  # }
   
   obj$crosstabs$Results$`___total___`$proportions <- m
   
   class(obj) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
   
   obj
+}
+
+#' Decompose a categorical array
+#' 
+#' Given two or more waves of a categorical array question, convert them into
+#' categoricals for presentation in a tracking report.
+#' 
+#' 
+catArrayToCategoricals <- function(questions, question_alias, labels) {
+  obj <- questions[[1]]
+  statements <- obj$subnames
+  
+  nms <- paste0(question_alias, seq_along(statements))
+  
+  if (is.null(question_alias)) {
+    question_alias <- obj$alias
+  }
+
+  # Create list of objects to fill in, one for each sub statement of the 
+  # multiple response group
+  l <- lapply(statements, function(x) obj)
+
+  # Pull out counts
+  counts <- lapply(
+    questions, 
+    function(x) matrix(
+      as.numeric(
+        x$crosstabs$Results$`___total___`$counts), 
+      nrow = length(statements))
+    )
+  
+  # Pull out props
+  props <- lapply(
+    questions, 
+    function(x) matrix(
+      as.numeric(
+        x$crosstabs$Results$`___total___`$proportions), 
+      nrow = length(statements))
+  )
+  
+  # Reformat and reorder so that data are grouped by sub question
+  # instead of grouped by time period
+  reordered_counts <- lapply(seq_along(statements), function(i) {
+    matrix(
+      unlist(
+        lapply(counts, function(x) x[,i])), 
+           nrow = length(statements)
+    )
+  })
+  
+  reordered_props <- lapply(seq_along(statements), function(i) {
+    matrix(
+      unlist(
+        lapply(props, function(x) x[,i])), 
+      nrow = length(statements)
+    )
+  })
+  
+  # Reassign it
+  l <- lapply(seq_along(statements), function(x) {
+    l[[x]]$alias <- nms[x]
+    l[[x]]$subnames <- labels
+    l[[x]]$rownames <- attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
+    l[[x]]$labels <- labels
+    l[[x]]$description <- paste0(statements[x], " (", l[[x]]$description, ")")
+    # Format and assign counts
+    m <- reordered_counts[[x]]
+    dimnames(m) <- list(
+      attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]],
+      labels
+    )
+    
+    l[[x]]$crosstabs$Results$`___total___`$counts <- m
+    
+    # Format and assign props
+    m <- reordered_props[[x]]
+    dimnames(m) <- list(
+      attr(obj$crosstabs$Results$`___total___`$proportions, "dimnames")[[1]],
+      labels
+    )
+    
+    l[[x]]$crosstabs$Results$`___total___`$proportions <- m
+    class(l[[x]]) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
+    return(l[[x]])
+  })
+  
+  names(l) <- nms
+  class(l) <- 
+  return(l)
 }

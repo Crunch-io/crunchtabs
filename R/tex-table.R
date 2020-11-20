@@ -333,7 +333,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
   } else {
     col_names <- sapply(var$inserts_obj, name)
     if(length(col_names) == 0) {
-      col_names <- var$subnames
+      col_names <- var$labels
     }
   }
 

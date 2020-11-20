@@ -269,7 +269,11 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
       rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
     }
     
-    names(data_list$body) <- var[["subnames"]]
+    if (suppressWarnings(all(rownames(data_list$body) == var$subnames))) {
+      names(data_list$body) <- var[["labels"]]
+    } else {
+      names(data_list$body) <- var[["subnames"]]
+    }
     
     data_list <- data_list["body"] # We only keep the body for arrays
     rownames <- var[["subnames"]]

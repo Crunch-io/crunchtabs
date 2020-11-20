@@ -17,14 +17,31 @@ tracking_report <- function(dataset_list, vars, wave_labels = NULL, weight = NUL
   rebuilt_results <- tabs[[1]] 
   
   for (v in vars) {
+    message("Preparing: ",v)
     result_list <- lapply(tabs, function(x) x$results[[v]])
-    rebuilt_results$results[[v]] <- as.ToplineCategoricalArray(
-      result_list, 
-      question_alias = v, 
-      labels = wave_labels
-    )
+    if(rebuilt_results$results[[v]]$type == "categorical_array") {
+      rebuilt_results$results <- c( 
+        catArrayToCategoricals(
+          result_list, 
+          question_alias=v, 
+          labels=wave_labels
+          ),
+        rebuilt_results$results
+      )
+      rebuilt_results$results[[v]] <- NULL
+            
+      # Fix the class!
+      class(rebuilt_results$results) <- c("ToplineResults", "CrosstabsResults")
+    } else {
+      rebuilt_results$results[[v]] <- as.ToplineCategoricalArray(
+        result_list, 
+        question_alias = v, 
+        labels = wave_labels
+      )
+    }
+
   }
-  
+  # TODO: Renumber!
   rebuilt_results
 }
 
