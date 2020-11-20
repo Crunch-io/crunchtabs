@@ -14,5 +14,6 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^license.MD$
 ^research$
 ^dev-misc$
