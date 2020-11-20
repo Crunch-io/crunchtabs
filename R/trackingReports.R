@@ -55,7 +55,7 @@ tracking_report_tabs <- function(datasets, vars, weight = NULL) {
       if(is.null(weight)) {
         weight = weight(x)
       }
-      crosstabs(x, vars, weight)
+      crosstabs(x, vars, weight, include_numeric = TRUE)
     }
   )
 }
