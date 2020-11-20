@@ -203,6 +203,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     if (dt %in% "totals_row") {
       if (proportions) {
         data_tmp <- colSums(data)
+        if (theme$enforce_onehundred) {
+          data_tmp[data_tmp < 100 | data_tmp > 100] = 100
+        }
       } else {
         data_tmp <-  getItemData(
           data = var$crosstabs[[banner_name]],
@@ -305,6 +308,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
 #' @param var The crunch variable
 #' @param theme The theme object from \link{themeNew}
 getVarInfo <- function(var, theme) {
+
   if_there <- function(str) {
     if (!is.null(str) && !is.na(str) && str != "") {
       return(str)
@@ -319,8 +323,13 @@ getVarInfo <- function(var, theme) {
     format_var_filtertext = if_there(var[["notes"]]),
     format_var_subname = if_there(var[["subname"]])
   )
+
+  if (is.null(var_info$format_var_description))
+    var_info$format_var_description <- var_info$format_var_name
+
   number <- if_there(var[["number"]])
   var_info2 <- list()
+
   for (info_name in intersect(names(theme), names(var_info))) {
     if (!is.null(theme[[info_name]]) && (var$type != "categorical_array" ||
                                          (is.null(theme[[info_name]]$repeat_for_subs) ||

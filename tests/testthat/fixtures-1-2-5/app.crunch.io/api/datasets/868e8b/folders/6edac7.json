@@ -1,0 +1,46 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/6edac7/",
+    "index": {
+        "../3a55f0/": {
+            "type": "folder",
+            "name": "Questionnaire Progress",
+            "size": 0
+        },
+        "../66097b/": {
+            "type": "folder",
+            "name": "Survey",
+            "size": 0
+        },
+        "../46118e/": {
+            "type": "folder",
+            "name": "ID",
+            "size": 0
+        },
+        "../0fd58b/": {
+            "type": "folder",
+            "name": "Client",
+            "size": 0
+        },
+        "../85cefe/": {
+            "type": "folder",
+            "name": "Other",
+            "size": 0
+        }
+    },
+    "body": {
+        "name": "Survey Administration",
+        "id": "6edac7"
+    },
+    "graph": [
+        "../46118e/",
+        "../66097b/",
+        "../0fd58b/",
+        "../3a55f0/",
+        "../85cefe/"
+    ],
+    "size": 0,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/hidden/"
+    }
+}

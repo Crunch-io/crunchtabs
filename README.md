@@ -1,10 +1,12 @@
 # crunchtabs
 
+Crunchtabs allow for the automatic generation of toplines, crosstabulation and codebooks directly from a crunch dataset. 
+
 ![CI](https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=master) [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs)
 
 ## Quick Start
 
-For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html)
+For a broader introduction please see our [introductory vignette](https://crunch-io.github.io/crunchtabs/articles/Overview.html). For codebooks, see [codebooks](https://crunch-io.github.io/crunchtabs/articles/Codebooks.html)
 
 ### 1. Install tinytex
 
@@ -37,8 +39,48 @@ toplines_summary <- crosstabs(dataset = ds)
 writeLatex(toplines_summary, filename = "output", pdf = TRUE) # output.pdf will be written 
 ```
 
-
 ![Topline Example from the Example Dataset](vignettes/example-001-topline.png)
+
+### Create a recontact or pre/post Topline
+
+Let's say you have a datasaet where you have asked the same question twice. Once "before" and once "after". `recontact_topline` generates a report that shows these two side by side as if they were a categorical array. Making it easier for reviewers to identify differences over time. 
+
+The function assumes your "before" and "after" questions are named in the same way with a suffix. 
+
+- q1_pre
+- q1_post
+- q3_pre
+- q3_post
+
+```
+# library(crunchtabs)
+# login()
+ds <- loadDataset("Your Recontact Survey")
+rc <- recontact_toplines(
+  ds, 
+  questions = c("q1", "q3"), # The base question name without suffixes
+  suffixes = c("_pre", "_post"), # The suffixes
+  labels = c("Pre", "Post"), # The labels associated with the pre/post
+  weights = c("weight1", "weight2") # The weights associated with the pre/post
+)
+
+writeLatex(rc, pdf = TRUE)
+```
+
+![Recontact Example](vignettes/example-012-recontact-default.png)
+
+Depending on your preferences you can also flip grids if have more categories than waves:
+
+```
+theme <- themeNew(
+  default_theme = themeDefaultLatex(), 
+  latex_flip_specific_grids = c("q1")
+)
+
+writeLatex(rc, theme = theme, pdf = TRUE)
+```
+
+![Recontact Example - Flipped Grid](vignettes/example-013-recontact-flipped-grid.png)
 
 ### Create a Cross Tabulation
 
@@ -72,6 +114,22 @@ writeExcel(ct_summary, filename = "output") # output.xlsx will be written
 ```
 
 ![Cross Tabulation Excel Example from the Example Dataset](vignettes/example-003-excel-ct.png)
+
+
+## Generating Codebooks 
+
+Generating a codebook is easy! 
+
+```
+# library(crunchtabs)
+# login()
+
+ds = loadDataset("Example dataset")
+# Use ds = newExampleDataset() if not found!
+
+writeCodeBookLatex(ds)
+```
+
 
 ## For developers
 

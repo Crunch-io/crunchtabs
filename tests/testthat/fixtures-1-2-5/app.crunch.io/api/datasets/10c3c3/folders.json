@@ -1,0 +1,128 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/10c3c3/folders/",
+    "catalogs": {
+        "personal": "https://app.crunch.io/api/datasets/10c3c3/variables/personal/",
+        "hidden": "https://app.crunch.io/api/datasets/10c3c3/folders/hidden/",
+        "trash": "https://app.crunch.io/api/datasets/10c3c3/folders/trash/",
+        "parents": "https://app.crunch.io/api/datasets/10c3c3/folders/parents/",
+        "secure": "https://app.crunch.io/api/datasets/10c3c3/folders/secure/"
+    },
+    "description": "This is the variables' folder root",
+    "index": {
+        "70e6c8/": {
+            "type": "folder",
+            "name": "Impeachment Module",
+            "size": 0
+        },
+        "716597/": {
+            "type": "folder",
+            "name": "Demographics",
+            "size": 16
+        },
+        "f03f53/": {
+            "type": "folder",
+            "name": "Medicaid Ballot Measure Test",
+            "size": 0
+        },
+        "aa4472/": {
+            "type": "folder",
+            "name": "Screeners And Quotas",
+            "size": 16
+        },
+        "87b6e4/": {
+            "type": "folder",
+            "name": "Political Demographics",
+            "size": 16
+        },
+        "6dce81/": {
+            "type": "folder",
+            "name": "Climate Justice Fund Project",
+            "size": 0
+        },
+        "f0af09/": {
+            "type": "folder",
+            "name": "Foreign Policy Module",
+            "size": 5
+        },
+        "c595cd/": {
+            "type": "folder",
+            "name": "Admin Module",
+            "size": 0
+        },
+        "622f7a/": {
+            "type": "folder",
+            "name": "Fox News",
+            "size": 0
+        },
+        "415dc4/": {
+            "type": "folder",
+            "name": "Agriculture Questions",
+            "size": 0
+        },
+        "e9c50b/": {
+            "type": "folder",
+            "name": "Policy Batteries",
+            "size": 0
+        },
+        "feab8c/": {
+            "type": "folder",
+            "name": "Survey Administration",
+            "size": 1
+        },
+        "dfadaa/": {
+            "type": "folder",
+            "name": "Other Policies",
+            "size": 0
+        },
+        "68d9ff/": {
+            "type": "folder",
+            "name": "Pollution/Corruption Message Test",
+            "size": 0
+        },
+        "698479/": {
+            "type": "folder",
+            "name": "Housing",
+            "size": 0
+        },
+        "e1072c/": {
+            "type": "folder",
+            "name": "AOC Module",
+            "size": 0
+        },
+        "715602/": {
+            "type": "folder",
+            "name": "Policy Pairs Head to Head",
+            "size": 0
+        },
+        "f70cdf/": {
+            "type": "folder",
+            "name": "Survey Tracking Variables",
+            "size": 0
+        }
+    },
+    "body": {
+        "name": "Root"
+    },
+    "graph": [
+        "f70cdf/",
+        "aa4472/",
+        "f03f53/",
+        "e1072c/",
+        "f0af09/",
+        "68d9ff/",
+        "698479/",
+        "6dce81/",
+        "dfadaa/",
+        "415dc4/",
+        "715602/",
+        "e9c50b/",
+        "70e6c8/",
+        "622f7a/",
+        "87b6e4/",
+        "716597/",
+        "c595cd/",
+        "feab8c/"
+    ],
+    "size": 54
+}

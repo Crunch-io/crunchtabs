@@ -3,7 +3,7 @@
     "self": "https://app.crunch.io/api/datasets/by_name/Example%20dataset/",
     "description": "Datasets with a given name ",
     "index": {
-        "https://app.crunch.io/api/datasets/2b9707/": {
+        "https://app.crunch.io/api/datasets/f64b4f/": {
             "size": {
                 "rows": 20,
                 "unfiltered_rows": 20,
@@ -17,18 +17,46 @@
             "streaming": "no",
             "owner_id": "https://app.crunch.io/api/users/0740cc/",
             "current_editor": "https://app.crunch.io/api/users/0740cc/",
-            "creation_time": "2020-06-06T19:27:59.790000+00:00",
+            "creation_time": "2020-10-20T00:56:33.502000+00:00",
             "archived": false,
             "view_of": null,
             "start_date": null,
-            "modification_time": "2020-06-06T19:28:02.612000+00:00",
-            "access_time": "2020-06-06T19:27:59.601000+00:00",
+            "modification_time": "2020-10-20T00:56:38.362000+00:00",
+            "access_time": "2020-10-20T00:56:33.354000+00:00",
             "permissions": {
                 "edit": true,
                 "view": true
             },
             "is_published": true,
-            "id": "2b9707",
+            "id": "f64b4f",
+            "description": "A dataset to illustrate the API"
+        },
+        "https://app.crunch.io/api/datasets/d0c2e5/": {
+            "size": {
+                "rows": 20,
+                "unfiltered_rows": 20,
+                "columns": 16
+            },
+            "current_editor_name": "Brandon Bertelsen",
+            "account": "https://app.crunch.io/api/accounts/b7a990/",
+            "owner_name": "Personal project for Brandon Bertelsen",
+            "name": "Example dataset",
+            "end_date": null,
+            "streaming": "no",
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "current_editor": "https://app.crunch.io/api/users/0740cc/",
+            "creation_time": "2020-10-20T00:47:28.229000+00:00",
+            "archived": false,
+            "view_of": null,
+            "start_date": null,
+            "modification_time": "2020-10-20T00:48:02.047000+00:00",
+            "access_time": "2020-10-20T00:47:28.097000+00:00",
+            "permissions": {
+                "edit": true,
+                "view": true
+            },
+            "is_published": true,
+            "id": "d0c2e5",
             "description": "A dataset to illustrate the API"
         }
     }

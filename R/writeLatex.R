@@ -20,7 +20,7 @@
 #' @param moe An optional numeric margin of error.
 #' @param append_text An optional character string that, if supplied, will be appended after
 #' the final table. Useful for adding in disclosure information. Defaults to an empty string.
-#' @param logging add log messages
+#' @param logging Leave logs in the working directory, defaults to FALSE
 #'
 #' @return If \code{returndata} is set to \code{TRUE}, a processed data that was used to produce
 #' the report is returned. Otherwise \code{NULL} is returned.
@@ -62,6 +62,10 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     toc <- c("\\listoftables", "\\newpage")
   } else {
     toc <- NULL
+  }
+
+  if (!is.null(append_text)) {
+    append_text <- paste0("\\vspace{0.5in}\n\n", paste0(append_text, collapse = "\n"))
   }
 
   # Now assemble the .tex document
@@ -141,7 +145,7 @@ latexReportTables <- function(results, banner, theme) {
 
     x = results[[i]]
 
-    if(!x$type %in% c("NumericVariable", "DatetimeVariable", "TextVariable")) {
+    if (!x$type %in% c("NumericVariable", "DatetimeVariable", "TextVariable")) {
       # Do some munging and generate the table bodies to match those header(s)
       x <- removeInserts(x, theme)
       # Lots of dragons in this "reformat" code :shrug:
@@ -153,9 +157,13 @@ latexReportTables <- function(results, banner, theme) {
 
       # PT: because this is a loop, header is singular (i.e. it's only one table at a time).
       header <- tableHeader(x, theme)
-      body <- sapply(content, latexTableBody, theme = theme)
+      body <- sapply(content, latexTableBody, theme = theme, question_alias = x$alias)
+
       footer <- ifelse(
-        x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
+        x$longtable | !theme$topline,
+        "\n\\end{longtable}",
+        "\n\\end{tabular}"
+      )
 
       # This paste will collapse the perhaps multiple banner tables into a
       # single string of LaTeX.
@@ -178,10 +186,17 @@ latexReportTables <- function(results, banner, theme) {
       # numeric, datetime nor text variables which we need for
       # creating a basic codebook
 
+
       x$longtable <- calculateIfLongtable(x, theme)
+
       header <- tableHeader(x, theme)
-      body <- latexTableBody(x, theme)
-      footer <- ifelse(x$longtable | !theme$topline, "\n\\end{longtable}", "\n\\end{tabular}")
+      body <- latexTableBody(x, theme, x$alias)
+      footer <- ifelse(
+        x$longtable | !theme$topline,
+        "\n\\end{longtable}",
+        "\n\\end{tabular}"
+      )
+
 
       table <- paste(
         header,
@@ -200,6 +215,15 @@ latexReportTables <- function(results, banner, theme) {
 
     }
 
+    # beb: Enclose if pagebreak_in_banner = FALSE
+    # For some reason that I don't care about
+    # bottomrule gets wiped out by nopagebreak environment
+    # adding one manually
+    if (!theme$pagebreak_in_banner)
+      table = gsub(
+        "\\end{longtable}",
+        "\\bottomrule\\end{longtable}\n\\end{absolutelynopagebreak}",
+        table, fixed = TRUE)
 
     table_bodies[[i]] = table
   }
@@ -245,6 +269,12 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     bdr <- "0.5in"
     doc_class <- "\\documentclass[landscape]{article}"
   }
+
+  nopagebreak = "\\newenvironment{absolutelynopagebreak}
+  {\\par\\nobreak\\vfil\\penalty0\\vfilneg
+   \\vtop\\bgroup}
+  {\\par\\xdef\\tpd{\\the\\prevdepth}\\egroup
+   \\prevdepth=\\tpd}"
 
   unlist(c(
     doc_class,
@@ -302,7 +332,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     "\\captionsetup[table]{labelformat=empty}", #topline
     "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #topline
     "\\fancyfoot{}",
-    "\\fancyfoot[R]{\\thepage}",
+    ifelse(theme$latex_page_numbers, "\\fancyfoot[R]{\\thepage}",""),
     newcommand("PreserveBackslash", args = 1, "\\let\\temp=\\\\#1\\let\\\\=\\temp"),
     "\\let\\PBS=\\PreserveBackslash",
     newcommand("longtablesep", paste(
@@ -326,6 +356,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     newcommand("formatvarsubname", args = 1,
                applyLatexStyle("#1", theme$format_var_subname)),
     usepackage("amsmath"),
+    nopagebreak,
     "",
     "",
     # If there are one or more banners, generate the banner definition
@@ -368,7 +399,7 @@ latexSampleDescription <- function(sample_desc, field_period, moe) {
   }
 
   c(
-    "\\begin{longtable}{ll}",
+    "\\begin{longtable}[l]{ll}",
     sample_desc,
     field_period,
     moe,

@@ -10,12 +10,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Add kableExtra
-      run: Rscript -e 'install.packages("kableExtra")'
+      run: Rscript -e 'devtools::install_github("haozhu233/kableExtra")'
+    - name: CRAN crunch
+      run: Rscript -e 'devtools::install_github("crunch-io/rcrunch", ref = "gfe-multi-weight-tabbook")'
     - name: Build
       run: R CMD build --no-build-vignettes --no-manual .
     - name: Check
       run: |
-        R CMD check --no-vignettes --no-manual crunchtabs_*.tar.gz
+        R CMD check --no-vignettes --ignore-vignettes --no-manual crunchtabs_*.tar.gz
     - name: Coverage
       run: |
         Rscript -e 'covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")'

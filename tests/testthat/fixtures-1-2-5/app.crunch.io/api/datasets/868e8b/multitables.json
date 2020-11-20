@@ -1,0 +1,28 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/multitables/",
+    "description": "List of multitable definitions for this dataset",
+    "index": {
+        "https://app.crunch.io/api/datasets/868e8b/multitables/d3cd84/": {
+            "is_public": false,
+            "team": null,
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "name": "c71d234541716d7",
+            "id": "d3cd84"
+        },
+        "https://app.crunch.io/api/datasets/868e8b/multitables/2a51ae/": {
+            "is_public": false,
+            "team": null,
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "name": "eda33a",
+            "id": "2a51ae"
+        },
+        "https://app.crunch.io/api/datasets/868e8b/multitables/0eccd0/": {
+            "is_public": false,
+            "team": null,
+            "owner_id": "https://app.crunch.io/api/users/0740cc/",
+            "name": "eda33a404b5839b",
+            "id": "0eccd0"
+        }
+    }
+}

@@ -44,6 +44,11 @@
 \newcommand{\formatvarfiltertext}[1]{\fontsize{8}{12}\textit{#1}}
 \newcommand{\formatvarsubname}[1]{#1}
 \usepackage{amsmath}
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
 
 
 \newcommand{\bannera}[1]{\toprule
@@ -100,6 +105,7 @@
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 1. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
@@ -116,6 +122,7 @@ Bird & 38\% & 44\% & 33\% & 28\% & 51\% \\
 Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{9} & \multicolumn{1}{c}{8} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -136,6 +143,7 @@ Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 2. What is your favorite pet?}
 \hangindent=0em \parbox{9in}{
@@ -155,6 +163,7 @@ Totals & 100\% & 100\% & 100\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{13} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -179,6 +188,7 @@ Unweighted N & \multicolumn{1}{c}{13} & \multicolumn{1}{c}{5} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 3A. Name the kinds of pets you have at these locations. — Home}
 \hangindent=0em \parbox{9in}{
@@ -196,6 +206,7 @@ Totals & 101\% & 100\% & 100\% & 100\% & 101\% \\
 Unweighted N & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{6} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -218,6 +229,7 @@ Unweighted N & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{3} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 3B. Name the kinds of pets you have at these locations. — Work}
 \hangindent=0em \parbox{9in}{
@@ -235,6 +247,7 @@ Totals & 100\% & 100\% & 101\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{9} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -257,10 +270,11 @@ Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{4} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 4. }
+\addcontentsline{lot}{table}{ 4. Number of dogs}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{4. }} \\
+\formatvardescription{4. Number of dogs}} \\
 \addlinespace
 \bannera{}
 
@@ -276,6 +290,7 @@ Totals & 100\% & 100\% & 100\% & 99\% & 101\% \\
 Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{8} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -300,6 +315,7 @@ Unweighted N & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{5} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 5. How many dogs do you have?}
 \hangindent=0em \parbox{9in}{
@@ -318,6 +334,7 @@ Totals & 100\% & 99\% & 100\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -341,6 +358,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 6. How many dogs do you have?}
 \hangindent=0em \parbox{9in}{
@@ -360,6 +378,7 @@ Totals & 100\% & 100\% & 100\% & 100\% & 101\% \\
 Unweighted N & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -384,10 +403,11 @@ Unweighted N & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{4} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 7. }
+\addcontentsline{lot}{table}{ 7. Country}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{7. }} \\
+\formatvardescription{7. Country}} \\
 \addlinespace
 \bannera{}
 
@@ -402,6 +422,7 @@ Totals & 100\% & 98\% & 100\% & 99\% & 101\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -425,10 +446,11 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 8. }
+\addcontentsline{lot}{table}{ 8. Age}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{8. }} \\
+\formatvardescription{8. Age}} \\
 \addlinespace
 \bannera{}
 
@@ -445,6 +467,7 @@ Totals & 99\% & 100\% & 99\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -470,10 +493,11 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 9. }
+\addcontentsline{lot}{table}{ 9. Age 2}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{9. }} \\
+\formatvardescription{9. Age 2}} \\
 \addlinespace
 \bannera{}
 
@@ -485,6 +509,7 @@ Totals & 100\% & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -505,10 +530,11 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 10. }
+\addcontentsline{lot}{table}{ 10. Age 3}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{10. }} \\
+\formatvardescription{10. Age 3}} \\
 \addlinespace
 \bannera{}
 
@@ -521,6 +547,7 @@ Totals & 100\% & 100\% & 100\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -542,10 +569,11 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 11. }
+\addcontentsline{lot}{table}{ 11. Age 5}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{11. }} \\
+\formatvardescription{11. Age 5}} \\
 \addlinespace
 \bannera{}
 
@@ -560,6 +588,7 @@ Totals & 99\% & 100\% & 100\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -583,10 +612,11 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
-\addcontentsline{lot}{table}{ 12. }
+\addcontentsline{lot}{table}{ 12. Gender}
 \hangindent=0em \parbox{9in}{
-\formatvardescription{12. }} \\
+\formatvardescription{12. Gender}} \\
 \addlinespace
 \bannera{}
 
@@ -598,6 +628,7 @@ Totals & 100\% & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -618,6 +649,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 13. What is your favorite pet?}
 \hangindent=0em \parbox{9in}{
@@ -641,6 +673,7 @@ Totals & 100\% & 100\% & 100\% & 99\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -669,6 +702,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 14. Numeric data with values less then 0.}
 \hangindent=0em \parbox{9in}{
@@ -689,6 +723,7 @@ Totals & 100\% & 100\% & 100\% & 100\% & 100\% \\
 Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{14} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{10} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}
@@ -713,6 +748,7 @@ Unweighted N & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{6} & \multicolumn{1}{
 
 
 \begin{center}
+
 \tbltopa[1.5in]
 \addcontentsline{lot}{table}{ 15. Do you have any of these animals as pets? Please select all that apply.}
 \hangindent=0em \parbox{9in}{
@@ -730,6 +766,7 @@ Unweighted N: Min & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{2} & \multicolumn
 Unweighted N: Max & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{7} \\
 
 \end{longtable}
+
 
 
 \vspace{-.25in}

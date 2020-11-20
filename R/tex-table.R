@@ -5,7 +5,8 @@
 #'
 #' @param df An object from \link{reformatLatexResults}
 #' @param theme A theme object from \link{themeNew}
-latexTableBody <- function(df, theme) {
+#' @param alias The variable's alias
+latexTableBody <- function(df, theme, question_alias = NULL) {
   # The input "df" object is shaped like this:
   # List of 9
   #  $ top            : NULL
@@ -34,6 +35,7 @@ latexTableBody <- function(df, theme) {
   #  - attr(*, "class")= chr [1:2] "MultipleResponseCrossTabVar" "CrossTabVar"
 
   data <- df$data_list
+
   # So `data` is a list of data frames
 
   topline <- theme$topline
@@ -154,6 +156,10 @@ latexTableBody <- function(df, theme) {
 
   # Turn each table in `data` into a LaTeX table string
   if (topline_catarray) {
+
+    if (theme$latex_flip_grids | question_alias %in% theme$latex_flip_specific_grids) {
+      data$body <- as.data.frame(t(data$body), check.names = FALSE, stringsAsFactors = FALSE)
+    }
     # Apparently you can't have any extra table members for these, only "body"
 
     # Also, IMPORTANT: cat arrays get displayed transposed. First, paste
@@ -269,8 +275,12 @@ tableHeader.CrossTabVar <- function(var, theme) {
     label_width = paste0(theme$format_label_column_exceptions[var$alias], "in")
   }
 
+  nopagebreak = NULL
+  if (!theme$pagebreak_in_banner)
+    nopagebreak = "\\begin{absolutelynopagebreak}"
 
   header <- paste(
+    nopagebreak,
     paste0("\\tbltopa[",label_width,"]"),
     latexTableName(var, theme),
     "\\addlinespace",
@@ -284,6 +294,7 @@ tableHeader.CrossTabVar <- function(var, theme) {
     # Subsequent banners don't get the same table name at the top, and the
     # negative vspace squeezes them closer to the one above
     next_headers <- paste(
+      nopagebreak,
       vspace("-.25in"),
       paste0("\\tbltop", letters[2:ntabs], "[", label_width ,"]"),
       "\\addlinespace",
@@ -316,7 +327,14 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
-  col_names <- sapply(var$inserts_obj, name)
+  print(var$alias)
+  if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
+
+    col_names <- var$subnames
+  } else {
+    col_names <- sapply(var$inserts_obj, name)
+  }
+
   col_names_len <- length(col_names)
   col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
 
@@ -442,6 +460,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     }
 
     check = theme$format_label_column_exceptions[var$alias]
+
     if (!is.na(check) & !is.null(check)) {
       label_width = theme$format_label_column_exceptions[var$alias]
     }
@@ -488,7 +507,12 @@ toplineTableDef <- function(var, tab_definition, header_row, theme) {
 #' @param theme An object created by \link{themeNew}
 latexTableName <- function(var, theme) {
   var_info <- getVarInfo(var, theme)
-  bg_color <- theme[[names(var_info)[1]]]$background_color
+  if (length(var_info) > 0) {
+    bg_color <- theme[[names(var_info)[1]]]$background_color
+  } else {
+    bg_color <- NULL
+  }
+
   if (inherits(var, "ToplineVar")) {
     page_width <- 6.5
   } else {
@@ -502,11 +526,13 @@ latexTableName <- function(var, theme) {
     var_info[[1]] <- paste0(var_info[[1]], " \u2014 ", var_info$formatvarsubname)
     var_info$formatvarsubname <- NULL
   }
-  if (length(var_info) == 0) {
-    # TODO: This shouldn't ever happen. User should be warned
-    warning("Missing variable: ", alias(var))
-    var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
-  }
+  # if (length(var_info) == 0) {
+  #   # TODO: This shouldn't ever happen. User should be warned
+  #   warning("Missing variable: ", var$alias)
+  #   if(!is.null(bg_color)) {
+  #     var_info <- list(formatvarname = paste0("\\color{", bg_color, "}{404}"))
+  #   }
+  # }
   out <- paste0(
     "\\addcontentsline{lot}{table}{ ", texEscape(var_info[[1]]), "}\n",
     "\\hangindent=0em \\parbox{", page_width, "in}{\n",

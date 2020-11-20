@@ -1,0 +1,18 @@
+{
+    "element": "shoji:catalog",
+    "self": "https://app.crunch.io/api/datasets/868e8b/folders/85cefe/",
+    "index": {
+
+    },
+    "body": {
+        "name": "Other",
+        "id": "85cefe"
+    },
+    "graph": [
+
+    ],
+    "size": 0,
+    "catalogs": {
+        "folder": "https://app.crunch.io/api/datasets/868e8b/folders/6edac7/"
+    }
+}

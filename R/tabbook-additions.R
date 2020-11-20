@@ -20,15 +20,18 @@ reflowQuestionNumbers <- function(x) {
 #' and TextVariable
 #'
 #' @param x A variable of class NumericVariable, DatetimeVariable or TextVariable
+#' @param weighted Logical. Are these data weighted?
+#' @param num The number of verbatim responses to present as a sample. Defaults to 10.
+#' @param tz A timezone. Defaults to UTC.
 #' @param ... Additional arguments passed to methods
 #' @export
-prepareExtraSummary <- function(x, ...) {
+prepareExtraSummary <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   UseMethod("prepareExtraSummary", x)
 }
 
 #' @rdname prepareExtraSummary
 #' @export
-prepareExtraSummary.default <- function(x) {
+prepareExtraSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   wrong_class_error(x, c("CategoricalVariable", "CategoricalArrayVariable", "MultipleResponseVariable", "TextVariable", "NumericVariable", "DatetimeVariable"), "codebookItem")
 }
 
@@ -42,10 +45,10 @@ prepareExtraSummary.default <- function(x) {
 #' N
 #'
 #' @param x A variable of class \link[crunch]{NumericVariable}
-#' @param weighted Logical. Are these data weighted?
+#' @inheritParams prepareExtraSummary
 #' @importFrom stats median quantile
 #' @export
-prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE) {
+prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   y = as.vector(x)
   qt = quantile(y, na.rm = TRUE)
   minima = min(y, na.rm = TRUE)
@@ -87,10 +90,9 @@ prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE) {
 #' N
 #'
 #' @param x A variable of class \link[crunch]{DatetimeVariable}
-#' @param weighted Logical. Are these data weighted?
-#' @param tz A timezone. Defaults to UTC.
+#' @inheritParams prepareExtraSummary
 #' @export
-prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, tz = "UTC") {
+prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   y = as.POSIXct(as.vector(x), tx = "UTC")
   qt = quantile(y, na.rm = TRUE)
   minima = min(y, na.rm = TRUE)
@@ -127,10 +129,9 @@ prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, tz = "UTC")
 #' N
 #'
 #' @param x A variable of class \link[crunch]{TextVariable}
-#' @param weighted Logical. Are these data weighted?
-#' @param num The number of verbatim responses to present as a sample. Defaults to 10.
+#' @inheritParams prepareExtraSummary
 #' @export
-prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10L) {
+prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   set.seed(42)
   y = as.vector(x)
   y = sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
@@ -200,10 +201,14 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels) {
 
   structure(
     list(
-      alias = alias(x),
-      name = name(x),
-      description = ifelse(description(x) == "", name(x), description(x)),
-      notes = notes(x),
+      alias = crunch::alias(x),
+      name = crunch::name(x),
+      description = ifelse(
+        crunch::description(x) == "",
+        crunch::name(x),
+        crunch::description(x)
+      ),
+      notes = crunch::notes(x),
       type = class(x)[1],
       top = NULL,
       bottom = bottom,

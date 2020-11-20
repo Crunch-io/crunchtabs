@@ -43,7 +43,7 @@ Includes:
       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 }
-#' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
+\item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -71,6 +71,8 @@ Includes:
 \item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100\% where necessary? Defaults to FALSE.}
 \item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
+\item{latex_flip_grids}{In Latex, a logical. Categorical arrays will be flipped so that there rows are now transposed to columns.},
+\item{latex_flip_specific_grids}{An optional vector of aliases whose presentation should be transposed}
 \item{logo}{An optional list. Information about the logo to be included in the tables.}
 Includes:
 \itemize{
@@ -108,6 +110,7 @@ Includes:
 \item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
 \item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
 \item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+\item{pagebreak_in_banner}{A logical. Allow a banner to be broken midway across pages. Defaults to TRUE. If FALSE, Pushes the page breaking banner sub-table to the next page similar to manually using clearpage}
 \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
 \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
 }

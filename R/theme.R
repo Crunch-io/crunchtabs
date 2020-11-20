@@ -30,7 +30,7 @@
 #'       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
 #'       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 #' }
-#' #' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
+#' \item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 #' \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 #' \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -58,6 +58,8 @@
 #' \item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100\% where necessary? Defaults to FALSE.}
 #' \item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 #' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
+#' \item{latex_flip_grids}{In Latex, a logical. Categorical arrays will be flipped so that there rows are now transposed to columns.},
+#' \item{latex_flip_specific_grids}{An optional vector of aliases whose presentation should be transposed}
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
 #' \itemize{
@@ -95,6 +97,7 @@
 #' \item{position_fixed}{In Excel, a logical. Should the relevant row(s) be fixed at the top of the file with the banner? Defaults to FALSE.}
 #' \item{position_top}{In Excel, a logical. Should should the relevant row(s) be at the top of each table? Defaults to FALSE.}
 #' \item{repeat_for_subs}{A logical. Should the information be repeated for each subvariable? Defaults to TRUE.}
+#' \item{pagebreak_in_banner}{A logical. Allow a banner to be broken midway across pages. Defaults to TRUE. If FALSE, Pushes the page breaking banner sub-table to the next page similar to manually using clearpage}
 #' \item{valign}{In Excel, an optional character. The vertical alignment of the text. Valid options are: "bottom", "center", and "top".}
 #' \item{wrap_text}{In Excel, an optional logical. Should the text wrap if it extends beyond the width of the cell? Defaults to TRUE.}
 #' }
@@ -208,10 +211,13 @@ themeDefaultExcel <- function(
     digits_numeric = 2,
     one_per_sheet = FALSE,
     latex_round_percentages = TRUE,
+    enforce_onehundred = FALSE,
     latex_headtext = "",
     latex_foottext = "",
+    latex_page_numbers = TRUE,
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
+    latex_flip_grids = FALSE,
     latex_max_lines_for_tabular = 0)
 
   class(defaults) <- "Theme"
@@ -260,11 +266,15 @@ themeDefaultLatex <- function(font = getOption("font", default = "helvet"),
     excel_freeze_column = 0,
     excel_orientation = "portrait",
     latex_round_percentages = FALSE,
+    enforce_onehundred = FALSE,
     latex_headtext = "",
     latex_foottext = "",
     latex_table_align = "r",
     latex_multirowheaderlines = TRUE,
-    latex_max_lines_for_tabular = 0
+    latex_max_lines_for_tabular = 0,
+    latex_page_numbers = TRUE,
+    latex_flip_grids = FALSE,
+    pagebreak_in_banner = TRUE
   )
 
   class(defaults) <- "Theme"
@@ -415,7 +425,11 @@ validators_to_use <- list(
   latex_multirowheaderlines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_round_percentages = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_round_percentages_exception = c(class = "character", len = NA, missing = TRUE),
+  enforce_onehundred = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   latex_table_align = c(class = "character", len = 1, missing = FALSE, default = ""),
+  latex_flip_grids = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
+  latex_flip_specific_grids = c(class = "character", len = NA, missing = TRUE),
+  latex_page_numbers = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
   logo = list(missing = TRUE, include = list("file", "startRow", "startCol",
                                              "width", "height", "units", "dpi")),
   mask = c(class = "character", len = 1, missing = TRUE),
@@ -429,6 +443,7 @@ validators_to_use <- list(
   position_fixed = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   position_top = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   repeat_for_subs = c(class = "logical", len = 1, missing = FALSE, default = TRUE),
+  pagebreak_in_banner = c(class = "logical", len = 1, missing = TRUE, default = TRUE),
   excel_show_grid_lines = c(class = "logical", len = 1, missing = FALSE, default = FALSE),
   startCol = c(class = "numeric", len = 1, missing = FALSE, default = 1),
   startRow = c(class = "numeric", len = 1, missing = FALSE, default = 1),
@@ -458,9 +473,10 @@ theme_validator <- function(theme) {
     "format_var_alias", "format_var_description", "format_var_filtertext",
     "format_var_name", "format_var_subname", "format_weighted_n", "halign",
     "latex_foottext", "latex_headtext", "latex_max_lines_for_tabular",
-    "latex_multirowheaderlines", "latex_round_percentages",
-    "latex_round_percentages_exception", "latex_table_align", "logo",
-    "one_per_sheet", "valign")
+    "latex_multirowheaderlines", "latex_round_percentages", "enforce_onehundred",
+    "latex_flip_grids","latex_round_percentages_exception","latex_page_numbers",
+    "latex_table_align", "logo", "one_per_sheet","valign", "pagebreak_in_banner",
+    "latex_flip_specific_grids")
 
   ignore <- setdiff(names(theme), theme_required)
   if (length(ignore) > 0) {
@@ -483,8 +499,12 @@ theme_validator <- function(theme) {
 
   # Issue 88
   if ("logo" %in% names(theme)) {
-    if (!file.exists(paste0(theme$logo$file, ".png")) & !file.exists(theme$logo$file)) {
-      # Adding new conditional for excel fills
+    # Check if version of logo exists:
+
+    wo_png = file.exists(paste0(theme$logo$file,".png"))
+    w_png = file.exists(paste0(theme$logo$file))
+
+    if (!(wo_png | w_png)) {
       stop("Logo file not found, check path to file or current working directory.")
     }
   }
