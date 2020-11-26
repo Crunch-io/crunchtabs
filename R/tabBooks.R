@@ -35,7 +35,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     tab_frame <- tab_frame[tab_frame$alias %in% vars,]
 
     book <- suppressWarnings(
-      crunch::tabBook(
+      tabBook_crunchtabs(
         multitable,
         dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
         weight = weight,
@@ -47,9 +47,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
 
     tab_frame <- tab_frame_generate(default_weight, vars)
 
-
     book <- suppressWarnings(
-      crunch::tabBook(
+      tabBook_crunchtabs(
         multitable,
         dataset = dataset[vars],
         weight = weight,
