@@ -361,8 +361,8 @@ tabBookSingle_crunchtabs <- function(
   
   ## POST the query, which (after progress polling) returns a URL to download
   result <- crunch::crPOST(tabbook_url,
-                   config = add_headers(`Accept` = accept),
-                   body = toJSON(body)
+                   config = httr::add_headers(`Accept` = accept),
+                   body = jsonlite::toJSON(body)
   )
   if (is.null(file)) {
     ## Read in the tab book content and turn it into useful objects
@@ -518,7 +518,7 @@ tabBookMulti_crunchtabs <- function(
 #' # Now can use the weight spec in `tabBook()`
 #' tabbook <- tabBook(mt, ds, weight = weight_spec)
 #' }
-tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
+tabBookWeightSpec_crunchtabs <- function(dataset, weights, append_default_wt = TRUE) {
   weight_df <- stack(weights)
   names(weight_df) <- c("alias", "weight")
   # stack does mostly what we want, but we don't want factor
@@ -587,9 +587,9 @@ standardize_tabbook_filter <- function(dataset, filter) {
   })
   if (inherits(filter, "CrunchFilter")) filter <- list(list(filter = self(filter)))
   
-  expr_filter <- activeFilter(dataset)
-  if (is.CrunchExpr(expr_filter)) {
-    expr_filter <- list(c(zcl(expr_filter), name = formatExpression(expr_filter)))
+  expr_filter <- crunch:::activeFilter(dataset)
+  if (crunch::is.CrunchExpr(expr_filter)) {
+    expr_filter <- list(c(zcl(expr_filter), name = crunch:::formatExpression(expr_filter)))
   }
   
   if(length(filter) > 0 && !is.null(expr_filter)) {
