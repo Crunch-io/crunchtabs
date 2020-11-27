@@ -25,14 +25,21 @@ reflowQuestionNumbers <- function(x) {
 #' @param tz A timezone. Defaults to UTC.
 #' @param ... Additional arguments passed to methods
 #' @export
-prepareExtraSummary <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
-  UseMethod("prepareExtraSummary", x)
+nonTabBookSummary <- function(x, ...) {
+  UseMethod("nonTabBookSummary", x)
 }
 
-#' @rdname prepareExtraSummary
+#' @rdname nonTabBookSummary
 #' @export
-prepareExtraSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
-  wrong_class_error(x, c("CategoricalVariable", "CategoricalArrayVariable", "MultipleResponseVariable", "TextVariable", "NumericVariable", "DatetimeVariable"), "codebookItem")
+nonTabBookSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
+  wrong_class_error(
+    x, 
+    c("CategoricalVariable", 
+      "CategoricalArrayVariable",
+      "MultipleResponseVariable",
+      "TextVariable",
+      "NumericVariable",
+      "DatetimeVariable"), "nonTabBookSummary")
 }
 
 #' Prepare Numeric Content
@@ -45,10 +52,10 @@ prepareExtraSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC"
 #' N
 #'
 #' @param x A variable of class \link[crunch]{NumericVariable}
-#' @inheritParams prepareExtraSummary
+#' @inheritParams nonTabBookSummary
 #' @importFrom stats median quantile
 #' @export
-prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
+nonTabBookSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   y = as.vector(x)
   qt = quantile(y, na.rm = TRUE)
   minima = min(y, na.rm = TRUE)
@@ -74,7 +81,8 @@ prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz
       "3rd Quartile",
       "Maximum",
       "Standard Deviation"
-    )
+    ),
+    vector = y
   )
 
   obj
@@ -90,10 +98,10 @@ prepareExtraSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz
 #' N
 #'
 #' @param x A variable of class \link[crunch]{DatetimeVariable}
-#' @inheritParams prepareExtraSummary
+#' @inheritParams nonTabBookSummary
 #' @export
-prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
-  y = as.POSIXct(as.vector(x), tx = "UTC")
+nonTabBookSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
+  y = as.POSIXct(as.vector(x))
   qt = quantile(y, na.rm = TRUE)
   minima = min(y, na.rm = TRUE)
   maxima = max(y, na.rm = TRUE)
@@ -113,7 +121,8 @@ prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, t
       "Median",
       "3rd Quartile",
       "Maximum"
-    )
+    ),
+    vector = y
   )
 
   obj
@@ -129,20 +138,21 @@ prepareExtraSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, t
 #' N
 #'
 #' @param x A variable of class \link[crunch]{TextVariable}
-#' @inheritParams prepareExtraSummary
+#' @inheritParams nonTabBookSummary
 #' @export
-prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
+nonTabBookSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   set.seed(42)
   y = as.vector(x)
-  y = sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
-  n = sum(!is.na(y)) # This could be wrong for un-enforced responses such as ""
+  z = sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
+  n = sum(!is.na(z)) # This could be wrong for un-enforced responses such as ""
 
   # Mock the content object
   obj = resultsObject(
     x,
     weighted = weighted,
-    body_values = rep("", length(y)),
-    body_labels = y
+    body_values = rep("", length(z)),
+    body_labels = z,
+    vector = y
   )
 
   obj
@@ -162,7 +172,8 @@ prepareExtraSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = 
 #' @param weighted Logical. Are these data weighted?
 #' @param body_values The values to present
 #' @param body_labels The labels to present
-resultsObject <- function(x, top = NULL, weighted, body_values, body_labels) {
+#' @param vector The data vector
+resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vector) {
 
   stopifnot(length(body_values) == length(body_labels))
 
@@ -179,7 +190,7 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels) {
 
   if (weighted) {
     data_list$weighted_n = data.frame(
-      x = sum(!is.na(as.vector(x))),
+      x = sum(!is.na(vector)),
       row.names = "Weighted N"
     )
     names(data_list$weighted_n) = NA_character_
@@ -190,7 +201,7 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels) {
   } else {
 
     data_list$unweighted_n = data.frame(
-      x = sum(!is.na(as.vector(x))),
+      x = sum(!is.na(vector)),
       row.names = "Unweighted N"
     )
     names(data_list$unweighted_n) = NA_character_

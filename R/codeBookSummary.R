@@ -10,7 +10,8 @@ codeBookSummary <- function(x, ...) {
   UseMethod("codeBookSummary", x)
 }
 
-#' @describeIn codeBookSummary The default, throws out anything that does not match expected crunch variable classes
+#' @describeIn codeBookSummary The default, throws out anything that does not 
+#' match expected crunch variable classes
 #' @export
 codeBookSummary.default <- function(x, ...) {
   wrong_class_error(x,
@@ -23,7 +24,8 @@ codeBookSummary.default <- function(x, ...) {
                     "codeBookSummary")
 }
 
-#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a CategoricalVariable
+#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a 
+#' CategoricalVariable
 #' @importFrom utils type.convert
 #' @param multiple Is this a MultipleResponse or CategoricalArray variable?
 #' @export
@@ -95,7 +97,8 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
   res
 }
 
-#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a MultipleResponseVariable
+#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a 
+#' MultipleResponseVariable
 #' @export
 codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   responses <- list()
@@ -132,7 +135,8 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   r
 }
 
-#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a CategoricalArrayVariable
+#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a 
+#' CategoricalArrayVariable
 #' @export
 codeBookSummary.CategoricalArrayVariable <- function(x, ...) codeBookSummary.MultipleResponseVariable(x, ...)
 

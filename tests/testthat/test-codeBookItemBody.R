@@ -5,7 +5,7 @@ test_that("codeBookItemBody CategoricalVariable", {
   smry <- structure(list(id = c("1", "2", "3", "8", "9"), name = c("Cat", 
     "Dog", "Bird", "Skipped", "Not Asked"), n = c("6", "4", "3", 
     "3", "4")), class = "data.frame", row.names = c(NA, -5L))
-  stub(
+  mockery::stub(
     codeBookItemBody.CategoricalVariable, 
     "codeBookSummary.CategoricalVariable", smry
   )
@@ -31,7 +31,7 @@ test_that("codeBookItemBody CategoricalArrayVariable", {
   `8 Skipped` = c(4, 3), `9 Not Asked` = c(5, 1)), 
   row.names = c(NA, -2L), class = "data.frame")
   
-  stub(codeBookItemBody.CategoricalArrayVariable, 
+  mockery::stub(codeBookItemBody.CategoricalArrayVariable, 
        "codeBookSummary.CategoricalArrayVariable", smry)
   res <- codeBookItemBody(ds$petloc)
   expect_equal(
@@ -55,7 +55,7 @@ test_that("codeBookItemBody MultipleResponseVariable", {
         3, 6), `8 skipped` = c(4, 4, 6), `9 not asked` = c(8, 8, 3)), row.names = c(NA, 
       -3L), class = "data.frame")
   
-  stub(
+  mockery::stub(
     codeBookItemBody.MultipleResponseVariable, 
     "codeBookSummary.MultipleResponseVariable", 
     smry, depth = 2)
@@ -81,7 +81,7 @@ test_that("codeBookItemBody NumericVariable", {
       Mean = 2, SD = 1, Min = 0, Max = 6, n = 16, Missing = 4), 
     class = "data.frame", row.names = c(NA, -1L)
   )
-  stub(codeBookItemBody.NumericVariable, "codeBookSummary.NumericVariable", smry)
+  mockery::stub(codeBookItemBody.NumericVariable, "codeBookSummary.NumericVariable", smry)
   
   res = codeBookItemBody(ds$ndogs)
   
@@ -106,7 +106,7 @@ test_that("codeBookItemBody DatetimeVariable", {
     Range = "[2014-12-01, 2015-01-01]"), class = "data.frame", 
     row.names = c(NA, -1L))
   
-  stub(codeBookItemBody.DatetimeVariable, "codeBookSummary.DatetimeVariable", smry)
+  mockery::stub(codeBookItemBody.DatetimeVariable, "codeBookSummary.DatetimeVariable", smry)
   res = codeBookItemBody(ds$wave)
   
   expect_equal(
@@ -130,7 +130,7 @@ test_that("codeBookItemBody TextVariable", {
       Filled = 16L, Missing = 4L, `Max Length` = 8L), class = "data.frame", 
     row.names = c(NA, -1L))
   
-  stub(codeBookItemBody.TextVariable, "codeBookSummary.TextVariable", smry)
+  mockery::stub(codeBookItemBody.TextVariable, "codeBookSummary.TextVariable", smry)
   res <- codeBookItemBody(ds$q3)
   
   expect_equal(

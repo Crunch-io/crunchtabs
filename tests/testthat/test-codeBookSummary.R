@@ -17,8 +17,8 @@ test_that("codeBookSummary correct for CategoricalVariable", {
   tab <- structure(c(Cat = 6, Dog = 4, Bird = 3), .Dim = 3L, .Dimnames = list(
     q1 = c("Cat", "Dog", "Bird")), class = "table")
   
-  stub(where = codeBookSummary.CategoricalVariable, what = "crunch::categories", how = function(...) cats)
-  stub(codeBookSummary.CategoricalVariable, "crunch::table", function(...) tab)
+  mockery::stub(where = codeBookSummary.CategoricalVariable, what = "crunch::categories", how = function(...) cats)
+  mockery::stub(codeBookSummary.CategoricalVariable, "crunch::table", function(...) tab)
   
   r = codeBookSummary(ds$q1)
   expect_equal(
@@ -54,10 +54,10 @@ test_that("codeBookSummary correct for MultipleResponseVariable", {
     TRUE, TRUE), value = c(1L, 2L, 8L, 9L), drop = c("TRUE", "FALSE", 
     "8", "9"), n = c(1, 2, 8, 9)), row.names = c(2L, 1L, 4L, 3L), class = "data.frame")
   
-  stub(codeBookSummary.MultipleResponseVariable, "crunch::categories", function(...) cats)
-  stub(codeBookSummary.MultipleResponseVariable, "crunch::subvariables", function(...) fakedf)
-  stub(codeBookSummary.MultipleResponseVariable, "codeBookSummary", function(...) tab, depth = 5)
-  stub(codeBookSummary.MultipleResponseVariable, "names", c("Cat", "Dog", "Bird"))
+  mockery::stub(codeBookSummary.MultipleResponseVariable, "crunch::categories", function(...) cats)
+  mockery::stub(codeBookSummary.MultipleResponseVariable, "crunch::subvariables", function(...) fakedf)
+  mockery::stub(codeBookSummary.MultipleResponseVariable, "codeBookSummary", function(...) tab, depth = 5)
+  mockery::stub(codeBookSummary.MultipleResponseVariable, "names", c("Cat", "Dog", "Bird"))
   
   r = codeBookSummary.MultipleResponseVariable(ds$allpets)
   
@@ -77,7 +77,7 @@ test_that("codeBookSummary correct for MultipleResponseVariable", {
 test_that("codeBookSummary correct for NumericVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds")) 
   
-  stub(codeBookSummary.NumericVariable, "as.vector", 
+  mockery::stub(codeBookSummary.NumericVariable, "as.vector", 
        c(1, NA, 2, 3, 1, 2, 2, 3, 2, 2, 2, NA, 3, 0, 6, 1, NA, 0, NA, 2))
   
   r = codeBookSummary(ds$ndogs)
@@ -98,7 +98,7 @@ test_that("codeBookSummary correct for DatetimeVariable", {
     16405, 16405, 16405, 16436, 16436, 16436, 16436, 16436, 16436, 
     16436, 16436, 16436, 16436), class = "Date")
   
-  stub(codeBookSummary.DatetimeVariable, "as.vector", dates)
+  mockery::stub(codeBookSummary.DatetimeVariable, "as.vector", dates)
   r = codeBookSummary(ds$wave)
   
   expect_equal(
@@ -113,7 +113,7 @@ test_that("codeBookSummary correct for DatetimeVariable", {
 
 test_that("codeBookSummary correct for TextVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds")) 
-  stub(codeBookSummary.TextVariable, "as.vector", 
+  mockery::stub(codeBookSummary.TextVariable, "as.vector", 
        c("Jasmine", "Clyde", "Geoffrey", "Spike", "Zeus", "Teddy", "Ali", 
          "Hugo", "Snoopy", "Lady", "Biscuit", NA, "Daisy", "Doug", NA, 
          "Fluffy", NA, NA, "Felix", "Rocky")

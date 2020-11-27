@@ -110,23 +110,8 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   } else {
     res_class <- c("Crosstabs", "CrunchTabs")
   }
-
-  if (!is.null(banner)) {
-    banner <- lapply(banner, function(b)
-      lapply(b, function(b1) {
-        if (b1$alias %in% '___total___') {
-          b1$unweighted_n <- nrow(dataset)
-          b1$weighted_n <- sum(as.vector(weight_var), na.rm = TRUE)
-        } else {
-          b1$unweighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data = dataset, weight = NULL)), b1$categories_out)
-          b1$unweighted_n <- b1$unweighted_n[!is.na(names(b1$unweighted_n))]
-          b1$weighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data = dataset, weight = weight_var)), b1$categories_out)
-          b1$weighted_n <- b1$weighted_n[!is.na(names(b1$weighted_n))]
-        }
-        return(b1)
-      }))
-    class(banner) <- 'Banner'
-  }
+  
+  banner <- banner_manipulation(banner, dataset, weight_var)
 
   # Here we create logic for including summaries
   # for variable types that did not previously have
@@ -156,7 +141,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
     numerics <- numerics[!weightVars]
 
     numRes <- lapply(numerics, function(x) {
-        prepareExtraSummary(
+        nonTabBookSummary(
           dataset[[x]],
           weighted = !is.null(weight)
         )
@@ -171,7 +156,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   if (include_datetime & length(datetimes) > 0) {
 
     datetimeRes <- lapply(datetimes, function(x) {
-      prepareExtraSummary(
+      nonTabBookSummary(
         dataset[[x]],
         weighted = !is.null(weight)
       )
@@ -186,7 +171,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
 
   if (include_verbatims & length(verbatims) > 0) {
     verbatimRes <- lapply(verbatims, function(x) {
-      prepareExtraSummary(
+      nonTabBookSummary(
         dataset[[x]],
         weighted = !is.null(weight)
       )
@@ -227,6 +212,27 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
   class(summary_data) <- res_class
 
   return(summary_data)
+}
+
+
+banner_manipulation <- function(banner, dataset, weight_var) {
+  if (!is.null(banner)) {
+    banner <- lapply(banner, function(b)
+      lapply(b, function(b1) {
+        if (b1$alias %in% '___total___') {
+          b1$unweighted_n <- nrow(dataset)
+          b1$weighted_n <- sum(as.vector(weight_var), na.rm = TRUE)
+        } else {
+          b1$unweighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data = dataset, weight = NULL)), b1$categories_out)
+          b1$unweighted_n <- b1$unweighted_n[!is.na(names(b1$unweighted_n))]
+          b1$weighted_n <- setNames(as.array(crtabs(paste0('~', b1$alias), data = dataset, weight = weight_var)), b1$categories_out)
+          b1$weighted_n <- b1$weighted_n[!is.na(names(b1$weighted_n))]
+        }
+        return(b1)
+      }))
+    class(banner) <- 'Banner'
+  }
+  banner
 }
 
 #' @describeIn crosstabs An alias for \code{crosstabs}

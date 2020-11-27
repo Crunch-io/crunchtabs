@@ -79,7 +79,7 @@ suppressWarnings(writeCodeBookLatex(
   appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
 )
 
-x <- readLines("Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
+x <- readLines(test_path("fixtures/Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex"))
 saveRDS(x, file = "tests/testthat/fixtures/writeCodeBookLatexLongCat.rds")
 
 # For crosstabs
@@ -126,7 +126,7 @@ stop_capturing()
 #
 # topline_withExtraSummary$results <- c(
 #   topline_withExtraSummary$results,
-#   setNames(lapply(missings, function(x) prepareExtraSummary(ds[[x]])), missings)
+#   setNames(lapply(missings, function(x) nonTabBookSummary(ds[[x]])), missings)
 # )
 #
 # results_list <- list()

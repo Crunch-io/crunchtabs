@@ -101,7 +101,7 @@ with_api_fixture("fixtures-1-2-5", {
       url = "https://app.crunch.io/dataset/10c3c3/",
       appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
     )
-    tex <- readLines("Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
+    tex <- readLines(test_path("fixtures/Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex"))
     original <- readRDS("fixtures/writeCodeBookLatexLongCat.rds")
     expect_true(length(tex) == length(original))
     expect_true(sum(tex %in% original)/length(tex) > 0.98)
