@@ -348,7 +348,7 @@ tabBookSingle_crunchtabs <- function(
     options = dots
   )
   ## Add this after so that if it is NULL, the "where" key isn't present
-  body$where <- crunch:::variablesFilter(dataset)
+  # body$where <- crunch:::variablesFilter(dataset)
   
   if (use_legacy_endpoint) {
     warning(
@@ -362,11 +362,11 @@ tabBookSingle_crunchtabs <- function(
   ## POST the query, which (after progress polling) returns a URL to download
   result <- crunch::crPOST(tabbook_url,
                    config = httr::add_headers(`Accept` = accept),
-                   body = jsonlite::toJSON(body)
+                   body = jsonlite::toJSON(body, null = "null")
   )
   if (is.null(file)) {
     ## Read in the tab book content and turn it into useful objects
-    out <- crunch::retry(crunch::crGET(result), wait = 0.5) #nocov
+    out <- crunch:::retry(crunch::crGET(result), wait = 0.5) #nocov
     return(crunch:::TabBookResult(out))
   } else {
     file <- crunch::crDownload(result, file)

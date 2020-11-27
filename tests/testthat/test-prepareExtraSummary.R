@@ -1,21 +1,37 @@
 context("prepareExtraSummary NumericVariable")
 
-# YANBF: Yet another broken fixture.
-with_api_fixture("fixtures-1-2-5", {
-
-  ds <- loadDataset("Example dataset")
-
-  test_that("dataset is not weighted", {
-    expect_null(weight(ds))
-  })
-
-  test_that("dataset is accessible", {
-    expect_true(exists("ds"))
-  })
-
+test_that("E-E for NumericVariable, DatetimeVariable and TextVariable summaries", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  stub(crosstabs, "crunch::weight", NULL)
+  typs <- c("multiple_response", "categorical", "categorical_array", "numeric", 
+            "numeric", "numeric", "text", "categorical", "datetime", "numeric")
+  stub(crosstabs, "crunch::types", typs)
+  als <- c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "q3", 
+           "country", "wave", "caseid")
+  stub(crosstabs, "crunch::aliases", als)
+  
+  bnr <- structure(list(Results = list(`___total___` = structure(list(
+    alias = "___total___", name = "", type = "Total", old_categories = "Total", 
+    categories_out = "Total", categories = "Total"), class = "BannerVar"), 
+  allpets = structure(list(alias = "allpets", name = "All pets owned", 
+    type = "multiple_response", old_categories = c("Cat", 
+    "Dog", "Bird"), categories_out = c("Cat", "Dog", "Bird"
+    ), categories = c("Cat", "Dog", "Bird")), class = "BannerVar"))), class = "Banner")
+  
+  stub(crosstabs, "banner", bnr)
+  stub(crosstabs, "tabBooks", readRDS(test_path("fixtures/tabbook_results.rds")))
+  stub(crosstabs, "is.weightVariable", FALSE)
   ct <- crosstabs(ds, include_numeric = TRUE,
                   include_datetime = TRUE,
                   include_verbatims = TRUE)
+  
+  
+})
+
+# YANBF: Yet another broken fixture.
+with_api_fixture("fixtures-1-2-5", {
+
+  
 
   expect_equal(
     names(ct$results),

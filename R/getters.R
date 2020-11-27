@@ -98,3 +98,17 @@ getSubNames <- function(x) {
 getSubAliases <- function(x) {
     sapply(x@.Data[[1]]$dimensions[[1]]$references$subreferences, function(xi) xi$alias)
 }
+
+#' Extract counts from a tabbook
+#' @param x A results object or element
+getCounts <- function(x, alias) {
+    
+}
+
+#' Extract proportions from a tabbook
+#' @param x A results object or element
+getProportions <- function(x, alias) {
+    UseMethod("getProportions", x)
+}
+
+

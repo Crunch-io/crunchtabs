@@ -81,7 +81,7 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
 #' Given two or more waves of a categorical array question, convert them into
 #' categoricals for presentation in a tracking report.
 #' 
-#' 
+#' @export
 catArrayToCategoricals <- function(questions, question_alias, labels) {
   obj <- questions[[1]]
   statements <- obj$subnames

@@ -28,6 +28,7 @@ test_that("Stops if questions not character", {
   ),
   "is.character(questions) is not TRUE", fixed = TRUE)
 })
+
 test_that("Stops if suffixes not character", {
   expect_error(
     with_mock(

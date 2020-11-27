@@ -99,7 +99,8 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) {
 #' @export
 codeBookSummary.MultipleResponseVariable <- function(x, ...) {
   responses <- list()
-  subvars <- names(subvariables(x))
+  sv <- crunch::subvariables(x)
+  subvars <- names(sv)
   for (i in 1:length(names(x))) {
     responses[[i]] <- codeBookSummary(x[[i]], multiple = TRUE)
   }
@@ -138,6 +139,7 @@ codeBookSummary.CategoricalArrayVariable <- function(x, ...) codeBookSummary.Mul
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a NumericVariable
 #' @export
 codeBookSummary.NumericVariable <- function(x, ...) {
+  x <- as.vector(x)
   mu <- round(mean(x, na.rm = T), 2)
   std <- round(sd(x, na.rm = TRUE))
   minima <- round(min(x, na.rm = T), 2)
@@ -167,7 +169,6 @@ codeBookSummary.NumericVariable <- function(x, ...) {
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a TextVariable
 #' @export
 codeBookSummary.TextVariable <- function(x, ...) {
-
   filled_verbs <- as.vector(x)
   filled_verbs <- filled_verbs[!is.na(filled_verbs)]
   filled_verbs <- filled_verbs[!filled_verbs %in% c("", "__NA__")]
@@ -195,6 +196,7 @@ codeBookSummary.TextVariable <- function(x, ...) {
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a DatetimeVaraible
 #' @export
 codeBookSummary.DatetimeVariable <- function(x, ...) {
+  x <- as.vector(x)
   minima <- min(x, na.rm = T)
   maxima <- max(x, na.rm = T)
   missings <- sum(is.na(as.vector(x)))
