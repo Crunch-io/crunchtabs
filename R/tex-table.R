@@ -5,7 +5,7 @@
 #'
 #' @param df An object from \link{reformatLatexResults}
 #' @param theme A theme object from \link{themeNew}
-#' @param alias The variable's alias
+#' @param question_alias The variable's alias
 latexTableBody <- function(df, theme, question_alias = NULL) {
   # The input "df" object is shaped like this:
   # List of 9

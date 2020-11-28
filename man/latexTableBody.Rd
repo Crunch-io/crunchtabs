@@ -11,7 +11,7 @@ latexTableBody(df, theme, question_alias = NULL)
 
 \item{theme}{A theme object from \link{themeNew}}
 
-\item{alias}{The variable's alias}
+\item{question_alias}{The variable's alias}
 }
 \description{
 Prepare the TeX for the table body given initial

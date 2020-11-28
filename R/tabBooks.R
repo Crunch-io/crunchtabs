@@ -106,7 +106,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     
     
     valiases <- valiases_tabbook_extract(
-      is_crosstabs_array, crunch_cube, cube_variable, question_name
+      is_crosstabs_array, crunch_cube, cube_variable, question_name = alias
     )
     
     if (!default_weighted) valiases <- paste0(valiases, "_", tab_frame$weight[tab_frame_pos])

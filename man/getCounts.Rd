@@ -8,6 +8,8 @@ getCounts(x, alias)
 }
 \arguments{
 \item{x}{A results object or element}
+
+\item{alias}{The alias that you wish to extract counts for}
 }
 \description{
 Extract counts from a tabbook

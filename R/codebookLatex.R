@@ -172,17 +172,16 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
       kable_styling_defaults(full_width = TRUE, ...) %>%
       kableExtra::column_spec(c(2,6), width = "1.75in", latex_column_spec = NULL) %>%
       kableExtra::row_spec(0, extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}") %>%
-      { gsub("\\midrule", "", ., fixed = TRUE)}
+      { gsub("\\midrule", "", .data, fixed = TRUE)}
       # kableExtra::column_spec(3, border_right = TRUE) %>%
 
   } else {
-
+    
     alignment <- c("d", "l", "d")
     names(k) <- curlyWrap(names(k))
     kab <- kableExtra::kable(
       k, "latex", booktabs = TRUE, longtable = TRUE,  align = scolumnAlign(k, alignment),
       linesep = "", escape = FALSE)
-
 
     if (max(nchar(k$`{Label}`)) > 80) {
       kab <- kab %>% kableExtra::column_spec(2, width = "5.25in") %>%
@@ -193,9 +192,7 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
     }
     # Fix for square braces in options
     gsub("\\hspace*{0in}", "", kab, fixed = TRUE)
-
   }
-
 }
 
 #' @describeIn codeBookItemBody Creates item body for CategoricalArrayVariable

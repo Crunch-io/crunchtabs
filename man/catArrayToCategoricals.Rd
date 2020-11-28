@@ -6,6 +6,13 @@
 \usage{
 catArrayToCategoricals(questions, question_alias, labels)
 }
+\arguments{
+\item{questions}{A list of results objects from tabBook}
+
+\item{question_alias}{The name of the alias in question}
+
+\item{labels}{The labels for the questions. Will default to Wave X, where X is 1:n}
+}
 \description{
 Given two or more waves of a categorical array question, convert them into
 categoricals for presentation in a tracking report.

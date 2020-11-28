@@ -8,6 +8,8 @@ getProportions(x, alias)
 }
 \arguments{
 \item{x}{A results object or element}
+
+\item{alias}{The alias that you wish to extract proportions for}
 }
 \description{
 Extract proportions from a tabbook

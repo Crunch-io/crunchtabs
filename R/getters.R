@@ -100,13 +100,16 @@ getSubAliases <- function(x) {
 }
 
 #' Extract counts from a tabbook
+#' 
 #' @param x A results object or element
+#' @param alias The alias that you wish to extract counts for
 getCounts <- function(x, alias) {
     # TODO: Look at as.ToplineCategoricalArray
 }
 
 #' Extract proportions from a tabbook
 #' @param x A results object or element
+#' @param alias The alias that you wish to extract proportions for
 getProportions <- function(x, alias) {
     # TODO: Look at as.ToplineCategoricalArray
 }

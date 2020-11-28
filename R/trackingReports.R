@@ -2,9 +2,10 @@
 #' 
 #' This function provides a method for creating a multi-dataset tracking report
 #' 
-#' @param datasets A list of two or more crunch datasets. Datasets should be 
+#' @param datasets_list A list of two or more crunch datasets. Datasets should be 
 #' provided in time order. From oldest to youngest. (i.e, wave 1, wave 2, 
 #' ..., wave n)
+#' @param vars A character vector of question aliases to be included in the report
 #' @param weight NULL to accept each dataset's current weight or a single alias
 #' that is available in all datasets as a string.
 #' @param wave_labels The labels for each wave. Should be of a length that

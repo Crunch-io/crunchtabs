@@ -81,6 +81,9 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
 #' Given two or more waves of a categorical array question, convert them into
 #' categoricals for presentation in a tracking report.
 #' 
+#' @param questions A list of results objects from tabBook
+#' @param question_alias The name of the alias in question
+#' @param labels The labels for the questions. Will default to Wave X, where X is 1:n 
 #' @export
 catArrayToCategoricals <- function(questions, question_alias, labels) {
   obj <- questions[[1]]
