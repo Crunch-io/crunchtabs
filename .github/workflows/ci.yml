@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Add mockery
+      run: Rscript -e 'devtools::install_github("r-lib/mockery")'
     - name: Add kableExtra
       run: Rscript -e 'devtools::install_github("haozhu233/kableExtra")'
     - name: CRAN crunch
