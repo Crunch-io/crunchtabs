@@ -21,7 +21,7 @@ context("nonTabBookSummary end-end")
 #   mockery::stub(crosstabs, "banner", bnr)
 #   mockery::stub(crosstabs, "tabBooks", readRDS(test_path("fixtures/tabbook_results_nonTabBookSummary.rds")))
 #   mockery::stub(crosstabs, "is.weightVariable", FALSE)
-#   stub(nonTabBookSummary.NumericVariable, "as.vector", 
+#   mockery::stub(nonTabBookSummary.NumericVariable, "as.vector", 
 #        c(1, NA, 2, 3, 1, 2, 2, 3, 2, 2, 2, NA, 3, 0, 6, 1, NA, 0, NA, 2),
 #        depth = 5)
 #   
@@ -78,7 +78,7 @@ context("nonTabBookSummary DatetimeVariable")
 
 test_that("Creates result object appropriately for a TextVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  stub(nonTabBookSummary.DatetimeVariable, "as.vector",
+  mockery::stub(nonTabBookSummary.DatetimeVariable, "as.vector",
                 structure(c(16405, 16405, 16405, 16405, 16405, 16405, 16405,
                             16405, 16405, 16405, 16436, 16436, 16436, 16436, 16436, 16436,
                             16436, 16436, 16436, 16436), class = "Date"))
@@ -110,7 +110,7 @@ context("nonTabBookSummary NumericVariable")
 
 test_that("Creates result object appropriately for a TextVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  stub(nonTabBookSummary.NumericVariable, "as.vector", 
+  mockery::stub(nonTabBookSummary.NumericVariable, "as.vector", 
        c(1, NA, 2, 3, 1, 2, 2, 3, 2, 2, 2, NA, 3, 0, 6, 1, NA, 0, NA, 2))
   res <- nonTabBookSummary(ds$ndogs)
   expect_equal(
