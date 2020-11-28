@@ -20,6 +20,7 @@ Depends:
     crunch,
 Imports:
     digest,
+    httr,
     jsonlite,
     kableExtra (>= 1.1.0.9000),
     magrittr,
@@ -32,6 +33,7 @@ Suggests:
     httptest (>= 2.0.0),
     httpcache,
     knitr,
+    mockery, 
     rmarkdown,
     testthat (>= 2.1.0)
 RoxygenNote: 7.1.1

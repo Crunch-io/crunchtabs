@@ -27,7 +27,7 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
   
   if(is_catarray) {
     return(
-      catArrayToCategorical(questions, question_alias, labels)
+      catArrayToCategoricals(questions, question_alias, labels)
     )
   }
   

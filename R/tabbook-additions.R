@@ -579,7 +579,7 @@ standardize_tabbook_filter <- function(dataset, filter) {
     filter_name <- filter
     available <- filter_name %in% names(filters(dataset))
     if (any(!available)) {
-      halt("Could not find filter named: ", paste(filter_name[!available], collapse = ", "))
+      httpcache::halt("Could not find filter named: ", paste(filter_name[!available], collapse = ", "))
     }
     filter <- filters(dataset)[filter]
   }
@@ -590,7 +590,7 @@ standardize_tabbook_filter <- function(dataset, filter) {
   
   expr_filter <- crunch:::activeFilter(dataset)
   if (crunch::is.CrunchExpr(expr_filter)) {
-    expr_filter <- list(c(zcl(expr_filter), name = crunch:::formatExpression(expr_filter)))
+    expr_filter <- list(c(crunch:::zcl(expr_filter), name = crunch:::formatExpression(expr_filter)))
   }
   
   if(length(filter) > 0 && !is.null(expr_filter)) {

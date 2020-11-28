@@ -227,6 +227,7 @@ tab_frame_generate <- function(default_weight = NULL, vars) {
 #' @param is_crosstabs_array A logical identifying if the variable is an array
 #' @param crunch_cube A sub-cube of a `crunch::tabBook`
 #' @param cube_variable A sub-cube of a `crunch::tabBook`
+#' @param question_name The question alias
 valiases_tabbook_extract <- function(is_crosstabs_array, crunch_cube, cube_variable, question_name) {
   if (is_crosstabs_array) {
     valiases <- getSubAliases(crunch_cube)

@@ -135,7 +135,8 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) {
   k$name <- texEscape(k$name)
 
   if (nrow(k) > 1) {
-    k = k[order(as.numeric(k[,1])),] %>% as.data.frame(stringsAsFactors = F)
+    k = k[order(as.numeric(k[,1])),] 
+    k = as.data.frame(k, stringsAsFactors = F)
   } else {
     k = as.data.frame(k, stringsAsFactors = F)
 
