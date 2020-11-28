@@ -5,20 +5,20 @@
 \alias{nonTabBookSummary.default}
 \title{Prepare Summary Content}
 \usage{
-nonTabBookSummary(x, weighted = TRUE, num = 10, tz = "UTC", ...)
+nonTabBookSummary(x, ...)
 
 \method{nonTabBookSummary}{default}(x, weighted = TRUE, num = 10, tz = "UTC", ...)
 }
 \arguments{
 \item{x}{A variable of class NumericVariable, DatetimeVariable or TextVariable}
 
+\item{...}{Additional arguments passed to methods}
+
 \item{weighted}{Logical. Are these data weighted?}
 
 \item{num}{The number of verbatim responses to present as a sample. Defaults to 10.}
 
 \item{tz}{A timezone. Defaults to UTC.}
-
-\item{...}{Additional arguments passed to methods}
 }
 \description{
 Prepare summary content for toplines for classes that

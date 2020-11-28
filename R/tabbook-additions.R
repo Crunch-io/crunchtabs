@@ -359,21 +359,21 @@ tabBookSingle_crunchtabs <- function(
     options = dots
   )
   ## Add this after so that if it is NULL, the "where" key isn't present
-  # body$where <- crunch:::variablesFilter(dataset)
+  body$where <- crunch:::variablesFilter(dataset)
   
   if (use_legacy_endpoint) {
     warning(
       "The legacy tabbook endpoint has been deprecated and will be removed in the future."
     )
-    tabbook_url <- crunch::shojiURL(multitable, "views", "tabbook")
+    tabbook_url <- shojiURL(multitable, "views", "tabbook")
   } else {
-    tabbook_url <- crunch::shojiURL(multitable, "views", "export")
+    tabbook_url <- shojiURL(multitable, "views", "export")
   }
   
   ## POST the query, which (after progress polling) returns a URL to download
-  result <- crunch::crPOST(tabbook_url,
+  result <- crPOST(tabbook_url,
                    config = httr::add_headers(`Accept` = accept),
-                   body = jsonlite::toJSON(body, null = "null")
+                   body = jsonlite::toJSON(body, null = "null", auto_unbox = TRUE)
   )
   if (is.null(file)) {
     ## Read in the tab book content and turn it into useful objects
@@ -411,9 +411,7 @@ tabBookMulti_crunchtabs <- function(
     stop("if weight_spec is a data.frame it must have exactly two columns: 'weight' & 'alias'")
   }
   
-  if (!is.data.frame(weight_spec)) weight_spec <- tabBookWeightSpec_crunchtabs(
-    dataset, weight_spec, append_default_wt = append_default_wt
-  )
+  if (!is.data.frame(weight_spec)) weight_spec <- tabBookWeightSpec(dataset, weight_spec)
   
   if (any(duplicated(weight_spec))) {
     stop("Found duplicate weight and alias combinations in weight_spec")
@@ -423,33 +421,25 @@ tabBookMulti_crunchtabs <- function(
   # that we are using for the tabbook, so we need to load the full variable list
   # NB: The `relative=on` is to get a cache hit, and might need to change
   # (comes from `variablesFilter()`)
-  all_dsvars <- crunch:::VariableCatalog(crunch::crGET(
-    self(crunch::allVariables(dataset)),
+  all_dsvars <- crunch:::ShojiCatalog(crGET(
+    self(allVariables(dataset)),
     query = list(relative = "on")
   ))
   
-  wt_aliases <- unique(weight_spec$weight)
-  # Server behavior is weird - always returns tabbook in dataset order, so split
-  # out handling that into a function so we can test
-  weight_spec$page_number <- get_weight_spec_page_num(weight_spec, all_dsvars)
+  wt_vars <- unique(weight_spec$weight)
+  # Add a column that indicates what page the variable will be on
+  # in the weight-specific tabbook
+  weight_spec$page_num <- as.numeric(ave(weight_spec$weight, weight_spec$weight, FUN = seq_along))
   
-  books <- lapply(wt_aliases, function(wt_alias) {
-    # Get the page_vars in order they appear in dataset so that even if server
-    # changes behavior about tabbook order, rcrunch isn't affected
-    page_vars <- weight_spec[weight_spec$weight == wt_alias, ]
-    page_vars <- page_vars[order(page_vars$page_number), ]$alias
-    
-    if (wt_alias == "") {
-      wt_var <- NULL
-    } else {
-      wt_var <- all_dsvars[[wt_alias]]
-      if (is.null(wt_var)) halt("Could not find weight variable: '", wt_alias, "'")
-    }
+  books <- lapply(wt_vars, function(wt) {
+    page_vars <- weight_spec$alias[weight_spec$weight == wt]
+    # `tabBookSingle` uses `self` to get URL of weight
+    wt_entity <- crunch:::VariableEntity(self = names(all_dsvars[wt]@index))
     
     tabBookSingle_crunchtabs(
       multitable,
       dataset[page_vars],
-      wt_var,
+      wt_entity,
       output_format,
       file = NULL,
       filter,
@@ -457,7 +447,7 @@ tabBookMulti_crunchtabs <- function(
       dots
     )
   })
-  names(books) <- wt_aliases
+  names(books) <- wt_vars
   
   # stitch together
   # Most of the objects should be the same because they come from the same multitable
@@ -467,7 +457,7 @@ tabBookMulti_crunchtabs <- function(
     weight = weight_spec$weight,
     page_num = weight_spec$page_num,
     FUN = function(weight, page_num) {
-      books[[which(names(books) == weight)]]$meta$analyses[[page_num]]
+      books[[which(names(books) == weight)]]@.Data[[1]]$analyses[[page_num]]
     },
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
@@ -476,15 +466,15 @@ tabBookMulti_crunchtabs <- function(
     weight = weight_spec$weight,
     page_num = weight_spec$page_num,
     FUN = function(weight, page_num) {
-      books[[which(names(books) == weight)]]$sheets[[page_num]]
+      books[[which(names(books) == weight)]]@.Data[[2]][[page_num]]
     },
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
   )
   
   combined <- books[[1]] # start with first one for skeleton
-  combined$meta$analyses <- analyses
-  combined$sheets <- pages
+  combined@.Data[[1]]$analyses <- analyses
+  combined@.Data[[2]] <- pages
   
   if (!is.null(file)) {
     jsonlite::write_json(toJSON(combined), file)
@@ -529,7 +519,7 @@ tabBookMulti_crunchtabs <- function(
 #' # Now can use the weight spec in `tabBook()`
 #' tabbook <- tabBook(mt, ds, weight = weight_spec)
 #' }
-tabBookWeightSpec_crunchtabs <- function(dataset, weights, append_default_wt = TRUE) {
+tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
   weight_df <- stack(weights)
   names(weight_df) <- c("alias", "weight")
   # stack does mostly what we want, but we don't want factor
@@ -538,7 +528,7 @@ tabBookWeightSpec_crunchtabs <- function(dataset, weights, append_default_wt = T
   # If we don't need to append the default weights, we're done
   if (!append_default_wt) return(weight_df)
   
-  default_weight <- if (is.null(weight(dataset))) "" else crunch::alias(weight(dataset))
+  default_weight <- if (is.null(weight(dataset))) "" else alias(weight(dataset))
   default_weight_df <- data.frame(
     alias = names(dataset),
     weight = default_weight,
