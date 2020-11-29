@@ -154,54 +154,6 @@ collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
 #' @name ifelseOverload
 "%||%" <- function(a, b) if (!is.null(a)) a else b
 
-#' crunch test wrapper
-#'
-#' Use this to wrap tests that require access to
-#' the crunch api.
-#'
-#'
-#' @param fixture_path A full path to fixtures
-#' @param expr An expression to be run within the api fixture
-#' @export
-# with_api_fixture <- function(fixture_path, expr) {
-#   with(
-#     crunch::temp.options(
-#       crunch.api = "https://app.crunch.io/api/",
-#       httptest.mock.paths = fixture_path,
-#       crunch.show.progress = FALSE
-#     ),
-#     httptest::with_mock_api(
-#       # Also need to redact UUIDs as is done in POSTs
-#       with_mock(
-#         `crunch::crPOST` = function(...) {
-#           args <- list(...)
-#           # Necessary for post
-#           args$body <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args$body)
-#           args[[1]] <- gsub("([0-9a-f]{6})[0-9a-f]{26}", "\\1", args[[1]])
-#           #args$body <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args$body)
-#           #args[[1]] <- gsub("[0-9A-Za-z]{22}([0-9]{6})", "\\1", args[[1]])
-#           do.call(
-#             function(...) crunch:::crunchAPI("POST", ...),
-#             args
-#           )
-#         },
-#         expr
-#       )
-#     )
-#   )
-# }
-with_api_fixture <- function(fixture_path, expr) {
-  with(
-    crunch::temp.options(
-      crunch.api = "https://app.crunch.io/api/",
-      httptest.mock.paths = fixture_path,
-      crunch.show.progress = FALSE
-    ),
-    httptest::with_mock_api(
-      expr
-    )
-  )
-}
 
 #' Default Logo
 #'
