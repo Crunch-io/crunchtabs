@@ -58,8 +58,11 @@ test_that("codeBookItemBody MultipleResponseVariable", {
   mockery::stub(
     codeBookItemBody.MultipleResponseVariable, 
     "codeBookSummary.MultipleResponseVariable", 
-    smry, depth = 2)
+    smry)
   res = codeBookItemBody(ds$allpets)
+  print(attributes(res$kcounts)$kable_meta$contents)
+  print("\n\n")
+  print(attributes(res$kcounts)$kable_meta$align_vector_origin)
   expect_equal(
     attributes(res$kcounts)$kable_meta$contents,
     c("\\{Variable\\} & \\{1\\} & \\{2\\} & \\{8\\} & \\{9\\}",
