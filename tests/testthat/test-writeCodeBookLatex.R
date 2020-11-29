@@ -18,7 +18,7 @@ test_that("End to end writeCodeBookLatex", {
       subtitle = "Goodbye",
       sample_desc = "US Voting Adults",
       logo = "yougov",
-      pdf = TRUE)
+      pdf = FALSE)
   )
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
@@ -147,8 +147,7 @@ test_that("Appendices are positioned as expected", {
     writeCodeBookLatex(
       ds[c("allpets")],
       sample_desc = "US Voting Adults",
-      appendix = TRUE, 
-      pdf = TRUE)
+      appendix = TRUE)
   )
   
   tex <- readLines("Example-dataset.tex")
@@ -192,7 +191,7 @@ test_that("Position functions as expected", {
       ds[c("allpets")],
       sample_desc = "US Voting Adults",
       position = "c", 
-      pdf = TRUE)
+      pdf = FALSE)
   )
   
   tex <- readLines("Example-dataset.tex")
@@ -203,59 +202,16 @@ test_that("Position functions as expected", {
     !any(grepl("includegraphics", tex))
   )  
   
-  # We expect Appendix title to be found on 100th line or greater
-  expect_true({
-    which(grepl("\\fancyhead[L]{{\\fontsize{16}{24}\\textbf{Appendix}}}", tex, fixed = TRUE)) > 100
-  })
+  # Should be [c] not [l]
+  expect_true(
+    any(grepl("\\begin{longtable}[c]{lJJJJ}", tex, fixed = TRUE))
+  )
+  
+  
   
   expect_true(file.exists("Example-dataset.tex"))
   expect_true(file.remove("Example-dataset.tex"))
 })
-
-# with_api_fixture("fixtures-1-2-5", {
-#   ds = crunch::loadDataset("Example dataset")
-# 
-#   test_that("Default tex as expected", {
-#     suppressWarnings(writeCodeBookLatex(ds, pdf = FALSE))
-#     tex <- readLines("Example-dataset.tex")
-#     original <- readRDS("fixtures/writeCodeBookLatexFull.rds")
-#     # expect_true(length(tex) == length(original))
-#     expect_true(sum(tex %in% original)/length(tex) > 0.98)
-#   })
-# })
-# 
-# with_api_fixture("fixtures-1-2-5", {
-#   ds = loadDataset(
-#     "https://app.crunch.io/dataset/10c3c3/"
-#   )
-# 
-#   test_that("Default tex as expected", {
-#     suppressWarnings(writeCodeBookLatex(
-#       ds[1],
-#       url = "https://app.crunch.io/dataset/10c3c3/",
-#       appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE)
-#     )
-#     tex <- readLines(test_path("fixtures/Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex"))
-#     original <- readRDS("fixtures/writeCodeBookLatexLongCat.rds")
-#     expect_true(length(tex) == length(original))
-#     expect_true(sum(tex %in% original)/length(tex) > 0.98)
-#   })
-# 
-#   test_that("Default tex as expected", {
-#     dir.create("tmp")
-#     suppressWarnings(writeCodeBookLatex(
-#       ds[1],
-#       url = "https://app.crunch.io/dataset/10c3c3/",
-#       appendix = TRUE, suppress_zero_counts = FALSE, pdf = FALSE, path = "tmp")
-#     )
-#     tex <- readLines("tmp/Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
-#     original <- readRDS("fixtures/writeCodeBookLatexLongCat.rds")
-#     # expect_true(length(tex) == length(original))
-#     expect_true(sum(tex %in% original)/length(tex) > 0.98)
-#     file.remove("tmp/Data-for-Progress-National-Issues-Survey----Foreign-Policy.tex")
-#     file.remove("tmp")
-#   })
-# })
 
 
 context("codeBookItemBody")
