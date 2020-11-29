@@ -36,8 +36,10 @@ test_that("getName.ToplineBase", {
 
 test_that("getName.CrunchCube", {
   obj <- list()
-  class(obj) <- "ToplineBase"
-  expect_equal(getName(obj), "Oops, my name is")
+  x <- c("v1"="v1", "v2" = "v1")
+  mockery::stub(getName.CrunchCube, "variables", x)
+  class(obj) <- "CrunchCube"
+  expect_equal(getName(obj), "v1")
 })
 
 test_that("getName.BannerVar", {

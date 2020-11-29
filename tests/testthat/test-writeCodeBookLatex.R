@@ -18,7 +18,7 @@ test_that("End to end writeCodeBookLatex", {
       subtitle = "Goodbye",
       sample_desc = "US Voting Adults",
       logo = "yougov",
-      pdf = FALSE)
+      pdf = TRUE)
   )
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
@@ -147,7 +147,8 @@ test_that("Appendices are positioned as expected", {
     writeCodeBookLatex(
       ds[c("allpets")],
       sample_desc = "US Voting Adults",
-      appendix = TRUE)
+      appendix = TRUE, 
+      pdf = FALSE)
   )
   
   tex <- readLines("Example-dataset.tex")
