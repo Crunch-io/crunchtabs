@@ -13,9 +13,9 @@ cats = new(
  NULL), names = c("id", "missing", "name", "numeric_value"
  ))))
 
-subvars = readRDS("fixtures/subvar-responses.rds")
+subvars = readRDS(test_path("fixtures/subvar-responses.rds"))
 
-ds = readRDS("fixtures/banner_ds.rds")
+ds = readRDS(test_path("fixtures/banner_ds.rds"))
 categories_over = function(x) cats
 subvariables_over = function(x) subvars
 

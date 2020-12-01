@@ -8,11 +8,14 @@
 #' @param vars A character vector of question aliases to be included in the report
 #' @param weight NULL to accept each dataset's current weight or a single alias
 #' that is available in all datasets as a string.
-#' @param wave_labels The labels for each wave. Should be of a length that
+#' @param labels The labels for each wave. Should be of a length that
 #' matches the number of datasets.
-tracking_report <- function(dataset_list, vars, wave_labels = NULL, weight = NULL) {
+tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
   # topline tabbooks
   tabs <- tracking_report_tabs(dataset_list, vars, weight)
+  
+  if (is.null(labels))
+    labels <- paste0("Wave ", seq_len(length(dataset_list)))
   
   # Use the first result item as a skeleton
   rebuilt_results <- tabs[[1]] 
@@ -25,7 +28,7 @@ tracking_report <- function(dataset_list, vars, wave_labels = NULL, weight = NUL
         catArrayToCategoricals(
           result_list, 
           question_alias=v, 
-          labels=wave_labels
+          labels=labels
           ),
         rebuilt_results$results
       )
@@ -37,7 +40,7 @@ tracking_report <- function(dataset_list, vars, wave_labels = NULL, weight = NUL
       rebuilt_results$results[[v]] <- as.ToplineCategoricalArray(
         result_list, 
         question_alias = v, 
-        labels = wave_labels
+        labels = labels
       )
     }
 

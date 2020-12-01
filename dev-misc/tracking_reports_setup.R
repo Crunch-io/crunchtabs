@@ -35,5 +35,5 @@ ds3 <- loadDataset("Example dataset W3")
 
 
 tema <- themeNew(default_theme = themeDefaultLatex(), latex_flip_grids = TRUE)
-ct <- tracking_report(list(ds1, ds2, ds3), vars = c("allpets", "q1", "country"))
+ct <- tracking_report(list(ds1, ds2, ds3), vars = c("allpets", "q1", "petloc"))
 writeLatex(ct, pdf = TRUE,theme = tema)

@@ -265,7 +265,6 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
 #' @param file character local filename to write to. A default filename will be
 #' generated from the `multitable`'s name if one is not supplied and the
 #' "xlsx" format is requested. Not required for "json" format export.
-#' @param filter a Crunch `filter` object or a vector of names
 #' of \code{\link{filters}} defined in the dataset.
 #' @param use_legacy_endpoint Logical, indicating whether to use a 'legacy'
 #' endpoint for compatibility (this endpoint will be removed in the future).
@@ -298,7 +297,7 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
 #' @importFrom jsonlite fromJSON
 #' @export
 tabBook_crunchtabs <- function(multitable, dataset, weight = crunch::weight(dataset),
-                    output_format = c("json", "xlsx"), file = NULL, filter = NULL,
+                    output_format = c("json", "xlsx"), file = NULL,
                     use_legacy_endpoint = envOrOption("use.legacy.tabbook.endpoint", FALSE),
                     append_default_wt = TRUE, ...) {
   dots <- list(...)
@@ -313,7 +312,7 @@ tabBook_crunchtabs <- function(multitable, dataset, weight = crunch::weight(data
   }
   
   if (is.null(weight) | is.variable(weight)) {
-    tabBookSingle_crunchtabs(multitable, dataset, weight, fmt, file, filter, use_legacy_endpoint, dots)
+    tabBookSingle_crunchtabs(multitable, dataset, weight, fmt, file, use_legacy_endpoint, dots)
   } else if (is.list(weight) || is.data.frame(weight)) {
     tabBookMulti_crunchtabs(
       multitable,
@@ -321,7 +320,6 @@ tabBook_crunchtabs <- function(multitable, dataset, weight = crunch::weight(data
       weight,
       fmt,
       file,
-      filter,
       use_legacy_endpoint,
       append_default_wt,
       dots
@@ -337,7 +335,6 @@ tabBookSingle_crunchtabs <- function(
   weight,
   output_format,
   file,
-  filter,
   use_legacy_endpoint,
   dots
 ) {
@@ -351,10 +348,8 @@ tabBookSingle_crunchtabs <- function(
     weight <- self(weight)
   }
   
-  filter <- standardize_tabbook_filter(dataset, filter)
-  
   body <- list(
-    filter = filter,
+    filter = NULL,
     weight = weight,
     options = dots
   )
@@ -394,7 +389,6 @@ tabBookMulti_crunchtabs <- function(
   weight_spec,
   output_format,
   file,
-  filter,
   use_legacy_endpoint,
   append_default_wt,
   dots
@@ -442,7 +436,6 @@ tabBookMulti_crunchtabs <- function(
       wt_entity,
       output_format,
       file = NULL,
-      filter,
       use_legacy_endpoint,
       dots
     )
@@ -561,42 +554,4 @@ extToContentType <- function(ext) {
     pptx = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
   )
   return(mapping[[ext]])
-}
-
-get_weight_spec_page_num <- function(weight_spec, var_catalog) {
-  # Add a column that indicates what page the variable will be on in the weight-specific
-  # tabbook. The backend always sends the  results in dataset order, so we're matching
-  # against that.
-  ave(
-    match(weight_spec$alias, aliases(var_catalog)),
-    weight_spec$weight,
-    FUN = rank
-  )
-}
-
-standardize_tabbook_filter <- function(dataset, filter) {
-  if (!is.null(filter) & all(is.character(filter))) {
-    filter_name <- filter
-    available <- filter_name %in% names(filters(dataset))
-    if (any(!available)) {
-      httpcache::halt("Could not find filter named: ", paste(filter_name[!available], collapse = ", "))
-    }
-    filter <- filters(dataset)[filter]
-  }
-  if (inherits(filter, "FilterCatalog")) filter <- lapply(urls(filter), function(x) {
-    list(filter = x)
-  })
-  if (inherits(filter, "CrunchFilter")) filter <- list(list(filter = self(filter)))
-  
-  expr_filter <- crunch:::activeFilter(dataset)
-  if (crunch::is.CrunchExpr(expr_filter)) {
-    expr_filter <- list(c(crunch:::zcl(expr_filter), name = crunch:::formatExpression(expr_filter)))
-  }
-  
-  if(length(filter) > 0 && !is.null(expr_filter)) {
-    filter <- unname(c(filter, expr_filter))
-  } else if (!is.null(expr_filter)) {
-    filter <- expr_filter
-  }
-  filter
 }

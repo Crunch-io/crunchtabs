@@ -88,6 +88,10 @@ as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels 
 catArrayToCategoricals <- function(questions, question_alias, labels) {
   obj <- questions[[1]]
   statements <- obj$subnames
+  cats <- attr(obj$crosstabs$Results$`___total___`$proportions, "dimnames")[[1]]
+  
+  if (is.null(labels))
+    labels <- paste0("Wave ", seq_len(length(questions)))
   
   nms <- paste0(question_alias, seq_along(statements))
   
@@ -99,71 +103,57 @@ catArrayToCategoricals <- function(questions, question_alias, labels) {
   # multiple response group
   l <- lapply(statements, function(x) obj)
 
-  # Pull out counts
-  counts <- lapply(
-    questions, 
-    function(x) matrix(
-      as.numeric(
-        x$crosstabs$Results$`___total___`$counts), 
-      nrow = length(statements))
-    )
-  
-  # Pull out props
-  props <- lapply(
-    questions, 
-    function(x) matrix(
-      as.numeric(
-        x$crosstabs$Results$`___total___`$proportions), 
-      nrow = length(statements))
+  # 1. Create a guide for the data we want to pull out
+  # 2. Reorder the guide in a format that fits the 
+  # manner in which we wish to encapsulate it
+  # 3. Create an NA filled object 
+  # 4. Push our data into the object
+  guide <- expand.grid(
+    1:length(statements), 
+    1:length(cats), 
+    1:length(labels)
   )
   
-  # Reformat and reorder so that data are grouped by sub question
-  # instead of grouped by time period
-  reordered_counts <- lapply(seq_along(statements), function(i) {
-    matrix(
-      unlist(
-        lapply(counts, function(x) x[,i])), 
-           nrow = length(statements)
-    )
-  })
+  names(guide) <- c("statement", "cat", "label")
+
+  # Order is key
+  guide <- guide[with(guide, order(statement, cat, label)),]
+  rownames(guide) <- NULL
+  guide$value <- NA_real_
   
-  reordered_props <- lapply(seq_along(statements), function(i) {
-    matrix(
-      unlist(
-        lapply(props, function(x) x[,i])), 
-      nrow = length(statements)
-    )
-  })
+  # Pull out our data
+  for(i in 1:nrow(guide)) {
+    guide$value[i] <- questions[[
+      guide$label[i]
+      ]]$crosstabs$Results$`___total___`$proportions[
+      guide$cat[i],guide$statement[i]
+    ]
+  }
   
-  # Reassign it
+  # Pre allocate
+  rprops <- lapply(1:length(statements), function(x) 
+                   matrix(rep(NA_real_, length(cats)*length(labels)), 
+                          ncol = length(labels))
+  )
+  # Add dimnames for clarity  
+  rprops <- lapply(rprops, function(x) { dimnames(x) <- list(cats, labels); x})
+  
+  for(i in 1:nrow(guide)) {
+    rprops[[guide$statement[i]]][guide$cat[i], guide$label[i]] <- guide$value[i]
+  }
+  
+  # Reassign 
   l <- lapply(seq_along(statements), function(x) {
     l[[x]]$alias <- nms[x]
     l[[x]]$subnames <- labels
     l[[x]]$rownames <- attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]]
     l[[x]]$labels <- labels
     l[[x]]$description <- paste0(statements[x], " (", l[[x]]$description, ")")
-    # Format and assign counts
-    m <- reordered_counts[[x]]
-    dimnames(m) <- list(
-      attr(obj$crosstabs$Results$`___total___`$counts, "dimnames")[[1]],
-      labels
-    )
-    
-    l[[x]]$crosstabs$Results$`___total___`$counts <- m
-    
-    # Format and assign props
-    m <- reordered_props[[x]]
-    dimnames(m) <- list(
-      attr(obj$crosstabs$Results$`___total___`$proportions, "dimnames")[[1]],
-      labels
-    )
-    
-    l[[x]]$crosstabs$Results$`___total___`$proportions <- m
+    l[[x]]$crosstabs$Results$`___total___`$proportions <- rprops[[x]]
     class(l[[x]]) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
     return(l[[x]])
   })
   
   names(l) <- nms
-  class(l) <- 
   return(l)
 }

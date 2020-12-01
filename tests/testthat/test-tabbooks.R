@@ -146,3 +146,15 @@ test_that("if not is_crosstabs_array but total", {
   )
   expect_equal(r,"question_name")
 })
+
+context("extToContentType")
+
+test_that("Returns appropriate mapping", {
+  expect_equal(extToContentType("json"), "application/json")
+  expect_equal(extToContentType("xlsx"), 
+               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              )
+  expect_equal(extToContentType("pptx"), 
+               "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  )
+})

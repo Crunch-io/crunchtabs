@@ -1,74 +1,4 @@
 context("nonTabBookSummary end-end")
-
-# test_that("E-E for NumericVariable, DatetimeVariable", {
-#   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-#   mockery::stub(crosstabs, "crunch::weight", NULL)
-#   typs <- c("multiple_response", "categorical", "categorical_array", "numeric", 
-#             "numeric", "numeric", "text", "categorical", "datetime", "numeric")
-#   mockery::stub(crosstabs, "crunch::types", typs)
-#   als <- c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "q3", 
-#            "country", "wave", "caseid")
-#   mockery::stub(crosstabs, "crunch::aliases", als)
-#   
-#   bnr <- structure(list(Results = list(`___total___` = structure(list(
-#     alias = "___total___", name = "", type = "Total", old_categories = "Total", 
-#     categories_out = "Total", categories = "Total"), class = "BannerVar"), 
-#   allpets = structure(list(alias = "allpets", name = "All pets owned", 
-#     type = "multiple_response", old_categories = c("Cat", 
-#     "Dog", "Bird"), categories_out = c("Cat", "Dog", "Bird"
-#     ), categories = c("Cat", "Dog", "Bird")), class = "BannerVar"))), class = "Banner")
-#   
-#   mockery::stub(crosstabs, "banner", bnr)
-#   mockery::stub(crosstabs, "tabBooks", readRDS(test_path("fixtures/tabbook_results_nonTabBookSummary.rds")))
-#   mockery::stub(crosstabs, "is.weightVariable", FALSE)
-#   mockery::stub(nonTabBookSummary.NumericVariable, "as.vector", 
-#        c(1, NA, 2, 3, 1, 2, 2, 3, 2, 2, 2, NA, 3, 0, 6, 1, NA, 0, NA, 2),
-#        depth = 5)
-#   
-#   # mockery::stub(nonTabBookSummary.TextVariable, "as.vector", 
-#   #               c("Jasmine", "Clyde", "Geoffrey", "Spike", "Zeus", "Teddy", "Ali", 
-#   #                 "Hugo", "Snoopy", "Lady", "Biscuit", NA, "Daisy", "Doug", NA, 
-#   #                 "Fluffy", NA, NA, "Felix", "Rocky"))
-#   # 
-#   # 
-#   # 
-# 
-#   ct <- crosstabs(ds, include_numeric = TRUE,
-#                   include_datetime = TRUE)
-#   expect_equal(
-#     names(ct$results),
-#     c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b",
-#       "country", "wave")
-#   )
-#   
-#   expect_equal(
-#     rownames(ct$results$ndogs$data_list$body),
-#     c("Minimum", "1st Quartile", "Median", "Mean", "3rd Quartile",
-#       "Maximum", "Standard Deviation")
-#   )
-#   
-#   expect_equal(
-#     ct$results$ndogs$data_list$body[1:7,],
-#     c(0, 1, 2, 2, 2.25, 6, 1.4142135623731)
-#   )
-#   
-#   expect_equal(
-#     names(ct$results),
-#     c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b",
-#       "country", "wave")
-#   )
-#   
-#   expect_equal(
-#     rownames(ct$results$wave$data_list$body),
-#     c("Minimum", "1st Quartile", "Median", "3rd Quartile", "Maximum")
-#   )
-#   
-#   expect_equal(
-#     ct$results$wave$data_list$body[,],
-#     structure(c(1417392000, 1417392000, 1418731200, 1420070400, 1420070400
-#     ), class = c("POSIXct", "POSIXt")))
-#   
-# })
   
 test_that("Garbage in, garbage out", {
   expect_error(nonTabBookSummary(letters), "The expected class")
@@ -167,4 +97,34 @@ test_that("Creates result object appropriately for a TextVariable", {
     "Hugo", "Jasmine", "Lady", "Rocky", "Snoopy", "Spike", "Zeus", 
     "Weighted N")), class = c("ToplineVar", "CrossTabVar"))
     )
+})
+
+context("resultsObject")
+
+test_that("resultsObject on unweighted data", {
+  x <- new("TextVariable", filter = new("CrunchLogicalExpr", dataset_url = "", 
+  expression = list(), filter = list()), tuple = new("VariableTuple", 
+  index_url = "a_long_url", 
+  entity_url = "a_long_url", 
+  body = list(discarded = FALSE, alias = "q3", secure = FALSE, 
+  name = "Pet name", id = "an_id", 
+  type = "text", notes = "", derived = FALSE, hidden = FALSE, 
+  description = "What is your favorite pet's maiden name?")))
+  
+  body_values <- rep("", 10)
+  body_labels <- c("Ali", "Clyde", "Fluffy", "Hugo", "Jasmine", "Lady", "Rocky", 
+                   "Snoopy", "Spike", "Zeus")
+  
+  vector <- c("Jasmine", "Clyde", "Geoffrey", "Spike", "Zeus", "Teddy", "Ali", 
+    "Hugo", "Snoopy", "Lady", "Biscuit", NA, "Daisy", "Doug", NA, 
+    "Fluffy", NA, NA, "Felix", "Rocky")
+  
+  res <- resultsObject(x, top = NULL, weighted = FALSE, 
+                       body_values = body_values,
+                       body_labels = body_labels, 
+                       vector = vector)
+  expect_equal(
+    res$data_list$unweighted_n,
+    structure(list(16L), .Names = NA_character_, class = "data.frame", row.names = "Unweighted N")
+  )
 })
