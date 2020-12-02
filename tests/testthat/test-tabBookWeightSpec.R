@@ -2,7 +2,7 @@ context("tabBookWeightSpec")
 
 test_that("Returns spec as expected", {
   ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
-  # mockery::stub(tabBookWeightSpec, "alias", "weight1")
+  mockery::stub(tabBookWeightSpec, "alias", "weight1")
   mockery::stub(tabBookWeightSpec, "weight", "weight1")
   res <- expect_warning(tabBookWeightSpec(ds, weights = list(
     "weight1" = c("q1_pre", "country_pre"),
