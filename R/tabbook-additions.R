@@ -297,32 +297,19 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
 #' @importFrom jsonlite fromJSON
 #' @export
 tabBook_crunchtabs <- function(multitable, dataset, weight = crunch::weight(dataset),
-                    output_format = c("json", "xlsx"), file = NULL,
-                    use_legacy_endpoint = envOrOption("use.legacy.tabbook.endpoint", FALSE),
-                    append_default_wt = TRUE, ...) {
-  dots <- list(...)
-  if ("format" %in% names(dots) && is.character(dots$format)) {
-    warning(
-      "Passing string to `format` is deprecated in `tabBook()`. Use `output_format` instead."
-    )
-    fmt <- match.arg(dots$format, c("json", "xlsx"))
-    dots$format <- NULL
-  } else {
-    fmt <- match.arg(output_format)
-  }
-  
+                    output_format = "json",
+                    append_default_wt = TRUE) {
+
+
   if (is.null(weight) | is.variable(weight)) {
-    tabBookSingle_crunchtabs(multitable, dataset, weight, fmt, file, use_legacy_endpoint, dots)
+    tabBookSingle_crunchtabs(multitable, dataset, weight, output_format)
   } else if (is.list(weight) || is.data.frame(weight)) {
     tabBookMulti_crunchtabs(
       multitable,
       dataset,
       weight,
-      fmt,
-      file,
-      use_legacy_endpoint,
-      append_default_wt,
-      dots
+      output_format,
+      append_default_wt
     )
   } else {
     stop("weight must be NULL, a CrunchVariable or a list indicating a multi-weight spec")
@@ -333,17 +320,10 @@ tabBookSingle_crunchtabs <- function(
   multitable,
   dataset,
   weight,
-  output_format,
-  file,
-  use_legacy_endpoint,
-  dots
+  output_format = "json"
 ) {
   accept <- extToContentType(output_format)
-  if (is.null(file) & output_format != "json") {
-    ## Generate a reasonable filename in the current working dir
-    file <- paste(name(multitable), output_format, sep = ".")
-  }
-  
+
   if (!is.null(weight)) {
     weight <- self(weight)
   }
@@ -351,34 +331,28 @@ tabBookSingle_crunchtabs <- function(
   body <- list(
     filter = NULL,
     weight = weight,
-    options = dots
+    options = list(format=accept)
   )
-  ## Add this after so that if it is NULL, the "where" key isn't present
-  body$where <- crunch:::variablesFilter(dataset)
-  
-  if (use_legacy_endpoint) {
-    warning(
-      "The legacy tabbook endpoint has been deprecated and will be removed in the future."
-    )
-    tabbook_url <- shojiURL(multitable, "views", "tabbook")
-  } else {
-    tabbook_url <- shojiURL(multitable, "views", "export")
-  }
-  
+
+  tabbook_url <- crunch::shojiURL(multitable, "views", "export")
+
   ## POST the query, which (after progress polling) returns a URL to download
-  result <- crPOST(tabbook_url,
+  result <- crunch::crPOST(tabbook_url,
                    config = httr::add_headers(`Accept` = accept),
-                   body = jsonlite::toJSON(body, null = "null", auto_unbox = TRUE)
+                   body = crunch::toJSON(body)
   )
-  if (is.null(file)) {
-    ## Read in the tab book content and turn it into useful objects
-    out <- crunch:::retry(crunch::crGET(result), wait = 0.5) #nocov
-    return(crunch:::TabBookResult(out))
-  } else {
-    file <- crunch::crDownload(result, file)
-    ## (invisibly) return the filename
-    invisible(file)
-  }
+
+  out <- download_result(result)
+  return(tabBookResult(out))
+
+}
+
+download_result <- function(result) {
+  crunch:::retry(crunch::crGET(result), wait = 0.5) # For mocks
+}
+
+tabBookResult <- function(...) {
+  crunch:::TabBookResult(...) # For mocks
 }
 
 #' @importFrom stats ave
@@ -388,10 +362,7 @@ tabBookMulti_crunchtabs <- function(
   dataset,
   weight_spec,
   output_format,
-  file,
-  use_legacy_endpoint,
-  append_default_wt,
-  dots
+  append_default_wt
 ) {
   if (length(weight_spec) == 0) {
     stop("Empty list not allowed as a weight spec, use NULL to indicate no weights")
@@ -434,10 +405,7 @@ tabBookMulti_crunchtabs <- function(
       multitable,
       dataset[page_vars],
       wt_entity,
-      output_format,
-      file = NULL,
-      use_legacy_endpoint,
-      dots
+      output_format
     )
   })
   names(books) <- wt_vars

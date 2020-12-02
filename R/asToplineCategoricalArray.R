@@ -94,10 +94,6 @@ catArrayToCategoricals <- function(questions, question_alias, labels) {
     labels <- paste0("Wave ", seq_len(length(questions)))
   
   nms <- paste0(question_alias, seq_along(statements))
-  
-  if (is.null(question_alias)) {
-    question_alias <- obj$alias
-  }
 
   # Create list of objects to fill in, one for each sub statement of the 
   # multiple response group

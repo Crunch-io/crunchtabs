@@ -28,7 +28,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
   
   
   if (is.list(weight)) {
-    tab_frame <- crunch::tabBookWeightSpec(
+    tab_frame <- tabBookWeightSpec(
       dataset, weight,
       append_default_wt = include_original_weighted
     )
@@ -82,7 +82,12 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     if (all(is.na(tab_frame$weight))) {
       default_weighted <- TRUE
     } else {
-      default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+      if(is.null(default_weight)) {
+        default_weighted <- FALSE
+      } else {
+        default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+      }
+
     }
     
     if (default_weighted) {
