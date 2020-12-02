@@ -140,3 +140,176 @@ test_that("Crosstabs", {
   expect_named(crosstabs_data$results$art2$crosstabs, c("Banner1"))
 })
 
+test_that("deep stop in crosstabs", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  mockery::stub(crosstabs, "crunch::weight", NULL)
+  expect_error(crosstabs(ds, vars = c("this", "is", "not", "in", "the", "ds")), 
+               "This is not true for 'this', 'is', 'not', 'in', 'the', and 'ds'")
+})
+
+test_that("nonTabBookSummary end to end via crosstabs", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  mockery::stub(crosstabs, "crunch::weight", NULL)
+  mockery::stub(crosstabs, "crunch::types", 
+                c("multiple_response", "categorical", "categorical_array", "numeric", 
+                "numeric", "numeric", "text", "categorical", "datetime", "numeric"
+  ))
+  mockery::stub(crosstabs, "crunch::aliases", 
+                c("allpets", "q1", "petloc", "ndogs", "ndogs_a", "ndogs_b", "q3", 
+                  "country", "wave", "caseid"))
+  banner_use <- structure(list(Results = list(`___total___` = structure(list(
+    alias = "___total___", name = "", type = "Total", old_categories = "Total", 
+    categories_out = "Total", categories = "Total"), class = "BannerVar"), 
+    allpets = structure(list(alias = "allpets", name = "All pets owned", 
+    type = "multiple_response", old_categories = c("Cat", 
+    "Dog", "Bird"), categories_out = c("Cat", "Dog", "Bird"
+    ), categories = c("Cat", "Dog", "Bird")), class = "BannerVar"))), class = "Banner")
+  
+  mockery::stub(crosstabs, "banner", banner_use)
+  mockery::stub(crosstabs, "is.weightVariable", FALSE)
+  
+  results <- structure(list(q1 = structure(list(alias = "q1", name = "Pet", 
+  description = "What is your favorite pet?", notes = "", type = "categorical", 
+  no_totals = FALSE, mean_median = TRUE, subnames = NULL, categories = new("Categories", 
+  .Data = list(new("Category", .Data = list(1L, FALSE, 
+  "Cat", 1L), names = c("id", "missing", "name", "numeric_value"
+  )), new("Category", .Data = list(2L, FALSE, "Dog", 2L), 
+  names = c("id", "missing", "name", "numeric_value"
+  )), new("Category", .Data = list(3L, FALSE, "Bird", 
+  3L), names = c("id", "missing", "name", "numeric_value"
+  )), new("Category", .Data = list(8L, TRUE, "Skipped", 
+  8L), names = c("id", "missing", "name", "numeric_value"
+  )), new("Category", .Data = list(9L, TRUE, "Not Asked", 
+  9L), names = c("id", "missing", "name", "numeric_value"
+  )), new("Category", .Data = list(-1L, TRUE, "No Data", 
+  NULL), names = c("id", "missing", "name", "numeric_value"
+  )))), inserts_obj = new("AbstractCategories", .Data = list(
+  new("Category", .Data = list(1L, FALSE, "Cat", 1L), names = c("id", 
+  "missing", "name", "numeric_value")), new("Category", 
+  .Data = list(2L, FALSE, "Dog", 2L), names = c("id", 
+  "missing", "name", "numeric_value")), new("Category", 
+  .Data = list(3L, FALSE, "Bird", 3L), names = c("id", 
+  "missing", "name", "numeric_value")))), subnumber = 1L, 
+  number = "1", crosstabs = list(Results = list(`___total___` = structure(list(
+  counts = structure(c(6, 4, 3), .Dim = c(3L, 1L), .Dimnames = list(
+  c("Cat", "Dog", "Bird"), "Total")), proportions = structure(c(0.461538461538462, 
+  0.307692307692308, 0.230769230769231), .Dim = c(3L, 1L
+  ), .Dimnames = list(c("Cat", "Dog", "Bird"), "Total"), class = c("CrunchCubeCalculation", 
+  "array"), dims = new("CubeDims", .Data = list(list(name = c("Cat", 
+  "Dog", "Bird", "Skipped", "Not Asked", "No Data"), missing = c(FALSE, 
+  FALSE, FALSE, TRUE, TRUE, TRUE), references = list(description = "What is your favorite pet?", 
+  format = list(summary = list(digits = 0L)), notes = "", 
+  name = "Pet", alias = "q1", view = list(show_counts = FALSE, 
+  column_width = NULL, include_missing = FALSE, 
+  show_numeric_values = FALSE), type = "categorical", 
+  categories = list(list(numeric_value = 1L, id = 1L, 
+  name = "Cat", missing = FALSE), list(numeric_value = 2L, 
+  id = 2L, name = "Dog", missing = FALSE), list(
+  numeric_value = 3L, id = 3L, name = "Bird", missing = FALSE), 
+  list(numeric_value = 8L, id = 8L, name = "Skipped", 
+  missing = TRUE), list(numeric_value = 9L, id = 9L, 
+  name = "Not Asked", missing = TRUE), list(numeric_value = NULL, 
+  id = -1L, name = "No Data", missing = TRUE)))), 
+  list(name = "", missing = FALSE, references = list(
+  alias = "total", name = "Total", type = "enum"))), 
+  names = c("q1", "total")), type = "proportion"), 
+  base = structure(c(13, 13, 13), .Dim = c(3L, 1L), .Dimnames = list(
+  c("Cat", "Dog", "Bird"), "Total")), weighted_base = structure(c(Total = 13), .Dim = 1L, .Dimnames = list(
+  "Total"), class = c("CrunchCubeCalculation", "array"
+  ), dims = new("CubeDims", .Data = list(list(name = "", 
+  missing = FALSE, references = list(alias = "total", 
+  name = "Total", type = "enum"))), names = "total"), type = "margin"), 
+  mean = structure(1.76923076923077, .Dim = c(1L, 1L), .Dimnames = list(
+  "", "Total")), median = structure(2, .Dim = c(1L, 
+  1L), .Dimnames = list("", "Total")), pvals_col = NULL), class = c("CrossTabBannerVar", 
+  "list"))))), class = c("ToplineVar", "CrossTabVar"))), class = c("ToplineResults", 
+  "CrosstabsResults", "list"))
+  
+  mockery::stub(crosstabs, "tabBooks", results)
+  nonTBS <- structure(list(alias = "ndogs", name = "Number of dogs", description = "Number of dogs", 
+    notes = "", type = "NumericVariable", top = NULL, bottom = c(weighted_n = "weighted_n"), 
+    data_order = c("body", weighted_n = "weighted_n"), inserts = c("Category", 
+    "Category", "Category", "Category", "Category", "Category", 
+    "Category"), data_list = list(body = structure(list(c(0, 
+    1, 2, 2, 2.25, 6, 1.4142135623731)), .Names = NA_character_, class = "data.frame", row.names = c("Minimum", 
+    "1st Quartile", "Median", "Mean", "3rd Quartile", "Maximum", 
+    "Standard Deviation")), weighted_n = structure(list(16L), 
+    .Names = NA_character_, class = "data.frame", row.names = "Weighted N")), 
+    min_cell_top = NULL, no_totals = TRUE, mean_median = FALSE, 
+    min_cell_body = structure(c(NA, NA, NA, NA, NA, NA, NA), .Dim = c(7L, 
+    1L)), min_cell_bottom = structure(FALSE, .Dim = c(1L, 1L)), 
+    min_cell = FALSE, rownames = c("Minimum", "1st Quartile", 
+    "Median", "Mean", "3rd Quartile", "Maximum", "Standard Deviation", 
+    "Weighted N")), class = c("ToplineVar", "CrossTabVar"))
+  
+  mockery::stub(crosstabs, "nonTabBookSummary", nonTBS)
+  res <- crosstabs(ds, vars = c("ndogs", "q1"), weight = NULL, include_numeric = TRUE)
+  
+  expect_equal(
+    res$results$ndogs$data_list$body, 
+    structure(list(c(0, 1, 2, 2, 2.25, 6, 1.4142135623731)), 
+              .Names = NA_character_, class = "data.frame", 
+              row.names = c("Minimum", "1st Quartile", "Median", "Mean", "3rd Quartile", "Maximum", 
+    "Standard Deviation")))
+  
+  nonTBS <- structure(list(alias = "q3", name = "Pet name", description = "What is your favorite pet's maiden name?", 
+    notes = "", type = "TextVariable", top = NULL, bottom = c(weighted_n = "weighted_n"), 
+    data_order = c("body", weighted_n = "weighted_n"), inserts = c("Category", 
+    "Category", "Category", "Category", "Category", "Category", 
+    "Category", "Category", "Category", "Category"), data_list = list(
+    body = structure(list(c("", "", "", "", "", "", "", "", 
+    "", "")), .Names = NA_character_, class = "data.frame", row.names = c("Ali", 
+    "Clyde", "Fluffy", "Hugo", "Jasmine", "Lady", "Rocky", 
+    "Snoopy", "Spike", "Zeus")), weighted_n = structure(list(
+    16L), .Names = NA_character_, class = "data.frame", row.names = "Weighted N")), 
+    min_cell_top = NULL, no_totals = TRUE, mean_median = FALSE, 
+    min_cell_body = structure(c(NA, NA, NA, NA, NA, NA, NA, NA, 
+    NA, NA), .Dim = c(10L, 1L)), min_cell_bottom = structure(FALSE, .Dim = c(1L, 
+    1L)), min_cell = FALSE, rownames = c("Ali", "Clyde", "Fluffy", 
+    "Hugo", "Jasmine", "Lady", "Rocky", "Snoopy", "Spike", "Zeus", 
+    "Weighted N")), class = c("ToplineVar", "CrossTabVar"))
+    
+  mockery::stub(crosstabs, "nonTabBookSummary", nonTBS)
+  res <- crosstabs(ds, vars = c("q1", "q3"), weight = NULL, include_verbatims = TRUE)
+  
+  expect_equal(
+    res$results$q3$data_list$body,
+    structure(list(c("", "", "", "", "", "", "", "", "", "")), 
+              .Names = NA_character_, class = "data.frame", row.names = c("Ali", 
+              "Clyde", "Fluffy", "Hugo", "Jasmine", "Lady", "Rocky", "Snoopy", 
+              "Spike", "Zeus"))
+  )
+    
+  nonTBS <- structure(list(alias = "wave", name = "Wave", description = "Wave", 
+    notes = "", type = "DatetimeVariable", top = NULL, bottom = c(weighted_n = "weighted_n"), 
+    data_order = c("body", weighted_n = "weighted_n"), inserts = c("Category", 
+    "Category", "Category", "Category", "Category"), data_list = list(
+    body = structure(list(structure(c(1417392000, 1417392000, 
+    1418731200, 1420070400, 1420070400), class = c("POSIXct", 
+    "POSIXt"))), .Names = NA_character_, class = "data.frame", row.names = c("Minimum", 
+    "1st Quartile", "Median", "3rd Quartile", "Maximum")), 
+    weighted_n = structure(list(20L), .Names = NA_character_, class = "data.frame", row.names = "Weighted N")), 
+    min_cell_top = NULL, no_totals = TRUE, mean_median = FALSE, 
+    min_cell_body = structure(c(NA, NA, NA, NA, NA), .Dim = c(5L, 
+    1L)), min_cell_bottom = structure(FALSE, .Dim = c(1L, 1L)), 
+    min_cell = FALSE, rownames = c("Minimum", "1st Quartile", 
+    "Median", "3rd Quartile", "Maximum", "Weighted N")), class = c("ToplineVar", 
+    "CrossTabVar"))
+  
+  mockery::stub(crosstabs, "nonTabBookSummary", nonTBS)
+  res <- crosstabs(ds, vars = c("q1", "wave"), weight = NULL, include_datetime = TRUE)
+    
+  expect_equal(
+  res$results$wave$data_list$body,
+  structure(list(structure(c(1417392000, 1417392000, 1418731200, 
+  1420070400, 1420070400), class = c("POSIXct", "POSIXt"))), 
+  .Names = NA_character_, class = "data.frame", row.names = c("Minimum", 
+  "1st Quartile", "Median", "3rd Quartile", "Maximum"))
+)
+})
+
+context("banner_manipulation")
+
+test_that("banner_manipulation works as expected", {
+  
+})

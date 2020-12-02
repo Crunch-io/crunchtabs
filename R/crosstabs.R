@@ -119,14 +119,6 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
 
   var_types <- unlist(lapply(dataset[vars], class))
 
-  if (length(setdiff(vars,names(dataset))) > 0) {
-    # Edge case where variable specified does not exist in dataset
-    stop(paste0("One or more variables are specified in the crosstab but not
-         available in the dataset: ",
-         paste0(setdiff(vars, names(dataset)), collapse = ", "))
-    )
-  }
-
   names(var_types) <- vars
   numerics <- vars[var_types == "NumericVariable"]
   datetimes <- vars[var_types == "DatetimeVariable"]
@@ -216,7 +208,7 @@ crosstabs <- function(dataset, vars = names(dataset), weight = crunch::weight(da
 
 
 banner_manipulation <- function(banner, dataset, weight_var) {
-  if (!is.null(banner)) {
+  if (!is.null(banner)) { # nocov start
     banner <- lapply(banner, function(b)
       lapply(b, function(b1) {
         if (b1$alias %in% '___total___') {
@@ -233,6 +225,7 @@ banner_manipulation <- function(banner, dataset, weight_var) {
     class(banner) <- 'Banner'
   }
   banner
+  # nocov end
 }
 
 #' @describeIn crosstabs An alias for \code{crosstabs}

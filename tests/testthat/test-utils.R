@@ -31,6 +31,20 @@ test_that("error_if_that", {
   )
 })
 
+test_that("warning if not error", {
+  expect_equal(
+    error_if_items(c("item1", "item2"), error = FALSE, text = "Text"),
+    "Text"
+  )
+})
+
+context("collapse_items")
+
+test_that("collapse items works", {
+  res <- collapse_items(as.character(1:3))
+  expect_equal(res, "1, 2, 3")
+})
+
 test_that("Paths appropriately on different OS", {
   # Too much effort, ignoring tests.
 })
@@ -46,3 +60,17 @@ test_that("huffpost theme as expected", {
   r <- themeHuffPoToplines(logo = list(file = default_yg_logo()))
   expect_is(r, "Theme")
 })
+
+context("file.open")
+
+test_that("file open works as expected", {
+  mockery::stub(file.open, "system", print(TRUE))
+  mockery::stub(file.open, "Sys.info", c("sysname" = "Linux"))
+  expect_true(all(file.open(1)))
+  mockery::stub(file.open, "Sys.info", c("sysname" = "Windows"))
+  expect_true(all(file.open(1)))
+  mockery::stub(file.open, "Sys.info", c("sysname" = "MacOS"))
+  expect_true(all(file.open(1)))
+})
+
+
