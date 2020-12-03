@@ -126,7 +126,6 @@ test_that("End to End tabBooks", {
 })
 
 
-
 context("getMultitable")
 
 test_that("getMultitable", {
@@ -164,14 +163,78 @@ test_that("tabBookSingle_crunchtabs", {
   mockery::stub(tabBookSingle_crunchtabs, "self", "some_url")
   mockery::stub(tabBookSingle_crunchtabs, "crunch::shojiURL", "shoji_url")
   mockery::stub(tabBookSingle_crunchtabs, "download_result", "downloaded_result")
+  mockery::stub(tabBookSingle_crunchtabs, "varFilter", "Doesn't matter!")
   mockery::stub(tabBookSingle_crunchtabs, "tabBookResult", function(x) x)
   mockery::stub(tabBookSingle_crunchtabs, "crunch::crPOST", function(x, ...) x)
   res <- tabBookSingle_crunchtabs("mt", "dataset", weight = NULL)
-  expect_equal(res, "downloaded_result")
+  expect_equal(res, new("TabBookResult", .Data = list("downloaded_result", list()), 
+                        names = c(NA, "sheets")))
 })
 
 context("tabBookMulti_crunchtabs")
 
-test_that("tabBookMulti_crunchtabs", {
+test_that("tabBookMulti_crunchtabs errors", {
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = character(0),
+      append_default_wt = TRUE),
+    "Empty list not allowed as a weight spec"
+  )
   
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = data.frame("notalias" = 1,"notweight" =2),
+      append_default_wt = TRUE),
+    "if weight_spec is a data.frame"
+  )
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = data.frame(alias=c("a", "a"), weight=c("b", "b")),
+      append_default_wt = TRUE),
+    "Found duplicate weight and alias combinations in weight_spec"
+  )
+})
+
+test_that("tabBookMulti_crunchtabs E-E", {
+  ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
+  weight_spec <- list(
+    weight1 = c(q11 = "q1_pre", country1 = "country_pre"), 
+    weight2 = c(q12 = "q1_post", country2 = "country_post")
+  )
+
+  mockery::stub(
+    tabBookMulti_crunchtabs, "getCatalog", 
+    readRDS(test_path("fixtures/tabBookMulti_crunchtabs-getCatalog.rds"))
+  )
+  
+  book <- readRDS(test_path("fixtures/tabBookMulti_crunchtabs-tabBookSingle_crunchtabs.rds"))
+  
+  mockery::stub(tabBookMulti_crunchtabs, "tabBookSingle_crunchtabs", book)
+  res <- tabBookMulti_crunchtabs(
+    "mult", ds[c("q1_pre", "q1_post", "country_pre", "country_post", "weight1", "weight2")], 
+    weight_spec = weight_spec,
+    append_default_wt = FALSE
+  )
+  
+  expect_equal(length(res), 4)
+  # TODO: Add more direct tests
+})
+
+context("row_data")
+
+test_that("row_data crosstabs coverage", {
+  d <- readRDS(test_path("fixtures/row_data-data.rds"))
+  res <- row_data(d, 1, TRUE, FALSE, FALSE)
+  expect_equal(
+    res$`___total___`,
+    structure(c(0.454545454545455, 0.272727272727273, 0.272727272727273
+    ), .Dim = c(3L, 1L), .Dimnames = list(c("Cat", "Dog", "Bird"), 
+                                          "Total"))
+  )
 })

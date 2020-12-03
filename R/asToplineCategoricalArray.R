@@ -5,17 +5,14 @@
 #' distinct code to write it to latex.
 #' 
 #' @param questions A list of two or more results objects. Objects should be
-#' provided in time order. From oldest to youngest. (ie, wave 1, wave 2, 
+#' provided in time or
 #' wave 3, ..., wave n)
 #' @param question_alias The name of the question alias across all results 
 #' sets. It must be the same in all datasets.
 #' @param labels A character vector of labels that will be displayed in the
 #' resulting crunchtabs output. Should match the number of results objects
-as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels = NULL) {
-  
-  if (is.null(labels))
-    labels <- paste0("Wave ", seq_len(length(questions)))
-  
+as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels) {
+
   if (length(questions) != length(labels))
     stop("Number of labels provided does not match number of result sets")
   

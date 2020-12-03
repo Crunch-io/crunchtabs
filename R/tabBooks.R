@@ -39,7 +39,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
         multitable,
         dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
         weight = weight,
-        output_format = "json"
+        append_default_wt = include_original_weighted
       )
     )
     
@@ -51,8 +51,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
       tabBook_crunchtabs(
         multitable,
         dataset = dataset[vars],
-        weight = weight,
-        output_format = "json"
+        weight = weight
       )
     )
     

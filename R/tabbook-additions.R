@@ -297,54 +297,50 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
 #' @importFrom jsonlite fromJSON
 #' @export
 tabBook_crunchtabs <- function(multitable, dataset, weight = crunch::weight(dataset),
-                    output_format = "json",
-                    append_default_wt = TRUE) {
-
-
+                               append_default_wt = TRUE) {
   if (is.null(weight) | is.variable(weight)) {
-    tabBookSingle_crunchtabs(multitable, dataset, weight, output_format)
+    return(tabBookSingle_crunchtabs(multitable, dataset, weight))
   } else if (is.list(weight) || is.data.frame(weight)) {
-    tabBookMulti_crunchtabs(
+    return(tabBookMulti_crunchtabs(
       multitable,
       dataset,
       weight,
-      output_format,
       append_default_wt
-    )
+    ))
   } else {
     stop("weight must be NULL, a CrunchVariable or a list indicating a multi-weight spec")
   }
 }
 
-tabBookSingle_crunchtabs <- function(
-  multitable,
-  dataset,
-  weight,
-  output_format = "json"
-) {
-  accept <- extToContentType(output_format)
-
+tabBookSingle_crunchtabs <- function(multitable, dataset, weight) {
   if (!is.null(weight)) {
     weight <- self(weight)
   }
-  
+  # filter <- standardize_tabbook_filter(dataset, filter)
   body <- list(
     filter = NULL,
     weight = weight,
-    options = list(format=accept)
+    options = list(format=NULL)
   )
+  
+  body$where <- varFilter(dataset)
 
   tabbook_url <- crunch::shojiURL(multitable, "views", "export")
 
   ## POST the query, which (after progress polling) returns a URL to download
   result <- crunch::crPOST(tabbook_url,
-                   config = httr::add_headers(`Accept` = accept),
+                   config = httr::add_headers(`Accept` = 'application/json'),
                    body = crunch::toJSON(body)
   )
 
   out <- download_result(result)
-  return(tabBookResult(out))
+  return(crunch:::TabBookResult(out))
 
+}
+
+
+varFilter <- function(dataset) {
+  crunch:::variablesFilter(dataset)  
 }
 
 download_result <- function(result) {
@@ -361,22 +357,15 @@ tabBookMulti_crunchtabs <- function(
   multitable,
   dataset,
   weight_spec,
-  output_format,
   append_default_wt
 ) {
   if (length(weight_spec) == 0) {
     stop("Empty list not allowed as a weight spec, use NULL to indicate no weights")
   }
   
-  if (output_format != "json") {
-    stop("Complex weights only supported for json tabBooks")
-  }
-  
   if (is.data.frame(weight_spec) && !setequal(names(weight_spec), c("weight", "alias"))) {
     stop("if weight_spec is a data.frame it must have exactly two columns: 'weight' & 'alias'")
   }
-  
-  if (!is.data.frame(weight_spec)) weight_spec <- tabBookWeightSpec(dataset, weight_spec)
   
   if (any(duplicated(weight_spec))) {
     stop("Found duplicate weight and alias combinations in weight_spec")
@@ -386,10 +375,9 @@ tabBookMulti_crunchtabs <- function(
   # that we are using for the tabbook, so we need to load the full variable list
   # NB: The `relative=on` is to get a cache hit, and might need to change
   # (comes from `variablesFilter()`)
-  all_dsvars <- crunch:::ShojiCatalog(crGET(
-    self(allVariables(dataset)),
-    query = list(relative = "on")
-  ))
+  all_dsvars <- getCatalog(dataset)
+  
+  if(is.list(weight_spec)) weight_spec <- tabBookWeightSpec(dataset, weights = weight_spec, append_default_wt)
   
   wt_vars <- unique(weight_spec$weight)
   # Add a column that indicates what page the variable will be on
@@ -398,16 +386,13 @@ tabBookMulti_crunchtabs <- function(
   
   books <- lapply(wt_vars, function(wt) {
     page_vars <- weight_spec$alias[weight_spec$weight == wt]
-    # `tabBookSingle` uses `self` to get URL of weight
-    wt_entity <- crunch:::VariableEntity(self = names(all_dsvars[wt]@index))
-    
     tabBookSingle_crunchtabs(
       multitable,
       dataset[page_vars],
-      wt_entity,
-      output_format
+      weight = dataset[[wt]]
     )
   })
+  
   names(books) <- wt_vars
   
   # stitch together
@@ -436,14 +421,9 @@ tabBookMulti_crunchtabs <- function(
   combined <- books[[1]] # start with first one for skeleton
   combined@.Data[[1]]$analyses <- analyses
   combined@.Data[[2]] <- pages
-  
-  if (!is.null(file)) {
-    jsonlite::write_json(toJSON(combined), file)
-    return(invisible(file))
-  }
   combined
+  return(combined)
 }
-
 
 
 #' Helper function for setting complex weights on a `tabbook`
@@ -514,6 +494,12 @@ tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
   }
   out
 }
+
+
+getCatalog <- function(dataset) {
+  crunch:::ShojiCatalog(crGET(self(allVariables(dataset)),query = list(relative = "on")))
+}
+
 
 extToContentType <- function(ext) {
   mapping <- list(
