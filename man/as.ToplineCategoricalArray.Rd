@@ -4,11 +4,11 @@
 \alias{as.ToplineCategoricalArray}
 \title{Combine two or more tabbook results as a categorical array}
 \usage{
-as.ToplineCategoricalArray(questions, question_alias = NULL, labels = NULL)
+as.ToplineCategoricalArray(questions, question_alias = NULL, labels)
 }
 \arguments{
 \item{questions}{A list of two or more results objects. Objects should be
-provided in time order. From oldest to youngest. (ie, wave 1, wave 2, 
+provided in time or
 wave 3, ..., wave n)}
 
 \item{question_alias}{The name of the question alias across all results 
