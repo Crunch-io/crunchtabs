@@ -15,6 +15,8 @@ vignette: >
 
 `crunchtabs` supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where we ask about voter intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require individual weighting.
 
+By default, both of these functions will allow you to present variables that you have included in your specification that do not exist across datasets.
+
 ### Generating a Recontact Report
 
 In the code below, we use the crunch example dataset to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function: 
@@ -134,7 +136,7 @@ There are a number of important elements here:
 
     ![](example-016-tracking-report.png "Tracking reports")
 
-### Other Stacking Data
+### Tracking Reports for Other Stacking Data
 
 As intimated in the previous section, tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called "tracking reports" they support any situation where the same questions are found in a list of datasets.
 
@@ -165,3 +167,70 @@ ct <- tracking_report(
 writeLatex(ct, pdf = TRUE)
 ```
 
+### Including One-off Questions
+
+While the default behavior of `tracking_report` and `recontact_report` is to only include those questions that have been asked more than once, it is often desirable to show questions that have only been asked in a certain wave of your survey or during one phase of your recontact. In both cases, we provide a `vars` argument, that when provided will identify all of the questions to be presented in the output. Importantly, the order of this `vars` argument will also match that of the output PDF.
+
+```{r, eval = FALSE}
+# For recontact_toplines
+
+# The resulting report would show q1 recontact, other alias single, and country recontact
+ct <- recontact_toplines(
+  ds,
+  questions = c("q1", "country"),
+  suffixes = c("_pre", "_post"),
+  labels = c("Pre", "Post"),
+  weights = c("weight1", "weight2"),
+  vars = c("q1", "other_alias","country")
+)
+
+# For tracking_report
+
+# The resulting report would show allpets tracking, q1 tracking, petloc tracking and alias_available_in_ds3_only
+ct <- tracking_report(
+  dataset_list = list(ds1, ds2, ds3), 
+  vars = c("allpets", "q1", "petloc", "alias_available_in_ds3_only"),
+  wave_labels = NULL
+)
+```
+
+### Relabeling or Repositioning Categories or Responses
+
+There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, we  offer the ability to relabel your responses or to reposition them. 
+
+#### Relabeling
+
+This renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It's important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.  
+
+In the example below, "x" and "a" are the labels you wish to rename and "y" and "b" are the resulting labels. 
+
+```{r, eval = FALSE}
+ct <- recontact_toplines(
+  ...,
+  relabel = list(
+    alias_name = c("x"="y", ...), 
+    other_alias = c("a"="b"))
+)
+```
+
+#### Repositioning
+
+Specify a list of variables that you either specify as "above" or "below" your frequency table. "above", places the column labels above the frequency table but below the question text (the crunch description) in a letter denominated bulleted list (A, B, C, ...) by default the column labels are equivalent to the letters. If you specify `col_labels` it will use this labels instead of letters. "below", places the listing below the frequency table.  
+
+```{r, eval = FALSE}
+# Relabel
+
+ct <- recontact_toplines(
+  ...,
+  reposition = list(
+    alias_name = list(
+      postiion="above", 
+      col_labels=c(...)),
+    other_alias = list(
+      position="below",
+      col_labels = c(...)
+    )
+  )
+)
+
+```
