@@ -15,7 +15,6 @@
 #' @param default_weight The default weight of the dataset, if any.
 recontact_toplines <- function(dataset, questions, suffixes, labels,
                                weights = crunch::weight(dataset), default_weight = crunch::alias(crunch::weight(dataset))) {
-
   stopifnot(is.dataset(dataset))
   stopifnot(is.character(questions))
   stopifnot(is.character(suffixes))
@@ -38,36 +37,31 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
   )
 
   for (question in questions) {
-
     if (!is.null(weights)) {
-
       if (weights[1] == default_weight) {
         p1 <- groupings[[question]][1]
       } else {
-        p1 <- paste0(groupings[[question]][1],"_", weights[1])
+        p1 <- paste0(groupings[[question]][1], "_", weights[1])
       }
 
       if (weights[2] == default_weight) {
         p2 <- groupings[[question]][2]
       } else {
-        p2 <- paste0(groupings[[question]][2],"_", weights[2])
+        p2 <- paste0(groupings[[question]][2], "_", weights[2])
       }
-
     } else {
-
       p1 <- groupings[[question]][1]
       p2 <- groupings[[question]][2]
     }
 
     ct$results[[question]] <- as.ToplineCategoricalArray(
-      questions = list(ct$results[[p1]],ct$results[[p2]]),
+      questions = list(ct$results[[p1]], ct$results[[p2]]),
       question_alias = question,
       labels = labels
     )
 
     ct$results[[p1]] <- NULL
     ct$results[[p2]] <- NULL
-
   }
 
   ct

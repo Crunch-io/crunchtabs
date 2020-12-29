@@ -2,22 +2,28 @@ context("codeBookItemBody")
 
 test_that("codeBookItemBody CategoricalVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  smry <- structure(list(id = c("1", "2", "3", "8", "9"), name = c("Cat", 
-    "Dog", "Bird", "Skipped", "Not Asked"), n = c("6", "4", "3", 
-    "3", "4")), class = "data.frame", row.names = c(NA, -5L))
+  smry <- structure(list(id = c("1", "2", "3", "8", "9"), name = c(
+    "Cat",
+    "Dog", "Bird", "Skipped", "Not Asked"
+  ), n = c(
+    "6", "4", "3",
+    "3", "4"
+  )), class = "data.frame", row.names = c(NA, -5L))
   mockery::stub(
-    codeBookItemBody.CategoricalVariable, 
+    codeBookItemBody.CategoricalVariable,
     "codeBookSummary.CategoricalVariable", smry
   )
-  res = codeBookItemBody(ds$q1)
-  
+  res <- codeBookItemBody(ds$q1)
+
   expect_equal(
     attributes(res)$kable_meta$contents,
-    c("\\{Code\\} & \\{Label\\} & \\{Count\\}",
+    c(
+      "\\{Code\\} & \\{Label\\} & \\{Count\\}",
       "1 & Cat & 6", "2 & Dog & 4", "3 & Bird & 3",
-      "8 & Skipped & 3", "9 & Not Asked & 4")
+      "8 & Skipped & 3", "9 & Not Asked & 4"
+    )
   )
-  
+
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
     c("J", "l", "J")
@@ -28,24 +34,26 @@ test_that("codeBookItemBody CategoricalVariable", {
   set.seed(42)
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   smry <- structure(list(
-    id = as.character(1:22), 
-    name = letters[1:22], 
-    n = sample(1:6, 22, replace = TRUE)), class = "data.frame", row.names = c(NA, -22L)
-  )
+    id = as.character(1:22),
+    name = letters[1:22],
+    n = sample(1:6, 22, replace = TRUE)
+  ), class = "data.frame", row.names = c(NA, -22L))
   mockery::stub(
-    codeBookItemBody.CategoricalVariable, 
+    codeBookItemBody.CategoricalVariable,
     "codeBookSummary.CategoricalVariable", smry
   )
-  res = codeBookItemBody(ds$q1)
-  
+  res <- codeBookItemBody(ds$q1)
+
   expect_equal(
     attributes(res)$kable_meta$contents[2:12],
-    c("1 & a & 1 &  & 2 & b & 5", "3 & c & 1 &  & 4 & d & 1", "5 & e & 2 &  & 6 & f & 4", 
-      "7 & g & 2 &  & 8 & h & 2", "9 & i & 1 &  & 10 & j & 4", "11 & k & 1 &  & 12 & l & 5", 
-      "13 & m & 6 &  & 14 & n & 4", "15 & o & 2 &  & 16 & p & 2", "17 & q & 3 &  & 18 & r & 1", 
-      "19 & s & 1 &  & 20 & t & 3", "21 & u & 4 &  & 22 & v & 5")
+    c(
+      "1 & a & 1 &  & 2 & b & 5", "3 & c & 1 &  & 4 & d & 1", "5 & e & 2 &  & 6 & f & 4",
+      "7 & g & 2 &  & 8 & h & 2", "9 & i & 1 &  & 10 & j & 4", "11 & k & 1 &  & 12 & l & 5",
+      "13 & m & 6 &  & 14 & n & 4", "15 & o & 2 &  & 16 & p & 2", "17 & q & 3 &  & 18 & r & 1",
+      "19 & s & 1 &  & 20 & t & 3", "21 & u & 4 &  & 22 & v & 5"
+    )
   )
-  
+
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
     c("K", "l", "J", "c", "K", "l", "J")
@@ -56,21 +64,26 @@ test_that("codeBookItemBody CategoricalVariable", {
 
 test_that("codeBookItemBody CategoricalArrayVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  smry <- structure(list(c("petloc_home", "petloc_work"), c("Home", "Work"
-  ), `1 Cat` = c(5, 6), `2 Dog` = c(3, 4), `3 Bird` = c(3, 6), 
-  `8 Skipped` = c(4, 3), `9 Not Asked` = c(5, 1)), 
-  row.names = c(NA, -2L), class = "data.frame")
-  
-  mockery::stub(codeBookItemBody.CategoricalArrayVariable, 
-       "codeBookSummary.CategoricalArrayVariable", smry)
+  smry <- structure(list(c("petloc_home", "petloc_work"), c("Home", "Work"),
+    `1 Cat` = c(5, 6), `2 Dog` = c(3, 4), `3 Bird` = c(3, 6),
+    `8 Skipped` = c(4, 3), `9 Not Asked` = c(5, 1)
+  ),
+  row.names = c(NA, -2L), class = "data.frame"
+  )
+
+  mockery::stub(
+    codeBookItemBody.CategoricalArrayVariable,
+    "codeBookSummary.CategoricalArrayVariable", smry
+  )
   res <- codeBookItemBody(ds$petloc)
   expect_equal(
     attributes(res$kcounts)$kable_meta$contents,
-    c("\\{Variable\\} & \\{1\\} & \\{2\\} & \\{3\\} & \\{8\\} & \\{9\\}",
+    c(
+      "\\{Variable\\} & \\{1\\} & \\{2\\} & \\{3\\} & \\{8\\} & \\{9\\}",
       "\\\\ttfamily\\{petloc\\\\_home\\} & 5 & 3 & 3 & 4 & 5", "\\\\ttfamily\\{petloc\\\\_work\\} & 6 & 4 & 6 & 3 & 1"
     )
   )
-  
+
   expect_equal(
     attributes(res$kcounts)$kable_meta$align_vector_origin,
     c("l", "J", "J", "J", "J", "J")
@@ -80,45 +93,59 @@ test_that("codeBookItemBody CategoricalArrayVariable", {
 test_that("codeBookItemBody CategoricalArrayVariable long label adjustments", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   smry <- structure(list(c("petloc_home", "petloc_work"), c(
-    "This is an extremely, absurdley long label. Because we often like to present categories that should really be Yes or No questions.", 
+    "This is an extremely, absurdley long label. Because we often like to present categories that should really be Yes or No questions.",
     "This is another absurdely, extremely long label. Because we often like to present categories that should really be Yes or No questions."
-  ), `1 Cat` = c(5, 6), `2 Dog` = c(3, 4), `3 Bird` = c(3, 6), 
-  `8 Skipped` = c(4, 3), `9 Not Asked` = c(5, 1)), 
-  row.names = c(NA, -2L), class = "data.frame")
-  
-  mockery::stub(codeBookItemBody.CategoricalArrayVariable, 
-                "codeBookSummary.CategoricalArrayVariable", smry)
+  ),
+  `1 Cat` = c(5, 6), `2 Dog` = c(3, 4), `3 Bird` = c(3, 6),
+  `8 Skipped` = c(4, 3), `9 Not Asked` = c(5, 1)
+  ),
+  row.names = c(NA, -2L), class = "data.frame"
+  )
+
+  mockery::stub(
+    codeBookItemBody.CategoricalArrayVariable,
+    "codeBookSummary.CategoricalArrayVariable", smry
+  )
   res <- codeBookItemBody(ds$petloc)
   expect_equal(
     attributes(res$kcounts)$kable_meta$contents,
-    c("\\{Variable\\} & \\{1\\} & \\{2\\} & \\{3\\} & \\{8\\} & \\{9\\}",
+    c(
+      "\\{Variable\\} & \\{1\\} & \\{2\\} & \\{3\\} & \\{8\\} & \\{9\\}",
       "\\\\ttfamily\\{petloc\\\\_home\\} & 5 & 3 & 3 & 4 & 5", "\\\\ttfamily\\{petloc\\\\_work\\} & 6 & 4 & 6 & 3 & 1"
     )
   )
   expect_true(
-    grepl("\\begin{longtable}[l]{l>{\\raggedright\\arraybackslash}p{4.75in}}",res$krows, fixed = TRUE)
+    grepl("\\begin{longtable}[l]{l>{\\raggedright\\arraybackslash}p{4.75in}}", res$krows, fixed = TRUE)
   )
 })
 
 
 test_that("codeBookItemBody MultipleResponseVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  smry <- structure(list(c("allpets_1", "allpets_2", "allpets_3"), 
-     c("Cat", "Dog", "Bird"), `1 selected` = c(4, 5, 5), `2 not selected` = c(4, 
-        3, 6), `8 skipped` = c(4, 4, 6), `9 not asked` = c(8, 8, 3)), row.names = c(NA, 
-      -3L), class = "data.frame")
-  
+  smry <- structure(list(c("allpets_1", "allpets_2", "allpets_3"),
+    c("Cat", "Dog", "Bird"),
+    `1 selected` = c(4, 5, 5), `2 not selected` = c(
+      4,
+      3, 6
+    ), `8 skipped` = c(4, 4, 6), `9 not asked` = c(8, 8, 3)
+  ), row.names = c(
+    NA,
+    -3L
+  ), class = "data.frame")
+
   mockery::stub(
-    codeBookItemBody.MultipleResponseVariable, 
-    "codeBookSummary.MultipleResponseVariable", 
-    smry)
-  res = codeBookItemBody(ds$allpets)
+    codeBookItemBody.MultipleResponseVariable,
+    "codeBookSummary.MultipleResponseVariable",
+    smry
+  )
+  res <- codeBookItemBody(ds$allpets)
   # print(attributes(res$kcounts)$kable_meta$contents)
   # print("\n\n")
   # print(attributes(res$kcounts)$kable_meta$align_vector_origin)
   expect_equal(
     attributes(res$kcounts)$kable_meta$contents,
-    c("\\{Variable\\} & \\{1\\} & \\{2\\} & \\{8\\} & \\{9\\}",
+    c(
+      "\\{Variable\\} & \\{1\\} & \\{2\\} & \\{8\\} & \\{9\\}",
       "\\\\ttfamily\\{allpets\\\\_1\\} & 4 & 4 & 4 & 8",
       "\\\\ttfamily\\{allpets\\\\_2\\} & 5 & 3 & 4 & 8",
       "\\\\ttfamily\\{allpets\\\\_3\\} & 5 & 6 & 6 & 3"
@@ -134,20 +161,22 @@ test_that("codeBookItemBody NumericVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   smry <- structure(
     list(
-      Mean = 2, SD = 1, Min = 0, Max = 6, n = 16, Missing = 4), 
+      Mean = 2, SD = 1, Min = 0, Max = 6, n = 16, Missing = 4
+    ),
     class = "data.frame", row.names = c(NA, -1L)
   )
   mockery::stub(codeBookItemBody.NumericVariable, "codeBookSummary.NumericVariable", smry)
-  
-  res = codeBookItemBody(ds$ndogs)
-  
+
+  res <- codeBookItemBody(ds$ndogs)
+
   expect_equal(
     attributes(res)$kable_meta$contents,
     c(
       "\\{Mean\\} & \\{SD\\} & \\{Min\\} & \\{Max\\} & \\{n\\} & \\{Missing\\}",
-      "2 & 1 & 0 & 6 & 16 & 4")
+      "2 & 1 & 0 & 6 & 16 & 4"
+    )
   )
-  
+
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
     rep("c", 6)
@@ -157,14 +186,17 @@ test_that("codeBookItemBody NumericVariable", {
 
 test_that("codeBookItemBody DatetimeVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
-  smry = structure(list(
-    Filled = 20L, Missing = 0L, 
-    Range = "[2014-12-01, 2015-01-01]"), class = "data.frame", 
-    row.names = c(NA, -1L))
-  
+  smry <- structure(list(
+    Filled = 20L, Missing = 0L,
+    Range = "[2014-12-01, 2015-01-01]"
+  ),
+  class = "data.frame",
+  row.names = c(NA, -1L)
+  )
+
   mockery::stub(codeBookItemBody.DatetimeVariable, "codeBookSummary.DatetimeVariable", smry)
-  res = codeBookItemBody(ds$wave)
-  
+  res <- codeBookItemBody(ds$wave)
+
   expect_equal(
     attributes(res)$kable_meta$contents,
     c(
@@ -172,7 +204,7 @@ test_that("codeBookItemBody DatetimeVariable", {
       "20 & 0 & \\[2014-12-01, 2015-01-01\\]"
     )
   )
-  
+
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
     c("c", "c", "c")
@@ -183,19 +215,23 @@ test_that("codeBookItemBody TextVariable", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   smry <- structure(
     list(
-      Filled = 16L, Missing = 4L, `Max Length` = 8L), class = "data.frame", 
-    row.names = c(NA, -1L))
-  
+      Filled = 16L, Missing = 4L, `Max Length` = 8L
+    ),
+    class = "data.frame",
+    row.names = c(NA, -1L)
+  )
+
   mockery::stub(codeBookItemBody.TextVariable, "codeBookSummary.TextVariable", smry)
   res <- codeBookItemBody(ds$q3)
-  
+
   expect_equal(
     attributes(res)$kable_meta$contents,
-    c("\\{Filled\\} & \\{Missing\\} & \\{Max Length\\}",
+    c(
+      "\\{Filled\\} & \\{Missing\\} & \\{Max Length\\}",
       "16 & 4 & 8"
     )
   )
-  
+
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
     c("d", "d", "d")
