@@ -11,7 +11,8 @@
 #' sets. It must be the same in all datasets.
 #' @param labels A character vector of labels that will be displayed in the
 #' resulting crunchtabs output. Should match the number of results objects
-as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels) {
+as.ToplineCategoricalArray <- function(questions, question_alias = NULL, 
+                                       labels) {
   if (length(questions) != length(labels)) {
     stop("Number of labels provided does not match number of result sets")
   }
