@@ -20,4 +20,3 @@
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  writeCodebook(cb_summary, filename = filename)
-
