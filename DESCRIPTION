@@ -30,8 +30,6 @@ Imports:
     tinytex
 Suggests:
     covr,
-    httptest (>= 2.0.0),
-    httpcache,
     knitr,
     mockery, 
     rmarkdown,
