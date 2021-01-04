@@ -1,6 +1,5 @@
 ---
 title: "Introduction and Overview"
-author: "Brandon Bertelsen and Kamil Sedrowicz"
 date: "Last Update: 2020-04-22"
 output: 
   rmarkdown::html_vignette:
