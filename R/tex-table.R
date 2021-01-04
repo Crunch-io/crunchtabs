@@ -5,7 +5,7 @@
 #'
 #' @param df An object from \link{reformatLatexResults}
 #' @param theme A theme object from \link{themeNew}
-#' @param alias The variable's alias
+#' @param question_alias The variable's alias
 latexTableBody <- function(df, theme, question_alias = NULL) {
   # The input "df" object is shaped like this:
   # List of 9
@@ -327,12 +327,14 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @export
 tableHeader.ToplineCategoricalArray <- function(var, theme) {
   header_row <- newline
-  print(var$alias)
+  
   if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
-
     col_names <- var$subnames
   } else {
     col_names <- sapply(var$inserts_obj, name)
+    if(length(col_names) == 0) {
+      col_names <- var$rownames
+    }
   }
 
   col_names_len <- length(col_names)

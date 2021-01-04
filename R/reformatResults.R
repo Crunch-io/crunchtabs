@@ -145,6 +145,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
   )
   bottom <- unlist(sapply(rev(possible), function(p) if (!is.null(theme[[paste0("format_", p)]]) && theme[[paste0("format_", p)]]$position_bottom) return(p)))
   data_order <- c(top, "body", bottom)
+  
   piece_names <- list(
     "body" = ifelse(proportions, "proportions", "counts"),
     "totals_row" = ifelse(proportions, "proportions", "counts"),
@@ -265,8 +266,16 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     min_cell_bottom <- NULL
   }
   if (is(var, "ToplineCategoricalArray") && latex) {
-    rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
-    names(data_list$body) <- var[["subnames"]]
+    if (all(rownames(data_list$body) == as.character(1:nrow(data_list$body)))) {
+      rownames(data_list$body) <- sapply(var$inserts_obj, name) # Even though these are ignored
+    }
+    
+    if (suppressWarnings(all(rownames(data_list$body) == var$subnames))) {
+      names(data_list$body) <- var[["labels"]]
+    } else {
+      names(data_list$body) <- var[["subnames"]]
+    }
+    
     data_list <- data_list["body"] # We only keep the body for arrays
     rownames <- var[["subnames"]]
   } else {

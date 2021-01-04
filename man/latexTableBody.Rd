@@ -4,14 +4,14 @@
 \alias{latexTableBody}
 \title{Create Tex of Table Body}
 \usage{
-latexTableBody(df, theme, alias = NULL)
+latexTableBody(df, theme, question_alias = NULL)
 }
 \arguments{
 \item{df}{An object from \link{reformatLatexResults}}
 
 \item{theme}{A theme object from \link{themeNew}}
 
-\item{alias}{The variable's alias}
+\item{question_alias}{The variable's alias}
 }
 \description{
 Prepare the TeX for the table body given initial

@@ -17,6 +17,8 @@ valiases_tabbook_extract(
 \item{crunch_cube}{A sub-cube of a `crunch::tabBook`}
 
 \item{cube_variable}{A sub-cube of a `crunch::tabBook`}
+
+\item{question_name}{The question alias}
 }
 \description{
 Mainly for testing.

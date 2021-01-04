@@ -110,7 +110,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
     cat(out, sep = "\n", file = filename)
     if (pdf) {
       if ("tinytex" %in% rownames(installed.packages())) {
-        tinytex::pdflatex(filename, bib_engine = NULL)
+        suppressWarnings(tinytex::pdflatex(filename, bib_engine = NULL))
         if (!logging) {
           files <- list.files(path = getwd())
           files <- grep("out$|log$|aux$", files, value = TRUE)
@@ -123,7 +123,7 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
           file.open(gsub(".tex", ".pdf", filename, fixed = TRUE))
         }
       } else {
-        pdflatex(filename, open)
+        suppressWarnings(pdflatex(filename, open))
       }
     }
   }

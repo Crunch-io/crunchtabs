@@ -25,7 +25,7 @@ test_that("format_label_column_exceptions overwrites global", {
   var$longtable = FALSE
   class(var) = "ToplineCategoricalArray"
   res = tableHeader(var, theme)
-  expect_equal(res, "\\begin{tabular}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{3.5in}B{\\centering}{Inf\\mywidth}}\n\\addcontentsline{lot}{table}{ . test}\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. test}} \\\\\n\\\\ &  & \\\\\n\n")
+  expect_equal(res, "\\begin{tabular}{@{\\extracolsep{\\fill}}p{0.1in}B{\\raggedright}{3.5in}B{\\centering}{Inf\\mywidth}}\n\\addcontentsline{lot}{table}{ . test}\n\\hangindent=0em \\parbox{9in}{\n\\formatvardescription{. test}} \\\\\n\\\\ &  &  & \\\\\n\n")
 })
 
 test_that("format_label_column_exceptions acts appropriately", {

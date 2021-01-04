@@ -16,7 +16,7 @@ ct <- recontact_toplines(
 
 
 writeLatex(ct, pdf = TRUE, open = TRUE)
-theme <- themeNew(default_theme = themeDefaultLatex(), latex_flip_grids = TRUE)
+theme <- themeNew(default_theme = themeDefaultLatex(), latex_flip_specific_grids = "q1", latex_flip_grids = TRUE, one_per_sheet = FALSE)
 
 writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
 # Data setup -----
