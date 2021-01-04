@@ -5,16 +5,16 @@ options(warn=1)
 
 unserializeJSON <- jsonlite::unserializeJSON
 
-with_mock_crunchtabs <- function (expr) {
-  env <- parent.frame()
-  with(temp.options(crunch.api="https://app.crunch.io/api/",
-                    httptest.mock.paths=c(".", system.file(package="crunchtabs"))), {
-                      with_mock_API({
-                        try(crunch:::warmSessionCache())
-                        eval(expr, envir=env)
-                      })
-                    })
-}
+# with_mock_crunchtabs <- function (expr) {
+#   env <- parent.frame()
+#   with(temp.options(crunch.api="https://app.crunch.io/api/",
+#                     httptest.mock.paths=c(".", system.file(package="crunchtabs"))), {
+#                       with_mock_API({
+#                         try(crunch:::warmSessionCache())
+#                         eval(expr, envir=env)
+#                       })
+#                     })
+# }
 
 fixtures_dir <- "fixtures"
 with_mock_tabs <- function(book_file, mt_file, path = fixtures_dir, expr) {
