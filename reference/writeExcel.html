@@ -90,7 +90,7 @@ Toplines (one-way frequency tables) or Banners (cross tabulations)" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -116,6 +116,9 @@ Toplines (one-way frequency tables) or Banners (cross tabulations)" />
     <li>
       <a href="../articles/Theming.html">Theming</a>
     </li>
+    <li>
+      <a href="../articles/Tracking-Recontact-Reports.html">Recontact and Tracking Reports</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -125,7 +128,7 @@ Toplines (one-way frequency tables) or Banners (cross tabulations)" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -152,19 +155,19 @@ Toplines (one-way frequency tables) or Banners (cross tabulations)" />
 Toplines (one-way frequency tables) or Banners (cross tabulations)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>writeExcel</span>(
-  <span class='no'>data_summary</span>,
-  <span class='kw'>filename</span> <span class='kw'>=</span> <span class='fu'><a href='getName.html'>getName</a></span>(<span class='no'>data_summary</span>),
-  <span class='kw'>wb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>theme</span> <span class='kw'>=</span> <span class='fu'><a href='themeDefaultExcel.html'>themeDefaultExcel</a></span>(),
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='fu'><a href='getName.html'>getName</a></span>(<span class='no'>data_summary</span>),
-  <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>table_of_contents</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>n_or_percent</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"percents"</span>, <span class='st'>"counts"</span>),
-  <span class='kw'>hypothesis_test</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>logging</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>save_workbook</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>writeExcel</span><span class='op'>(</span>
+  <span class='va'>data_summary</span>,
+  filename <span class='op'>=</span> <span class='fu'><a href='getName.html'>getName</a></span><span class='op'>(</span><span class='va'>data_summary</span><span class='op'>)</span>,
+  wb <span class='op'>=</span> <span class='cn'>NULL</span>,
+  theme <span class='op'>=</span> <span class='fu'><a href='themeDefaultExcel.html'>themeDefaultExcel</a></span><span class='op'>(</span><span class='op'>)</span>,
+  title <span class='op'>=</span> <span class='fu'><a href='getName.html'>getName</a></span><span class='op'>(</span><span class='va'>data_summary</span><span class='op'>)</span>,
+  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>,
+  table_of_contents <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  n_or_percent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"percents"</span>, <span class='st'>"counts"</span><span class='op'>)</span>,
+  hypothesis_test <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  logging <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  save_workbook <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -226,14 +229,15 @@ user to continue editing? Defaults to <code>TRUE</code>.</p></td>
 allowing the user to continue editing it before saving. Otherwise the data is returned as it was provided.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># toplines report</span>
-<span class='no'>toplines_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='crosstabs.html'>crosstabs</a></span>(<span class='no'>crunch_dataset</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='st'>'weight'</span>)
-<span class='fu'>writeExcel</span>(<span class='no'>toplines_summary</span>, <span class='st'>'filename'</span>)
+<span class='va'>toplines_summary</span> <span class='op'>&lt;-</span> <span class='fu'><a href='crosstabs.html'>crosstabs</a></span><span class='op'>(</span><span class='va'>crunch_dataset</span>, weight <span class='op'>=</span> <span class='st'>'weight'</span><span class='op'>)</span>
+<span class='fu'>writeExcel</span><span class='op'>(</span><span class='va'>toplines_summary</span>, <span class='st'>'filename'</span><span class='op'>)</span>
 <span class='co'># crosstabs report</span>
-<span class='no'>crosstabs_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='crosstabs.html'>crosstabs</a></span>(<span class='no'>crunch_dataset</span>, <span class='kw'>banner</span> <span class='kw'>=</span> <span class='no'>banner_object</span>)
-<span class='fu'>writeExcel</span>(<span class='no'>crosstabs_summary</span>, <span class='st'>'filename'</span>)
-}</div></pre>
+<span class='va'>crosstabs_summary</span> <span class='op'>&lt;-</span> <span class='fu'><a href='crosstabs.html'>crosstabs</a></span><span class='op'>(</span><span class='va'>crunch_dataset</span>, banner <span class='op'>=</span> <span class='va'>banner_object</span><span class='op'>)</span>
+<span class='fu'>writeExcel</span><span class='op'>(</span><span class='va'>crosstabs_summary</span>, <span class='st'>'filename'</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -249,7 +253,7 @@ allowing the user to continue editing it before saving. Otherwise the data is re
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

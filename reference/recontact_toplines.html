@@ -89,7 +89,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,6 +115,9 @@
     <li>
       <a href="../articles/Theming.html">Theming</a>
     </li>
+    <li>
+      <a href="../articles/Tracking-Recontact-Reports.html">Recontact and Tracking Reports</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -124,7 +127,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -142,7 +145,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Recontact Toplines</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/recontactQuestion.R'><code>R/recontactQuestion.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/recontactReports.R'><code>R/recontactReports.R</code></a></small>
     <div class="hidden name"><code>recontact_toplines.Rd</code></div>
     </div>
 
@@ -150,14 +153,14 @@
     <p>Allows the user to create a simple report that shows recontact question.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>recontact_toplines</span>(
-  <span class='no'>dataset</span>,
-  <span class='no'>questions</span>,
-  <span class='no'>suffixes</span>,
-  <span class='no'>labels</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>),
-  <span class='kw'>default_weight</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/describe-entity.html'>alias</a></span>(<span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>))
-)</pre>
+    <pre class="usage"><span class='fu'>recontact_toplines</span><span class='op'>(</span>
+  <span class='va'>dataset</span>,
+  <span class='va'>questions</span>,
+  <span class='va'>suffixes</span>,
+  <span class='va'>labels</span>,
+  weights <span class='op'>=</span> <span class='fu'>crunch</span><span class='fu'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,
+  default_weight <span class='op'>=</span> <span class='fu'>crunch</span><span class='fu'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/describe-entity.html'>alias</a></span><span class='op'>(</span><span class='fu'>crunch</span><span class='fu'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,7 +181,7 @@ leave that out.</p></td>
     </tr>
     <tr>
       <th>labels</th>
-      <td><p>Formal labels for your recontact period. For example, "Before
+      <td><p>Formal labels for
 the election", "After the election".</p></td>
     </tr>
     <tr>
@@ -210,7 +213,7 @@ should be in the same order as your suffixies.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

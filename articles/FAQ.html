@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -72,6 +72,9 @@
     <li>
       <a href="../articles/Theming.html">Theming</a>
     </li>
+    <li>
+      <a href="../articles/Tracking-Recontact-Reports.html">Recontact and Tracking Reports</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -81,7 +84,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -95,7 +98,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="FAQ_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequently Asked Questions</h1>
@@ -113,59 +116,95 @@
 <div id="faq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faq" class="anchor"></a>FAQ</h2>
+<div id="how-do-i-combine-multiple-crunchtabs-reports" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-do-i-combine-multiple-crunchtabs-reports" class="anchor"></a>How do I combine multiple crunchtabs reports</h3>
+<p>The <code>pdftools</code> library provides us with the ability to splice, combine and append pdf files together. We can use this to combine one or more arbitrary documents together. One major caveat is the lack of a combined table of contents.</p>
+<p>There are three functions of interest:</p>
+<ul>
+<li>
+<code>pdf_subset</code> which extracts specific pages from a pdf document</li>
+<li>
+<code>pdf_combine</code> which puts two documents together, each one appended to the last</li>
+<li>
+<code>pdf_split</code> which breaks up a document into it’s component pages. The default is “path_XXX” where XXX is the page number.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/pdftools">pdftools</a></span><span class="op">)</span>
+<span class="co"># Combining two reports</span>
+<span class="fu"><a href="https://docs.ropensci.org/pdftools/reference/qpdf.html">pdf_combine</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"path/to/doc1.pdf"</span>, <span class="st">"path/to/doc2.pdf"</span><span class="op">)</span>, output<span class="op">=</span><span class="st">"combined.pdf"</span><span class="op">)</span>
+<span class="co"># Resulting PDF would be doc1 followed by doc2 in the same document. </span></code></pre></div>
+<p>As an alternative, one could weave together the latex that builds PDF reporting. However, this is not recommended, challenging and outside of the scope of this FAQ.</p>
+</div>
 <div id="how-do-i-relabel-the-table-of-contents-in-an-excel-crosstab" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-relabel-the-table-of-contents-in-an-excel-crosstab" class="anchor"></a>How do I relabel the table of contents in an excel crosstab?</h3>
 <p>Unfortunately there is not yet a built in way to relabel the table of contents. However, there is a straight forward solution using the <code>openxls</code> package.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r">library(openxlsx)
-wb </pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(openxlsx)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>wb &lt;-<span class="st"> </span>openxlsx<span class="op">::</span><span class="kw">loadWorkbook</span>(<span class="st">"wb.xlsx"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">lapply</span>(</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(<span class="kw">names</span>(wb)), <span class="cf">function</span>(row) { </span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="kw">writeFormula</span>(</span>
+<span id="cb2-6"><a href="#cb2-6"></a>      <span class="dt">wb =</span> wb, </span>
+<span id="cb2-7"><a href="#cb2-7"></a>      <span class="dt">sheet =</span> <span class="dv">1</span>, </span>
+<span id="cb2-8"><a href="#cb2-8"></a>      <span class="dt">startCol =</span> <span class="dv">1</span>, </span>
+<span id="cb2-9"><a href="#cb2-9"></a>      <span class="dt">startRow =</span> <span class="dv">4</span> <span class="op">+</span><span class="st"> </span>row, </span>
+<span id="cb2-10"><a href="#cb2-10"></a>      <span class="dt">x =</span> <span class="kw">paste0</span>(</span>
+<span id="cb2-11"><a href="#cb2-11"></a>        <span class="st">'=HYPERLINK("'</span>, </span>
+<span id="cb2-12"><a href="#cb2-12"></a>        <span class="kw">names</span>(wb)[row], <span class="st">'!A5", "'</span>, <span class="kw">names</span>(wb)[row], <span class="st">'")'</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="er">}</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>)</span></code></pre></div>
 </div>
 <div id="how-do-i-change-the-crosstab-stub-width" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-change-the-crosstab-stub-width" class="anchor"></a>How do I change the crosstab stub width?</h3>
 <p>The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r">myTheme = themeNew(
-  ... # your other theme optinos
-  format_label_column = list(col_width = 2)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>myTheme =<span class="st"> </span><span class="kw">themeNew</span>(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  ... <span class="co"># your other theme optinos</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">format_label_column =</span> <span class="kw">list</span>(<span class="dt">col_width =</span> <span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>)</span></code></pre></div>
 <p>The code example above would set the stub width to 2 inches. For a PDF document, col_width is in inches. You can also create an exceptional stub width for one or more questions, as follows:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r">myTheme = themeNew(
-  ... # your other theme optinos
-  format_label_column_exception = c("alias"=2.5, "otheralias"=1.25)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>myTheme =<span class="st"> </span><span class="kw">themeNew</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  ... <span class="co"># your other theme optinos</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">format_label_column_exception =</span> <span class="kw">c</span>(<span class="st">"alias"</span>=<span class="fl">2.5</span>, <span class="st">"otheralias"</span>=<span class="fl">1.25</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>)</span></code></pre></div>
 <p>In this case, you create a named numeric vector where the name is the question alias whose stub width you wish to change and the numeric value is the stub width in inches.</p>
 </div>
 <div id="how-do-i-hide-the-question-numbers" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-hide-the-question-numbers" class="anchor"></a>How do I hide the question numbers?</h3>
 <p>A number of theme options exist for this purpose, <code>format_var_alias</code>, <code>format_var_description</code>, <code>format_var_filtertext</code>, and <code>format_var_name</code>. In your format list, set an item <code>include_q_number = FALSE</code> as in the example below.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
-  <span class="no">...</span>, <span class="co"># your other theme options</span>
-  <span class="kw">format_var_description</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">include_q_number</span> <span class="kw">=</span> <span class="fl">FALSE</span>),
-  <span class="kw">format_var_filtertext</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">include_q_number</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myAwesomeTheme</span> <span class="op">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
+  <span class="va">...</span>, <span class="co"># your other theme options</span>
+  format_var_description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>include_q_number <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
+  format_var_filtertext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>include_q_number <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-make-it-so-that-there-is-more-than-one-question-per-page" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-make-it-so-that-there-is-more-than-one-question-per-page" class="anchor"></a>How do I make it so that there is more than one question per page?</h3>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
-  <span class="no">...</span>,
-  <span class="kw">one_per_sheet</span> <span class="kw">=</span> <span class="fl">FALSE</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myAwesomeTheme</span> <span class="op">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
+  <span class="va">...</span>,
+  one_per_sheet <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-output-numbers-like-1000-instead-of-1000" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-output-numbers-like-1000-instead-of-1000" class="anchor"></a>How do I output numbers like 1,000 instead of 1000?</h3>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span>(<span class="fl">1000</span>, <span class="kw">nsmall</span><span class="kw">=</span><span class="fl">0</span>, <span class="kw">big.mark</span><span class="kw">=</span><span class="st">","</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="fl">1000</span>, nsmall<span class="op">=</span><span class="fl">0</span>, big.mark<span class="op">=</span><span class="st">","</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-add-a-subtitle-to-my-document" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-add-a-subtitle-to-my-document" class="anchor"></a>How do I add a subtitle to my document?</h3>
 <p>A common usage of the subtitle is to include the survey’s field window. Especially for studies that are run continuously.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(
-  <span class="no">...</span>,
-  <span class="kw">subtitle</span> <span class="kw">=</span> <span class="st">"My Amazing Subtitle"</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span>
+  <span class="va">...</span>,
+  subtitle <span class="op">=</span> <span class="st">"My Amazing Subtitle"</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-append-more-information" class="section level3">
 <h3 class="hasAnchor">
@@ -176,68 +215,73 @@ wb </pre></body></html></div>
 <h3 class="hasAnchor">
 <a href="#how-do-i-mask-questions-with-low-base-sizes" class="anchor"></a>How do I mask questions with low base sizes?</h3>
 <p>Below is an example of masking responses where the base size is less than the central limit theorem with a “-” character.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">myAwesomeTheme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
-  <span class="no">...</span>,
-  <span class="kw">format_min_base</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">mask</span> <span class="kw">=</span> <span class="st">"-"</span>, <span class="kw">min_base</span> <span class="kw">=</span> <span class="fl">30</span>)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myAwesomeTheme</span> <span class="op">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
+  <span class="va">...</span>,
+  format_min_base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mask <span class="op">=</span> <span class="st">"-"</span>, min_base <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-display-questions-with-different-weights-in-the-same-report" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-display-questions-with-different-weights-in-the-same-report" class="anchor"></a>How do I display questions with different weights in the same report?</h3>
 <p>We can chain crosstabs objects easily to create the desired effect. Below, we create two crosstabs objects with the variables and the weighting we want applied and then we concatenate them together.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># ...</span>
-<span class="no">topline_summary</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"weightvar"</span>)
-<span class="no">chain_me</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"other_weightvar"</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># ...</span>
+<span class="va">topline_summary</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, weight <span class="op">=</span> <span class="st">"weightvar"</span><span class="op">)</span>
+<span class="va">chain_me</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"c"</span><span class="op">)</span>, weight <span class="op">=</span> <span class="st">"other_weightvar"</span><span class="op">)</span>
 
-<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
-  <span class="no">topline_summary</span>$<span class="no">results</span>,
-  <span class="no">chain_me</span>$<span class="no">results</span>
-)
+<span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span>, 
+  <span class="va">chain_me</span><span class="op">$</span><span class="va">results</span>
+<span class="op">)</span>
 
-<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="kw pkg">crunchtabs</span><span class="kw ns">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span>(
-  <span class="no">topline_summary</span>$<span class="no">results</span>
-)
+<span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span> <span class="op">=</span> <span class="fu">crunchtabs</span><span class="fu">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span><span class="op">(</span>
+  <span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span>
+<span class="op">)</span>
 
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">topline_summary</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">topline_summary</span><span class="op">)</span></code></pre></div>
 <p>Re-weighting the same variable with another weight in the same report is possible but requires you to also adjust the names so that you can edit the question text appropriately to demonstrate the different weighting:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># ...</span>
-<span class="no">topline_summary</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"weightvar"</span>)
-<span class="no">chain_me</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>), <span class="kw">weight</span> <span class="kw">=</span> <span class="st">"other_weightvar"</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># ...</span>
+<span class="va">topline_summary</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, weight <span class="op">=</span> <span class="st">"weightvar"</span><span class="op">)</span>
+<span class="va">chain_me</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span><span class="op">)</span>, weight <span class="op">=</span> <span class="st">"other_weightvar"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">chain_me</span>$<span class="no">results</span>) <span class="kw">=</span> <span class="st">"a_other_weight_var"</span> <span class="co"># rename the alias</span>
-<span class="no">chain_me</span>$<span class="no">results</span>$<span class="no">a_other_weight_var</span>$<span class="no">description</span> <span class="kw">=</span> <span class="st">"This is question text (weighted by other_weight_var)"</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">chain_me</span><span class="op">$</span><span class="va">results</span><span class="op">)</span> <span class="op">=</span> <span class="st">"a_other_weight_var"</span> <span class="co"># rename the alias</span>
+<span class="va">chain_me</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">a_other_weight_var</span><span class="op">$</span><span class="va">description</span> <span class="op">=</span> <span class="st">"This is question text (weighted by other_weight_var)"</span>
 
-<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
-  <span class="no">topline_summary</span>$<span class="no">results</span>,
-  <span class="no">chain_me</span>$<span class="no">results</span>
-)
+<span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span>, 
+  <span class="va">chain_me</span><span class="op">$</span><span class="va">results</span>
+<span class="op">)</span>
 
-<span class="no">topline_summary</span>$<span class="no">results</span> <span class="kw">=</span> <span class="kw pkg">crunchtabs</span><span class="kw ns">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span>(
-  <span class="no">topline_summary</span>$<span class="no">results</span>
-)
+<span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span> <span class="op">=</span> <span class="fu">crunchtabs</span><span class="fu">:::</span><span class="fu"><a href="../reference/reflowQuestionNumbers.html">reflowQuestionNumbers</a></span><span class="op">(</span>
+  <span class="va">topline_summary</span><span class="op">$</span><span class="va">results</span>
+<span class="op">)</span>
 
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">topline_summary</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">topline_summary</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-install-a-different-release-of-crunchtabs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-install-a-different-release-of-crunchtabs" class="anchor"></a>How do I install a different release of crunchtabs?</h3>
 <p>In the code example below we show you how to install Release 1.2.1:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Crunch-io/crunchtabs@v1.2.1"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-replace-question-numbers-with-question-aliases" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-replace-question-numbers-with-question-aliases" class="anchor"></a>How do I replace question numbers with question aliases?</h3>
 <p>We can manipulate the crosstab object so that instead of displaying a number, we display the question alias.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ds</span> <span class="op">=</span> <span class="fu">loadDataset</span><span class="op">(</span><span class="st">"Example dataset"</span><span class="op">)</span>
 <span class="co"># Use ds = newExampleDataset() if it doesn't work</span>
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>)
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span>
 
-<span class="no">nms</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">ct</span>$<span class="no">results</span>)
-<span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">results</span>) {
-  <span class="no">ct</span>$<span class="no">results</span><span class="kw">[[</span><span class="no">i</span>]]$<span class="no">number</span> <span class="kw">=</span> <span class="no">i</span>
-}
+<span class="va">nms</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ct</span><span class="op">$</span><span class="va">results</span><span class="op">)</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">results</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ct</span><span class="op">$</span><span class="va">results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">number</span> <span class="op">=</span> <span class="va">i</span>
+<span class="op">}</span>
 
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
 <p>Instead of:</p>
 <blockquote>
 <ol style="list-style-type: decimal">
@@ -253,57 +297,62 @@ wb </pre></body></html></div>
 <h3 class="hasAnchor">
 <a href="#how-do-i-install-a-different-release-of-crunchtabs-1" class="anchor"></a>How do I install a different release of crunchtabs?</h3>
 <p>In the code example below we show you how to install Release 1.2.1:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"Crunch-io/crunchtabs@v1.2.1"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Crunch-io/crunchtabs@v1.2.1"</span><span class="op">)</span></code></pre></div>
 <p>See <a href="https://github.com/Crunch-io/crunchtabs/releases">releases</a> for more information about the changes between releases.</p>
 </div>
 <div id="how-do-i-use-a-logo-in-excel" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-use-a-logo-in-excel" class="anchor"></a>How do I use a logo in Excel?</h3>
 <p>You can control the height, width, dpi and start column (specified by a number).</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">crunchtabs</span>)
-<span class="fu">login</span>()
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
+<span class="fu">login</span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
+<span class="va">ds</span> <span class="op">=</span> <span class="fu">loadDataset</span><span class="op">(</span><span class="st">"Example dataset"</span><span class="op">)</span>
 <span class="co"># Use ds = newExampleDataset() if not found!</span>
 
-<span class="no">ct_banner</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/banner.html">banner</a></span>(<span class="no">ds</span>, <span class="kw">vars</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">`banner 1`</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'allpets'</span>)))
-<span class="no">ct_summary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="kw">dataset</span> <span class="kw">=</span> <span class="no">ds</span>, <span class="kw">banner</span> <span class="kw">=</span> <span class="no">ct_banner</span>)
+<span class="va">ct_banner</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/banner.html">banner</a></span><span class="op">(</span><span class="va">ds</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>`banner 1` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'allpets'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ct_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">ds</span>, banner <span class="op">=</span> <span class="va">ct_banner</span><span class="op">)</span>
 
-<span class="no">myTheme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(
-  <span class="kw">logo</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="kw">file</span> <span class="kw">=</span> <span class="st">"yougov-logo.png"</span>,
-    <span class="kw">dpi</span> <span class="kw">=</span> <span class="fl">100</span>,
-    <span class="kw">height</span> <span class="kw">=</span> <span class="fl">0.75</span>,
-    <span class="kw">width</span> <span class="kw">=</span> <span class="fl">3</span>,
-    <span class="kw">startCol</span> <span class="kw">=</span> <span class="fl">6</span>)
-)
+<span class="va">myTheme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
+  logo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    file <span class="op">=</span> <span class="st">"yougov-logo.png"</span>, 
+    dpi <span class="op">=</span> <span class="fl">100</span>, 
+    height <span class="op">=</span> <span class="fl">0.75</span>, 
+    width <span class="op">=</span> <span class="fl">3</span>, 
+    startCol <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+<span class="op">)</span>
 
-<span class="fu"><a href="../reference/writeExcel.html">writeExcel</a></span>(<span class="no">ct_summary</span>, <span class="kw">filename</span> <span class="kw">=</span> <span class="st">"output"</span>, <span class="kw">theme</span> <span class="kw">=</span> <span class="no">myTheme</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeExcel.html">writeExcel</a></span><span class="op">(</span><span class="va">ct_summary</span>, filename <span class="op">=</span> <span class="st">"output"</span>, theme <span class="op">=</span> <span class="va">myTheme</span><span class="op">)</span> </code></pre></div>
 </div>
 <div id="how-do-i-sort-a-categorical-or-multiple-response-questions-presenation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-sort-a-categorical-or-multiple-response-questions-presenation" class="anchor"></a>How do I sort a categorical or multiple response question’s presenation?</h3>
 <p>You can sort response categories alphabetically or by proportion. You can apply a fixed presentation order and you can pin response categories to the top or bottom.</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">ds</span> <span class="kw">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ds</span> <span class="op">=</span> <span class="fu">loadDataset</span><span class="op">(</span><span class="st">"Example dataset"</span><span class="op">)</span>
 <span class="co"># Use ds = newExampleDataset() if it doesn't work</span>
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span>(<span class="no">ds</span>)
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>)
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span>
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span><span class="op">(</span><span class="va">ct</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
 <p>The default behaviour sorts all questions that can be sorted, descending by order of proportion. But we can apply a variety of different sorting options by using the <code>sortAliases</code> function repeatedly.</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="co"># load ds, define theme ...</span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># load ds, define theme ...</span>
 
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># sort a/b by alpha</span>
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="st">"c"</span>) <span class="co"># sort c by numeric</span>
-<span class="no">ct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span>(<span class="no">ct</span>, <span class="kw">var</span> <span class="kw">=</span> <span class="st">"d"</span>, <span class="kw">pin_to_bottom</span> <span class="kw">=</span> <span class="st">"Don't know"</span>)
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span><span class="op">(</span><span class="va">ct</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># sort a/b by alpha</span>
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span><span class="op">(</span><span class="va">ct</span>, var <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="co"># sort c by numeric</span>
+<span class="va">ct</span> <span class="op">=</span> <span class="fu"><a href="../reference/sortAliases.html">sortAliases</a></span><span class="op">(</span><span class="va">ct</span>, var <span class="op">=</span> <span class="st">"d"</span>, pin_to_bottom <span class="op">=</span> <span class="st">"Don't know"</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span>(<span class="no">ct</span>, <span class="no">...</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-stop-crosstabs-from-breaking-in-the-middle-of-a-tab" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-stop-crosstabs-from-breaking-in-the-middle-of-a-tab" class="anchor"></a>How do I stop crosstabs from breaking in the middle of a tab?</h3>
 <p>In 1.2.8 a new feature was added that allows you to avoid page breaks within a banner. Some users were adding manual latex page breaks to avoid this behavior. Now, you can set the <code>pagebreak_in_banner</code> parameter to FALSE and crunchtabs will automatically push the banner to the next page to avoid a page break.</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">crosstabs_theme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span>(<span class="no">...</span>, <span class="kw">pagebreak_in_banner</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">crosstabs_theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, pagebreak_in_banner <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="how-do-i-request-a-new-feature" class="section level3">
 <h3 class="hasAnchor">
@@ -328,7 +377,7 @@ wb </pre></body></html></div>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

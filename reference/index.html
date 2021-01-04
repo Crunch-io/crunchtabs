@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,6 +114,9 @@
     <li>
       <a href="../articles/Theming.html">Theming</a>
     </li>
+    <li>
+      <a href="../articles/Tracking-Recontact-Reports.html">Recontact and Tracking Reports</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -123,7 +126,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -181,7 +184,7 @@ of some columns</p></td>
         <td>
           <p><code><a href="as.ToplineCategoricalArray.html">as.ToplineCategoricalArray()</a></code> </p>
         </td>
-        <td><p>Combine two questions as a categorical array</p></td>
+        <td><p>Combine two or more tabbook results as a categorical array</p></td>
       </tr><tr>
         
         <td>
@@ -218,6 +221,12 @@ of some columns</p></td>
           <p><code><a href="calculateIfLongtable.html">calculateIfLongtable()</a></code> </p>
         </td>
         <td><p>Calculate number of lines</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="catArrayToCategoricals.html">catArrayToCategoricals()</a></code> </p>
+        </td>
+        <td><p>Decompose a categorical array</p></td>
       </tr><tr>
         
         <td>
@@ -335,6 +344,12 @@ of some columns</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="getCounts.html">getCounts()</a></code> </p>
+        </td>
+        <td><p>Extract counts from a tabbook</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="getItemData.html">getItemData()</a></code> </p>
         </td>
         <td><p>get Item Data for print</p></td>
@@ -350,6 +365,12 @@ of some columns</p></td>
           <p><code><a href="getName.html">getName()</a></code> </p>
         </td>
         <td><p>S3 Method for getName</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getProportions.html">getProportions()</a></code> </p>
+        </td>
+        <td><p>Extract proportions from a tabbook</p></td>
       </tr><tr>
         
         <td>
@@ -476,6 +497,30 @@ of some columns</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="nonTabBookSummary.DatetimeVariable.html">nonTabBookSummary(<i>&lt;DatetimeVariable&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Prepare Datetime Content</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="nonTabBookSummary.NumericVariable.html">nonTabBookSummary(<i>&lt;NumericVariable&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Prepare Numeric Content</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="nonTabBookSummary.html">nonTabBookSummary()</a></code> </p>
+        </td>
+        <td><p>Prepare Summary Content</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="nonTabBookSummary.TextVariable.html">nonTabBookSummary(<i>&lt;TextVariable&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Prepare Text Content</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="paste_around.html">paste_around()</a></code> </p>
         </td>
         <td><p>Paste Around</p></td>
@@ -485,30 +530,6 @@ of some columns</p></td>
           <p><code><a href="pdflatex.html">pdflatex()</a></code> </p>
         </td>
         <td><p>pdflatex</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepareExtraSummary.DatetimeVariable.html">prepareExtraSummary(<i>&lt;DatetimeVariable&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Prepare Datetime Content</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepareExtraSummary.NumericVariable.html">prepareExtraSummary(<i>&lt;NumericVariable&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Prepare Numeric Content</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepareExtraSummary.html">prepareExtraSummary()</a></code> </p>
-        </td>
-        <td><p>Prepare Summary Content</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepareExtraSummary.TextVariable.html">prepareExtraSummary(<i>&lt;TextVariable&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Prepare Text Content</p></td>
       </tr><tr>
         
         <td>
@@ -602,9 +623,15 @@ of some columns</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="surveyDuration.html">surveyDuration()</a></code> </p>
+          <p><code><a href="tabBookWeightSpec.html">tabBookWeightSpec()</a></code> </p>
         </td>
-        <td><p>Survey Duration</p></td>
+        <td><p>Helper function for setting complex weights on a `tabbook`</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tabBook_crunchtabs.html">tabBook_crunchtabs()</a></code> </p>
+        </td>
+        <td><p>Compute a Tab Book</p></td>
       </tr><tr>
         
         <td>
@@ -662,6 +689,12 @@ of some columns</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="tracking_report.html">tracking_report()</a></code> </p>
+        </td>
+        <td><p>Create a multi-dataset tracking report</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="underline.html">underline()</a></code> </p>
         </td>
         <td><p>Apply underline tex</p></td>
@@ -689,12 +722,6 @@ of some columns</p></td>
           <p><code><a href="vspace.html">vspace()</a></code> </p>
         </td>
         <td><p>vspace</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="with_api_fixture.html">with_api_fixture()</a></code> </p>
-        </td>
-        <td><p>crunch test wrapper</p></td>
       </tr><tr>
         
         <td>
@@ -738,7 +765,7 @@ of some columns</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

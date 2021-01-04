@@ -90,7 +90,7 @@ summaries of a Cruch dataset." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -116,6 +116,9 @@ summaries of a Cruch dataset." />
     <li>
       <a href="../articles/Theming.html">Theming</a>
     </li>
+    <li>
+      <a href="../articles/Tracking-Recontact-Reports.html">Recontact and Tracking Reports</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -125,7 +128,7 @@ summaries of a Cruch dataset." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -152,31 +155,31 @@ summaries of a Cruch dataset." />
 summaries of a Cruch dataset.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>crosstabs</span>(
-  <span class='no'>dataset</span>,
-  <span class='kw'>vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>dataset</span>),
-  <span class='kw'>weight</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>),
-  <span class='kw'>banner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>codebook</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_numeric</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_datetime</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_verbatims</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>num_verbatims</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>include_original_weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+    <pre class="usage"><span class='fu'>crosstabs</span><span class='op'>(</span>
+  <span class='va'>dataset</span>,
+  vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,
+  weight <span class='op'>=</span> <span class='fu'>crunch</span><span class='fu'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,
+  banner <span class='op'>=</span> <span class='cn'>NULL</span>,
+  codebook <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_numeric <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_datetime <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_verbatims <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  num_verbatims <span class='op'>=</span> <span class='fl'>10</span>,
+  include_original_weighted <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-<span class='fu'>toplines</span>(
-  <span class='no'>dataset</span>,
-  <span class='kw'>vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>dataset</span>),
-  <span class='kw'>weight</span> <span class='kw'>=</span> <span class='kw pkg'>crunch</span><span class='kw ns'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span>(<span class='no'>dataset</span>),
-  <span class='kw'>banner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>codebook</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_numeric</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_datetime</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_verbatims</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>num_verbatims</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>include_original_weighted</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+<span class='fu'>toplines</span><span class='op'>(</span>
+  <span class='va'>dataset</span>,
+  vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,
+  weight <span class='op'>=</span> <span class='fu'>crunch</span><span class='fu'>::</span><span class='fu'><a href='http://crunch.io/r/crunch//reference/weight.html'>weight</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,
+  banner <span class='op'>=</span> <span class='cn'>NULL</span>,
+  codebook <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_numeric <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_datetime <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_verbatims <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  num_verbatims <span class='op'>=</span> <span class='fl'>10</span>,
+  include_original_weighted <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -241,11 +244,12 @@ summary of the input dataset.</p>
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>toplines_summary</span> <span class='kw'>&lt;-</span> <span class='fu'>crosstabs</span>(<span class='no'>crunch_dataset</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='st'>'weight'</span>)
-<span class='no'>crosstabs_summary</span> <span class='kw'>&lt;-</span> <span class='fu'>crosstabs</span>(<span class='no'>crunch_dataset</span>, <span class='kw'>vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'alias1'</span>, <span class='st'>'alias2'</span>),
- <span class='kw'>weight</span> <span class='kw'>=</span> <span class='st'>'weight'</span>, <span class='kw'>banner</span> <span class='kw'>=</span> <span class='no'>banner_object</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>toplines_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>, weight <span class='op'>=</span> <span class='st'>'weight'</span><span class='op'>)</span>
+<span class='va'>crosstabs_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>, vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'alias1'</span>, <span class='st'>'alias2'</span><span class='op'>)</span>,
+ weight <span class='op'>=</span> <span class='st'>'weight'</span>, banner <span class='op'>=</span> <span class='va'>banner_object</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -261,7 +265,7 @@ summary of the input dataset.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
