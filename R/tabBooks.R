@@ -12,106 +12,109 @@
 #' @param include_original_weighted Logical, if you have specified complex weights
 #' should the original weighted variable be included or only the custom weighted version?
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, include_original_weighted = TRUE) {
-
+  
   banner_flatten <- unique(unlist(banner, recursive = FALSE))
   names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
   banner_use <- banner
   if (topline) { banner_use$Results[[2]] <- NULL }
-
+  
   multitable <- getMultitable(banner_flatten, dataset)
-
+  
   if (is.null(weight) | is.null(weight(dataset))) {
     default_weight <- NULL
   } else {
     default_weight <- alias(weight(dataset))
   }
-
-
+  
+  
   if (is.list(weight)) {
-    tab_frame <- crunch::tabBookWeightSpec(
+    tab_frame <- tabBookWeightSpec(
       dataset, weight,
       append_default_wt = include_original_weighted
     )
     tab_frame <- tab_frame[tab_frame$alias %in% vars,]
-
+    
     book <- suppressWarnings(
-      crunch::tabBook(
+      tabBook_crunchtabs(
         multitable,
         dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
         weight = weight,
-        output_format = "json"
+        append_default_wt = include_original_weighted
       )
     )
-
+    
   } else {
-
+    
     tab_frame <- tab_frame_generate(default_weight, vars)
-
-
+    
     book <- suppressWarnings(
-      crunch::tabBook(
+      tabBook_crunchtabs(
         multitable,
         dataset = dataset[vars],
-        weight = weight,
-        output_format = "json"
+        weight = weight
       )
     )
-
+    
   }
-
+  
   # Put tab_frame in vars order
   tab_frame <- tab_frame[
     rev(
       order(tab_frame$alias, factor(vars, levels = vars)
-            )
-      ),
+      )
+    ),
   ]
-
+  
   banner_var_names <- sapply(seq_along(book[[1]]), function(ix) {
     crunch::aliases(crunch::variables(book[[1]][[ix]]))[2] })
   banner_var_names[1] <- "___total___"
   # var_nums <- seq_len(nrow(tab_frame))
   var_nums <- setdiff(match(vars, crunch::aliases(book)), NA)
-
+  
   structure(unlist(lapply(seq_along(var_nums), function(tab_frame_pos) {
     vi <- var_nums[tab_frame_pos]
     crunch_cube <- book[[vi]][[1]]
-
+    
     ## Metadata
     cube_variable <- crunch::variables(crunch_cube)[1]
-
+    
     if (all(is.na(tab_frame$weight))) {
       default_weighted <- TRUE
     } else {
-      default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
-    }
+      if(is.null(default_weight)) {
+        default_weighted <- FALSE
+      } else {
+        default_weighted <- tab_frame$weight[tab_frame_pos] == default_weight
+      }
 
+    }
+    
     if (default_weighted) {
       alias <- aliases(cube_variable)
     } else {
       alias <- paste0(aliases(cube_variable), "_", tab_frame$weight[tab_frame_pos])
     }
-
+    
     if (alias == "total") {
       alias <- tab_frame$alias[tab_frame_pos]
       var_type <- type(dataset[[alias]])
     } else {
       var_type <- type(dataset[[aliases(cube_variable)]])
     }
-
+    
     is_mr_type <- var_type == "multiple_response"
     is_cat_type <- var_type %in% c("categorical", "categorical_array")
     is_array_type <- var_type == "categorical_array"
     is_toplines_array <- is_array_type && topline
     is_crosstabs_array <- is_array_type && !topline
-
-
+    
+    
     valiases <- valiases_tabbook_extract(
-      is_crosstabs_array, crunch_cube, cube_variable, question_name
+      is_crosstabs_array, crunch_cube, cube_variable, question_name = alias
     )
-
+    
     if (!default_weighted) valiases <- paste0(valiases, "_", tab_frame$weight[tab_frame_pos])
-
+    
     subnames <- if (is_array_type) getSubNames(crunch_cube)
     var_cats <- categories(cube_variable[[1]])
     inserts <- if (is_cat_type) {
@@ -119,7 +122,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
       collateCats(crunch::transforms(cube_variable)[[1]]$insertions, var_cats)
     }
     show_mean_median <- is_cat_type && any(!is.na(values(na.omit(var_cats))))
-
+    
     metadata <- list(
       name = names(cube_variable),
       description = crunch::descriptions(cube_variable),
@@ -131,7 +134,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
       categories = var_cats,
       inserts_obj = inserts[sapply(inserts, function(x) is.null(x$missing) || !x$missing)]
     )
-
+    
     pbook <- lapply(seq_along(book[[vi]]), function(vix) {
       crunch::prop.table(crunch::noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
     })
@@ -144,9 +147,9 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
     wbbook <- lapply(seq_along(book[[vi]]), function(vix) {
       crunch::margin.table(crunch::noTransforms(book[[vi]][[vix]]), margin = c(2, if (is_array_type) 3))
     })
-
+    
     names(pbook) <- names(bbook) <- names(cbook) <- names(wbbook) <- banner_var_names
-
+    
     for (bi in banner_var_names) {
       if (!identical(banner_flatten[[bi]]$categories_out, banner_flatten[[bi]]$categories)) {
         pbook[[bi]] <- bannerDataRecode(pbook[[bi]], banner_flatten[[bi]])
@@ -155,10 +158,10 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
         wbbook[[bi]] <- bannerDataRecode(wbbook[[bi]], banner_flatten[[bi]])
       }
     }
-
+    
     sapply(valiases, function(valias) {
       ri <- which(valiases %in% valias)
-
+      
       pdata <- row_data(pbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
       cdata <- row_data(cbook, ri, is_crosstabs_array, is_toplines_array, FALSE)
       bdata <- row_data(bbook, ri, is_crosstabs_array, is_toplines_array, TRUE)
@@ -169,14 +172,14 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE, incl
       mddata <- lapply(cdata, function(mbook) {
         if (show_mean_median) { applyInsert(mbook, var_cats, calcTabMedianInsert) }
       })
-
+      
       if (!is_mr_type) {
         bdata <- lapply(bdata, function(xi) {
           matrix(xi, nrow = nrow(pdata[[2]]), ncol = length(xi), byrow = TRUE,
                  dimnames = list(rownames(pdata[[2]]), names(xi)))
         })
       }
-
+      
       structure(c(alias = valias,
                   metadata,
                   subnumber = ri,
@@ -228,15 +231,16 @@ tab_frame_generate <- function(default_weight = NULL, vars) {
 #' @param is_crosstabs_array A logical identifying if the variable is an array
 #' @param crunch_cube A sub-cube of a `crunch::tabBook`
 #' @param cube_variable A sub-cube of a `crunch::tabBook`
+#' @param question_name The question alias
 valiases_tabbook_extract <- function(is_crosstabs_array, crunch_cube, cube_variable, question_name) {
-    if (is_crosstabs_array) {
-        valiases <- getSubAliases(crunch_cube)
-    } else {
-        valiases <- crunch::aliases(cube_variable)
-      if (valiases == "total") {
-        valiases <- question_name
-      }
+  if (is_crosstabs_array) {
+    valiases <- getSubAliases(crunch_cube)
+  } else {
+    valiases <- crunch::aliases(cube_variable)
+    if (valiases == "total") {
+      valiases <- question_name
     }
+  }
   valiases
 }
 
@@ -319,7 +323,7 @@ row_data <- function(data, row, is_crosstabs_array, is_toplines_array, is_base) 
     names(dimnames(dt)) <- NULL
     return(dt)
   })
-
+  
   if (is_crosstabs_array) {
     data <- lapply(data, function(xi) {
       if (length(dim(xi)) == 3) {
@@ -364,15 +368,15 @@ compute_pvals <- function(counts, counts_unweighted) {
   n <- margin.table(counts)
   bases_adj <- counts_unweighted + 1
   n_adj <- margin.table(bases_adj)
-
+  
   nrows <- nrow(counts)
   ncols <- ncol(counts)
-
+  
   R <- margin.table(counts, 1) / n
   C_adj <- margin.table(bases_adj, 2) / n_adj
   Ctbl <- prop.table(counts, margin = 2)
   Ctbl_adj <- prop.table(bases_adj, margin = 2)
-
+  
   observed <- (Ctbl_adj * (1 - Ctbl_adj))
   expected <- observed %*% C_adj
   d.c <- (1 - 2 * C_adj) / C_adj

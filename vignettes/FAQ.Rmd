@@ -13,6 +13,24 @@ vignette: >
 
 ## FAQ
 
+### How do I combine multiple crunchtabs reports 
+
+The `pdftools` library provides us with the ability to splice, combine and append pdf files together. We can use this to combine one or more arbitrary documents together. One major caveat is the lack of a combined table of contents.
+
+There are three functions of interest: 
+
+- `pdf_subset` which extracts specific pages from a pdf document
+- `pdf_combine` which puts two documents together, each one appended to the last
+- `pdf_split` which breaks up a document into it's component pages. The default is "path_XXX" where XXX is the page number. 
+```{r, eval = FALSE}
+library(pdftools)
+# Combining two reports
+pdf_combine(c("path/to/doc1.pdf", "path/to/doc2.pdf"), output="combined.pdf")
+# Resulting PDF would be doc1 followed by doc2 in the same document. 
+```
+
+As an alternative, one could weave together the latex that builds PDF reporting. However, this is not recommended, challenging and outside of the scope of this FAQ. 
+
 ### How do I relabel the table of contents in an excel crosstab?
 
 Unfortunately there is not yet a built in way to relabel the table of contents. However, there is a straight forward solution using the `openxls` package. 

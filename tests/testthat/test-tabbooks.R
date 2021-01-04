@@ -1,108 +1,5 @@
 context('Preparing a banner data summary')
 
-# ds = readRDS("fixtures/testing-dataset.rds")
-#
-# test_that("We can load a dataset from the crunchtabs package", {
-#   expect_s4_class(ds, "CrunchDataset")
-#   expect_identical(name(ds), "Testing Dataset")
-# })
-
-
-with_test_authentication({
-    ds <- loadDataset("Testing Dataset", project="crunchtabs") # Doesn't work anymore
-
-    # NOTE: is this an expected behaviour?
-    # banner_data <- unserializeJSON(readLines(con = file.path(fixtures_dir, "ds1_banner1.json")))
-    # test_that("We can read in a Banner object from a file", {
-    #   expect_s3_class(banner_data, "Banner")
-    # })
-
-    banner_data <- banner(ds, vars=list(c('gender', 'age5')))
-
-    tabBook_vars <- c("allpets", "allpets2", "favpet", "petloc", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight")
-
-    tabBooks_data <- tabBooks(dataset = ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
-    test_that("We can generate a tabBook data summary", {
-        expect_is(tabBooks_data, "list")
-        expect_named(tabBooks_data, c("allpets", "favpet", "petloc_home", "petloc_work", "ndogs", "ndogs_a", "ndogs_b", "country", "age", "age2", "age3", "age5", "gender", "weight", "noweight", "allpets2"))
-
-        # expect_named(tabBooks_data$allpets, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
-        expect_named(tabBooks_data$allpets$crosstabs, c("Banner1"))
-        expect_named(tabBooks_data$allpets$crosstabs$Banner1, c("Total", "gender", "age5"))
-        expect_named(tabBooks_data$allpets$crosstabs$Banner1$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$counts,
-            structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))))
-        expect_equal(tabBooks_data$allpets$crosstabs$Banner1$Total$proportions,
-            structure(c(0.5000000,0.6363636,0.4545455), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$totals_counts,
-            structure(c(8), .Dim = c(1,1), .Dimnames = list(NULL, c("Total"))))
-        expect_equal(tabBooks_data$allpets$crosstabs$Banner1$Total$totals_proportions,
-            structure(c(1.590909), .Dim = c(1,1), .Dimnames = list('', c("Total"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$unweighted_n,
-            structure(c(8), .Dim = c(1,1), .Dimnames = list(NULL, c("Total"))))
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$Total$counts_unweighted,
-            structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), total = c("Total"))))
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$counts,
-            structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
-        expect_equal(tabBooks_data$allpets$crosstabs$Banner1$gender$proportions,
-            structure(c(0.5,0.75,0.6,0.5,0.5714286,0.3333333), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$totals_counts, # NOTE: actual error?
-            structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-        expect_equal(tabBooks_data$allpets$crosstabs$Banner1$gender$totals_proportions, # NOTE: Remove? not relevant in non-uniform basis
-            structure(c(1.85, 1.404762), .Dim = c(2,1), .Dimnames = list(c("Male", "Female"), NULL)),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$unweighted_n,
-            structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-        expect_identical(tabBooks_data$allpets$crosstabs$Banner1$gender$counts_unweighted,
-            structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
-
-
-        # expect_named(tabBooks_data$allpets2, c('alias', 'name', 'subnames', 'description', 'notes', 'settings', 'inserts', 'crosstabs'))
-        expect_named(tabBooks_data$allpets2$crosstabs, c("Banner1"))
-        expect_named(tabBooks_data$allpets2$crosstabs$Banner1, c("Total", "gender", "age5"))
-        expect_named(tabBooks_data$allpets2$crosstabs$Banner1$Total, c("counts", "proportions", "totals_counts", "totals_proportions", "unweighted_n", "counts_unweighted", "pvals_col"))
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$Total$counts,
-            structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), total = c("Total"))))
-        expect_equal(tabBooks_data$allpets2$crosstabs$Banner1$Total$proportions,
-            structure(c(0.2352941,0.4117647,0.2941176), .Dim = c(3,1), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), total = c("Total"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$Total$totals_counts,
-            structure(c(17), .Dim = c(1,1), .Dimnames = list(NULL, c("Total"))))
-        expect_equal(tabBooks_data$allpets2$crosstabs$Banner1$Total$totals_proportions,
-            structure(c(0.9411765), .Dim = c(1,1), .Dimnames = list('', c("Total"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$Total$unweighted_n,
-            structure(c(17), .Dim = c(1,1), .Dimnames = list(NULL, c("Total"))))
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$Total$counts_unweighted,
-            structure(c(4,7,5), .Dim = c(3,1), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), total = c("Total"))))
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$gender$counts,
-            structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
-        expect_equal(tabBooks_data$allpets2$crosstabs$Banner1$gender$proportions,
-            structure(c(0.3333333,0.3333333,0.3333333,0.125,0.500,0.250), .Dim = c(3,2), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$gender$totals_counts, # NOTE: actual error?
-            structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-        expect_equal(tabBooks_data$allpets2$crosstabs$Banner1$gender$totals_proportions,
-            structure(c(1, 0.875), .Dim = c(2,1), .Dimnames = list(c("Male", "Female"), NULL)),
-            tolerance = 1e-7)
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$gender$unweighted_n,
-            structure(c(9,8), .Dim = c(1,2), .Dimnames = list(NULL, gender = c("Male", "Female"))))
-        expect_identical(tabBooks_data$allpets2$crosstabs$Banner1$gender$counts_unweighted,
-            structure(c(3,3,3,1,4,2), .Dim = c(3,2), .Dimnames = list(allpets2 = c("Cat", "Dog", "Bird"), gender = c("Male", "Female"))))
-
-
-
-        crosstabs_summary <- crosstabs(ds, vars = tabBook_vars, banner = banner_data, weight = NULL)
-        test_that("We can generate a banner data summary", {
-            expect_s3_class(crosstabs_summary, "Crosstabs")
-        })
-    })
-})
-
-
 context("tab_frame_generate")
 
 test_that("If default_weight null", {
@@ -145,4 +42,199 @@ test_that("if not is_crosstabs_array but total", {
     `crunch::aliases` = function(...) "total"
   )
   expect_equal(r,"question_name")
+})
+
+context("extToContentType")
+
+test_that("Returns appropriate mapping", {
+  expect_equal(extToContentType("json"), "application/json")
+  expect_equal(extToContentType("xlsx"), 
+               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              )
+  expect_equal(extToContentType("pptx"), 
+               "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  )
+})
+
+context("tabBooks")
+
+test_that("End to End tabBooks", {
+  ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
+  vars <- c("allpets", "q1")
+  banner_use <- structure(list(Results = list(`___total___` = structure(list(
+    alias = "___total___", name = "", type = "Total", old_categories = "Total", 
+    categories_out = "Total", categories = "Total"), class = "BannerVar"), 
+    allpets = structure(list(alias = "allpets", name = "All pets owned", 
+    type = "multiple_response", old_categories = c("Cat", 
+    "Dog", "Bird"), categories_out = c("Cat", "Dog", "Bird"
+    ), categories = c("Cat", "Dog", "Bird")), class = "BannerVar"))), class = "Banner")
+  
+  multtable <- new("Multitable", element = "shoji:entity", self = "https", 
+    body = list(name = "c4cae4937918ee0", user = "https", 
+    template = list(list(query = list(list(each = "https"), 
+    list(`function` = "as_selected", args = list(list(
+    variable = "https:")))))), 
+    team = NULL, is_public = FALSE, display_settings = structure(list(), .Names = character(0)), 
+    id = "b97265d117d74aeab4ebffff9a55318f"), urls = NULL, 
+    catalogs = NULL, views = list(applied = "https", 
+    tabbook = "https", 
+    export = "https"), 
+    fragments = NULL)
+  
+  mockery::stub(tabBooks, "getMultitable", multtable)
+  
+  tbwtspec <- structure(list(alias = c("allpets", "q1", "petloc", "ndogs", 
+    "ndogs_a", "ndogs_b", "q3", "country", "wave", "weight1", "weight2", 
+    "q1_pre", "q1_post", "q1_post", "country_pre", "country_post", 
+    "country_post"), weight = c("weight1", "weight1", "weight1", 
+    "weight1", "weight1", "weight1", "weight1", "weight1", "weight1", 
+    "weight1", "weight1", "weight1", "weight1", "weight2", "weight1", 
+    "weight1", "weight2")), row.names = c(1L, 2L, 3L, 4L, 5L, 6L, 
+    7L, 8L, 9L, 10L, 11L, 12L, 14L, 15L, 16L, 18L, 19L), class = "data.frame")
+  
+  mockery::stub(tabBooks, "weight", NULL)  
+  
+  book <- readRDS(test_path("fixtures/tabBooks-tabBook_crunchtabs.rds"))
+  mockery::stub(tabBooks, "tabBook_crunchtabs", book)
+  
+  res <- tabBooks(ds, vars, banner_use, topline = TRUE)
+  
+  expect_named(res, c("allpets", "q1"))
+  expect_equal(
+    res$allpets$crosstabs$Results$`___total___`$counts,
+    structure(
+      c(4, 5, 5), .Dim = c(3L, 1L), 
+      .Dimnames = list(c("Cat", "Dog", "Bird"), "Total")
+    )
+  )
+  
+  mockery::stub(tabBooks, "tabBookWeightSpec", tbwtspec)
+  
+  res <- tabBooks(ds, vars, banner_use, topline = TRUE, weight = list(
+    "weight1" = c("q1_pre", "country_pre"),
+    "weight2" = c("q1_post", "country_post")))
+  
+  expect_named(res, c("allpets_weight1", "q1_weight1"))
+  expect_equal(
+    res$allpets$crosstabs$Results$`___total___`$counts,
+    structure(
+      c(4, 5, 5), .Dim = c(3L, 1L), 
+      .Dimnames = list(c("Cat", "Dog", "Bird"), "Total")
+    )
+  )
+
+})
+
+
+context("getMultitable")
+
+test_that("getMultitable", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  banner_flatten <- list(`___total___` = structure(list(alias = "___total___", name = "", 
+    type = "Total", old_categories = "Total", categories_out = "Total", 
+    categories = "Total"), class = "BannerVar"), allpets = structure(list(
+    alias = "allpets", name = "All pets owned", type = "multiple_response", 
+    old_categories = c("Cat", "Dog", "Bird"), categories_out = c("Cat", 
+    "Dog", "Bird"), categories = c("Cat", "Dog", "Bird")), class = "BannerVar"))
+  
+  mockery::stub(getMultitable, "multitables", list("c4cae4937918ee0" = "this"))
+  res <- getMultitable(banner_flatten, ds)
+  expect_equal(res, "this")
+    
+})
+# 
+
+context("tabBook_crunchtabs")
+
+test_that("tabBook_crunchtabs", {
+  mockery::stub(tabBook_crunchtabs, "tabBookSingle_crunchtabs", "Successful Single Run")
+  mockery::stub(tabBook_crunchtabs, "tabBookMulti_crunchtabs", "Successful Multi Run")
+  mockery::stub(tabBook_crunchtabs, "crunch::weight", NULL)
+  expect_error(tabBook_crunchtabs("", "dataset", weight = 1), "weight must be NULL")
+  expect_equal(tabBook_crunchtabs("", "dataset", weight = NULL), "Successful Single Run")
+  expect_equal(tabBook_crunchtabs("", "dataset", weight = data.frame()), "Successful Multi Run")
+})
+
+
+context("tabBookSingle_crunchtabs")
+
+test_that("tabBookSingle_crunchtabs", {
+  mockery::stub(tabBookSingle_crunchtabs, "name", "hello")
+  mockery::stub(tabBookSingle_crunchtabs, "self", "some_url")
+  mockery::stub(tabBookSingle_crunchtabs, "crunch::shojiURL", "shoji_url")
+  mockery::stub(tabBookSingle_crunchtabs, "download_result", "downloaded_result")
+  mockery::stub(tabBookSingle_crunchtabs, "varFilter", "Doesn't matter!")
+  mockery::stub(tabBookSingle_crunchtabs, "tabBookResult", function(x) x)
+  mockery::stub(tabBookSingle_crunchtabs, "crunch::crPOST", function(x, ...) x)
+  res <- tabBookSingle_crunchtabs("mt", "dataset", weight = NULL)
+  expect_equal(res, new("TabBookResult", .Data = list("downloaded_result", list()), 
+                        names = c(NA, "sheets")))
+})
+
+context("tabBookMulti_crunchtabs")
+
+test_that("tabBookMulti_crunchtabs errors", {
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = character(0),
+      append_default_wt = TRUE),
+    "Empty list not allowed as a weight spec"
+  )
+  
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = data.frame("notalias" = 1,"notweight" =2),
+      append_default_wt = TRUE),
+    "if weight_spec is a data.frame"
+  )
+  expect_error(
+    tabBookMulti_crunchtabs(
+      multitable = "mult", 
+      dataset = "",
+      weight_spec = data.frame(alias=c("a", "a"), weight=c("b", "b")),
+      append_default_wt = TRUE),
+    "Found duplicate weight and alias combinations in weight_spec"
+  )
+})
+
+test_that("tabBookMulti_crunchtabs E-E", {
+  ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
+  weight_spec <- list(
+    weight1 = c(q11 = "q1_pre", country1 = "country_pre"), 
+    weight2 = c(q12 = "q1_post", country2 = "country_post")
+  )
+
+  mockery::stub(
+    tabBookMulti_crunchtabs, "getCatalog", 
+    readRDS(test_path("fixtures/tabBookMulti_crunchtabs-getCatalog.rds"))
+  )
+  
+  book <- readRDS(test_path("fixtures/tabBookMulti_crunchtabs-tabBookSingle_crunchtabs.rds"))
+  
+  mockery::stub(tabBookMulti_crunchtabs, "tabBookSingle_crunchtabs", book)
+  res <- tabBookMulti_crunchtabs(
+    "mult", ds[c("q1_pre", "q1_post", "country_pre", "country_post", "weight1", "weight2")], 
+    weight_spec = weight_spec,
+    append_default_wt = FALSE
+  )
+  
+  expect_equal(length(res), 4)
+  # TODO: Add more direct tests
+})
+
+context("row_data")
+
+test_that("row_data crosstabs coverage", {
+  d <- readRDS(test_path("fixtures/row_data-data.rds"))
+  res <- row_data(d, 1, TRUE, FALSE, FALSE)
+  expect_equal(
+    res$`___total___`,
+    structure(c(0.454545454545455, 0.272727272727273, 0.272727272727273
+    ), .Dim = c(3L, 1L), .Dimnames = list(c("Cat", "Dog", "Bird"), 
+                                          "Total"))
+  )
 })

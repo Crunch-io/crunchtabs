@@ -28,6 +28,7 @@ test_that("Stops if questions not character", {
   ),
   "is.character(questions) is not TRUE", fixed = TRUE)
 })
+
 test_that("Stops if suffixes not character", {
   expect_error(
     with_mock(
@@ -58,30 +59,34 @@ test_that("Stops if labels not character", {
     "is.character(labels) is not TRUE", fixed = TRUE)
 })
 
-
-with_api_fixture("fixtures-1-3-0", {
-  httpcache::clearCache()
-  test_that("End to end", {
-    ds <- loadDataset("Recontact dataset")
-    # aliases(allVariables(ds))
-
-    r <- recontact_toplines(
-        ds,
-        questions = c("q1", "country"),
-        suffixes = c("_pre", "_post"),
-        labels = c("Pre", "Post"),
-        weights = c("weight1", "weight2")
-      )
-
-    expect_named(r$results, c("q1", "country"))
-    expect_is(
-      r$results$q1,
-      c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
-    )
-    expect_is(
-      r$results$country,
-      c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
-    )
-  })
-
+test_that("End to end", {
+  ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
+  
+  mockery::stub(
+    recontact_toplines, 
+    "crosstabs", 
+    readRDS(test_path("fixtures/recontact_toplines_crosstabs.rds"))
+  )
+  mockery::stub(
+    recontact_toplines, "crunch::alias", "weight1")
+  r <- recontact_toplines(
+    ds,
+    questions = c("q1", "country"),
+    suffixes = c("_pre", "_post"),
+    labels = c("Pre", "Post"),
+    weights = c("weight1", "weight2")
+  )
+  
+  expect_named(r$results, c("q1", "country"))
+  expect_is(
+    r$results$q1,
+    c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
+  )
+  expect_is(
+    r$results$country,
+    c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
+  )
 })
+
+
+

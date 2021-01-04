@@ -25,6 +25,10 @@ test_that("Does not delete log/aux/out files if logging = TRUE", {
   expect_true(file.exists("text.aux"))
 })
 
+test_that("Fails when given inappropriate data", {
+  expect_error(writeLatex(list()), "The expected class for `data_summary` is")
+})
+
 
 test_that("Deletes log/aux/out files if logging = FALSE (the default)", {
   system("echo 'This is an out file' >> text.out")
@@ -106,4 +110,73 @@ with_temp_dir({
         writeLatex(ts, pdf = TRUE, file = "topline2")
         expect_true(file.exists("topline2.pdf"))
     })
+})
+
+context("latexDocHead")
+test_that("latexDocHead accepts a logo appropriately", {
+  tema <- themeNew(
+    logo = list(file = system.file("YouGov.png", package = "crunchtabs")),
+    default_theme = themeDefaultLatex())
+  
+  tema$topline <- TRUE
+  res <- latexDocHead(tema, "Hello", "Goodbye")
+  expect_true(
+    any(
+      grepl("includegraphics*.*YouGov", res)
+    )
+  )
+})
+
+context("latexReportTables")
+test_that("Adds nonTabBookSummary as expected", {
+  results <- readRDS(test_path("fixtures/tabbook_results_nonTabBookSummary.rds"))
+  
+  # Test some theme options as well
+  tema <- structure(list(logo = list(startRow = 1, startCol = 1, width = 4, 
+    height = 2, units = c(default = "in"), dpi = 300, 
+    file = "/home/beb/Projects/crunchtabs/inst/YouGov.png"), 
+    # Test pagebreak_in_banner oddity
+    pagebreak_in_banner = FALSE, 
+    # Test one_per_sheet FALSE
+    one_per_sheet = FALSE, 
+    font = "helvet", 
+    font_size = 12, format_title = list(font_size = 16, decoration = "bold"), 
+    format_subtitle = list(font_size = 12, decoration = "bold"), 
+    format_banner_categories = list(font = "helvet", font_size = NULL), 
+    format_var_description = list(font = "helvet", font_size = NULL, 
+    include_alias = FALSE, include_q_number = TRUE, repeat_for_subs = TRUE), 
+    format_var_subname = list(font = "helvet", font_size = NULL, 
+    include_alias = FALSE, include_q_number = FALSE), format_var_filtertext = list(
+    font_size = 8, decoration = "italic", include_alias = FALSE, 
+    include_q_number = FALSE, repeat_for_subs = TRUE), format_subtotals = list(
+    font = "helvet", font_size = NULL, decoration = "bold"), 
+    format_headers = list(font = "helvet", font_size = NULL, 
+    decoration = "bold"), format_unweighted_n = list(font = "helvet", 
+    font_size = NULL, name = "Unweighted N", position_top = FALSE, 
+    position_bottom = TRUE, position_fixed = FALSE, latex_add_parenthesis = FALSE, 
+    latex_adjust = "c"), format_totals_row = list(font = "helvet", 
+    font_size = NULL, name = "Totals", position_top = FALSE, 
+    position_bottom = TRUE), format_label_column = list(font = "helvet", 
+    font_size = NULL, col_width = NA_real_, extend_borders = FALSE), 
+    format_totals_column = list(font = "helvet", font_size = NULL), 
+    digits = 0, digits_numeric = 2, excel_percent_sign = TRUE, 
+    excel_show_grid_lines = FALSE, excel_freeze_column = 0, excel_orientation = "portrait", 
+    latex_round_percentages = FALSE, enforce_onehundred = FALSE, 
+    latex_headtext = "", latex_foottext = "", latex_table_align = "r", 
+    latex_multirowheaderlines = TRUE, latex_max_lines_for_tabular = 0, 
+    latex_page_numbers = TRUE, latex_flip_grids = FALSE, topline = TRUE, 
+    proportions = TRUE), class = "Theme")
+
+  res <- latexReportTables(results, NULL, tema)
+  
+  # Expect absolutelynopagebreak wraps on all
+  expect_true(
+    all(grepl("absolutelynopagebreak", res))
+  )
+  
+  # Clear page not appended to results
+  expect_false(
+    any(grepl("clearpage$", res))
+  )
+  
 })

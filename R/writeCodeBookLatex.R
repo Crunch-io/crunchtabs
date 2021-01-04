@@ -58,7 +58,6 @@ writeCodeBookLatex <- function(
     fh = sprintf(tex, title)
   }
 
-
   # Sample Description -----
   sample_description <- latexSampleDescription(
     sample_desc = sample_desc,
@@ -68,7 +67,6 @@ writeCodeBookLatex <- function(
   )
 
   sample_description = paste0(sample_description, collapse = "\n")
-
 
   # Generate codebook items ----
   items <- list()
@@ -123,10 +121,8 @@ writeCodeBookLatex <- function(
           "\\textit{There are more than 20 categories. Please see Appendix %s}",
           length(appendices)
         )
-
       }
     }
-
 
     if (is.list(body)) {
       # If grid header should be wrapped with first table so as not to allow

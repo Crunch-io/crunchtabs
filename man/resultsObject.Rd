@@ -4,7 +4,7 @@
 \alias{resultsObject}
 \title{Generic Results Object}
 \usage{
-resultsObject(x, top = NULL, weighted, body_values, body_labels)
+resultsObject(x, top = NULL, weighted, body_values, body_labels, vector)
 }
 \arguments{
 \item{x}{A dataset variable}
@@ -16,6 +16,8 @@ resultsObject(x, top = NULL, weighted, body_values, body_labels)
 \item{body_values}{The values to present}
 
 \item{body_labels}{The labels to present}
+
+\item{vector}{The data vector}
 }
 \description{
 As \link[crunch]{tabBook} does not provide us with a way to  create summaries

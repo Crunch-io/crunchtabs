@@ -58,7 +58,7 @@
 #' \item{latex_round_percentages}{In Latex, a logical. In Latex, should percentages be recalculated so they do not exceed 100\% where necessary? Defaults to FALSE.}
 #' \item{latex_round_percentages_exception}{In Latex, an optional character. A list of variable aliases that should have the opposite behaviour of that specified in latex_round_percentages.}
 #' \item{latex_table_align}{In Latex, a character. A character string indicating what the table alignment should be. Defaults to 'r'.}
-#' \item{latex_flip_grids}{In Latex, a logical. Categorical arrays will be flipped so that there rows are now transposed to columns.},
+#' \item{latex_flip_grids}{In Latex, a logical. Categorical arrays will be flipped so that there rows are now transposed to columns.}
 #' \item{latex_flip_specific_grids}{An optional vector of aliases whose presentation should be transposed}
 #' \item{logo}{An optional list. Information about the logo to be included in the tables.}
 #' Includes:
