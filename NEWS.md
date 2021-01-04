@@ -10,6 +10,8 @@
 - Adds functionality for flipping grids on an exceptional basis (#212)
 - Fixes a bug with include_q_number = FALSE (#207)
 - Vignettes for recontact toplines, custom weights and other (#218)
+- Enforces unweighted dataset for codebook creation (#226)
+- Replaces with_mock with mockery (#224)
 
 ## crunchtabs 1.2.9
 
