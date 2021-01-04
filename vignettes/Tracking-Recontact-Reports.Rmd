@@ -1,6 +1,5 @@
 ---
 title: "Recontact and Tracking Reports"
-author: "Brandon Bertelsen"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:

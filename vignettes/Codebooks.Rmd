@@ -1,6 +1,5 @@
 ---
-title: "Codebooks"
-author: "Brandon Bertelsen"
+title: "Generating Codebooks"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:

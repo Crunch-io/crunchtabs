@@ -1,7 +1,6 @@
 ---
 title: "Frequently Asked Questions"
-author: "Brandon Bertelsen"
-date: "Last Update: 2020-09-08"
+date: "Last Update: 2020-11-20"
 output: 
   rmarkdown::html_vignette:
     toc: true
