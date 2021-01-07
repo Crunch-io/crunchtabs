@@ -4,6 +4,11 @@ test_that("End to end writeCodeBookLatex", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_allpets.rds"))

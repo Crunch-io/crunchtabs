@@ -85,6 +85,8 @@ with_temp_dir({
         writeLatex(cs, theme = theme, pdf = TRUE)
         theme <- themeNew(default_theme = theme, format_weighted_n=list(latex_add_parenthesis = TRUE))
         writeLatex(cs, theme = theme, pdf = TRUE)
+        expect_true(file.remove("Example Dataset with Nets.pdf"))
+        expect_true(file.remove("Example Dataset with Nets.tex"))
     })
 
     test_that("Write Latex toplines", {
@@ -109,6 +111,8 @@ with_temp_dir({
         ts$results[[1]]$description <- bad_description
         writeLatex(ts, pdf = TRUE, file = "topline2")
         expect_true(file.exists("topline2.pdf"))
+        expect_true(file.remove("Example Dataset with Nets.pdf"))
+        expect_true(file.remove("Example Dataset with Nets.tex"))
     })
 })
 
@@ -179,4 +183,9 @@ test_that("Adds nonTabBookSummary as expected", {
     any(grepl("clearpage$", res))
   )
   
+})
+
+test_that("Clean up", {
+  expect_true(file.remove("Example Dataset with Nets.pdf"))
+  expect_true(file.remove("Example Dataset with Nets.tex"))
 })
