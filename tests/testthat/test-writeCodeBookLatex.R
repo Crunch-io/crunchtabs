@@ -24,7 +24,9 @@ test_that("End to end writeCodeBookLatex", {
       sample_desc = "US Voting Adults",
       logo = "yougov",
       pdf = TRUE)
+    
   )
+  
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
   expect_equal(length(tex), 149)
@@ -60,10 +62,17 @@ test_that("Dataset name as title if title not specified", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_allpets.rds"))
   )
+  
+  
   
   mockery::stub(
     writeCodeBookLatex,
@@ -91,6 +100,11 @@ test_that("Dataset name as title if title not specified", {
 
 test_that("Dataset name as title if title not specified", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
   
   mockery::stub(
     writeCodeBookLatex, 
@@ -137,6 +151,11 @@ test_that("Appendices are positioned as expected", {
   #   saveRDS("tests/testthat/fixtures/codeBookItem_inputregstate")
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_inputregstate.rds"))
@@ -179,6 +198,10 @@ test_that("Position functions as expected", {
   # ds <- loadDataset("Example dataset")
   # codeBookItemBody(ds$allpets) %>% dput() %>% 
   #   saveRDS("tests/testthat/fixtures/codeBookItem_allpets.rds")
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
   
   mockery::stub(
     writeCodeBookLatex, 

@@ -37,11 +37,13 @@ ds2$only_wave2 <- factor(sample(letters[1:5], 20, replace = T))
 ds3$only_wave3 <- factor(sample(letters[1:5], 20, replace = T))
 ds1$avail_wave13 <- factor(sample(letters[1:5], 20, replace = T))
 ds3$avail_wave13 <- factor(sample(letters[1:5], 20, replace = T))
+description(ds2$only_wave2) <- "This question is only available in wave 2"
+description(ds1$avail_wave13) <- "This question is only available in waves 1 and 3"
+description(ds1$avail_wave13) <- "This question is only available in waves 1 and 3"
 
-
-tema <- themeNew(default_theme = themeDefaultLatex(), latex_flip_grids = TRUE, one_per_sheet = FALSE)
+thema <- themeNew(default_theme = themeDefaultLatex(), latex_flip_grids = FALSE, one_per_sheet = FALSE)
 ct <- tracking_report(list(ds1, ds2, ds3), vars = c("allpets", "q1", "only_wave2", "avail_wave13"))
-writeLatex(ct, pdf = TRUE,theme = tema, title = "Data from 3 Example Datasets")
+writeLatex(ct, pdf = TRUE,theme = thema, title = "Data from 3 Example Datasets")
 
 
 # Clean up

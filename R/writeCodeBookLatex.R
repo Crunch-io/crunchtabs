@@ -29,7 +29,7 @@ writeCodeBookLatex <- function(
   position = NULL, path = NULL, filename = NULL, logging = FALSE,
   ...) {
   
-  if(!is.null(weight(ds))) 
+  if(!is.null(crunch::weight(ds))) 
     stop(paste(
       "Codebooks are designed to work with whole numbers. Your dataset is",
       "weighted and the resulting codebook will either not run or have",
