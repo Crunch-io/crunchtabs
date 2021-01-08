@@ -98,8 +98,9 @@ While recontact reports are designed for questions asked in the same dataset, we
     )
     
     writeLatex(ct, pdf = TRUE, theme = theme)
-    
-![Tracking Report Example - Flipped grids](example-016-tracking-report.png "Tracking reports")  
+
+
+![Tracking Report Example - Flipped grids](vignettes/example-016-tracking-report.png)  
 
 ### Create a Cross Tabulation
 
