@@ -270,3 +270,30 @@ test_that("default yg logo returns normal path", {
   p <- default_yg_logo()
   expect_equal(p, system.file("YouGov.png", package = "crunchtabs"))
 })
+
+test_that("Expect a stop if dataset is weighted", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", "weight_alias"
+  )
+  
+  mockery::stub(
+    writeCodeBookLatex, 
+    "codeBookItemBody", 
+    readRDS(test_path("fixtures/codeBookItem_allpets.rds"))
+  )
+  
+  mockery::stub(writeCodeBookLatex, "file.open", NULL)
+  
+  expect_error(suppressWarnings(
+    writeCodeBookLatex(
+      ds[c("allpets")],
+      title = "Hello",
+      subtitle = "Goodbye",
+      sample_desc = "US Voting Adults",
+      logo = "yougov",
+      pdf = TRUE)
+  ), "Codebooks are designed to work with whole numbers")
+})
