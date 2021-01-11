@@ -151,16 +151,28 @@ test_that("Single banner with one variable, recodes - categories rename, else", 
   expect_identical(banner_data[["Results"]][["age5"]][["categories"]], c("Under 25", "Over 54"))
 })
 
-# TODO: Figure these out, maybe never.
-# with_test_authentication({
-#   ds <- loadDataset("https://app.crunch.io/api/datasets/868e8b3e01834c45b73e56e80160d3c3/")
-#   test_that("Error handling - banner", {
-#     expect_warning(banner(ds, list(c(), "A"="art3")),
-#                    "No variables found in 'Banner1' in `vars`. 'Banner1' will be ignored.")
-#
-#     expect_error(banner(ds, list(Results = c("profile_gender")), recodes = list(profile_gender = list("Male2"="Man"))),
-#                  "Responses in `recodes` must be included in variable responses. This is not true for 'Male2' in 'profile_gender'.")
-#     expect_error(banner(ds, list(Results = c("profile_gender")), recodes = list(profile_gender = list("Male"="Man", "Female"="Man"))),
-#                  "Combining categories is not currently supported. Please check 'profile_gender' recodes.")
-#   })
-# })
+context("getBannerInfo")
+
+test_that("Returns default banner", {
+  expect_equal(getBannerInfo(NULL), default_banner)
+})
+
+context("removeInserts")
+
+test_that("Adjustments for subtotals", {
+  var <- list()
+  theme <- list()
+  theme$format_subtotals <- NULL
+  theme$format_headers <- NULL
+  var$inserts_obj <- list()
+  var$inserts_obj$test <- "Fake Object of class Subtotal"
+  class(var$inserts_obj$test) <- "Subtotal"
+  var$inserts_obj$other <- "Fake Object of class Headers"
+  class(var$inserts_obj$other) <- "Headers"
+  
+  expect_equal(
+    removeInserts(var, theme),
+    list(inserts_obj = structure(list(), .Names = character(0)), 
+       inserts = structure(list(), .Names = character(0)))
+  )
+})

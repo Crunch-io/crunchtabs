@@ -53,26 +53,19 @@ tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
     # - "partial" means it is available in only some datasets
     # - "single" means it is available in exactly one dataset
     
-    # "all" would follow a typical path
-    # "partial" would require special treatment to ensure that labeling was 
-    # adjusted appropriately for presentation in the resulting pdf
-    # "single" should act as a simple passthrough where no additional
-    # formatting or manipulation takes place on the result.
-    
-    l1 <- length(results_available)
-    l2 <- length(labels)
-    
-    # The "all" case
-    if(l1 == l2)
-      rebuilt_results$results[[v]]$availability <- "all"
-    
-    # The partial case
-    if(l1 > 1 & l1 < l2)
-      rebuilt_results$results[[v]]$availability <- "partial"
+    # Because we use subsetting at the list level, "all" and "partial" 
+    # would follow a typical path that labeling was adjusted appropriately 
+    # for presentation in the resulting pdf "single" should act as a simple 
+    # passthrough where no additional formatting or manipulation takes place 
+    # on the result.
     
     # The single case
-    if(l1 == 1)
+    if(length(results_available) == 1) {
       rebuilt_results$results[[v]]$availability <- "single"
+    } else {
+      rebuilt_results$results[[v]]$availability <- "general"
+    }
+
   }
 
   # Now that we have an attribute that identifies availability we can use it as
