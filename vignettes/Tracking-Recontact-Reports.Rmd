@@ -133,7 +133,7 @@ There are a number of important elements here:
 
 4.  Many defaults are extracted from the first dataset in the `dataset_list`.
 
-    ![](example-016-tracking-report.png "Tracking reports")
+![Example tracking report](example-016-tracking-report.png "Tracking reports")
 
 ### Tracking Reports for Other Stacking Data
 

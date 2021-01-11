@@ -12,14 +12,12 @@
 #' @param labels A character vector of labels that will be displayed in the
 #' resulting crunchtabs output. Should match the number of results objects
 as.ToplineCategoricalArray <- function(questions, question_alias = NULL, labels) {
-
   if (length(questions) != length(labels))
     stop("Number of labels provided does not match number of result sets")
   
   # Use the first result item as a skeleton
   obj <- questions[[1]]
   
-  is_mr <- questions[[1]]$type == "multiple_response"
   is_catarray <- questions[[1]]$type == "categorical_array"
   
   if(is_catarray) {

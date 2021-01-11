@@ -4,6 +4,11 @@ test_that("End to end writeCodeBookLatex", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_allpets.rds"))
@@ -19,7 +24,9 @@ test_that("End to end writeCodeBookLatex", {
       sample_desc = "US Voting Adults",
       logo = "yougov",
       pdf = TRUE)
+    
   )
+  
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
   expect_equal(length(tex), 149)
@@ -55,10 +62,17 @@ test_that("Dataset name as title if title not specified", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_allpets.rds"))
   )
+  
+  
   
   mockery::stub(
     writeCodeBookLatex,
@@ -86,6 +100,11 @@ test_that("Dataset name as title if title not specified", {
 
 test_that("Dataset name as title if title not specified", {
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
   
   mockery::stub(
     writeCodeBookLatex, 
@@ -132,6 +151,11 @@ test_that("Appendices are positioned as expected", {
   #   saveRDS("tests/testthat/fixtures/codeBookItem_inputregstate")
   
   mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
+  
+  mockery::stub(
     writeCodeBookLatex, 
     "codeBookItemBody", 
     readRDS(test_path("fixtures/codeBookItem_inputregstate.rds"))
@@ -174,6 +198,10 @@ test_that("Position functions as expected", {
   # ds <- loadDataset("Example dataset")
   # codeBookItemBody(ds$allpets) %>% dput() %>% 
   #   saveRDS("tests/testthat/fixtures/codeBookItem_allpets.rds")
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", NULL
+  )
   
   mockery::stub(
     writeCodeBookLatex, 
@@ -241,4 +269,31 @@ test_that("fixes underscore", {
 test_that("default yg logo returns normal path", {
   p <- default_yg_logo()
   expect_equal(p, system.file("YouGov.png", package = "crunchtabs"))
+})
+
+test_that("Expect a stop if dataset is weighted", {
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  
+  mockery::stub(
+    writeCodeBookLatex,
+    "crunch::weight", "weight_alias"
+  )
+  
+  mockery::stub(
+    writeCodeBookLatex, 
+    "codeBookItemBody", 
+    readRDS(test_path("fixtures/codeBookItem_allpets.rds"))
+  )
+  
+  mockery::stub(writeCodeBookLatex, "file.open", NULL)
+  
+  expect_error(suppressWarnings(
+    writeCodeBookLatex(
+      ds[c("allpets")],
+      title = "Hello",
+      subtitle = "Goodbye",
+      sample_desc = "US Voting Adults",
+      logo = "yougov",
+      pdf = TRUE)
+  ), "Codebooks are designed to work with whole numbers")
 })

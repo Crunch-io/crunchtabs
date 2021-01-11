@@ -28,6 +28,13 @@ writeCodeBookLatex <- function(
   preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE, logo = NULL,
   position = NULL, path = NULL, filename = NULL, logging = FALSE,
   ...) {
+  
+  if(!is.null(crunch::weight(ds))) 
+    stop(paste(
+      "Codebooks are designed to work with whole numbers. Your dataset is",
+      "weighted and the resulting codebook will either not run or have",
+      "breaking display issues."
+    ))
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
