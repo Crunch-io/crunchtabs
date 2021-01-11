@@ -103,7 +103,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Recontact and Tracking Reports</h1>
             
-            <h4 class="date">2021-01-04</h4>
+            <h4 class="date">2021-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/Tracking-Recontact-Reports.Rmd"><code>vignettes/Tracking-Recontact-Reports.Rmd</code></a></small>
       <div class="hidden name"><code>Tracking-Recontact-Reports.Rmd</code></div>
@@ -221,11 +221,11 @@
 <li><p>The order of <code>dataset_list</code> will be the same as their presentation in the resulting PDF. There are no checks to verify their order. Order your dataset from oldest to youngest. Or, if your data are bound by some other element that is not time (like the same survey ran in different localities) consider listing the datasets in alphabetical order.</p></li>
 <li><p>The default <code>wave_labels</code> will be presented as Wave 1 through Wave N, where N is the length of the <code>dataset_list</code></p></li>
 <li><p>It is strongly recommended that you weight each dataset with the same variable. The <code>weight</code> parameter accepts a character string that should reference a weighting variable in your datasets by its alias. Should you not specify a weight, the system will use the current weighting of each dataset. This can be useful if you have differently named weights across the datasets. But caution should be taken here as there is no way for the system to verify that your desired weight has been applied. As you saw in the example, it’s recommended to assign your weight deliberately.</p></li>
-<li>
-<p>Many defaults are extracted from the first dataset in the <code>dataset_list</code>.</p>
-<p><img src="example-016-tracking-report.png" title="Tracking reports"></p>
-</li>
+<li><p>Many defaults are extracted from the first dataset in the <code>dataset_list</code>.</p></li>
 </ol>
+<div class="figure">
+<img src="example-016-tracking-report.png" title="Tracking reports" alt=""><p class="caption">Example tracking report</p>
+</div>
 </div>
 <div id="tracking-reports-for-other-stacking-data" class="section level3">
 <h3 class="hasAnchor">
