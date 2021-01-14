@@ -133,7 +133,7 @@ There are a number of important elements here:
 
 4.  Many defaults are extracted from the first dataset in the `dataset_list`.
 
-![Example tracking report](example-016-tracking-report.png "Tracking reports")
+![Example tracking report](example-016-tracking-report.png)
 
 ### Tracking Reports for Other Stacking Data
 
@@ -141,7 +141,7 @@ As intimated in the previous section, tracking reports accept any list of datase
 
 In the example below, we show a political survey question that was asked in different cities across the United States of America regarding no-knock warrants.
 
-![Generic stacking data](example-017-tracking-report-stacked.png "Generic stacked data")
+![Generic stacking data](example-017-tracking-report-stacked.png)
 
 Although you will not be able to recreate this code locally, below is a recommended approach for aggregating similarly named datasets: 
 
