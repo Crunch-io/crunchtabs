@@ -13,6 +13,7 @@
 #' recommended in a tracking report. 
 #' @param labels The labels for each wave. Should be of a length that
 #' matches the number of datasets.
+#' @export
 tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
   tabs <- tracking_report_tabs(dataset_list, vars, weight)
   
