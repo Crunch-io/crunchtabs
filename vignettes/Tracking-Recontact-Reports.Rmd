@@ -62,6 +62,7 @@ writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
 
 ![Recontact Example](example-014-recontact_topline.png)
 
+
 ### Flipping Grids
 
 Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides optiosn for "flipping grids". That is to say, there are options you can provide to transpose the presentation so that the wave labels are columns, and the category labels are rows.
@@ -72,7 +73,9 @@ To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 theme <- themeNew(..., latex_flip_grids = TRUE)
 ```
 
-![Recontact Example](example-015-recontact-flipped.png) In addition to global transposition of grids, we can also do so conditionally.
+![Recontact Example](example-015-recontact-flipped.png)
+
+In addition to global transposition of grids, we can also do so conditionally.
 
 ```{r, eval = FALSE}
 theme <- themeNew(..., latex_flip_specific_grids = c("q1"))
@@ -135,6 +138,7 @@ There are a number of important elements here:
 
 ![Example tracking report](example-016-tracking-report.png)
 
+
 ### Tracking Reports for Other Stacking Data
 
 As intimated in the previous section, tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called "tracking reports" they support any situation where the same questions are found in a list of datasets.
@@ -142,6 +146,7 @@ As intimated in the previous section, tracking reports accept any list of datase
 In the example below, we show a political survey question that was asked in different cities across the United States of America regarding no-knock warrants.
 
 ![Generic stacking data](example-017-tracking-report-stacked.png)
+
 
 Although you will not be able to recreate this code locally, below is a recommended approach for aggregating similarly named datasets: 
 
