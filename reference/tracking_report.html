@@ -166,7 +166,9 @@ provided in time order. From oldest to youngest. (i.e, wave 1, wave 2,
     </tr>
     <tr>
       <th>vars</th>
-      <td><p>A character vector of question aliases to be included in the report</p></td>
+      <td><p>A character vector of question aliases to be included in the 
+report this may include aliases that are available in at least one of the 
+datasets specified in dataset_list</p></td>
     </tr>
     <tr>
       <th>labels</th>
@@ -176,7 +178,8 @@ matches the number of datasets.</p></td>
     <tr>
       <th>weight</th>
       <td><p>NULL to accept each dataset's current weight or a single alias
-that is available in all datasets as a string.</p></td>
+that is available in all datasets as a string. Multiple weights is not 
+recommended in a tracking report.</p></td>
     </tr>
     </table>
 
