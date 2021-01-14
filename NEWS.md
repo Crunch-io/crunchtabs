@@ -1,3 +1,7 @@
+## crunchtabs 1.3.1
+
+- Allows variable pass through in tracking reports such that questions that appear in one or more waves (but less than all waves) are displayed appropriately and in the order specified. 
+
 ## crunchtabs 1.3.0
 
 - Fixes problems with enforce_onehundred (#195)
