@@ -76,7 +76,7 @@ To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 theme <- themeNew(..., latex_flip_grids = TRUE)
 ```
 
-`r knitr::include_graphics("ex015.png")`
+![Recontact Example with flipped grid](![Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png))
 
 
 In addition to global transposition of grids, we can also do so conditionally.
