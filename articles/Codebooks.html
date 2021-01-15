@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -84,7 +84,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -98,14 +98,11 @@
 
       
 
-      </header><script src="Codebooks_files/header-attrs-2.5/header-attrs.js"></script><link href="Codebooks_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="Codebooks_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="Codebooks_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Generating Codebooks</h1>
-                        <h4 class="author">Brandon Bertelsen</h4>
             
-            <h4 class="date">Last updated: 2021-01-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Crunch-io/crunchtabs/blob/master/vignettes/Codebooks.Rmd"><code>vignettes/Codebooks.Rmd</code></a></small>
       <div class="hidden name"><code>Codebooks.Rmd</code></div>
@@ -114,6 +111,7 @@
 
     
     
+<p>Author: Brandon Bertelsen<br> Last updated: 2021-01-15</p>
 <div id="codebooks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#codebooks" class="anchor"></a>Codebooks!</h2>
@@ -131,7 +129,7 @@
 
 <span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="codebook-example-001.png" alt=""><p class="caption">Codebook Example</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-example-001.png" alt=""><p class="caption">Codebook Example</p>
 </div>
 <p>By default, if you supply a dataset to the the function <code>writeCodeBookLatex</code> it will name the resulting file after the dataset as well as set a title on the document with the same moniker. The resulting PDF document will be automatically opened after a short delay as the dataset is manipulated and written to PDF.</p>
 <p>In some cases, your dataset may have an extremely long or otherwise problematic name, in this case, you can use the URL to the dataset.</p>
@@ -152,8 +150,9 @@
 <p>A table of contents can be added by using the <code>table_of_contents</code> parameter. Providing a table of contents that shows the variable alias (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::alias</a></code>) followed by a short description of the variable that is derived from the crunch name (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::name</a></code>) and, of course, the page number where the related codebook item(s) can be found.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, table_of_contents <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="codebook-toc-example-002.png"><!-- --></p>
 <div class="figure">
-<img src="codebook-toc-example-002.png" alt=""><p class="caption">Table of contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-toc-example-002.png" alt=""><p class="caption">Table of contents</p>
 </div>
 </div>
 <div id="appendices" class="section level3">
@@ -177,7 +176,7 @@
   preamble <span class="op">=</span> <span class="st">"e^{ \\pm i\\theta } = \\cos \\theta \\pm i\\sin \\theta"</span>
 <span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="codebook-options-example-003.png" alt=""><p class="caption">Table of contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-options-example-003.png" alt=""><p class="caption">Table of contents</p>
 </div>
 </div>
 <div id="logos" class="section level3">
@@ -188,7 +187,7 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, logo <span class="op">=</span> <span class="st">"yougov"</span><span class="op">)</span>
 <span class="co"># writeCodeBookLatex(ds, logo = "ygblue")</span></code></pre></div>
 <div class="figure">
-<img src="codebook-logos-example-004.png" alt=""><p class="caption">Table of contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-logos-example-004.png" alt=""><p class="caption">Table of contents</p>
 </div>
 </div>
 <div id="suppress-zeroes" class="section level3">
@@ -205,7 +204,7 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, position <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="codebook-centered-example-005.png" alt=""><p class="caption">Table of contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png" alt=""><p class="caption">Table of contents</p>
 </div>
 </div>
 </div>

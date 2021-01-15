@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -84,7 +84,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -98,8 +98,7 @@
 
       
 
-      </header><script src="FAQ_files/header-attrs-2.5/header-attrs.js"></script><link href="FAQ_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="FAQ_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="FAQ_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequently Asked Questions</h1>
@@ -114,6 +113,7 @@
 
     
     
+<p>Author: Brandon Bertelsen<br> Last updated: 2021-01-15</p>
 <div id="faq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faq" class="anchor"></a>FAQ</h2>
@@ -141,34 +141,34 @@
 <h3 class="hasAnchor">
 <a href="#how-do-i-relabel-the-table-of-contents-in-an-excel-crosstab" class="anchor"></a>How do I relabel the table of contents in an excel crosstab?</h3>
 <p>Unfortunately there is not yet a built in way to relabel the table of contents. However, there is a straight forward solution using the <code>openxls</code> package.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openxlsx)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>wb <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">loadWorkbook</span>(<span class="st">"wb.xlsx"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">names</span>(wb)), <span class="cf">function</span>(row) { </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">writeFormula</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">wb =</span> wb, </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">sheet =</span> <span class="dv">1</span>, </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">startCol =</span> <span class="dv">1</span>, </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">startRow =</span> <span class="dv">4</span> <span class="sc">+</span> row, </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">paste0</span>(</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'=HYPERLINK("'</span>, </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">names</span>(wb)[row], <span class="st">'!A5", "'</span>, <span class="fu">names</span>(wb)[row], <span class="st">'")'</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="er">}</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(openxlsx)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>wb &lt;-<span class="st"> </span>openxlsx<span class="op">::</span><span class="kw">loadWorkbook</span>(<span class="st">"wb.xlsx"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">lapply</span>(</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(<span class="kw">names</span>(wb)), <span class="cf">function</span>(row) { </span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="kw">writeFormula</span>(</span>
+<span id="cb2-6"><a href="#cb2-6"></a>      <span class="dt">wb =</span> wb, </span>
+<span id="cb2-7"><a href="#cb2-7"></a>      <span class="dt">sheet =</span> <span class="dv">1</span>, </span>
+<span id="cb2-8"><a href="#cb2-8"></a>      <span class="dt">startCol =</span> <span class="dv">1</span>, </span>
+<span id="cb2-9"><a href="#cb2-9"></a>      <span class="dt">startRow =</span> <span class="dv">4</span> <span class="op">+</span><span class="st"> </span>row, </span>
+<span id="cb2-10"><a href="#cb2-10"></a>      <span class="dt">x =</span> <span class="kw">paste0</span>(</span>
+<span id="cb2-11"><a href="#cb2-11"></a>        <span class="st">'=HYPERLINK("'</span>, </span>
+<span id="cb2-12"><a href="#cb2-12"></a>        <span class="kw">names</span>(wb)[row], <span class="st">'!A5", "'</span>, <span class="kw">names</span>(wb)[row], <span class="st">'")'</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="er">}</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>)</span></code></pre></div>
 </div>
 <div id="how-do-i-change-the-crosstab-stub-width" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-do-i-change-the-crosstab-stub-width" class="anchor"></a>How do I change the crosstab stub width?</h3>
 <p>The stub width (the first column of a crosstabulation) is fixed at 1.5inches by default. In v1.2.3 we added a feature allowing an override.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>myTheme <span class="ot">=</span> <span class="fu">themeNew</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  ... <span class="co"># your other theme optinos</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">format_label_column =</span> <span class="fu">list</span>(<span class="at">col_width =</span> <span class="dv">2</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>myTheme =<span class="st"> </span><span class="kw">themeNew</span>(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  ... <span class="co"># your other theme optinos</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">format_label_column =</span> <span class="kw">list</span>(<span class="dt">col_width =</span> <span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>)</span></code></pre></div>
 <p>The code example above would set the stub width to 2 inches. For a PDF document, col_width is in inches. You can also create an exceptional stub width for one or more questions, as follows:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>myTheme <span class="ot">=</span> <span class="fu">themeNew</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  ... <span class="co"># your other theme optinos</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">format_label_column_exception =</span> <span class="fu">c</span>(<span class="st">"alias"</span><span class="ot">=</span><span class="fl">2.5</span>, <span class="st">"otheralias"</span><span class="ot">=</span><span class="fl">1.25</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>myTheme =<span class="st"> </span><span class="kw">themeNew</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  ... <span class="co"># your other theme optinos</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">format_label_column_exception =</span> <span class="kw">c</span>(<span class="st">"alias"</span>=<span class="fl">2.5</span>, <span class="st">"otheralias"</span>=<span class="fl">1.25</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>)</span></code></pre></div>
 <p>In this case, you create a named numeric vector where the name is the question alias whose stub width you wish to change and the numeric value is the stub width in inches.</p>
 </div>
 <div id="how-do-i-hide-the-question-numbers" class="section level3">
