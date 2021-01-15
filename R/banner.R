@@ -20,6 +20,7 @@
 #'     recodes = list(
 #'         alias1 = list(cat1a = 'new cat1a', cat1b = NA),
 #'         alias2 = list(cat2a = 'new cat2a', cat2b = 'new cat2b', .default = NA))
+#'    )
 #' }
 #' @importFrom crunch alias allVariables types categories subvariables is.dataset
 #' @importFrom stats ave
