@@ -1,14 +1,16 @@
 ---
 title: "Generating Codebooks"
-date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Generating Codebooks}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+Author: Brandon Bertelsen<br/>
+Last updated: `r Sys.Date()`
 
 ## Codebooks!
 
@@ -28,8 +30,7 @@ ds <- newExampledataset()
 writeCodeBookLatex(ds)
 ```
 
-![Codebook Example](codebook-example-001.png)
-
+![Codebook Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-example-001.png)
 
 By default, if you supply a dataset to the the function `writeCodeBookLatex` it will name the resulting file after the dataset as well as set a title on the document with the same moniker. The resulting PDF document will be automatically opened after a short delay as the dataset is manipulated and written to PDF. 
 
@@ -53,7 +54,11 @@ A table of contents can be added by using the `table_of_contents` parameter. Pro
 writeCodeBookLatex(ds, table_of_contents = TRUE)
 ```
 
-![Table of contents](codebook-toc-example-002.png)
+```{r, echo = FALSE}
+knitr::include_graphics("codebook-toc-example-002.png")
+```
+
+![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-toc-example-002.png)
 
 ### Appendices
 
@@ -78,7 +83,7 @@ writeCodeBookLatex(
 )
 ```
 
-![Table of contents](codebook-options-example-003.png)
+![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-options-example-003.png)
 
 ### Logos
 
@@ -89,7 +94,7 @@ writeCodeBookLatex(ds, logo = "yougov")
 # writeCodeBookLatex(ds, logo = "ygblue")
 ```
 
-![Table of contents](codebook-logos-example-004.png)
+![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-logos-example-004.png)
 
 ### Suppress Zeroes
 
@@ -107,4 +112,4 @@ The table alignment on the page can be adjusted to one of:  "l" for left (the de
 writeCodeBookLatex(ds, position = "c")
 ```
 
-![Table of contents](codebook-centered-example-005.png)
+![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png)

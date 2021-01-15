@@ -1,14 +1,17 @@
 ---
 title: "Recontact and Tracking Reports"
-date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    self_contained: true
 vignette: >
   %\VignetteIndexEntry{Recontact and Tracking Reports}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+Author: Brandon Bertelsen<br/>
+Last updated: `r Sys.Date()`
 
 ## Reporting Over Time
 
@@ -60,7 +63,7 @@ theme <- themeNew(default_theme = themeDefaultLatex(), one_per_sheet = FALSE)
 writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
 ```
 
-![Recontact Example](example-014-recontact_topline.png)
+![Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
 
 
 ### Flipping Grids
@@ -73,7 +76,8 @@ To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 theme <- themeNew(..., latex_flip_grids = TRUE)
 ```
 
-![Recontact Example](ex015.png)
+`r knitr::include_graphics("ex015.png")`
+
 
 In addition to global transposition of grids, we can also do so conditionally.
 
@@ -136,7 +140,7 @@ There are a number of important elements here:
 
 4.  Many defaults are extracted from the first dataset in the `dataset_list`.
 
-![Example tracking report](ex016.png)
+![Example tracking report](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/ex016.png)
 
 
 ### Tracking Reports for Other Stacking Data
@@ -145,7 +149,7 @@ As intimated in the previous section, tracking reports accept any list of datase
 
 In the example below, we show a political survey question that was asked in different cities across the United States of America regarding no-knock warrants.
 
-![Generic stacking data](ex017.png)
+![Generic stacking data](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/ex017.png)
 
 
 Although you will not be able to recreate this code locally, below is a recommended approach for aggregating similarly named datasets: 

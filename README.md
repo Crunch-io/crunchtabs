@@ -33,7 +33,7 @@ Generating a topline report is quick and easy!
     toplines_summary <- crosstabs(dataset = ds)
     writeLatex(toplines_summary, filename = "output", pdf = TRUE) # output.pdf will be written 
 
-![Topline Example from the Example Dataset](vignettes/example-001-topline.png)
+![Topline Example from the Example Dataset](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-001-topline.png)
 
 ### Create a recontact or pre/post Topline
 
@@ -62,7 +62,7 @@ The function assumes your "before" and "after" questions are named in the same w
 
     writeLatex(rc, pdf = TRUE)
 
-![Recontact Example](vignettes/example-012-recontact-default.png)
+![Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-012-recontact-default.png)
 
 Depending on your preferences you can also flip grids if have more categories than waves:
 
@@ -73,7 +73,7 @@ Depending on your preferences you can also flip grids if have more categories th
 
     writeLatex(rc, theme = theme, pdf = TRUE)
 
-![Recontact Example - Flipped Grid](vignettes/example-013-recontact-flipped-grid.png)
+![Recontact Example - Flipped Grid](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-013-recontact-flipped-grid.png)
 
 ### Create a Tracking Report
 
@@ -100,7 +100,7 @@ While recontact reports are designed for questions asked in the same dataset, we
     writeLatex(ct, pdf = TRUE, theme = theme)
 
 
-![Tracking Report Example - Flipped grids](vignettes/example-016-tracking-report.png)  
+![Tracking Report Example - Flipped grids](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/ex016.png)  
 
 ### Create a Cross Tabulation
 
@@ -116,7 +116,7 @@ The only additional step required for a cross tab report is to create a `banner`
     ct_summary <- crosstabs(dataset = ds, banner = ct_banner) # banner parameter set here
     writeLatex(ct_summary, filename = "output", pdf = TRUE) # output.pdf will be written 
 
-![Cross Tabulation Example from the Example Dataset](vignettes/example-002-crosstabs.png)
+![Cross Tabulation Example from the Example Dataset](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-002-crosstabs.png)
 
 ## Excel
 
@@ -128,7 +128,7 @@ To create documents in excel, the process is the same as that for creating PDF r
     # ... topline, not yet implemented
     # writeExcel(toplines_summary, filename = "output") # output.xlsx will be written 
 
-![Cross Tabulation Excel Example from the Example Dataset](vignettes/example-003-excel-ct.png)
+![Cross Tabulation Excel Example from the Example Dataset](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-003-excel-ct.png)
 
 ## Generating Codebooks
 

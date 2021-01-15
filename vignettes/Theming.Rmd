@@ -1,14 +1,16 @@
 ---
 title: "Theming"
-date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Theming}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+Author: Brandon Bertelsen<br/>
+Last updated: `r Sys.Date()`
 
 ## Theming
 
