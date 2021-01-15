@@ -16,5 +16,5 @@ jobs:
         git config --global user.email "Marvin the Paranoid Android"
         git config --global user.name "marvin@heart-of-gold.co.uk"
     - name: Deploy package
-      run: pkgdown::deploy_to_branch(new_process = FALSE)
+      run: pkgdown::deploy_to_branch(new_process = FALSE, lazy = FALSE)
       shell: Rscript {0}
