@@ -50,7 +50,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,7 +88,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Crunch-io/crunchtabs/">
-    <span class="fab fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,27 +117,27 @@
 <h3 class="hasAnchor">
 <a href="#1-install-tinytex" class="anchor"></a>1. Install tinytex</h3>
 <p>To make PDF reports, you’ll need a working LaTeX installation. One way to get this is with the <a href="https://yihui.name/tinytex/">tinytex</a> package. Or, see <a href="https://www.latex-project.org/get/" class="uri">https://www.latex-project.org/get/</a> to install everything. We strongly recommend installing tinytex because it reduces the number of potential problems.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">'tinytex'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>tinytex<span class="op">::</span><span class="kw">install_tinytex</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'tinytex'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tinytex<span class="sc">::</span><span class="fu">install_tinytex</span>()</span></code></pre></div>
 </div>
 <div id="2-install-crunchtabs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#2-install-crunchtabs" class="anchor"></a>2. Install crunchtabs</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages("remotes")</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"Crunch-io/crunchtabs"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Crunch-io/crunchtabs"</span>)</span></code></pre></div>
 </div>
 <div id="create-a-topline" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-a-topline" class="anchor"></a>Create a Topline</h3>
 <p>Generating a topline report is quick and easy!</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># library(crunchtabs)</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># login()</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>ds =<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a>toplines_summary &lt;-<span class="st"> </span><span class="kw">crosstabs</span>(<span class="dt">dataset =</span> ds)</span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="kw">writeLatex</span>(toplines_summary, <span class="dt">filename =</span> <span class="st">"output"</span>, <span class="dt">pdf =</span> <span class="ot">TRUE</span>) <span class="co"># output.pdf will be written </span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(crunchtabs)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># login()</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>toplines_summary <span class="ot">&lt;-</span> <span class="fu">crosstabs</span>(<span class="at">dataset =</span> ds)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLatex</span>(toplines_summary, <span class="at">filename =</span> <span class="st">"output"</span>, <span class="at">pdf =</span> <span class="cn">TRUE</span>) <span class="co"># output.pdf will be written </span></span></code></pre></div>
 <p><img src="articles/example-001-topline.png" alt="Topline Example from the Example Dataset"></p>
 </div>
 <div id="create-a-recontact-or-prepost-topline" class="section level3">
@@ -152,66 +152,66 @@
 <li>q3_post</li>
 </ul>
 <pre class="{=html}"><code>&lt;!-- --&gt;</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># library(crunchtabs)</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># login()</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>ds &lt;-<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"Your Recontact Survey"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4"></a>rc &lt;-<span class="st"> </span><span class="kw">recontact_toplines</span>(</span>
-<span id="cb5-5"><a href="#cb5-5"></a>  ds, </span>
-<span id="cb5-6"><a href="#cb5-6"></a>  <span class="dt">questions =</span> <span class="kw">c</span>(<span class="st">"q1"</span>, <span class="st">"q3"</span>), <span class="co"># The base question name without suffixes</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>  <span class="dt">suffixes =</span> <span class="kw">c</span>(<span class="st">"_pre"</span>, <span class="st">"_post"</span>), <span class="co"># The suffixes</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>  <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>), <span class="co"># The labels associated with the pre/post</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>  <span class="dt">weights =</span> <span class="kw">c</span>(<span class="st">"weight1"</span>, <span class="st">"weight2"</span>) <span class="co"># The weights associated with the pre/post</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>)</span>
-<span id="cb5-11"><a href="#cb5-11"></a></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="kw">writeLatex</span>(rc, <span class="dt">pdf =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(crunchtabs)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># login()</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">&lt;-</span> <span class="fu">loadDataset</span>(<span class="st">"Your Recontact Survey"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>rc <span class="ot">&lt;-</span> <span class="fu">recontact_toplines</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ds, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">questions =</span> <span class="fu">c</span>(<span class="st">"q1"</span>, <span class="st">"q3"</span>), <span class="co"># The base question name without suffixes</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">suffixes =</span> <span class="fu">c</span>(<span class="st">"_pre"</span>, <span class="st">"_post"</span>), <span class="co"># The suffixes</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>), <span class="co"># The labels associated with the pre/post</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="fu">c</span>(<span class="st">"weight1"</span>, <span class="st">"weight2"</span>) <span class="co"># The weights associated with the pre/post</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLatex</span>(rc, <span class="at">pdf =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="articles/example-012-recontact-default.png" alt="Recontact Example"></p>
 <p>Depending on your preferences you can also flip grids if have more categories than waves:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>theme &lt;-<span class="st"> </span><span class="kw">themeNew</span>(</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="dt">default_theme =</span> <span class="kw">themeDefaultLatex</span>(), </span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="dt">latex_flip_specific_grids =</span> <span class="kw">c</span>(<span class="st">"q1"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4"></a>)</span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="kw">writeLatex</span>(rc, <span class="dt">theme =</span> theme, <span class="dt">pdf =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>theme <span class="ot">&lt;-</span> <span class="fu">themeNew</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">default_theme =</span> <span class="fu">themeDefaultLatex</span>(), </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">latex_flip_specific_grids =</span> <span class="fu">c</span>(<span class="st">"q1"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLatex</span>(rc, <span class="at">theme =</span> theme, <span class="at">pdf =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="articles/example-013-recontact-flipped-grid.png" alt="Recontact Example - Flipped Grid"></p>
 </div>
 <div id="create-a-tracking-report" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-a-tracking-report" class="anchor"></a>Create a Tracking Report</h3>
 <p>While recontact reports are designed for questions asked in the same dataset, we also have the ability to present questions asked in multiple datasets in a similar fashion. There are some critical nuances here that should be understood - we recommend reviewing the eponymously named vignette.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># library(crunchtabs)</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># login() </span></span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a>theme &lt;-<span class="st"> </span><span class="kw">themeNew</span>(</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="dt">default_theme =</span> <span class="kw">themeDefaultLatex</span>(), </span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="dt">latex_flip_grids =</span> <span class="ot">TRUE</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a></span>
-<span id="cb7-9"><a href="#cb7-9"></a>ds1 &lt;-<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"My DS Wave 1"</span>)</span>
-<span id="cb7-10"><a href="#cb7-10"></a>ds2 &lt;-<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"My DS Wave 2"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11"></a>ds3 &lt;-<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"My DS Wave 3"</span>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a>ct &lt;-<span class="st"> </span><span class="kw">tracking_report</span>(</span>
-<span id="cb7-14"><a href="#cb7-14"></a>  <span class="dt">dataset_list =</span> <span class="kw">list</span>(ds1, ds2, ds3), </span>
-<span id="cb7-15"><a href="#cb7-15"></a>  <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">"question_alias1"</span>, <span class="st">"question_alias2"</span>, <span class="st">"question_alias3"</span>),</span>
-<span id="cb7-16"><a href="#cb7-16"></a>  <span class="dt">wave_labels =</span> <span class="ot">NULL</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>)</span>
-<span id="cb7-18"><a href="#cb7-18"></a></span>
-<span id="cb7-19"><a href="#cb7-19"></a><span class="kw">writeLatex</span>(ct, <span class="dt">pdf =</span> <span class="ot">TRUE</span>, <span class="dt">theme =</span> theme)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(crunchtabs)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># login() </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>theme <span class="ot">&lt;-</span> <span class="fu">themeNew</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">default_theme =</span> <span class="fu">themeDefaultLatex</span>(), </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">latex_flip_grids =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ds1 <span class="ot">&lt;-</span> <span class="fu">loadDataset</span>(<span class="st">"My DS Wave 1"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ds2 <span class="ot">&lt;-</span> <span class="fu">loadDataset</span>(<span class="st">"My DS Wave 2"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ds3 <span class="ot">&lt;-</span> <span class="fu">loadDataset</span>(<span class="st">"My DS Wave 3"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ct <span class="ot">&lt;-</span> <span class="fu">tracking_report</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_list =</span> <span class="fu">list</span>(ds1, ds2, ds3), </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">vars =</span> <span class="fu">c</span>(<span class="st">"question_alias1"</span>, <span class="st">"question_alias2"</span>, <span class="st">"question_alias3"</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">wave_labels =</span> <span class="cn">NULL</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLatex</span>(ct, <span class="at">pdf =</span> <span class="cn">TRUE</span>, <span class="at">theme =</span> theme)</span></code></pre></div>
 <p><img src="articles/example-016-tracking-report.png" alt="Tracking Report Example - Flipped grids"></p>
 </div>
 <div id="create-a-cross-tabulation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-a-cross-tabulation" class="anchor"></a>Create a Cross Tabulation</h3>
 <p>The only additional step required for a cross tab report is to create a <code>banner</code> object. Then, setting it as the <code>banner</code> argument for the <code>crosstabs</code> function. Below, we create a cross tabulation report that shows the type of pet(s) respondents own to our survey for every question in the survey. Once you have run the code, we encourage you to open the resulting <code>output.pdf</code> file. Inside of the report you will find a cross tabulation of all questions by pet ownership.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># library(crunchtabs)</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="co"># login()</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a></span>
-<span id="cb8-4"><a href="#cb8-4"></a>ds =<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a></span>
-<span id="cb8-7"><a href="#cb8-7"></a>ct_banner &lt;-<span class="st"> </span><span class="kw">banner</span>(ds, <span class="dt">vars =</span> <span class="kw">list</span>(<span class="st">`</span><span class="dt">banner 1</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">'allpets'</span>)))</span>
-<span id="cb8-8"><a href="#cb8-8"></a>ct_summary &lt;-<span class="st"> </span><span class="kw">crosstabs</span>(<span class="dt">dataset =</span> ds, <span class="dt">banner =</span> ct_banner) <span class="co"># banner parameter set here</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="kw">writeLatex</span>(ct_summary, <span class="dt">filename =</span> <span class="st">"output"</span>, <span class="dt">pdf =</span> <span class="ot">TRUE</span>) <span class="co"># output.pdf will be written </span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(crunchtabs)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># login()</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ct_banner <span class="ot">&lt;-</span> <span class="fu">banner</span>(ds, <span class="at">vars =</span> <span class="fu">list</span>(<span class="st">`</span><span class="at">banner 1</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">'allpets'</span>)))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ct_summary <span class="ot">&lt;-</span> <span class="fu">crosstabs</span>(<span class="at">dataset =</span> ds, <span class="at">banner =</span> ct_banner) <span class="co"># banner parameter set here</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLatex</span>(ct_summary, <span class="at">filename =</span> <span class="st">"output"</span>, <span class="at">pdf =</span> <span class="cn">TRUE</span>) <span class="co"># output.pdf will be written </span></span></code></pre></div>
 <p><img src="articles/example-002-crosstabs.png" alt="Cross Tabulation Example from the Example Dataset"></p>
 </div>
 </div>
@@ -219,24 +219,24 @@
 <h2 class="hasAnchor">
 <a href="#excel" class="anchor"></a>Excel</h2>
 <p>To create documents in excel, the process is the same as that for creating PDF reports. However, in the last line of our example scripts we use <code>writeExcel</code> instead of <code>writeLatex</code> while also removing the <code>pdf = TRUE</code> argument. As with PDF reports, there are a large amount of options that can be set to adjust the look and feel of the resulting Excel spreadsheets.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># ... cross tab</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">writeExcel</span>(ct_summary, <span class="dt">filename =</span> <span class="st">"output"</span>) <span class="co"># output.xlsx will be written </span></span>
-<span id="cb9-3"><a href="#cb9-3"></a></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># ... topline, not yet implemented</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co"># writeExcel(toplines_summary, filename = "output") # output.xlsx will be written </span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ... cross tab</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeExcel</span>(ct_summary, <span class="at">filename =</span> <span class="st">"output"</span>) <span class="co"># output.xlsx will be written </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ... topline, not yet implemented</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># writeExcel(toplines_summary, filename = "output") # output.xlsx will be written </span></span></code></pre></div>
 <p><img src="articles/example-003-excel-ct.png" alt="Cross Tabulation Excel Example from the Example Dataset"></p>
 </div>
 <div id="generating-codebooks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generating-codebooks" class="anchor"></a>Generating Codebooks</h2>
 <p>Generating a codebook is easy!</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># library(crunchtabs)</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># login()</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a>ds =<span class="st"> </span><span class="kw">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="kw">writeCodeBookLatex</span>(ds)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(crunchtabs)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># login()</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">=</span> <span class="fu">loadDataset</span>(<span class="st">"Example dataset"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">writeCodeBookLatex</span>(ds)</span></code></pre></div>
 </div>
 <div id="for-developers" class="section level2">
 <h2 class="hasAnchor">
