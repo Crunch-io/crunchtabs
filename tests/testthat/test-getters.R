@@ -6,8 +6,10 @@ test_that("print.Toplines", {
   mockery::stub(print.Toplines, "getName", "A title!")
   expect_equal(
     capture.output(print.Toplines(obj)),
-    c("Data summary for Toplines report.", " Title: A title! ", " Unweighted.", 
-      " Contains data for the following variables:", " ")
+    c(
+      "Data summary for Toplines report.", " Title: A title! ", " Unweighted.",
+      " Contains data for the following variables:", " "
+    )
   )
 })
 
@@ -17,14 +19,17 @@ test_that("print.Crosstabs", {
   mockery::stub(print.Crosstabs, "getName", "A title!")
   expect_equal(
     capture.output(print.Crosstabs(obj)),
-    c("Data summary for Crosstabs report.", " Title: A title! ", 
-      " Unweighted.", " Contains data for the following variables:", 
-      " ")
+    c(
+      "Data summary for Crosstabs report.", " Title: A title! ",
+      " Unweighted.", " Contains data for the following variables:",
+      " "
+    )
   )
 })
 
 test_that("getName.default", {
-  expect_error(getName.default(list()), "The expected class for `getName` is ToplineBase", fixed = TRUE)
+  expect_error(getName.default(list()),
+               "The expected class for `getName` is ToplineBase", fixed = TRUE)
 })
 
 test_that("getName.ToplineBase", {
@@ -36,7 +41,7 @@ test_that("getName.ToplineBase", {
 
 test_that("getName.CrunchCube", {
   obj <- list()
-  x <- c("v1"="v1", "v2" = "v1")
+  x <- c("v1" = "v1", "v2" = "v1")
   mockery::stub(getName.CrunchCube, "variables", x)
   class(obj) <- "CrunchCube"
   expect_equal(getName(obj), "v1")

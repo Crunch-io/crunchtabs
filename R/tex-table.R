@@ -70,7 +70,6 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
       } else {
         data[[nm]] <- dfapply(data[[nm]], paste0, "%")
       }
-
     }
   }
   # NPR: this one is doing some wacky things currently
@@ -104,9 +103,11 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
       }
     }
     for (i in which(colSums(df$min_cell_body) != 0)) {
-      data$body[df$min_cell_body[,i], i] <- applyLatexStyle(data$body[df$min_cell_body[,i], i], theme$format_min_base)
+      data$body[df$min_cell_body[, i], i] <- applyLatexStyle(
+          data$body[df$min_cell_body[, i], i], theme$format_min_base)
       for (nm in intersect(mask_vars, names(data))) {
-        data[[nm]][, df$min_cell] <- applyLatexStyle(data[[nm]][, df$min_cell], theme$format_min_base)
+        data[[nm]][, df$min_cell] <- applyLatexStyle(
+          data[[nm]][, df$min_cell], theme$format_min_base)
       }
     }
   }
@@ -156,7 +157,6 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
 
   # Turn each table in `data` into a LaTeX table string
   if (topline_catarray) {
-
     if (theme$latex_flip_grids | question_alias %in% theme$latex_flip_specific_grids) {
       data$body <- as.data.frame(t(data$body), check.names = FALSE, stringsAsFactors = FALSE)
     }
@@ -191,7 +191,7 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
       rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = " & ")
     }
     # Add a newline to each row, then join in a single string
-    return(paste(rows, newline, collapse="\n"))
+    return(paste(rows, newline, collapse = "\n"))
   })
 
   # Assemble the components of the table, based on "data_order"
@@ -205,12 +205,6 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
     out <- paste(c(main_table, "\\midrule", footer), collapse = "\n")
   }
 
-  # This produces a single string that looks like:
-  #
-  # Cat & 25\% & 0\% & 53\% & 46\% & 0\%\\
-  # Dog & 47\% & 31\% & 65\% & 28\% & 71\%\\
-  # Bird & 38\% & 44\% & 33\% & 28\% & 51\% \\
-  #  \midrule Unweighted N & \multicolumn{1}{c}{17} & \multicolumn{1}{c}{6} & \multicolumn{1}{c}{11} & \multicolumn{1}{c}{9} & \multicolumn{1}{c}{8} \\
   return(out)
 }
 
@@ -221,7 +215,7 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
 #' @param x A numeric vector
 #' @param digits The number of digits
 #' @param ... Furth arguments, unused.
-formatNum <- function(x, digits=0, ...) {
+formatNum <- function(x, digits = 0, ...) {
   trimws(
     format(
       round(x, digits),
@@ -265,23 +259,25 @@ tableHeader.default <- function(var, theme) {
 #' @rdname tableHeader
 #' @export
 tableHeader.CrossTabVar <- function(var, theme) {
+  label_width <- ifelse(
+    is.na(theme$format_label_column$col_width), "1.5in",
+    paste0(theme$format_label_column$col_width, "in"))
 
-  label_width = ifelse(is.na(theme$format_label_column$col_width), "1.5in", paste0(theme$format_label_column$col_width, "in"))
-
-  check = theme$format_label_column_exceptions[var$alias]
-  check = ifelse(is.null(check), NA_real_, check)
+  check <- theme$format_label_column_exceptions[var$alias]
+  check <- ifelse(is.null(check), NA_real_, check)
 
   if (!is.na(check)) {
-    label_width = paste0(theme$format_label_column_exceptions[var$alias], "in")
+    label_width <- paste0(theme$format_label_column_exceptions[var$alias], "in")
   }
 
-  nopagebreak = NULL
-  if (!theme$pagebreak_in_banner)
-    nopagebreak = "\\begin{absolutelynopagebreak}"
+  nopagebreak <- NULL
+  if (!theme$pagebreak_in_banner) {
+    nopagebreak <- "\\begin{absolutelynopagebreak}"
+  }
 
   header <- paste(
     nopagebreak,
-    paste0("\\tbltopa[",label_width,"]"),
+    paste0("\\tbltopa[", label_width, "]"),
     latexTableName(var, theme),
     "\\addlinespace",
     "\\bannera{}",
@@ -296,7 +292,7 @@ tableHeader.CrossTabVar <- function(var, theme) {
     next_headers <- paste(
       nopagebreak,
       vspace("-.25in"),
-      paste0("\\tbltop", letters[2:ntabs], "[", label_width ,"]"),
+      paste0("\\tbltop", letters[2:ntabs], "[", label_width, "]"),
       "\\addlinespace",
       paste0("\\banner", letters[2:ntabs], "{}"),
       "",
@@ -325,20 +321,20 @@ tableHeader.ToplineVar <- function(var, theme) {
 #' @param var An object of class ToplineCategoricalArray
 #' @param theme A theme object from \link{themeNew}
 #' @export
-tableHeader.ToplineCategoricalArray <- function(var, theme) {
+tableHeader.ToplineCategoricalArray <- function(var, theme) { # nolint
   header_row <- newline
-  
+
   if (theme$latex_flip_grids | var$alias %in% theme$latex_flip_specific_grids) {
     col_names <- var$subnames
   } else {
     col_names <- sapply(var$inserts_obj, name)
-    if(length(col_names) == 0) {
+    if (length(col_names) == 0) {
       col_names <- var$rownames
     }
   }
 
   col_names_len <- length(col_names)
-  col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
+  col_width <- paste(round(1 / col_names_len, digits = 2), "\\mywidth", sep = "")
 
   # use heuristic for scale questions
   if (col_names_len >= 10) {
@@ -388,7 +384,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
       # entails, or why theme$format_label_column$col_width is invoked
       # here but not earlier where col_width is previously defined
       col_width <- paste(round((5.5 - theme$format_label_column$col_width) /
-                                 col_names_len - 0.11, 3), "in", sep = "")
+        col_names_len - 0.11, 3), "in", sep = "")
     }
   }
 
@@ -409,9 +405,11 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
       sep = "\n"
     )
   } else {
-    header_row <- paste0(header_row,
-                         paste(c("", "", texEscape(col_names), ""), collapse = " & "),
-                         "\\\\\n")
+    header_row <- paste0(
+      header_row,
+      paste(c("", "", texEscape(col_names), ""), collapse = " & "),
+      "\\\\\n"
+    )
   }
 
   # Issue # 67: Add smart widths
@@ -422,18 +420,18 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
     # minimum width of stub = 1.5in, leaving 5.5in to work with
     # 10 or more response category case, dealt with above
 
-    col_names_adj = seq(0,1,length.out = 9)[col_names_len]
+    col_names_adj <- seq(0, 1, length.out = 9)[col_names_len]
 
-    col_width_factor = seq(0.75, 0.55, length.out = 9)[col_names_len]
-    col_width_perc = round(col_width_factor / 3.5, 2)
-    first_col_width = 6.5 -                     # page width
-      (col_width_factor * col_names_len) -      # subtract real col widths
+    col_width_factor <- seq(0.75, 0.55, length.out = 9)[col_names_len]
+    col_width_perc <- round(col_width_factor / 3.5, 2)
+    first_col_width <- 6.5 - # page width
+      (col_width_factor * col_names_len) - # subtract real col widths
       (0.1 * (col_names_len + col_names_adj)) - # spacing 0.1in per name
-      col_width_factor/(9 - col_names_len) -    # scaled column_width_factor
-      0.275                                     # match left indent (~1em)
+      col_width_factor / (9 - col_names_len) - # scaled column_width_factor
+      0.275 # match left indent (~1em)
 
     # Never go below 1.5in
-    first_col_width = ifelse(first_col_width < 1.5, 1.5, first_col_width)
+    first_col_width <- ifelse(first_col_width < 1.5, 1.5, first_col_width)
 
     col_width <- paste(round(col_width_perc, digits = 2), "\\mywidth", sep = "")
 
@@ -447,27 +445,25 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) {
       "{",
       "@{\\extracolsep{\\fill}}",
       "p{0.1in}",
-      "B{\\raggedright}{", first_col_width , "in}",
+      "B{\\raggedright}{", first_col_width, "in}",
       col.header,
       "}"
     )
-
   } else {
-
     if (is.na(theme$format_label_column$col_width)) {
-      label_width = 1.5
+      label_width <- 1.5
     } else {
       # Global override, exception overrules
-      label_width = theme$format_label_column$col_width
+      label_width <- theme$format_label_column$col_width
     }
 
-    check = theme$format_label_column_exceptions[var$alias]
+    check <- theme$format_label_column_exceptions[var$alias]
 
     if (!is.na(check) & !is.null(check)) {
-      label_width = theme$format_label_column_exceptions[var$alias]
+      label_width <- theme$format_label_column_exceptions[var$alias]
     }
 
-    col_width <- paste(round(1/col_names_len, digits = 2), "\\mywidth", sep = "")
+    col_width <- paste(round(1 / col_names_len, digits = 2), "\\mywidth", sep = "")
     col.header <- paste0("B{\\centering}{", col_width, "}")
     col.header <- paste(rep(col.header, col_names_len + 1), collapse = "")
 
@@ -555,7 +551,7 @@ latexTableName <- function(var, theme) {
   return(paste(out, newline))
 }
 
-#" Long table header and footer creation.
+# " Long table header and footer creation.
 #'
 #'  Generates two macros for the preamble
 #'  \\bannera{} that takes one argument (first column label)
@@ -571,11 +567,11 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
   col_num_sum <- length(unlist(binfo$multicols))
 
   if (is.na(theme$format_label_column$col_width)) {
-    default_width = 1.5
+    default_width <- 1.5
   } else {
-    default_width = theme$format_label_column$col_width
+    default_width <- theme$format_label_column$col_width
   }
-  banner_width <- round((page_width - default_width)/col_num_sum - .1, 2)
+  banner_width <- round((page_width - default_width) / col_num_sum - .1, 2)
   banner_def_body1 <- makeLatexBanner(binfo, width = banner_width)
   banner_def_body2 <- paste(
     "&",
@@ -589,7 +585,8 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
     # Note that \bannera is never called with an argument, even though it
     # takes one (see below for what would happen if you did give an arg)
     newcommand(
-      paste0("banner", letters[num]), args = 1, paste(
+      paste0("banner", letters[num]),
+      args = 1, paste(
         "\\toprule",
         banner_def_body1,
         "\\midrule",
@@ -606,7 +603,8 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
         "\\endlastfoot",
         "",
         sep = "\n"
-      )),
+      )
+    ),
     # Here is \tbltopa
     newcommand(
       paste0("tbltop", letters[num], "[1]"), # Issue 77
@@ -634,7 +632,7 @@ longtableHeadFootMacros <- function(banner, num, page_width = 9, theme) {
 #'
 #' @param binfo banner info from \link{getBannerInfo}
 #' @param width Unused argument
-makeLatexBanner <- function(binfo, width=NULL) {
+makeLatexBanner <- function(binfo, width = NULL) {
   # NPR: This is not used in the function, but maybe it should be, given
   # vague bug reports. Keep it here until we sort that out.
   # m_split <- paste0("}{m{", width, "in}}{\\centering ")
@@ -692,26 +690,28 @@ calculateIfLongtable <- function(x, theme) {
 #' @rdname calculateIfLongtable
 #' @export
 calculateIfLongtable.default <- function(x, theme) {
-  wrong_class_error(x, c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "calculateIfLongtable")
+  wrong_class_error(
+    x,
+    c("CrossTabVar", "ToplineVar", "ToplineCategoricalArray"), "calculateIfLongtable")
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.CrossTabVar <- function(x, theme) {
-  return(sum(ceiling(nchar(x$rownames)/25)) >
-           theme$latex_max_lines_for_tabular)
+calculateIfLongtable.CrossTabVar <- function(x, theme) { # nolint
+  return(sum(ceiling(nchar(x$rownames) / 25)) >
+    theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineVar <- function(x, theme) {
-  return(sum(ceiling(nchar(x$rownames)/90)) >
-           theme$latex_max_lines_for_tabular)
+calculateIfLongtable.ToplineVar <- function(x, theme) { # nolint
+  return(sum(ceiling(nchar(x$rownames) / 90)) >
+    theme$latex_max_lines_for_tabular)
 }
 
 #' @rdname calculateIfLongtable
 #' @export
-calculateIfLongtable.ToplineCategoricalArray <- function(x, theme) {
-  return(sum(ceiling(nchar(x$rownames)/25)) >
-           theme$latex_max_lines_for_tabular)
+calculateIfLongtable.ToplineCategoricalArray <- function(x, theme) { # nolint
+  return(sum(ceiling(nchar(x$rownames) / 25)) >
+    theme$latex_max_lines_for_tabular)
 }

@@ -9,7 +9,8 @@
 #' @param options Additional options passed to pdflatex
 #' @param path.to.pdflatex The system path to pdflatex
 #' @param ... Further arguments, unused.
-pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = TRUE, options = "-halt-on-error",
+pdflatex <- function(
+  texfile, open = interactive(), verbose = FALSE, cleanup = TRUE, options = "-halt-on-error",
                      path.to.pdflatex = Sys.which("pdflatex"), ...) {
   # nocov start
   filepath <- dirname(texfile)
@@ -34,8 +35,10 @@ pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = T
     texfile <- paste(texfile, pdffile)
   }
 
-  texcommand <- paste(path.to.pdflatex, options, "-output-directory", filepath,
-                      texfile)
+  texcommand <- paste(
+    path.to.pdflatex, options, "-output-directory", filepath,
+    texfile
+  )
   # In case it needs packages/styles you don't have, just keep hitting enter
   input <- paste0(rep("\n", 100))
   system(texcommand, input = input, ignore.stdout = !verbose)
@@ -69,9 +72,9 @@ pdflatex <- function(texfile, open = interactive(), verbose = FALSE, cleanup = T
 #' @param x A vector of filenames
 file.open <- function(x) {
   # start nocov
-  if (Sys.info()['sysname'] == "Linux") {
+  if (Sys.info()["sysname"] == "Linux") {
     for (i in x) system(paste("xdg-open", shQuote(i)))
-  } else if (Sys.info()['sysname'] == "Windows") {
+  } else if (Sys.info()["sysname"] == "Windows") {
     for (i in x) system(paste("start", shQuote(i)))
   } else {
     for (i in x) system(paste("open", shQuote(i)))
@@ -91,10 +94,12 @@ file.open <- function(x) {
 #' @param and Logical, passed to \link{collapse_items}
 #' @param or Logical, passed to \link{collapse_items}
 #' @param quotes Logical, passed to \link{collapse_items}
-error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, quotes = FALSE){
+error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, quotes = FALSE) {
   if (length(items) != 0 && !all(items %in% "")) {
     message <- gsub("\\{items\\}", collapse_items(items, and, or, quotes), text)
-    if (error) { stop(message, call. = FALSE) }
+    if (error) {
+      stop(message, call. = FALSE)
+    }
     warning(message, call. = FALSE)
   }
 }
@@ -108,11 +113,13 @@ error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, q
 #' @param expected_class A character vector of potential classes
 #' @param name The name of the object
 #' @param null Logical, identifying if the object can be null
-wrong_class_error <- function(value, expected_class, name, null = FALSE){
+wrong_class_error <- function(value, expected_class, name, null = FALSE) {
   if (length(intersect(class(value), expected_class)) != length(expected_class)) {
     stop("The expected class for `", name, "`", if (null) ", if provided, ",
-         " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)),
-         ".", call. = FALSE)
+      " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)),
+      ".",
+      call. = FALSE
+    )
   }
 }
 
@@ -134,14 +141,20 @@ paste_around <- function(str, before, after) paste0(before, str, after)
 #' @param and Logical, collapse using "and"
 #' @param or Logical, collapse using "or"
 #' @param quotes Logical, should it be quoted?
-collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE){
+collapse_items <- function(x, and = FALSE, or = FALSE, quotes = FALSE) {
   if (quotes) {
     x <- paste0("'", x, "'")
   }
   if (length(x) > 2) {
     x <- c(paste0(x[1:(length(x) - 1)], ",", collapse = " "), x[length(x)])
   }
-  return(paste0(x, collapse = if (and) { " and " } else if (or) {" or " } else {" " }))
+  return(paste0(x, collapse = if (and) {
+    " and "
+  } else if (or) {
+    " or "
+  } else {
+    " "
+  }))
 }
 
 #' Operator overload

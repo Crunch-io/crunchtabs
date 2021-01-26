@@ -1,7 +1,7 @@
 library(openxlsx)
 Sys.setlocale("LC_COLLATE", "C") ## What CRAN does; affects sort order
 set.seed(999) ## To ensure that tests that involve randomness are reproducible
-options(warn=1)
+options(warn = 1)
 
 unserializeJSON <- jsonlite::unserializeJSON
 
@@ -18,25 +18,25 @@ unserializeJSON <- jsonlite::unserializeJSON
 
 fixtures_dir <- "fixtures"
 with_mock_tabs <- function(book_file, mt_file, path = fixtures_dir, expr) {
-    with_mock(
-        `crunch::tabBook`=function (...) {
-            crunch:::TabBookResult(jsonlite::fromJSON(file.path(path, book_file), simplifyVector=FALSE))
-        },
-        `crunchtabs:::getMultitable`=function (...) {
-          crunch:::Multitable(jsonlite::fromJSON(file.path(path, mt_file), simplifyVector=FALSE))
-        },
-        eval.parent(expr)
-    )
+  with_mock(
+    `crunch::tabBook` = function(...) {
+      crunch:::TabBookResult(jsonlite::fromJSON(file.path(path, book_file), simplifyVector = FALSE))
+    },
+    `crunchtabs:::getMultitable` = function(...) {
+      crunch:::Multitable(jsonlite::fromJSON(file.path(path, mt_file), simplifyVector = FALSE))
+    },
+    eval.parent(expr)
+  )
 }
 
 with_temp_dir <- function(expr) {
-    wd <- getwd()
-    d <- tempfile()
-    dir.create(d)
-    setwd(d)
-    on.exit(setwd(wd))
+  wd <- getwd()
+  d <- tempfile()
+  dir.create(d)
+  setwd(d)
+  on.exit(setwd(wd))
 
-    eval.parent(expr)
+  eval.parent(expr)
 }
 
 # # Source crunch-test.R when: R CMD check, devtools::test(), make test,
