@@ -65,10 +65,10 @@ Toplines (one-way frequency tables) or Banners (cross tabulations).
 \examples{
 \dontrun{
 # toplines report
-toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-writeLatex(toplines_summary, 'filename')
+toplines_summary <- crosstabs(crunch_dataset, weight = "weight")
+writeLatex(toplines_summary, "filename")
 # crosstabs report
 crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
-writeLatex(crosstabs_summary, 'filename')
+writeLatex(crosstabs_summary, "filename")
 }
 }

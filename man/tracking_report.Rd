@@ -7,19 +7,19 @@
 tracking_report(dataset_list, vars, labels = NULL, weight = NULL)
 }
 \arguments{
-\item{dataset_list}{A list of two or more crunch datasets. Datasets should be 
-provided in time order. From oldest to youngest. (i.e, wave 1, wave 2, 
+\item{dataset_list}{A list of two or more crunch datasets. Datasets should be
+provided in time order. From oldest to youngest. (i.e, wave 1, wave 2,
 ..., wave n)}
 
-\item{vars}{A character vector of question aliases to be included in the 
-report this may include aliases that are available in at least one of the 
+\item{vars}{A character vector of question aliases to be included in the
+report this may include aliases that are available in at least one of the
 datasets specified in dataset_list}
 
 \item{labels}{The labels for each wave. Should be of a length that
 matches the number of datasets.}
 
 \item{weight}{NULL to accept each dataset's current weight or a single alias
-that is available in all datasets as a string. Multiple weights is not 
+that is available in all datasets as a string. Multiple weights is not
 recommended in a tracking report.}
 }
 \description{

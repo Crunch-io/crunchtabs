@@ -23,17 +23,22 @@ sortResults_inner(r, descending, alpha, fixed, pin_to_top, pin_to_bottom)
 \arguments{
 \item{ct}{A \link{crosstabs} object}
 
-\item{vars}{A character vector of variable aliases that should be sorted. Or a single alias if pin_to_top or pin_to_bottom are specified.}
+\item{vars}{A character vector of variable aliases that should be sorted. Or
+a single alias if pin_to_top or pin_to_bottom are specified.}
 
-\item{descending}{Logical, defaults to NULL. If data are of type TextVariable or DateTimeVariable, default to ascending, if numeric defaults to descending. If FALSE, enforces ascending. If TRUE, enforces descending.}
+\item{descending}{Logical, defaults to NULL. If data are of type TextVariable
+or DateTimeVariable, default to ascending, if numeric defaults to descending.
+If FALSE, enforces ascending. If TRUE, enforces descending.}
 
 \item{alpha}{Logical. Defaults to FALSE. Should data be sorted alphabetically?}
 
 \item{fixed}{A character vector representing a set order of presentation}
 
-\item{pin_to_top}{A character vector of response values to pin to the top of the result presentation}
+\item{pin_to_top}{A character vector of response values to pin to the top of
+the result presentation}
 
-\item{pin_to_bottom}{A character vector of response values to pin to the bottom of the result presentation}
+\item{pin_to_bottom}{A character vector of response values to pin to the
+bottom of the result presentation}
 
 \item{var}{An internal crosstabs elements (Usually ct$results[[x]])}
 

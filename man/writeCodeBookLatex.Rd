@@ -48,15 +48,19 @@ LaTeX should be escaped.}
 
 \item{suppress_zero_counts}{Should zero count categories be supressed? Defaults to FALSE.}
 
-\item{appendix}{Should categorical questions with greater than 20 categories be put in an apppendix? Defaults to TRUE.}
+\item{appendix}{Should categorical questions with greater than 20 categories be put in an
+apppendix? Defaults to TRUE.}
 
-\item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo automatically. Also accepts a path to a logo file.}
+\item{logo}{Default to NULL. A character string one of: yougov or ygblue. Includes the logo
+automatically. Also accepts a path to a logo file.}
 
-\item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts "c", "l", or "r". Default position is left aligned tables.}
+\item{position}{Defaults to NULL. Identifies the position of the table on the page. Accepts
+"c", "l", or "r". Default position is left aligned tables.}
 
 \item{path}{The path to place .tex and .pdf files.}
 
-\item{filename}{A string. The desired basename of the resulting file with no extension (i.e, "mycodebook")}
+\item{filename}{A string. The desired basename of the resulting file with no extension
+(i.e, "mycodebook")}
 
 \item{logging}{Leave logs in the working directory, defaults to FALSE}
 
