@@ -2,7 +2,7 @@
 % Please edit documentation in R/catArrayTexAdjustments.R
 \name{getCatArrayColNames}
 \alias{getCatArrayColNames}
-\title{getter for Array column names}
+\title{getter for categoricalArray column names}
 \usage{
 getCatArrayColNames(result)
 }
@@ -10,5 +10,5 @@ getCatArrayColNames(result)
 \item{result}{A crosstab result sub-object that is typically passed to \code{\link{writeLatex}}}
 }
 \description{
-getter for Array column names
+getter for categoricalArray column names
 }

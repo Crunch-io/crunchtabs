@@ -15,15 +15,15 @@ catArrayTexAdjustments(
 \arguments{
 \item{result}{A crosstab result sub-object that is typically passed to \code{\link{writeLatex}}}
 
+\item{category_aliases}{Defaults to NULL. Otherwise, the categories will be itemized using
+item_alias.}
+
 \item{category_text}{Defaults to NULL. Otherwise, overwrites the category text}
 
 \item{width}{A number representing the width of the LaTeX parbox that contains the category
 list}
 
 \item{bullets}{A logical. Defaults to TRUE. Should the output have bullets?}
-
-\item{category_alias}{Defaults to NULL. Otherwise, the categories will be itemized using
-item_alias.}
 }
 \description{
 If a user wishes to show category/statement data that is too large to be shown comfortably on
