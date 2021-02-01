@@ -7,30 +7,30 @@
 relabel(ct, ...)
 }
 \arguments{
-\item{ct}{An object from \code{\link{crosstabs}}, \code{\link{recontact_report}},
-or \code{\link{tracking_report}}}
+\item{ct}{An object from \link{\code{crosstabs}}, \link{\code{recontact_report}},
+or \link{\code{tracking_report}}}
 
-\item{...}{One or more relabel objects. See \code{\link{relabelApply}}}
+\item{...}{One or more relabel objects. See \link{\code{relabelApply}}}
 }
 \description{
-This function is a passthrough that allows you to relabel question items and options for
-presentation before writing to latex or excel. The relabeling must occur in questionnaire order.
-As it is received by crunch, so should it be set by your relabeling objects.
+This function is a passthrough that allows you to relabel question items, options, question
+descritions and notes before writing to latex or excel. The relabeling must occur in
+questionnaire order. As it is received by crunch, so should it be set by your relabeling objects.
 }
 \details{
 There are two important warnings to consider:
 \itemize{
 \item Relabeling should always occur before applying any kind of sorting using the
-\code{\link{sortAlias}} function to avoid situations where labels could be applied
+\link{\code{sortAlias}} function to avoid situations where labels could be applied
 inappropriately.
 \item If your results object is a tracking report or recontact it is strongly recommended that you
-set your wave labels in the \code{\link{recontact_toplines}} or \code{\link{tracking_report}}.
+set your wave labels in the \link{\code{recontact_toplines}} or \link{\code{tracking_report}}.
 However, if you must set it here options would be the categories and items would be the wave
 names. We cannot account for aliases with only partial data (n-1 waves), you must set the
 wave names in order.
 }
-
-#' @examples
+}
+\examples{
 \dontrun{
 library(crunchtabs)
 login()
@@ -49,4 +49,5 @@ ct <- relabel(ct,
 )
 writeLatex(ct, pdf = TRUE)
 }
+
 }
