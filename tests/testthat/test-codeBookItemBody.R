@@ -30,6 +30,39 @@ test_that("codeBookItemBody CategoricalVariable", {
   )
 })
 
+
+test_that("codeBookItemBody long label CategoricalVariable", {
+
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  smry <- structure(list(id = c("1", "2", "3", "8", "9"), name = c(
+    paste0(rep("OMG Cats!", 9), collapse = " "),
+    "Dog", "Bird", "Skipped", "Not Asked"
+  ), n = c(
+    "6", "4", "3",
+    "3", "4"
+  )), class = "data.frame", row.names = c(NA, -5L))
+  mockery::stub(
+    codeBookItemBody.CategoricalVariable,
+    "codeBookSummary.CategoricalVariable", smry
+  )
+  res <- codeBookItemBody(ds$q1)
+
+  expect_equal(
+    attributes(res)$kable_meta$contents,
+    c(
+      "\\{Code\\} & \\{Label\\} & \\{Count\\}",
+      "1 & OMG Cats! OMG Cats! OMG Cats! OMG Cats! OMG Cats! OMG Cats! OMG Cats! OMG Cats! OMG Cats! & 6", "2 & Dog & 4", "3 & Bird & 3",
+      "8 & Skipped & 3", "9 & Not Asked & 4"
+    )
+  )
+
+  expect_equal(
+    attributes(res)$kable_meta$align_vector_origin,
+    c("J", "l", "J")
+  )
+  expect_true(grepl("5.25in", res))
+})
+
 test_that("codeBookItemBody CategoricalVariable", {
   set.seed(42)
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))

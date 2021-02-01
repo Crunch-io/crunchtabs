@@ -91,3 +91,11 @@ test_that("Returns weighted median", {
 
   expect_equal(crunchtabs:::calcTabMedianInsert(vec, var_cats), med)
 })
+
+test_that("applyInsert 3 dim var", {
+  vec <- sample(1:5, 24, rep = TRUE)
+  dim(vec) <- c(3, 2, 4)
+  a_func = function(x) x
+
+  expect_equal(applyInsert(vec, var_cats, a_func), NULL)
+})

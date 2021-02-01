@@ -52,9 +52,59 @@ test_that("codeBookSummary correct for CategoricalVariable", {
   )
 })
 
-test_that("codeBookSummary correct for CategoricalArrayVariable", {
 
+test_that("codeBookSummary correct for CategoricalVariable", {
+  options("crunchtabs.codebook.suppress.zeros" = TRUE)
+  ds <- readRDS(test_path("fixtures/example_dataset.rds"))
+  cats <- new("Categories", .Data = list(
+    new("Category", .Data = list(
+      1L,
+      FALSE, "selected", 1L
+    ), names = c("id", "missing", "name", "numeric_value")),
+    new("Category", .Data = list(2L, FALSE, "Dog", 2L), names = c(
+      "id",
+      "missing", "name", "numeric_value"
+    )), new("Category", .Data = list(
+      3L, FALSE, "not selected", 3L
+    ), names = c(
+      "id", "missing", "name",
+      "numeric_value"
+    )), new("Category", .Data = list(
+      8L, TRUE, "Skipped",
+      8L
+    ), names = c("id", "missing", "name", "numeric_value")),
+    new("Category",
+        .Data = list(9L, TRUE, "Not Asked", 9L),
+        names = c("id", "missing", "name", "numeric_value")
+    ),
+    new("Category",
+        .Data = list(-1L, TRUE, "No Data", NULL),
+        names = c("id", "missing", "name", "numeric_value")
+    )
+  ))
+
+  tab <- structure(c(Cat = 6, Dog = 4, Bird = 3), .Dim = 3L, .Dimnames = list(
+    q1 = c("Cat", "Dog", "Bird")
+  ), class = "table")
+
+  mockery::stub(where = codeBookSummary.CategoricalVariable, what = "crunch::categories",
+                how = function(...) cats)
+  mockery::stub(codeBookSummary.CategoricalVariable, "crunch::table", function(...) tab)
+
+  r <- codeBookSummary(ds$q1)
+  expect_equal(
+    r,
+    structure(
+      list(
+        id = c("1", "2", "3"),
+        name = c("Cat", "Dog", "Bird"),
+        n = c("6", "4", "3")
+      ),
+      class = "data.frame", row.names = c(NA, -3L)
+    )
+  )
 })
+
 
 test_that("codeBookSummary correct for MultipleResponseVariable", {
 
@@ -214,4 +264,26 @@ test_that("scolumnAlign uses S when maxnchar > 6", {
                   b = rep(NA, 4), stringsAsFactors = F)
   align <- scolumnAlign(k, c("d", "l"))
   expect_equal(align, c("S[table-format=20]", "l"))
+})
+
+test_that("codeBookSummary categoricalVariable, multpleResponse type", {
+  mockery::stub(
+    codeBookSummary.CategoricalVariable,
+    "crunch::categories(x)",
+    NULL
+  )
+
+  responses <- structure(list(2L, 1L, 9L, 8L, -1L, FALSE, FALSE, TRUE, TRUE,
+    TRUE, "not selected", "selected", "not asked", "skipped",
+    "No Data", NULL, NULL, 9L, 8L, NULL, FALSE, TRUE, 9L, 8L,
+    -1L), .Dim = c(5L, 5L), .Dimnames = list(NULL, c("id", "missing",
+    "name", "numeric_value", "selected")))
+
+  mockery::stub(
+    codeBookSummary.CategoricalVariable,
+    "do.call",
+    responses
+  )
+
+
 })
