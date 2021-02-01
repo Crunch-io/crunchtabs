@@ -136,10 +136,9 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) { # nolint
 
   if (nrow(k) > 1) {
     k <- k[order(as.numeric(k[, 1])), ]
-    k <- as.data.frame(k, stringsAsFactors = F)
-  } else {
-    k <- as.data.frame(k, stringsAsFactors = F)
   }
+
+  k <- as.data.frame(k, stringsAsFactors = F)
 
   rownames(k) <- NULL
   names(k) <- c("Code", "Label", "Count")
@@ -190,12 +189,12 @@ codeBookItemBody.CategoricalVariable <- function(x, ...) { # nolint
 
     if (max(nchar(k$`{Label}`)) > 80) {
       kab <- kab %>%
-        kableExtra::column_spec(2, width = "5.25in") %>%
-        kable_styling_defaults(...)
-    } else {
-      kab <- kab %>%
-        kable_styling_defaults(...)
+        kableExtra::column_spec(2, width = "5.25in")
     }
+
+    kab <- kab %>%
+        kable_styling_defaults(...)
+
     # Fix for square braces in options
     gsub("\\hspace*{0in}", "", kab, fixed = TRUE)
   }

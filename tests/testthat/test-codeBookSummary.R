@@ -1,6 +1,7 @@
 context("codeBookSummary")
 
 test_that("codeBookSummary correct for CategoricalVariable", {
+  options("crunchtabs.codebook.suppress.zeros" = TRUE)
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
   cats <- new("Categories", .Data = list(
     new("Category", .Data = list(
@@ -51,7 +52,12 @@ test_that("codeBookSummary correct for CategoricalVariable", {
   )
 })
 
+test_that("codeBookSummary correct for CategoricalArrayVariable", {
+
+})
+
 test_that("codeBookSummary correct for MultipleResponseVariable", {
+
   ds <- readRDS(test_path("fixtures/example_dataset.rds"))
 
   cats <- new("Categories", .Data = list(

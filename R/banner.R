@@ -159,11 +159,11 @@ recode_categories <- function(alias, responses, recodes) {
     })
   }
 
-  if (!is.null(recodes) && ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
-    (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))]))))) {
-    stop("Combining categories is not currently supported. Please check '", alias, "' recodes.",
-         call. = FALSE)
-  }
+  # if (!is.null(recodes) && ((!is.null(recodes[[".default"]]) && !is.na(recodes[[".default"]])) ||
+  #   (any(duplicated(unlist(recodes)[!is.na(unlist(recodes))]))))) {
+  #   stop("Combining categories is not currently supported. Please check '", alias, "' recodes.",
+  #        call. = FALSE)
+  # }
   if (!is.null(recodes[[".default"]])) {
     recodes[setdiff(names(responses), names(recodes))] <- recodes[[".default"]]
     recodes[[".default"]] <- NULL
