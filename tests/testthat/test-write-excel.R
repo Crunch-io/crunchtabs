@@ -41,3 +41,32 @@ with_temp_dir({
     expect_is(writeExcel(cs, theme = theme, save_workbook = FALSE), "Workbook")
   })
 })
+
+
+test_that("No filename and save_workbook", {
+  expect_error(
+    writeExcel(list(), filename = NULL, save_workbook = FALSE),
+    "No filename provided. If save"
+  )
+})
+
+test_that("No filename and save_workbook", {
+  expect_error(
+    writeExcel(list(), filename = "Hello", save_workbook = FALSE),
+    "The expected class for "
+  )
+})
+
+test_that("Workbook is not null", {
+  expect_error(
+    writeExcel(list(), filename = NULL, wb = list()),
+    "The expected class for "
+  )
+})
+
+test_that("n_or_percent stop", {
+  expect_error(
+    writeExcel(list(), filename = NULL, wb = NULL, n_or_percent = "Cookies"),
+    "`n_or_percent` must be a character"
+  )
+})
