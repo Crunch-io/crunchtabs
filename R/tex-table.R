@@ -337,7 +337,7 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) { # nolint
   col_width <- paste(round(1 / col_names_len, digits = 2), "\\mywidth", sep = "")
 
   # use heuristic for scale questions
-  if (col_names_len >= 10) {
+  if (col_names_len >= 10) { # nocov start
     # NPR: Trying to interpret what this code does, it's looking for
     # something like a 0-10 scale where the endpoints are labeled like
     # "0 - Not at all likely" and "10 - Extremely likely" and the middle
@@ -385,6 +385,8 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) { # nolint
       # here but not earlier where col_width is previously defined
       col_width <- paste(round((5.5 - theme$format_label_column$col_width) /
         col_names_len - 0.11, 3), "in", sep = "")
+
+      # nocov end
     }
   }
 

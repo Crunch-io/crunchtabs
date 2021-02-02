@@ -148,6 +148,7 @@ write_and_style <- function(wb, ws, data, style, start_row, cols, write_as_rows)
 }
 
 write_report_desc <- function(wb, ws, theme, styles, title, subtitle) {
+  # nocov start
   if (!is.null(theme$logo$file)) {
     openxlsx::insertImage(
       wb, ws,
@@ -161,6 +162,7 @@ write_report_desc <- function(wb, ws, theme, styles, title, subtitle) {
     )
   }
 
+  # nocov end
   start_row <- 1
   if (!is.null(theme$format_title) && !is.null(title)) {
     start_row <- write_and_style(wb, ws, title, styles$format_title, start_row = start_row,

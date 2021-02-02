@@ -41,7 +41,7 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
     if (!is.null(weights)) {
       if (weights[1] == default_weight) {
         p1 <- groupings[[question]][1]
-      } else {
+      } else { # nocov start
         p1 <- paste0(groupings[[question]][1], "_", weights[1])
       }
 
@@ -54,6 +54,7 @@ recontact_toplines <- function(dataset, questions, suffixes, labels,
       p1 <- groupings[[question]][1]
       p2 <- groupings[[question]][2]
     }
+    # nocov end
 
     ct$results[[question]] <- as.ToplineCategoricalArray(
       questions = list(ct$results[[p1]], ct$results[[p2]]),
