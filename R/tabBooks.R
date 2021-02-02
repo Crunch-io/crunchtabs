@@ -152,7 +152,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE,
     })
 
     names(pbook) <- names(bbook) <- names(cbook) <- names(wbbook) <- banner_var_names
-
+    # nocov start
     for (bi in banner_var_names) {
       if (!identical(banner_flatten[[bi]]$categories_out, banner_flatten[[bi]]$categories)) {
         pbook[[bi]] <- bannerDataRecode(pbook[[bi]], banner_flatten[[bi]])
@@ -161,6 +161,7 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE,
         wbbook[[bi]] <- bannerDataRecode(wbbook[[bi]], banner_flatten[[bi]])
       }
     }
+    # nocov end
 
     sapply(valiases, function(valias) {
       ri <- which(valiases %in% valias)

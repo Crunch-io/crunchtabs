@@ -200,7 +200,7 @@ sortResults_inner <- function(r, descending, alpha, fixed, pin_to_top, pin_to_bo
   if (length(pin_to_top) & length(pin_to_bottom)) {
     stop("Ambiguous specification of pin_to_top and pin_to_bottom. Use fixed=c() param instead.")
   }
-
+  # nocov start
   if (length(fixed) > 0) {
     stopifnot(all(rownames(r) %in% fixed))
     stopifnot(all(fixed %in% rownames(r)))
@@ -210,7 +210,7 @@ sortResults_inner <- function(r, descending, alpha, fixed, pin_to_top, pin_to_bo
     )
     r <- r[ord, ]
   }
-
+  # nocov end
   # Return the r and object
   list(
     r = r,

@@ -79,6 +79,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) { # no
 
   res <- merge(l, smry, sort = FALSE)
 
+  # nocov start
   if (multiple) {
     res <- res[with(res, order(id)), ]
   } else {
@@ -92,7 +93,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) { # no
     )
     names(res) <- c("id", "name", "n")
   }
-
+  # nocov end
   if (getOption("crunchtabs.codebook.suppress.zeros", default = FALSE)) {
     warning("Zero count categoricals are supressed by options")
     res <- res[res$n != "0", ]
@@ -144,7 +145,7 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) { # nolint
 #' CategoricalArrayVariable
 #' @export
 codeBookSummary.CategoricalArrayVariable <- function(x, ...) { # nolint
-  codeBookSummary.MultipleResponseVariable(x, ...)
+  codeBookSummary.MultipleResponseVariable(x, ...) # nocov
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a NumericVariable
