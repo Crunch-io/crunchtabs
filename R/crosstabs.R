@@ -94,7 +94,7 @@ crosstabs <- function(
   # in vars and the ds
 
   vars_out <- if (codebook) {
-    vars
+    vars # nocov
   } else {
     intersect(
       vars,

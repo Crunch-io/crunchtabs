@@ -105,10 +105,12 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
     for (i in which(colSums(df$min_cell_body) != 0)) {
       data$body[df$min_cell_body[, i], i] <- applyLatexStyle(
           data$body[df$min_cell_body[, i], i], theme$format_min_base)
+      # nocov start
       for (nm in intersect(mask_vars, names(data))) {
         data[[nm]][, df$min_cell] <- applyLatexStyle(
           data[[nm]][, df$min_cell], theme$format_min_base)
       }
+      # nocov end
     }
   }
 

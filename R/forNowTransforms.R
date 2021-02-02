@@ -32,7 +32,7 @@ calcTabInsertions <- function(vec, elements, var_cats) {
       combos <- element$categories
       which.cats <- names(var_cats)[crunch::ids(var_cats) %in% combos]
       if (any(is.na(var_cats)[crunch::ids(var_cats) %in% combos])) {
-        return(NA)
+        return(NA) # nocov
       }
       if (dim(vec)[2] == 1) {
         return(sum(vec[which.cats, ]))
@@ -107,7 +107,7 @@ calcTabMeanInsert <- function(vec, var_cats) {
 calcTabMedianInsert <- function(vec, var_cats) {
   ok <- !is.na(vec) & vec != 0 & !is.na(crunch::values(var_cats))
   if (all(!ok)) {
-    return(NA)
+    return(NA) # nocov
   }
   num_values <- crunch::values(var_cats[ok])
   counts <- vec[ok]
