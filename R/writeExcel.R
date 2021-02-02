@@ -422,6 +422,7 @@ writeExcelVar <- function(wb, ws, theme, styles, banner_name, var, banner_info,
 
 hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, banner_info, styles,
                        crow, ccol) {
+  # nocov start
   pvals <- c(0.1, 0.05, 0.01, 0.001)
   pcol_pos <- c("bg_col_green1", "bg_col_green2", "bg_col_green3", "bg_col_green4")
   pcol_neg <- c("bg_col_red1", "bg_col_red2", "bg_col_red3", "bg_col_red4")
@@ -457,6 +458,7 @@ hypho_test <- function(wb, ws, cross_tab_var, banner_name, margin, banner_info, 
     rows = crow + inds[, 1] - 1,
     cols = ccol + inds[, 2] - 1, gridExpand = FALSE, stack = TRUE
   )
+  # nocov end
 }
 
 writeReportGeneral <- function(data_summary, banner, filename, wb, theme,
