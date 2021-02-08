@@ -89,7 +89,7 @@ theme <- themeNew(..., latex_flip_specific_grids = c("q1"))
 
 While recontact reports are designed for questions asked in the same dataset, we also have the ability to present questions asked in multiple datasets in a similar fashion.
 
-In the code block below, we illustrate data setup and an example call to `tracking_reports`. While our example is not prepresentative of a real-life situation, the manner in which you would need to manage data are the same.
+In the code block below, we illustrate data setup and an example call to `trackingReports`. While our example is not prepresentative of a real-life situation, the manner in which you would need to manage data are the same.
 
 ```{r, eval = FALSE}
 # Create example datasets as waves 1,2 and 3.
@@ -119,7 +119,7 @@ theme <- themeNew(
 )
 
 # Prepare the data object
-ct <- tracking_report(
+ct <- trackingReport(
   dataset_list = list(ds1, ds2, ds3), 
   vars = c("allpets", "q1", "petloc"),
   wave_labels = NULL
@@ -167,7 +167,7 @@ ds_list <- lapply(ds_names, loadDataset)
 vars <- c("noknock_supop")
 
 # Create the results object
-ct <- tracking_report(
+ct <- trackingReport(
   ds_list, wave_label = places, 
   vars = vars)
 
@@ -177,7 +177,7 @@ writeLatex(ct, pdf = TRUE)
 
 ### Including One-off Questions
 
-While the default behavior of `tracking_report` and `recontact_report` is to only include those questions that have been asked more than once, it is often desirable to show questions that have only been asked in a certain wave of your survey or during one phase of your recontact. In both cases, we provide a `vars` argument, that when provided will identify all of the questions to be presented in the output. Importantly, the order of this `vars` argument will also match that of the output PDF.
+While the default behavior of `trackingReport` and `recontact_report` is to only include those questions that have been asked more than once, it is often desirable to show questions that have only been asked in a certain wave of your survey or during one phase of your recontact. In both cases, we provide a `vars` argument, that when provided will identify all of the questions to be presented in the output. Importantly, the order of this `vars` argument will also match that of the output PDF.
 
 ```{r, eval = FALSE}
 # For recontact_toplines
@@ -192,10 +192,10 @@ ct <- recontact_toplines(
   vars = c("q1", "other_alias","country")
 )
 
-# For tracking_report
+# For trackingReport
 
 # The resulting report would show allpets tracking, q1 tracking, petloc tracking and alias_available_in_ds3_only
-ct <- tracking_report(
+ct <- trackingReport(
   dataset_list = list(ds1, ds2, ds3), 
   vars = c("allpets", "q1", "petloc", "alias_available_in_ds3_only"),
   wave_labels = NULL

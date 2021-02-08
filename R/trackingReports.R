@@ -13,9 +13,11 @@
 #' recommended in a tracking report.
 #' @param labels The labels for each wave. Should be of a length that
 #' matches the number of datasets.
+#' @param show_once A vector of aliases whose values may be available in one or
+#' more datasets will only be shown for the latest data set in `dataset_list`.
 #' @export
-tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
-  tabs <- tracking_report_tabs(dataset_list, vars, weight)
+trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, show_once = NULL) {
+  tabs <- trackingReport_tabs(dataset_list, vars, weight)
 
   if (is.null(labels)) {
     labels <- paste0("Wave ", seq_along(dataset_list))
@@ -46,8 +48,16 @@ tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
       return(x$results[[v]])
     })
     results_available <- which(!unlist(lapply(var_results, is.null)))
-    first_var_result <- which(!unlist(lapply(var_results, is.null)))[1]
-    rebuilt_results$results[[v]] <- var_results[[first_var_result]]
+    first_var_result <- head(which(!unlist(lapply(var_results, is.null))), n = 1)
+    last_var_result <- tail(which(!unlist(lapply(var_results, is.null))), n = 1)
+
+
+    if(v %in% show_once) {
+      rebuilt_results$results[[v]] <- var_results[[last_var_result]]
+    } else {
+      rebuilt_results$results[[v]] <- var_results[[first_var_result]]
+    }
+
     rebuilt_results$results[[v]]$available_at <- results_available
 
 
@@ -80,7 +90,11 @@ tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
   # represent the simplest case, we will deal with them first.
 
   for (v in vars) {
-    if (rebuilt_results$results[[v]]$availability == "single") {
+
+    c1 <- rebuilt_results$results[[v]]$availability == "single"
+    c2 <- v %in% show_once
+
+    if (c1 || c2) {
       next
     }
 
@@ -88,6 +102,9 @@ tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
 
     message("Preparing: ", v) # TODO: Delete me after feature dev
     result_list <- lapply(tabs, function(x) x$results[[v]])
+
+
+
     if (rebuilt_results$results[[v]]$type == "categorical_array") {
       rebuilt_results$results <- c(
         catArrayToCategoricals(
@@ -116,7 +133,7 @@ tracking_report <- function(dataset_list, vars, labels = NULL, weight = NULL) {
 }
 
 #'
-tracking_report_tabs <- function(datasets, vars, weight = NULL) {
+trackingReport_tabs <- function(datasets, vars, weight = NULL) {
   lapply(
     datasets,
     function(x) {

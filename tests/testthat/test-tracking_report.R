@@ -1,19 +1,19 @@
-context("tracking_report_tabs")
+context("trackingReport_tabs")
 
 test_that("tracking report returns a list of results", {
-  mockery::stub(tracking_report_tabs, "crosstabs", "resultsObject")
-  mockery::stub(tracking_report_tabs, "weight", NULL)
-  res <- tracking_report_tabs(list("a", "b", "c"), vars = c(), weight = NULL)
+  mockery::stub(trackingReport_tabs, "crosstabs", "resultsObject")
+  mockery::stub(trackingReport_tabs, "weight", NULL)
+  res <- trackingReport_tabs(list("a", "b", "c"), vars = c(), weight = NULL)
   expect_equal(unlist(res), c("resultsObject", "resultsObject", "resultsObject"))
 })
 
-context("tracking_report")
+context("trackingReport")
 
 test_that("tracking report returns without cat arrays", {
-  dataset_list <- readRDS(test_path("fixtures/tracking_report-dataset_list.rds"))
-  ct <- readRDS(test_path("fixtures/tracking_report_tabs-crosstabs.rds"))
-  mockery::stub(tracking_report, "tracking_report_tabs", list(ct, ct, ct))
-  res <- tracking_report(dataset_list, vars = "allpets")
+  dataset_list <- readRDS(test_path("fixtures/trackingReport-dataset_list.rds"))
+  ct <- readRDS(test_path("fixtures/trackingReport_tabs-crosstabs.rds"))
+  mockery::stub(trackingReport, "trackingReport_tabs", list(ct, ct, ct))
+  res <- trackingReport(dataset_list, vars = "allpets")
 
   expect_equal(
     res$results$allpets$crosstabs$Results$`___total___`$proportions,
@@ -28,11 +28,11 @@ test_that("tracking report returns without cat arrays", {
 })
 
 test_that("tracking report with cat arrays", {
-  dataset_list <- readRDS(test_path("fixtures/tracking_report-dataset_list.rds"))
-  tabs <- readRDS(test_path("fixtures/tracking_report_tabs-petloc.rds"))
-  mockery::stub(tracking_report, "tracking_report_tabs", tabs)
-  # mockery::stub(tracking_report, "tracking_report_tabs", questions)
-  res <- suppressWarnings(tracking_report(dataset_list, vars = "petloc"))
+  dataset_list <- readRDS(test_path("fixtures/trackingReport-dataset_list.rds"))
+  tabs <- readRDS(test_path("fixtures/trackingReport_tabs-petloc.rds"))
+  mockery::stub(trackingReport, "trackingReport_tabs", tabs)
+  # mockery::stub(trackingReport, "trackingReport_tabs", questions)
+  res <- suppressWarnings(trackingReport(dataset_list, vars = "petloc"))
 
   expect_named(res$results, c("petloc1", "petloc2"))
   expect_equal(

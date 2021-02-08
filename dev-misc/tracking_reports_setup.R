@@ -47,7 +47,7 @@ thema <- themeNew(
   one_per_sheet = FALSE
 )
 
-ct <- tracking_report(
+ct <- trackingReport(
   list(ds1, ds2, ds3),
   vars = c("allpets", "q1", "only_wave2", "avail_wave13")
 )

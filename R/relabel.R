@@ -10,7 +10,7 @@
 #' \link{\code{sortAlias}} function to avoid situations where labels could be applied
 #' inappropriately.
 #' * If your results object is a tracking report or recontact it is strongly recommended that you
-#' set your wave labels in the \link{\code{recontact_toplines}} or \link{\code{tracking_report}}.
+#' set your wave labels in the \link{\code{recontact_toplines}} or \link{\code{trackingReport}}.
 #' However, if you must set it here options would be the categories and items would be the wave
 #' names. We cannot account for aliases with only partial data (n-1 waves), you must set the
 #' wave names in order.
@@ -37,7 +37,7 @@
 #'
 #' @md
 #' @param ct An object from \link{\code{crosstabs}}, \link{\code{recontact_report}},
-#' or \link{\code{tracking_report}}
+#' or \link{\code{trackingReport}}
 #' @param ... One or more relabel objects. See \link{\code{relabelApply}}
 #' @export
 relabel <- function(ct, ...) {
