@@ -255,7 +255,7 @@ codeBookItemBody.NumericVariable <- function(x, meta = NULL, ...) { # nolint
 codeBookItemBody.TextVariable <- function(x, meta = NULL, ...) {
   k <- codeBookSummary(x, meta)
   names(k) <- curlyWrap(names(k))
-  alignment <- c("d")
+  alignment <- c("c")
 
   kableExtra::kable(k, "latex",
                     booktabs = TRUE, longtable = TRUE,

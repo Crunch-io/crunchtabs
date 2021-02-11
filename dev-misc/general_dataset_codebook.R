@@ -35,4 +35,3 @@ meta <- data.frame(
 
 writeCodeBookLatexGeneric(ds, meta)
 
-example_meta <- read.csv("~/Downloads/jimmy_vf_recode_suggestions.csv")

@@ -38,16 +38,30 @@ codeBookSummary.default <- function(x, meta, ...) {
 codeBookSummary.factor <- function(x, meta, ...) {
   # Should return
   # id, name, n
-  labels = trimws(unname(unlist(read.csv(text = meta$labels, header = FALSE))))
-  fac <- factor(x, labels = labels)
+
+  labs = na.omit(trimws(unname(unlist(read.csv(text = meta$labels, header = FALSE)))))
+
+  labs[labs == " " & !is.na(labs)] <- NA
+  x <- as.character(x)
+  x[x == " " & !is.na(x)] <- NA
+
+  if(all(is.na(x))) {
+    fac <- factor(x, labels = labs, levels = seq_along(labs))
+  } else {
+    fac <- factor(x, labels = labs)
+  }
+
   s <- table(fac, useNA = "ifany")
   r <- data.frame(
     id = seq_along(unique(fac)),
     name = names(s),
     n = as.numeric(s)
   )
-  r$id[is.na(r$name)] <- NA_integer_
-  r$name[is.na(r$name)] <- "Missing"
+
+  if(is.na(r$name)) {
+    r$id[is.na(r$name)] <- NA_integer_
+    r$name[is.na(r$name)] <- "Missing"
+  }
 
   r
 }

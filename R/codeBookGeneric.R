@@ -46,12 +46,6 @@ writeCodeBookLatexGeneric <- function(
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
-  for (i in seq_len(nrow(meta))) {
-    if(!is.na(meta$labels[i])) {
-      ds[[meta$alias[i]]] <- factor(ds[[meta$alias[i]]])
-    }
-  }
-
   # Initialize CodeBook Latex ----
   codebook <- readLines(system.file(
     "codebook_latex_wrap.tex",
