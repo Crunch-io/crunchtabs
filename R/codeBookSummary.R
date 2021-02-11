@@ -6,14 +6,14 @@
 #' @param x A single variable from a crunch dataset
 #' @param ... Additional arguments, unused.
 #' @export
-codeBookSummary <- function(x, ...) {
-  UseMethod("codeBookSummary", x)
+codeBookSummary <- function(x, meta, ...) {
+  UseMethod("codeBookSummary")
 }
 
 #' @describeIn codeBookSummary The default, throws out anything that does not
 #' match expected crunch variable classes
 #' @export
-codeBookSummary.default <- function(x, ...) {
+codeBookSummary.default <- function(x, meta, ...) {
   wrong_class_error(
     x,
     c(
@@ -22,10 +22,89 @@ codeBookSummary.default <- function(x, ...) {
       "MultipleResponseVariable",
       "TextVariable",
       "NumericVariable",
-      "DatetimeVariable"
+      "DatetimeVariable",
+      "factor",
+      "character",
+      "integer",
+      "numeric"
     ),
     "codeBookSummary"
   )
+}
+
+#' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a factor
+#' @param meta A list containning question meta data
+#' @export
+codeBookSummary.factor <- function(x, meta, ...) {
+  # Should return
+  # id, name, n
+  labels = trimws(unname(unlist(read.csv(text = meta$labels, header = FALSE))))
+  fac <- factor(x, labels = labels)
+  s <- table(fac, useNA = "ifany")
+  r <- data.frame(
+    id = seq_along(unique(fac)),
+    name = names(s),
+    n = as.numeric(s)
+  )
+  r$id[is.na(r$name)] <- NA_integer_
+  r$name[is.na(r$name)] <- "Missing"
+
+  r
+}
+
+codeBookSummary.numeric <- function(x, meta, ...) {
+  mu <- round(mean(x, na.rm = T), 2)
+  std <- round(sd(x, na.rm = TRUE))
+  minima <- round(min(x, na.rm = T), 2)
+  maxima <- round(max(x, na.rm = T), 2)
+  missings <- sum(is.na(x))
+  n <- length(is.na(x))
+
+  # type_row <- c("Type", "Numeric")
+  # range_row <- c("Range", paste0("[", minima,", ", maxima,"]"))
+
+  r <- as.data.frame(
+    matrix(c(
+      mu,
+      std,
+      minima,
+      maxima,
+      n - missings,
+      missings
+    ), nrow = 1)
+  )
+
+  names(r) <- c("Mean", "SD", "Min", "Max", "n", "Missing")
+  rownames(r) <- NULL
+  r
+}
+
+codeBookSummary.integer <- codeBookSummary.numeric
+
+codeBookSummary.character <- function(x, meta, ...) {
+  filled_verbs <- x
+  filled_verbs <- filled_verbs[!is.na(filled_verbs)]
+  filled_verbs <- filled_verbs[!filled_verbs %in% c("", "__NA__")]
+  # verbsamp <- sample(filled_verbs, 5, replace = TRUE)
+  # verbsamp <- paste0(substr(verbsamp, start = 1, stop = 27),
+  #       "...",
+  #       collapse = ", "
+  # )
+  filled <- length(filled_verbs)
+  missing <- length(x) - filled
+
+  r <- as.data.frame(
+    matrix(c(
+      filled,
+      missing,
+      ifelse(filled == 0, 0, max(nchar(filled_verbs)))
+    ), nrow = 1, ncol = 3),
+    stringsAsFactors = FALSE
+  )
+
+  names(r) <- c("Filled", "Missing", "Max Length")
+  rownames(r) <- NULL
+  r
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a
@@ -33,7 +112,7 @@ codeBookSummary.default <- function(x, ...) {
 #' @importFrom utils type.convert
 #' @param multiple Is this a MultipleResponse or CategoricalArray variable?
 #' @export
-codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) { # nolint
+codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, meta = NULL, ...) { # nolint
   cats <- crunch::categories(x)
   responses <- suppressWarnings(do.call(rbind, cats@.Data))
   l <- list()
@@ -105,7 +184,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, ...) { # no
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a
 #' MultipleResponseVariable
 #' @export
-codeBookSummary.MultipleResponseVariable <- function(x, ...) { # nolint
+codeBookSummary.MultipleResponseVariable <- function(x, meta = NULL, ...) { # nolint
   responses <- list()
   sv <- crunch::subvariables(x)
   subvars <- names(sv)
@@ -144,13 +223,13 @@ codeBookSummary.MultipleResponseVariable <- function(x, ...) { # nolint
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a
 #' CategoricalArrayVariable
 #' @export
-codeBookSummary.CategoricalArrayVariable <- function(x, ...) { # nolint
+codeBookSummary.CategoricalArrayVariable <- function(x, meta = NULL, ...) { # nolint
   codeBookSummary.MultipleResponseVariable(x, ...) # nocov
 }
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a NumericVariable
 #' @export
-codeBookSummary.NumericVariable <- function(x, ...) { # nolint
+codeBookSummary.NumericVariable <- function(x, meta = NULL, ...) { # nolint
   x <- as.vector(x)
   mu <- round(mean(x, na.rm = T), 2)
   std <- round(sd(x, na.rm = TRUE))
@@ -180,7 +259,7 @@ codeBookSummary.NumericVariable <- function(x, ...) { # nolint
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a TextVariable
 #' @export
-codeBookSummary.TextVariable <- function(x, ...) {
+codeBookSummary.TextVariable <- function(x, meta = NULL, ...) {
   filled_verbs <- as.vector(x)
   filled_verbs <- filled_verbs[!is.na(filled_verbs)]
   filled_verbs <- filled_verbs[!filled_verbs %in% c("", "__NA__")]
@@ -208,7 +287,7 @@ codeBookSummary.TextVariable <- function(x, ...) {
 
 #' @describeIn codeBookSummary Prepares a codeBookSummary data.frame for a DatetimeVaraible
 #' @export
-codeBookSummary.DatetimeVariable <- function(x, ...) { # nolint
+codeBookSummary.DatetimeVariable <- function(x, meta = NULL, ...) { # nolint
   x <- as.vector(x)
   minima <- min(x, na.rm = T)
   maxima <- max(x, na.rm = T)

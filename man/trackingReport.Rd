@@ -4,7 +4,13 @@
 \alias{trackingReport}
 \title{Create a multi-dataset tracking report}
 \usage{
-trackingReport(dataset_list, vars, labels = NULL, weight = NULL)
+trackingReport(
+  dataset_list,
+  vars,
+  labels = NULL,
+  weight = NULL,
+  show_once = NULL
+)
 }
 \arguments{
 \item{dataset_list}{A list of two or more crunch datasets. Datasets should be
@@ -21,6 +27,9 @@ matches the number of datasets.}
 \item{weight}{NULL to accept each dataset's current weight or a single alias
 that is available in all datasets as a string. Multiple weights is not
 recommended in a tracking report.}
+
+\item{show_once}{A vector of aliases whose values may be available in one or
+more datasets will only be shown for the latest data set in `dataset_list`.}
 }
 \description{
 This function provides a method for creating a multi-dataset tracking report

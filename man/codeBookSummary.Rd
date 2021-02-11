@@ -3,6 +3,7 @@
 \name{codeBookSummary}
 \alias{codeBookSummary}
 \alias{codeBookSummary.default}
+\alias{codeBookSummary.factor}
 \alias{codeBookSummary.CategoricalVariable}
 \alias{codeBookSummary.MultipleResponseVariable}
 \alias{codeBookSummary.CategoricalArrayVariable}
@@ -14,6 +15,8 @@
 codeBookSummary(x, ...)
 
 \method{codeBookSummary}{default}(x, ...)
+
+\method{codeBookSummary}{factor}(x, meta, ...)
 
 \method{codeBookSummary}{CategoricalVariable}(x, multiple = FALSE, ...)
 
@@ -32,6 +35,8 @@ codeBookSummary(x, ...)
 
 \item{...}{Additional arguments, unused.}
 
+\item{meta}{A list containning question meta data}
+
 \item{multiple}{Is this a MultipleResponse or CategoricalArray variable?}
 }
 \description{
@@ -42,6 +47,8 @@ into either a kable or manually glued into a latex.
 \itemize{
 \item \code{default}: The default, throws out anything that does not
 match expected crunch variable classes
+
+\item \code{factor}: Prepares a codeBookSummary data.frame for a factor
 
 \item \code{CategoricalVariable}: Prepares a codeBookSummary data.frame for a
 CategoricalVariable

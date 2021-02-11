@@ -114,7 +114,7 @@ error_if_items <- function(items, text, error = TRUE, and = FALSE, or = FALSE, q
 #' @param name The name of the object
 #' @param null Logical, identifying if the object can be null
 wrong_class_error <- function(value, expected_class, name, null = FALSE) {
-  if (length(intersect(class(value), expected_class)) != length(expected_class)) {
+  if (!class(value) %in% expected_class) {
     stop("The expected class for `", name, "`", if (null) ", if provided, ",
       " is ", collapse_items(expected_class), ", not ", collapse_items(class(value)),
       ".",
