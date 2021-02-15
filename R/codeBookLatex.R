@@ -33,7 +33,10 @@ codeBookItemTxtHeader <- function(x, ...) {
       "Numeric",
       "Date",
       "Date",
-      "Multiple Response"
+      "Multiple Response",
+      "Categorical",
+      "Numeric",
+      "Numeric"
     )
   )
 
@@ -157,7 +160,7 @@ noBreaks <- function(tex) {
 
   paste0(
     "\\begin{absolutelynopagebreak}\n",
-    tex, "",
+    paste0(tex, collapse = "\n"), "",
     "\\end{absolutelynopagebreak}",
     collapse = "\n"
   )

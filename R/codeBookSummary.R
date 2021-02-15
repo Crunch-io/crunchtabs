@@ -131,6 +131,18 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, meta = NULL
   responses <- suppressWarnings(do.call(rbind, cats@.Data))
   l <- list()
   for (i in seq_len(nrow(responses))) {
+    # sometimes a categorical can appear to be
+    # multiple response so we have to use process
+    # of elimination
+    if ("selected" %in% names(responses[i,])) {
+      if(is.numeric(responses[i,]$selected)) {
+        if (is.logical(responses[i, ]$selected)) {
+          responses[i, ]$numeric_value <- responses[i,]$id
+        } else {
+          responses[i, ]$numeric_value <- responses[i,]$selected
+        }
+      }
+    }
     if (is.null(responses[i, ]$numeric_value)) {
       # CategoricalVariable within MultipleResponseVariable
       if (responses[i, ]$name %in% c("not selected", "selected")) {
@@ -173,6 +185,10 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, meta = NULL
   res <- merge(l, smry, sort = FALSE)
 
   # nocov start
+  if(is.null(multiple)) {
+    multiple = FALSE
+  }
+
   if (multiple) {
     res <- res[with(res, order(id)), ]
   } else {
