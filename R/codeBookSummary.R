@@ -140,61 +140,20 @@ codeBookSummary.character <- function(x, meta, ...) {
 #' @export
 codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, meta = NULL, ...) { # nolint
   cats <- crunch::categories(x)
-  responses <- suppressWarnings(do.call(rbind, cats@.Data))
-  l <- list()
-  for (i in seq_len(nrow(responses))) {
-    # sometimes a categorical can appear to be
-    # multiple response so we have to use process
-    # of elimination
-    if ("selected" %in% names(responses[i,])) {
-      if(is.numeric(responses[i,]$selected)) {
-        if (is.logical(responses[i, ]$selected)) {
-          responses[i, ]$numeric_value <- responses[i,]$id
-        } else {
-          responses[i, ]$numeric_value <- responses[i,]$selected
-        }
-      }
-    }
-    if (is.null(responses[i, ]$numeric_value)) {
-      # CategoricalVariable within MultipleResponseVariable
-      if (responses[i, ]$name %in% c("not selected", "selected")) {
-        responses[i, ]$numeric_value <- ifelse(
-          responses[i, ]$name == "selected",
-          1L,
-          2L
-        )
-      } else {
-        responses[i, ]$numeric_value <- NA_integer_
-      }
-    }
 
-    l[[i]] <- as.data.frame(
-      matrix(
-        unlist(responses[i, ]),
-        ncol = dim(responses)[2]
-      )
-    )
-  }
-
-  l <- do.call(rbind, l)
-  # CategoricalVariable
-  if (ncol(l) == 4) {
-    names(l) <- c("id", "missing", "name", "value")
-  }
-
-  # CategoricalVariable within MultipleResponseVariable
-  if (ncol(l) == 5) {
-    names(l) <- c("id", "missing", "name", "value", "drop")
-  }
-
-  for (i in seq_len(ncol(l))) {
-    l[[i]] <- type.convert(l[[i]], as.is = T)
-  }
+  cats <- crunch::categories(x)
+  responses <- data.frame(
+    id = ids(cats),
+    missing = missing(cats),
+    value = values(cats),
+    name = names(cats),
+    selected = is.selected(cats)
+  )
 
   smry <- data.frame(crunch::table(x, useNA = "ifany"))
   names(smry) <- c("name", "n")
 
-  res <- merge(l, smry, sort = FALSE)
+  res <- merge(responses, smry, sort = FALSE)
 
   # nocov start
   if(is.null(multiple)) {
