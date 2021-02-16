@@ -334,7 +334,6 @@ codeBookItemTxtDescriptionGeneral <- function(x, nm, meta, ...) {
     txt$name
   )
 
-
   if (txt$notes != "") {
     tex <- "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in\n\\emph{%s}\n\\vskip 0.10in" # nolint
     tex <- sprintf(
@@ -342,7 +341,7 @@ codeBookItemTxtDescriptionGeneral <- function(x, nm, meta, ...) {
       texEscape(txt$description),
       texEscape(txt$alias_toc),
       texEscape(txt$name_toc),
-      txt$notes
+      texEscape(txt$notes)
     )
   } else {
     tex <- "\\vskip 0.10in\n%s\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}} %s}\n\\vskip 0.10in" # nolint

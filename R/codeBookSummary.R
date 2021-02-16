@@ -39,26 +39,38 @@ codeBookSummary.factor <- function(x, meta, ...) {
   # Should return
   # id, name, n
 
-  labs = na.omit(trimws(unname(unlist(read.csv(text = meta$labels, header = FALSE)))))
+  labs = na.omit(
+    trimws(
+      unname(
+        unlist(
+          read.csv(text = meta$labels, header = FALSE, colClasses = "character")
+          )
+        )
+      )
+    )
+  # Should be moved to meta prep
+  labs[labs %in% c("Unavailable", "")] <- NA_character_
+  labs <- labs[!is.na(labs)]
 
   labs[labs == " " & !is.na(labs)] <- NA
   x <- as.character(x)
   x[x == " " & !is.na(x)] <- NA
 
-  if(all(is.na(x))) {
-    fac <- factor(x, labels = labs, levels = seq_along(labs))
-  } else {
-    fac <- factor(x, labels = labs)
+  fac <- factor(x, levels = labs, labels = labs)
+
+  smry <- table(fac, useNA = "ifany")
+
+  if(length(labs) == length(smry) - 1) {
+    labs = c(labs, NA_character_)
   }
 
-  s <- table(fac, useNA = "ifany")
   r <- data.frame(
-    id = seq_along(unique(fac)),
-    name = names(s),
-    n = as.numeric(s)
+    id = seq_along(labs),
+    name = names(smry),
+    n = as.numeric(smry)
   )
 
-  if(is.na(r$name)) {
+  if (any(is.na(r$name))) {
     r$id[is.na(r$name)] <- NA_integer_
     r$name[is.na(r$name)] <- "Missing"
   }
