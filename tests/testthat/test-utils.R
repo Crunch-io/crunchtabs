@@ -33,7 +33,7 @@ test_that("error_if_that", {
 
 test_that("warning if not error", {
   expect_equal(
-    error_if_items(c("item1", "item2"), error = FALSE, text = "Text"),
+    suppressWarnings(error_if_items(c("item1", "item2"), error = FALSE, text = "Text")),
     "Text"
   )
 })

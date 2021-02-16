@@ -235,7 +235,9 @@ test_that("codeBookSummary correct for TextVariable", {
 })
 
 test_that("Fails when passed a garbage object", {
-  expect_error(codeBookSummary("Hello"), "The expected class for")
+  x <- "hello"
+  class(x) <- "NotAUsedClass"
+  expect_error(codeBookSummary(x), "The expected class for")
 })
 
 context("scolumnAlign")

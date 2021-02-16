@@ -269,6 +269,6 @@ test_that("codeBookItemBody TextVariable", {
 
   expect_equal(
     attributes(res)$kable_meta$align_vector_origin,
-    c("d", "d", "d")
+    c("c", "c", "c")
   )
 })

@@ -249,8 +249,11 @@ test_that("Position functions as expected", {
 
 context("codeBookItemBody")
 
-test_that("Errors appropriately when passed bad object", {
-  expect_error(codeBookItemBody(c(1, 2, 3, 4)))
+test_that("Works for generic numeric data", {
+  res <- c("", "\\begin{longtable}[l]{cccccc}", "\\toprule", "{Mean} & {SD} & {Min} & {Max} & {n} & {Missing}\\\\",
+           "\\midrule", "2.5 & 1 & 1 & 4 & 4 & 0\\\\", "\\bottomrule", "\\end{longtable}"
+  )
+  expect_equal(capture.output(codeBookItemBody(c(1, 2, 3, 4))), res)
 })
 
 context("kable_strip_rules")
