@@ -283,10 +283,10 @@ codeBookItemTxtHeaderGeneral <- function(x, nm, meta, ...) {
       "Date",
       "Date",
       "Multiple Response",
-      "Categorical",
-      "Numeric",
-      "Numeric",
-      "Text"
+      "factor",
+      "numeric",
+      "integer",
+      "character"
     )
   )
 
