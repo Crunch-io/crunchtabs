@@ -28,13 +28,13 @@ codeBookItemBody.default <- function(x, meta, ...) {
     "codeBookItemBody"
   )
 
-  if(is.factor(x)) {
+  if (is.factor(x)) {
     codeBookItemBody.factor(x, meta = NULL, ...)
   }
-  if(is.character(x)) {
+  if (is.character(x)) {
     codeBookItemBody.character(x, meta = NULL, ...)
   }
-  if(is.numeric(x)) {
+  if (is.numeric(x)) {
     codeBookItemBody.numeric(x, meta = NULL, ...)
   }
 }
@@ -235,6 +235,15 @@ codeBookItemBody.DatetimeVariable <- function(x, meta = NULL, ...) { # nolint
 #' @export
 codeBookItemBody.NumericVariable <- function(x, meta = NULL, ...) { # nolint
   k <- codeBookSummary(x, meta)
+
+  if (is.nan(k$Mean)) {
+    k$Mean <- "-"
+    k$SD <- "-"
+    k$Min <- "-"
+    k$Max <- "-"
+    k$n <- "-"
+  }
+
   if (k$Mean > 9999) {
     k$Mean <- format(k$Mean, scientific = TRUE, digits = 3)
     k$SD <- format(k$SD, scientific = TRUE, digits = 3)

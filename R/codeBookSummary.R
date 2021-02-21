@@ -40,34 +40,33 @@ codeBookSummary.factor <- function(x, meta, ...) {
   # id, name, n
 
   labs = na.omit(
-    trimws(
-      unname(
-        unlist(
-          read.csv(text = meta$labels, header = FALSE, colClasses = "character")
-          )
+    eval(
+      parse(
+        text = as.character(
+          meta$recode
         )
       )
     )
-  # Should be moved to meta prep
-  labs[labs %in% c("Unavailable", "")] <- NA_character_
+  )
+
   labs <- labs[!is.na(labs)]
-
   labs[labs == " " & !is.na(labs)] <- NA
-  x <- as.character(x)
-  x[x == " " & !is.na(x)] <- NA
+  # x <- as.character(x)
+  # x[x == " " & !is.na(x)] <- NA
+  #
+  # fac <- factor(x, levels = labs, labels = labs)
 
-  fac <- factor(x, levels = labs, labels = labs)
+  smry <- table(x, useNA = "ifany")
 
-  smry <- table(fac, useNA = "ifany")
-
-  if(length(labs) == length(smry) - 1) {
-    labs = c(labs, NA_character_)
+  if (any(is.na(names(smry)))) {
+    labs <- c(labs, NA_character_)
   }
 
   r <- data.frame(
-    id = seq_along(labs),
+    id = seq_along(unique(labs)),
     name = names(smry),
-    n = as.numeric(smry)
+    n = as.numeric(smry),
+    stringsAsFactors = FALSE
   )
 
   if (any(is.na(r$name))) {
@@ -81,8 +80,8 @@ codeBookSummary.factor <- function(x, meta, ...) {
 codeBookSummary.numeric <- function(x, meta, ...) {
   mu <- round(mean(x, na.rm = T), 2)
   std <- round(sd(x, na.rm = TRUE))
-  minima <- round(min(x, na.rm = T), 2)
-  maxima <- round(max(x, na.rm = T), 2)
+  minima <- suppressWarnings(round(min(x, na.rm = T), 2))
+  maxima <- suppressWarnings(round(max(x, na.rm = T), 2))
   missings <- sum(is.na(x))
   n <- length(is.na(x))
 
@@ -156,7 +155,7 @@ codeBookSummary.CategoricalVariable <- function(x, multiple = FALSE, meta = NULL
   res <- merge(responses, smry, sort = FALSE)
 
   # nocov start
-  if(is.null(multiple)) {
+  if (is.null(multiple)) {
     multiple = FALSE
   }
 

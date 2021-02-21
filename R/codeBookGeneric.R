@@ -46,6 +46,7 @@ writeCodeBookLatexGeneric <- function(
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
+
   # Initialize CodeBook Latex ----
   codebook <- readLines(system.file(
     "codebook_latex_wrap.tex",
@@ -89,25 +90,32 @@ writeCodeBookLatexGeneric <- function(
   appendices <- list()
 
   for (nm in nms) {
+
+    if (any(class(ds) %in% c("ArrowObject", "arrow_dplyr_query"))) {
+      x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+    } else {
+      x <- ds[[nm]]
+    }
+
     message("Preparing: ", nm)
 
     items[[nm]] <- list()
     headers[[nm]] <- noBreaks(
       paste0(
         ifelse(nm != nms[1], "\n\\vskip 0.25in\n", ""),
-        codeBookItemTxtHeaderGeneral(ds[[nm]], nm, meta),
-        codeBookItemTxtDescriptionGeneral(ds[[nm]], nm, meta),
+        codeBookItemTxtHeaderGeneral(x, nm, meta),
+        codeBookItemTxtDescriptionGeneral(x, nm, meta),
         collapse = "\n"
       )
     )
 
-    body <- codeBookItemBody(ds[[nm]], meta = meta[meta$alias == nm,], ...) # A kable
+    body <- codeBookItemBody(x, meta = meta[meta$alias == nm,], ...) # A kable
 
     if (appendix & !is.list(body)) {
       if (attributes(body)$kable_meta$nrow > 21) {
         appendices[[nm]] <- list()
 
-        description <- codeBookItemTxtDescriptionGeneral(ds[[nm]], nm, meta)
+        description <- codeBookItemTxtDescriptionGeneral(x, nm, meta)
         description <- gsub(
           sprintf(
             "addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{%s}",
@@ -124,7 +132,7 @@ writeCodeBookLatexGeneric <- function(
         appendices[[nm]]$header <- noBreaks(
           paste0(
             ifelse(nm != nms[1], "\n\\vskip 0.25in\n", ""),
-            codeBookItemTxtHeaderGeneral(ds[[nm]], nm, meta),
+            codeBookItemTxtHeaderGeneral(x, nm, meta),
             description,
             collapse = "\n"
           )
