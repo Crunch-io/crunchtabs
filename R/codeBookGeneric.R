@@ -85,14 +85,20 @@ writeCodeBookLatexGeneric <- function(
   # Generate codebook items ----
   items <- list()
   headers <- list()
-  nms <- names(ds)
+  nms <- new_meta$alias
 
   appendices <- list()
 
   for (nm in nms) {
 
     if (any(class(ds) %in% c("ArrowObject", "arrow_dplyr_query"))) {
-      x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+      cls <- get_class(ds, nm)
+      if(cls == "character") {
+        x <- ds %>% filter(cd == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+      } else {
+        x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+      }
+
     } else {
       x <- ds[[nm]]
     }
@@ -327,6 +333,9 @@ codeBookItemTxtDescriptionGeneral <- function(x, nm, meta, ...) {
   txt <- list()
   txt$description <- meta$description[meta$alias == nm]
   txt$notes <- meta$notes[meta$alias == nm]
+  if (class(x) == "character") {
+    txt$notes <- paste0(txt$notes, " - ", "Counts displayed are from only the first congressional district of each state.")
+  }
   txt$alias <- nm
   txt$alias_toc <- ifelse(
     nchar(txt$alias) > 20,

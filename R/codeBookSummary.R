@@ -110,11 +110,7 @@ codeBookSummary.character <- function(x, meta, ...) {
   filled_verbs <- x
   filled_verbs <- filled_verbs[!is.na(filled_verbs)]
   filled_verbs <- filled_verbs[!filled_verbs %in% c("", "__NA__")]
-  # verbsamp <- sample(filled_verbs, 5, replace = TRUE)
-  # verbsamp <- paste0(substr(verbsamp, start = 1, stop = 27),
-  #       "...",
-  #       collapse = ", "
-  # )
+
   filled <- length(filled_verbs)
   missing <- length(x) - filled
 
