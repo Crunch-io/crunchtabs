@@ -29,13 +29,13 @@ codeBookItemBody.default <- function(x, meta, ...) {
   )
 
   if (is.factor(x)) {
-    codeBookItemBody.factor(x, meta = NULL, ...)
+    return(codeBookItemBody.factor(x, meta = NULL, ...))
   }
   if (is.character(x)) {
-    codeBookItemBody.character(x, meta = NULL, ...)
+    return(codeBookItemBody.character(x, meta = NULL, ...))
   }
   if (is.numeric(x)) {
-    codeBookItemBody.numeric(x, meta = NULL, ...)
+    return(codeBookItemBody.numeric(x, meta = NULL, ...))
   }
 }
 

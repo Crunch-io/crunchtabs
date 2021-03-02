@@ -276,6 +276,14 @@ test_that("codeBookSummary categoricalVariable, multpleResponse type", {
     "do.call",
     responses
   )
+})
 
+
+context("codeBookSummary.factor")
+
+test_that("codeBookSummary.factor works as expected", {
+  set.seed(42)
+  x <- factor(sample(letters[1:5], 100, replace = TRUE))
+  res <- codeBookSummary.factor(x, meta = data.frame(labels = 'list(a = "a", b = "b", c = "c", d = "d", e = "e")'))
 
 })

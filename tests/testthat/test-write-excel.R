@@ -5,7 +5,7 @@ ts <- readRDS(test_path("fixtures/toplines_summary.RDS"))
 
 with_temp_dir({
   test_that("Write Excel file", {
-    writeExcel(cs)
+    writeExcel(cs, logging=TRUE)
     expect_true(file.exists("Example Dataset with Nets.xlsx"))
     expect_silent(wb <- loadWorkbook("Example Dataset with Nets.xlsx"))
     expect_equal(
