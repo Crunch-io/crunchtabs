@@ -100,7 +100,7 @@ writeCodeBookLatex <- function(
     body <- codeBookItemBody(ds[[nm]], ...) # A kable
 
     if (appendix & !is.list(body)) {
-      if (attributes(body)$kable_meta$nrow > 21) {
+      if (grepl("longtabu", body)) {
         appendices[[nm]] <- list()
 
         description <- codeBookItemTxtDescription(ds[[nm]])
