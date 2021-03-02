@@ -284,6 +284,27 @@ context("codeBookSummary.factor")
 test_that("codeBookSummary.factor works as expected", {
   set.seed(42)
   x <- factor(sample(letters[1:5], 100, replace = TRUE))
-  res <- codeBookSummary.factor(x, meta = data.frame(labels = 'list(a = "a", b = "b", c = "c", d = "d", e = "e")'))
+  res <- codeBookSummary.factor(x, meta = data.frame(recode = 'list(a = "a", b = "b", c = "c", d = "d", e = "e")'))
+  expect_equal(res$id, 1:5)
+  expect_equal(res$name, letters[1:5])
+})
 
+test_that("codeBookSummary.factor works with missings", {
+  set.seed(42)
+  x <- factor(sample(c(letters[1:5], NA_character_), 100, replace = TRUE))
+  res <- codeBookSummary.factor(x, meta = data.frame(recode = 'list(a = "a", b = "b", c = "c", d = "d", e = "e")'))
+  expect_equal(res$id, c(1L, 2L, 3L, 4L, 5L, NA))
+  expect_equal(res$name, c(letters[1:5], "Missing"))
+})
+
+test_that("codeBookSummary.character", {
+  set.seed(42)
+  x <- sample(c(letters[1:10], NA), 1000, replace = TRUE)
+  res <- codeBookSummary.character(x)
+  expect_equal(
+    res,
+    structure(list(
+      Filled = 912L, Missing = 88L, `Max Length` = 1L),
+      class = "data.frame", row.names = c(NA, -1L))
+  )
 })

@@ -273,7 +273,7 @@ test_that("codeBookItemBody TextVariable", {
   )
 })
 
-content("codeBookItemBody")
+context("codeBookItemBody")
 
 test_that("codeBookItemBody defaults fails as expected", {
   x <- 1:5
@@ -288,14 +288,9 @@ test_that("codeBookItemBody works for factors", {
 })
 
 test_that("codeBookItemBody works for characters", {
-  x <- sample(letters[1:5], 100, r = T)
-  mockery::stub(codeBookItemBody.default, "codeBookItemBody.character", TRUE)
-  expect_true(codeBookItemBody.default(x, meta = data.frame()))
-})
 
-test_that("codeBookItemBody works for integers", {
-  x <- sample(c(1L, 2L, 3L, 4L), 100, r = T)
-  mockery::stub(codeBookItemBody.default, "codeBookItemBody.integer", TRUE)
+  x <- sample(letters[1:5], 100, replace = T)
+  mockery::stub(codeBookItemBody.default, "codeBookItemBody.character", TRUE)
   expect_true(codeBookItemBody.default(x, meta = data.frame()))
 })
 
@@ -305,7 +300,7 @@ test_that("codeBookItemBody works for numeric", {
   expect_true(codeBookItemBody.default(x, meta = data.frame()))
 })
 
-content("codeBookSummary Mean > 9999")
+context("codeBookSummary Mean > 9999")
 
 test_that("codeBookItemBody.NumericVariabl handles big numbers with scientific formatting", {
   smry <- data.frame(Mean = 99999, SD = 1000, Min = 0, Max = 150000)
