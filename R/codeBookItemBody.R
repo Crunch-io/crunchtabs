@@ -32,7 +32,7 @@ codeBookItemBody.default <- function(x, meta, ...) {
     codeBookItemBody.factor(x, meta = NULL, ...)
   }
   if(is.character(x)) {
-    codeBookItemBody.character(x, meta = NULL, ...)
+   codeBookItemBody.character(x, meta = NULL, ...)
   }
   if(is.numeric(x)) {
     codeBookItemBody.numeric(x, meta = NULL, ...)
