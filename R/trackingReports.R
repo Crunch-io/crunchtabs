@@ -141,7 +141,12 @@ trackingReport_tabs <- function(datasets, vars, weight = NULL) {
         weight <- weight(x)
       }
       adj_vars <- vars[vars %in% names(x)]
-      crosstabs(x, adj_vars, weight, include_numeric = TRUE)
+      if(length(adj_vars) == 0) {
+        return(NULL)
+      } else {
+        crosstabs(x, adj_vars, weight, include_numeric = TRUE)
+      }
+
     }
   )
 }

@@ -4,7 +4,7 @@ test_that("tracking report returns a list of results", {
   mockery::stub(trackingReport_tabs, "crosstabs", "resultsObject")
   mockery::stub(trackingReport_tabs, "weight", NULL)
   res <- trackingReport_tabs(list("a", "b", "c"), vars = c(), weight = NULL)
-  expect_equal(unlist(res), c("resultsObject", "resultsObject", "resultsObject"))
+  expect_equal(unlist(res), c(NULL, NULL, NULL))
 })
 
 context("trackingReport")

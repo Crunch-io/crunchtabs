@@ -7,8 +7,8 @@
 #' @param digits The number of trailing digits
 roundPropCategorical <- function(data, digits = 0) {
   rounded <- round(data, digits)
-  while (sum(rounded) > 100) {
-    sgn <- sign(sum(rounded) - 100)
+  while (sum(rounded, na.rm = TRUE) > 100) {
+    sgn <- sign(sum(rounded, na.rm = TRUE) - 100)
     index <- which.max((rounded - data) * sgn)
     rounded[index] <- rounded[index] - sgn * 10^(-digits)
   }
@@ -182,9 +182,9 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
 
     data[is.nan(data)] <- NA
 
-    if (prop_v) {
-      data[is.na(data)] <- 0
-    }
+    # if (prop_v) {
+    #   data[is.na(data)] <-
+    # }
 
     if (prop_v && proportions && (latex || !theme$excel_percent_sign)) {
       data[] <- data * 100
@@ -301,7 +301,7 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
       rownames(data_list$body) <- sapply(var$inserts_obj, name)
     }
 
-    if (suppressWarnings(all(rownames(data_list$body) == var$subnames))) {
+    if (suppressWarnings(all(rownames(data_list$body) == as.character(var$subnames)))) {
       names(data_list$body) <- var[["labels"]]
     } else {
       names(data_list$body) <- var[["subnames"]]

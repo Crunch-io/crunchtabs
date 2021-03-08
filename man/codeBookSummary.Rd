@@ -12,30 +12,30 @@
 \alias{codeBookSummary.DatetimeVariable}
 \title{Summarize crunch variables for codeBooks}
 \usage{
-codeBookSummary(x, ...)
+codeBookSummary(x, meta, ...)
 
-\method{codeBookSummary}{default}(x, ...)
+\method{codeBookSummary}{default}(x, meta, ...)
 
 \method{codeBookSummary}{factor}(x, meta, ...)
 
-\method{codeBookSummary}{CategoricalVariable}(x, multiple = FALSE, ...)
+\method{codeBookSummary}{CategoricalVariable}(x, multiple = FALSE, meta = NULL, ...)
 
-\method{codeBookSummary}{MultipleResponseVariable}(x, ...)
+\method{codeBookSummary}{MultipleResponseVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{CategoricalArrayVariable}(x, ...)
+\method{codeBookSummary}{CategoricalArrayVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{NumericVariable}(x, ...)
+\method{codeBookSummary}{NumericVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{TextVariable}(x, ...)
+\method{codeBookSummary}{TextVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{DatetimeVariable}(x, ...)
+\method{codeBookSummary}{DatetimeVariable}(x, meta = NULL, ...)
 }
 \arguments{
 \item{x}{A single variable from a crunch dataset}
 
-\item{...}{Additional arguments, unused.}
-
 \item{meta}{A list containning question meta data}
+
+\item{...}{Additional arguments, unused.}
 
 \item{multiple}{Is this a MultipleResponse or CategoricalArray variable?}
 }

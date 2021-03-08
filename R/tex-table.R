@@ -69,6 +69,8 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
         # No action becasue it is one of: Numeric, Datetime, or Text
       } else {
         data[[nm]] <- dfapply(data[[nm]], paste0, "%")
+        if(any(data[[nm]] == "NA%"))
+          data$body[which(data$body == "NA%", arr.ind = TRUE)] <- "-"
       }
     }
   }

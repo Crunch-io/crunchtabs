@@ -42,29 +42,18 @@ as.ToplineCategoricalArray <- function(
   )
 
   # We pull out counts per result item in wide format
-  m <- sapply(
-    questions,
-    function(x) as.numeric(x$crosstabs$Results$`___total___`$counts)
-  )
+  count_list <- lapply(questions, function(x) x$crosstabs$Results$`___total___`$counts)
+  prop_list <- lapply(questions, function(x) x$crosstabs$Results$`___total___`$proportions)
+  m <- Reduce(function(x,y) cbind(x,y[match(rownames(x), rownames(y))]), count_list)
 
-  dimnames(m) <- list(
-    second_label,
-    labels
-  )
+  dimnames(m)[[2]] <- as.character(labels)
 
   obj$crosstabs$Results$`___total___`$counts <- m
 
   # We pull out proportions per result item in wide format
-  m <- sapply(
-    questions,
-    function(x) as.numeric(x$crosstabs$Results$`___total___`$proportions)
-  )
+  m <- Reduce(function(x,y) cbind(x,y[match(rownames(x), rownames(y))]), prop_list)
 
-  dimnames(m) <- list(
-    second_label,
-    labels
-  )
-
+  dimnames(m)[[2]] <- as.character(labels)
   obj$crosstabs$Results$`___total___`$proportions <- m
 
   class(obj) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
