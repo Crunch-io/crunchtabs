@@ -28,11 +28,41 @@ as.ToplineCategoricalArray <- function(
     )
   }
 
+  categoryFill <- function(clist) {
+    cbindFill <- function(x, y) {
+      r <- merge(x, y, by = "row.names", all = TRUE, sort = FALSE)
+      rownames(r) <- r$Row.names
+      r$Row.names <- NULL
+      r
+    }
+
+    addPos <- function(x) {
+      x[,1] <- 1:nrow(x)
+      x
+    }
+
+    r <- lapply(clist, addPos)
+    r <- do.call(rbind, r)
+    r <- data.frame(nm = names(r[,1]), pos = r[,1])
+    r <- unique(r)
+    rownames(r) <- r$nm
+    r$nm <- NULL
+
+    m <- Reduce(function(x,y) suppressWarnings(cbindFill(x,y)), clist)
+    m <- suppressWarnings(merge(m, r, by = "row.names", all = TRUE, sort = FALSE))
+    m <- m[with(m, order(pos)),]
+
+    rownames(m) <- m$Row.names
+    m$Row.names <- NULL
+    m$pos <- NULL
+    as.matrix(m)
+  }
+
   counts <- obj$crosstabs$Results$`___total___`$counts
   second_label <- attr(counts, "dimnames")[[1]]
 
   obj$subnames <- labels
-  obj$rownames <- attr(counts, "dimnames")[[1]]
+
   obj$notes <- questions[[1]]$notes
   obj$type <- "categorical_array"
   obj$labels <- labels
@@ -44,17 +74,19 @@ as.ToplineCategoricalArray <- function(
   # We pull out counts per result item in wide format
   count_list <- lapply(questions, function(x) x$crosstabs$Results$`___total___`$counts)
   prop_list <- lapply(questions, function(x) x$crosstabs$Results$`___total___`$proportions)
-  m <- Reduce(function(x,y) cbind(x,y[match(rownames(x), rownames(y))]), count_list)
+  m <- categoryFill(count_list)
 
   dimnames(m)[[2]] <- as.character(labels)
 
   obj$crosstabs$Results$`___total___`$counts <- m
 
   # We pull out proportions per result item in wide format
-  m <- Reduce(function(x,y) cbind(x,y[match(rownames(x), rownames(y))]), prop_list)
+  m <- categoryFill(prop_list)
 
   dimnames(m)[[2]] <- as.character(labels)
   obj$crosstabs$Results$`___total___`$proportions <- m
+
+  obj$rownames <- rownames(m)
 
   class(obj) <- c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
 

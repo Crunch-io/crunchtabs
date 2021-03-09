@@ -335,6 +335,8 @@ tableHeader.ToplineCategoricalArray <- function(var, theme) { # nolint
     if (length(col_names) == 0) {
       col_names <- var$rownames
     }
+    if (length(var$rownames) > length(col_names))
+      col_names <- var$rownames
   }
 
   col_names_len <- length(col_names)
