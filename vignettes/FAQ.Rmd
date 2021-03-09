@@ -71,7 +71,7 @@ The code example above would set the stub width to 2 inches. For a PDF document,
 ```{r, eval = FALSE}
 myTheme = themeNew(
   ... # your other theme optinos
-  format_label_column_exception = c("alias"=2.5, "otheralias"=1.25)
+  format_label_column_exceptions = c("alias"=2.5, "otheralias"=1.25)
 )
 ```
 

@@ -1,4 +1,4 @@
-context('recontact_toplines')
+context("recontact_toplines")
 
 test_that("Stops if not a dataset", {
   expect_error(
@@ -18,15 +18,17 @@ test_that("Stops if questions not character", {
   expect_error(
     with_mock(
       recontact_toplines(
-    "mocked",
-    questions = 1L, # not character
-    suffixes = c("_pre", "_post"),
-    labels = c("Before", "After"),
-    weights = NULL
+        "mocked",
+        questions = 1L, # not character
+        suffixes = c("_pre", "_post"),
+        labels = c("Before", "After"),
+        weights = NULL
       ),
-    `crunch::is.dataset` = function(...) TRUE,
-  ),
-  "is.character(questions) is not TRUE", fixed = TRUE)
+      `crunch::is.dataset` = function(...) TRUE,
+    ),
+    "is.character(questions) is not TRUE",
+    fixed = TRUE
+  )
 })
 
 test_that("Stops if suffixes not character", {
@@ -41,7 +43,9 @@ test_that("Stops if suffixes not character", {
       ),
       `crunch::is.dataset` = function(...) TRUE
     ),
-    "is.character(suffixes) is not TRUE", fixed = TRUE)
+    "is.character(suffixes) is not TRUE",
+    fixed = TRUE
+  )
 })
 
 test_that("Stops if labels not character", {
@@ -56,19 +60,22 @@ test_that("Stops if labels not character", {
       ),
       `crunch::is.dataset` = function(...) TRUE
     ),
-    "is.character(labels) is not TRUE", fixed = TRUE)
+    "is.character(labels) is not TRUE",
+    fixed = TRUE
+  )
 })
 
 test_that("End to end", {
   ds <- readRDS(test_path("fixtures/recontact_dataset.rds"))
-  
+
   mockery::stub(
-    recontact_toplines, 
-    "crosstabs", 
+    recontact_toplines,
+    "crosstabs",
     readRDS(test_path("fixtures/recontact_toplines_crosstabs.rds"))
   )
   mockery::stub(
-    recontact_toplines, "crunch::alias", "weight1")
+    recontact_toplines, "crunch::alias", "weight1"
+  )
   r <- recontact_toplines(
     ds,
     questions = c("q1", "country"),
@@ -76,7 +83,7 @@ test_that("End to end", {
     labels = c("Pre", "Post"),
     weights = c("weight1", "weight2")
   )
-  
+
   expect_named(r$results, c("q1", "country"))
   expect_is(
     r$results$q1,
@@ -87,6 +94,3 @@ test_that("End to end", {
     c("ToplineCategoricalArray", "ToplineVar", "CrossTabVar")
   )
 })
-
-
-

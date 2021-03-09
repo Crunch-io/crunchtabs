@@ -7,8 +7,8 @@
 #'
 #' @param x A results object from within the \link{crosstabs} function.
 reflowQuestionNumbers <- function(x) {
-  for (i in 1:length(x)) {
-    x[[i]]$number = i
+  for (i in seq_along(x)) {
+    x[[i]]$number <- i
   }
   x
 }
@@ -33,13 +33,16 @@ nonTabBookSummary <- function(x, ...) {
 #' @export
 nonTabBookSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
   wrong_class_error(
-    x, 
-    c("CategoricalVariable", 
+    x,
+    c(
+      "CategoricalVariable",
       "CategoricalArrayVariable",
       "MultipleResponseVariable",
       "TextVariable",
       "NumericVariable",
-      "DatetimeVariable"), "nonTabBookSummary")
+      "DatetimeVariable"
+    ), "nonTabBookSummary"
+  )
 }
 
 #' Prepare Numeric Content
@@ -55,20 +58,20 @@ nonTabBookSummary.default <- function(x, weighted = TRUE, num = 10, tz = "UTC", 
 #' @inheritParams nonTabBookSummary
 #' @importFrom stats median quantile
 #' @export
-nonTabBookSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
-  y = as.vector(x)
-  qt = quantile(y, na.rm = TRUE)
-  minima = min(y, na.rm = TRUE)
-  maxima = max(y, na.rm = TRUE)
-  half = median(y, na.rm = TRUE)
-  mu = mean(y, na.rm = TRUE)
-  firstq = qt[2]
-  thirdq = qt[4]
-  stdev = sd(y, na.rm = TRUE)
+nonTabBookSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) { # nolint
+  y <- as.vector(x)
+  qt <- quantile(y, na.rm = TRUE)
+  minima <- min(y, na.rm = TRUE)
+  maxima <- max(y, na.rm = TRUE)
+  half <- median(y, na.rm = TRUE)
+  mu <- mean(y, na.rm = TRUE)
+  firstq <- qt[2]
+  thirdq <- qt[4]
+  stdev <- sd(y, na.rm = TRUE)
 
   # Mock the content object
 
-  obj = resultsObject(
+  obj <- resultsObject(
     x,
     top = NULL,
     weighted = weighted,
@@ -100,17 +103,17 @@ nonTabBookSummary.NumericVariable <- function(x, weighted = TRUE, num = 10, tz =
 #' @param x A variable of class \link[crunch]{DatetimeVariable}
 #' @inheritParams nonTabBookSummary
 #' @export
-nonTabBookSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
-  y = as.POSIXct(as.vector(x))
-  qt = quantile(y, na.rm = TRUE)
-  minima = min(y, na.rm = TRUE)
-  maxima = max(y, na.rm = TRUE)
-  half = median(y, na.rm = TRUE)
-  firstq = qt[2]
-  thirdq = qt[4]
+nonTabBookSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) { # nolint
+  y <- as.POSIXct(as.vector(x))
+  qt <- quantile(y, na.rm = TRUE)
+  minima <- min(y, na.rm = TRUE)
+  maxima <- max(y, na.rm = TRUE)
+  half <- median(y, na.rm = TRUE)
+  firstq <- qt[2]
+  thirdq <- qt[4]
 
   # Mock the content object
-  obj = resultsObject(
+  obj <- resultsObject(
     x,
     top = NULL,
     weighted = weighted,
@@ -140,14 +143,13 @@ nonTabBookSummary.DatetimeVariable <- function(x, weighted = TRUE, num = 10, tz 
 #' @param x A variable of class \link[crunch]{TextVariable}
 #' @inheritParams nonTabBookSummary
 #' @export
-nonTabBookSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) {
+nonTabBookSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "UTC", ...) { # nolint
   set.seed(42)
-  y = as.vector(x)
-  z = sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
-  n = sum(!is.na(z)) # This could be wrong for un-enforced responses such as ""
+  y <- as.vector(x)
+  z <- sort(sample(unique(y[!is.na(y)]), num, replace = FALSE))
 
   # Mock the content object
-  obj = resultsObject(
+  obj <- resultsObject(
     x,
     weighted = weighted,
     body_values = rep("", length(z)),
@@ -174,40 +176,37 @@ nonTabBookSummary.TextVariable <- function(x, weighted = TRUE, num = 10, tz = "U
 #' @param body_labels The labels to present
 #' @param vector The data vector
 resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vector) {
-
   stopifnot(length(body_values) == length(body_labels))
 
-  top = top
-  data_list = list()
-  data_list$body = data.frame(
+  top <- top
+  data_list <- list()
+  data_list$body <- data.frame(
     x = body_values,
     row.names = body_labels
   )
-  names(data_list$body) = NA_character_
+  names(data_list$body) <- NA_character_
 
   # Presentation differences if data are
   # weighted or unweighted
 
   if (weighted) {
-    data_list$weighted_n = data.frame(
+    data_list$weighted_n <- data.frame(
       x = sum(!is.na(vector)),
       row.names = "Weighted N"
     )
-    names(data_list$weighted_n) = NA_character_
+    names(data_list$weighted_n) <- NA_character_
 
-    bottom = c(weighted_n = "weighted_n")
-    data_order = c("body", weighted_n = "weighted_n")
-
+    bottom <- c(weighted_n = "weighted_n")
+    data_order <- c("body", weighted_n = "weighted_n")
   } else {
-
-    data_list$unweighted_n = data.frame(
+    data_list$unweighted_n <- data.frame(
       x = sum(!is.na(vector)),
       row.names = "Unweighted N"
     )
-    names(data_list$unweighted_n) = NA_character_
+    names(data_list$unweighted_n) <- NA_character_
 
-    bottom = c(unweighted_n = "unweighted_n")
-    data_order = c("body",unweighted_n = "unweighted_n")
+    bottom <- c(unweighted_n = "unweighted_n")
+    data_order <- c("body", unweighted_n = "unweighted_n")
   }
 
   structure(
@@ -232,8 +231,10 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
       min_cell_body = matrix(rep(NA, length(body_values))),
       min_cell_bottom = matrix(FALSE),
       min_cell = FALSE,
-      rownames = c(body_labels, ifelse(weighted, "Weighted N", "Unweighted N"))),
-    class = c("ToplineVar", "CrossTabVar"))
+      rownames = c(body_labels, ifelse(weighted, "Weighted N", "Unweighted N"))
+    ),
+    class = c("ToplineVar", "CrossTabVar")
+  )
 }
 
 #' Compute a Tab Book
@@ -320,27 +321,26 @@ tabBookSingle_crunchtabs <- function(multitable, dataset, weight) {
   body <- list(
     filter = NULL,
     weight = weight,
-    options = list(format=NULL)
+    options = list(format = NULL)
   )
-  
+
   body$where <- varFilter(dataset)
 
   tabbook_url <- crunch::shojiURL(multitable, "views", "export")
 
   ## POST the query, which (after progress polling) returns a URL to download
   result <- crunch::crPOST(tabbook_url,
-                   config = httr::add_headers(`Accept` = 'application/json'),
-                   body = crunch::toJSON(body)
+    config = httr::add_headers(`Accept` = "application/json"),
+    body = crunch::toJSON(body)
   )
 
   out <- download_result(result)
   return(crunch:::TabBookResult(out))
-
 }
 
 
 varFilter <- function(dataset) {
-  crunch:::variablesFilter(dataset)  
+  crunch:::variablesFilter(dataset)
 }
 
 download_result <- function(result) {
@@ -354,36 +354,36 @@ tabBookResult <- function(...) {
 #' @importFrom stats ave
 #' @importFrom utils stack
 tabBookMulti_crunchtabs <- function(
-  multitable,
-  dataset,
-  weight_spec,
-  append_default_wt
-) {
+                                    multitable,
+                                    dataset,
+                                    weight_spec,
+                                    append_default_wt) {
   if (length(weight_spec) == 0) {
     stop("Empty list not allowed as a weight spec, use NULL to indicate no weights")
   }
-  
+
   if (is.data.frame(weight_spec) && !setequal(names(weight_spec), c("weight", "alias"))) {
     stop("if weight_spec is a data.frame it must have exactly two columns: 'weight' & 'alias'")
   }
-  
+
   if (any(duplicated(weight_spec))) {
     stop("Found duplicate weight and alias combinations in weight_spec")
   }
-  
+
   # We can't trust that weight variables are included in the dataset subset
   # that we are using for the tabbook, so we need to load the full variable list
   # NB: The `relative=on` is to get a cache hit, and might need to change
   # (comes from `variablesFilter()`)
-  all_dsvars <- getCatalog(dataset)
-  
-  if(is.list(weight_spec)) weight_spec <- tabBookWeightSpec(dataset, weights = weight_spec, append_default_wt)
-  
+
+
+  if (is.list(weight_spec)) weight_spec <- tabBookWeightSpec(
+    dataset, weights = weight_spec, append_default_wt)
+
   wt_vars <- unique(weight_spec$weight)
   # Add a column that indicates what page the variable will be on
   # in the weight-specific tabbook
   weight_spec$page_num <- as.numeric(ave(weight_spec$weight, weight_spec$weight, FUN = seq_along))
-  
+
   books <- lapply(wt_vars, function(wt) {
     page_vars <- weight_spec$alias[weight_spec$weight == wt]
     tabBookSingle_crunchtabs(
@@ -392,9 +392,9 @@ tabBookMulti_crunchtabs <- function(
       weight = dataset[[wt]]
     )
   })
-  
+
   names(books) <- wt_vars
-  
+
   # stitch together
   # Most of the objects should be the same because they come from the same multitable
   # But the analyses object contain an item per variable with the weight included
@@ -417,7 +417,7 @@ tabBookMulti_crunchtabs <- function(
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
   )
-  
+
   combined <- books[[1]] # start with first one for skeleton
   combined@.Data[[1]]$analyses <- analyses
   combined@.Data[[2]] <- pages
@@ -465,28 +465,30 @@ tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
   names(weight_df) <- c("alias", "weight")
   # stack does mostly what we want, but we don't want factor
   weight_df$weight <- as.character(weight_df$weight)
-  
+
   # If we don't need to append the default weights, we're done
-  if (!append_default_wt) return(weight_df)
-  
+  if (!append_default_wt) {
+    return(weight_df)
+  }
+
   default_weight <- if (is.null(weight(dataset))) "" else alias(weight(dataset))
   default_weight_df <- data.frame(
     alias = names(dataset),
     weight = default_weight,
     stringsAsFactors = FALSE
   )
-  
+
   # Combine, but reorder so that the variables are in the same order as they are in the
   # original dataset, with the default weight first and then the weights
   # from the list are ordered after in the order they came in
   default_weight_df$wt_pos <- 0
   weight_df$wt_pos <- seq_len(nrow(weight_df))
-  
+
   out <- rbind(weight_df, default_weight_df)
   out <- out[order(match(out$alias, names(dataset)), out$wt_pos), ]
   out$wt_pos <- NULL
   row.names(out) <- NULL # Really just for testing purposes
-  
+
   duplicated <- duplicated(out)
   if (any(duplicated)) {
     warning("Dropping duplicated alias & weight combinations")
@@ -497,7 +499,7 @@ tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
 
 
 getCatalog <- function(dataset) {
-  crunch:::ShojiCatalog(crGET(self(allVariables(dataset)),query = list(relative = "on")))
+  crunch:::ShojiCatalog(crGET(self(allVariables(dataset)), query = list(relative = "on")))
 }
 
 

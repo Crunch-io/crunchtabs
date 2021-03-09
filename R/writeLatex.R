@@ -27,11 +27,11 @@
 #' @examples
 #' \dontrun{
 #' # toplines report
-#' toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-#' writeLatex(toplines_summary, 'filename')
+#' toplines_summary <- crosstabs(crunch_dataset, weight = "weight")
+#' writeLatex(toplines_summary, "filename")
 #' # crosstabs report
 #' crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
-#' writeLatex(crosstabs_summary, 'filename')
+#' writeLatex(crosstabs_summary, "filename")
 #' }
 #' @importFrom utils installed.packages
 #' @export
@@ -40,7 +40,6 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
                        subtitle = NULL, table_of_contents = FALSE, sample_desc = NULL,
                        field_period = NULL, moe = NULL, append_text = NULL, proportions = TRUE,
                        pdf = FALSE, open = FALSE, logging = FALSE) {
-
   if (pdf && is.null(filename)) {
     stop("Please provide a file name to generate PDF output.", call. = FALSE)
   }
@@ -48,7 +47,11 @@ writeLatex <- function(data_summary, theme = themeDefaultLatex(),
 
   wrong_class_error(data_summary, "CrunchTabs", "data_summary")
   if (!any(c("Toplines", "Crosstabs") %in% class(data_summary))) {
-    stop("The expected class for `data_summary` is either Toplines, CrunchTabs or Crosstabs CrunchTabs, not ", collapse_items(class(data_summary)))
+    stop(
+      paste("The expected class for `data_summary` is either Toplines, CrunchTabs or",
+            "Crosstabs CrunchTabs, not "),
+            collapse_items(class(data_summary))
+      )
   }
 
   # Munge the theme a bit
@@ -141,9 +144,9 @@ latexReportTables <- function(results, banner, theme) {
 
   table_bodies <- list()
 
-  for (i in 1:length(results)) { # convert to loop for debug
+  for (i in seq_len(length(results))) { # convert to loop for debug
 
-    x = results[[i]]
+    x <- results[[i]]
 
     if (!x$type %in% c("NumericVariable", "DatetimeVariable", "TextVariable")) {
       # Do some munging and generate the table bodies to match those header(s)
@@ -212,20 +215,24 @@ latexReportTables <- function(results, banner, theme) {
         # if centered is used on tabulars.
         table <- center(table)
       }
-
     }
 
     # beb: Enclose if pagebreak_in_banner = FALSE
     # For some reason that I don't care about
     # bottomrule gets wiped out by nopagebreak environment
     # adding one manually
-    if (!theme$pagebreak_in_banner)
-      table = gsub(
-        "\\end{longtable}",
-        "\\bottomrule\\end{longtable}\n\\end{absolutelynopagebreak}",
-        table, fixed = TRUE)
+    if (!theme$pagebreak_in_banner) {
+      # table <- gsub(
+      #   "\\end{longtable}",
+      #   "\\bottomrule\\end{longtable}\n",
+      #   table,
+      #   fixed = TRUE
+      # )
 
-    table_bodies[[i]] = table
+      table <- noBreaks(table)
+    }
+
+    table_bodies[[i]] <- table
   }
 
   if (theme$one_per_sheet) {
@@ -270,7 +277,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     doc_class <- "\\documentclass[landscape]{article}"
   }
 
-  nopagebreak = "\\newenvironment{absolutelynopagebreak}
+  nopagebreak <- "\\newenvironment{absolutelynopagebreak}
   {\\par\\nobreak\\vfil\\penalty0\\vfilneg
    \\vtop\\bgroup}
   {\\par\\xdef\\tpd{\\the\\prevdepth}\\egroup
@@ -284,29 +291,31 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     usepackage("sfmath"),
     usepackage("comment"),
     usepackage("fontenc", "T1"),
-    usepackage("hyperref",
-               "pdftex=true",
-               "pdftoolbar=true",
-               "pdfmenubar=true",
-               "pdfauthor = {}",
-               "pdfcreator = {PDFLaTeX}",
-               "pdftitle = {}",
-               "colorlinks=true",
-               "urlcolor=blue",
-               "linkcolor=blue",
-               "citecolor=blue",
-               "implicit=true",
-               "hypertexnames=false"
+    usepackage(
+      "hyperref",
+      "pdftex=true",
+      "pdftoolbar=true",
+      "pdfmenubar=true",
+      "pdfauthor = {}",
+      "pdfcreator = {PDFLaTeX}",
+      "pdftitle = {}",
+      "colorlinks=true",
+      "urlcolor=blue",
+      "linkcolor=blue",
+      "citecolor=blue",
+      "implicit=true",
+      "hypertexnames=false"
     ),
     usepackage(validLatexFont(theme$font), "scaled"),
     "\\renewcommand*\\familydefault{\\sfdefault}",
     usepackage("booktabs, dcolumn, longtable"),
-    usepackage("geometry",
-               "top=0.6in",
-               "bottom=0.6in",
-               paste0("left=", bdr),
-               paste0("right=", bdr),
-               "includeheadfoot"
+    usepackage(
+      "geometry",
+      "top=0.6in",
+      "bottom=0.6in",
+      paste0("left=", bdr),
+      paste0("right=", bdr),
+      "includeheadfoot"
     ),
     usepackage("array"),
     usepackage("babel", "english"),
@@ -318,21 +327,23 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     "\\renewcommand{\\headrulewidth}{0pt}",
     "\\renewcommand{\\footrulewidth}{0pt}",
     "\\fancyhead{}",
-    paste0("\\fancyhead[L]{{", applyLatexStyle(title, theme$format_title), "}",
-           applyLatexStyle(subtitle, theme$format_subtitle), "}"),
+    paste0(
+      "\\fancyhead[L]{{", applyLatexStyle(title, theme$format_title), "}",
+      applyLatexStyle(subtitle, theme$format_subtitle), "}"
+    ),
     logo,
-    "\\newcolumntype{d}{D{.}{.}{3.2}}", #!topline
-    "\\newcolumntype{g}{D{\\%}{\\%}{3.0}}", #!topline #changed 20190907 from 5.0 to 3.0
-    usepackage("float"), #topline
-    usepackage("marginnote"), #topline
-    "\\setlength\\extrarowheight{2pt}", #topline
-    "\\newlength\\mywidth", #topline
-    "\\setlength\\mywidth{3.5in}", #topline
-    usepackage("caption"), #topline
-    "\\captionsetup[table]{labelformat=empty}", #topline
-    "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", #topline
+    "\\newcolumntype{d}{D{.}{.}{3.2}}", # !topline
+    "\\newcolumntype{g}{D{\\%}{\\%}{3.0}}", # !topline #changed 20190907 from 5.0 to 3.0
+    usepackage("float"), # topline
+    usepackage("marginnote"), # topline
+    "\\setlength\\extrarowheight{2pt}", # topline
+    "\\newlength\\mywidth", # topline
+    "\\setlength\\mywidth{3.5in}", # topline
+    usepackage("caption"), # topline
+    "\\captionsetup[table]{labelformat=empty}", # topline
+    "\\renewcommand*{\\marginfont}{\\scriptsize\\itshape}", # topline
     "\\fancyfoot{}",
-    ifelse(theme$latex_page_numbers, "\\fancyfoot[R]{\\thepage}",""),
+    ifelse(theme$latex_page_numbers, "\\fancyfoot[R]{\\thepage}", ""),
     newcommand("PreserveBackslash", args = 1, "\\let\\temp=\\\\#1\\let\\\\=\\temp"),
     "\\let\\PBS=\\PreserveBackslash",
     newcommand("longtablesep", paste(
@@ -345,16 +356,26 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
     )),
     usepackage("tocloft", "titles"),
     newcommand("cftchapfont", theme$font_size), # TODO: make this actually change the font size
-    newcommand("formatvardescription", args = 1,
-               applyLatexStyle("#1", theme$format_var_description)),
-    newcommand("formatvarname", args = 1,
-               applyLatexStyle("#1", theme$format_var_name)),
-    newcommand("formatvaralias", args = 1,
-               applyLatexStyle("#1", theme$format_var_alias)),
-    newcommand("formatvarfiltertext", args = 1,
-               applyLatexStyle("#1", theme$format_var_filtertext)),
-    newcommand("formatvarsubname", args = 1,
-               applyLatexStyle("#1", theme$format_var_subname)),
+    newcommand("formatvardescription",
+      args = 1,
+      applyLatexStyle("#1", theme$format_var_description)
+    ),
+    newcommand("formatvarname",
+      args = 1,
+      applyLatexStyle("#1", theme$format_var_name)
+    ),
+    newcommand("formatvaralias",
+      args = 1,
+      applyLatexStyle("#1", theme$format_var_alias)
+    ),
+    newcommand("formatvarfiltertext",
+      args = 1,
+      applyLatexStyle("#1", theme$format_var_filtertext)
+    ),
+    newcommand("formatvarsubname",
+      args = 1,
+      applyLatexStyle("#1", theme$format_var_subname)
+    ),
     usepackage("amsmath"),
     nopagebreak,
     "",

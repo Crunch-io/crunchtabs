@@ -43,7 +43,7 @@ Includes:
       \item{\code{col_width} A numeric. Width of the label column. Defaults to 40.}
       \item{\code{extend_borders} In Excel, a logical. Should the borders created for certain rows extend to the label column? Defaults to FALSE.}
 }
-\item{format_label_column_exception}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
+\item{format_label_column_exceptions}{In LaTeX, a character vector of columns widths, specified in inches and named after the question alias whose stub they would effect.}
 \item{format_means}{An optional list. How means should be formatted. If `NULL` means will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 \item{format_medians}{An optional list. How medians should be formatted. If `NULL` medians will not appear. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, name, position_bottom, position_top, valign, and wrap_text.}
 \item{format_min_base}{An optional list. If a minimum base size is desired, how variables that fall below that base size should be formatted. Includes: background_color, border_bottom, border_color, border_left, border_right, border_style, border_top, decoration, font, font_color, font_size, halign, valign, wrap_text}
@@ -94,7 +94,8 @@ Includes:
 \item{border_color}{In Excel, an optional color. The border color of the relevant cells.}
 \item{border_left}{In Excel, an optional logical. Should there be a border on the left of the relevant cells? }
 \item{border_right}{In Excel, an optional logical. Should there be a border on the right of the relevant cells? }
-\item{border_style}{In Excel, an optional character. The style of the border of the relevant cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
+\item{border_style}{In Excel, an optional character. The style of the border of the relevant
+\cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
 \item{border_top}{In Excel, an optional logical. Should there be a border on the top of the relevant cells? }
 \item{decoration}{An optional character vector. Text decorations to be applied to relevant cells. Valid options are: "bold", "italic", "strikeout", "underline", and "underline2".}
 \item{font}{An optional character. The font to be used.}

@@ -19,7 +19,8 @@ test_that("Warning on hex color", {
   item <- "Hello!"
   item_theme <- list()
   item_theme$font_color <- "#000000"
-  expect_warning(applyLatexStyle(item, item_theme), "In Latex, colors must be color names not hex codes")
+  expect_warning(applyLatexStyle(item, item_theme),
+                 "In Latex, colors must be color names not hex codes")
 })
 
 test_that("Color application", {

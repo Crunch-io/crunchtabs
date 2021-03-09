@@ -17,15 +17,18 @@ themeUKPolitical <- function() {
     format_title = list(font_size = 14),
     format_banner_names = list(
       font = "Arial Narrow", font_size = 8,
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
+      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE
+    ),
     format_banner_categories = list(
       font = "Arial Narrow", font_size = 8,
-      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE),
+      border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE
+    ),
     format_var_alias = NULL,
     format_var_name = NULL,
     format_var_description = list(
       repeat_for_subs = FALSE, decoration = "bold",
-      font_color = "black"),
+      font_color = "black"
+    ),
     format_var_filtertext = list(repeat_for_subs = FALSE),
     format_var_subname = list(decoration = "bold", font_color = "black"),
     format_label_column = list(halign = "right", col_width = 80, extend_borders = FALSE),
@@ -35,11 +38,13 @@ themeUKPolitical <- function() {
       name = "Weighted Sample",
       border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
       border_style = "thin", border_color = "black", position_bottom = FALSE,
-      position_fixed = TRUE, halign = "center"),
+      position_fixed = TRUE, halign = "center"
+    ),
     format_unweighted_n = list(
       name = "Unweighted Sample", font_color = "#969696",
       border_top = TRUE, border_bottom = TRUE, border_left = TRUE, border_right = TRUE,
-      position_bottom = FALSE, position_fixed = TRUE),
+      position_bottom = FALSE, position_fixed = TRUE
+    ),
     format_totals_column = list(decoration = "bold"),
     format_means = NULL,
     format_medians = NULL,
@@ -52,7 +57,8 @@ themeUKPolitical <- function() {
     latex_foottext = "",
     latex_table_align = "r",
     latex_multirowheaderlines = FALSE,
-    latex_max_lines_for_tabular = 0)
+    latex_max_lines_for_tabular = 0
+  )
 }
 
 #' @export
@@ -64,14 +70,16 @@ themeHuffPoToplines <- function(logo = NULL) {
     format_title = list(decoration = "bold"),
     format_var_description = list(
       include_q_number = TRUE, decoration = "bold",
-      background_color = "gray"),
+      background_color = "gray"
+    ),
     format_var_filtertext = list(decoration = "italic", font_size = 8),
     format_totals_row = NULL,
     format_unweighted_n = NULL,
     latex_headtext = "tbc",
     latex_foottext = "tbc",
     latex_table_align = "r",
-    one_per_sheet = FALSE)
+    one_per_sheet = FALSE
+  )
 }
 
 #' @export
@@ -90,5 +98,6 @@ themeHuffPoCrosstabs <- function(logo = NULL) {
     latex_headtext = "tbc",
     latex_foottext = "tbc",
     latex_table_align = "r",
-    one_per_sheet = TRUE)
+    one_per_sheet = TRUE
+  )
 }

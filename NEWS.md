@@ -1,3 +1,25 @@
+## crunchtabs 1.4.0
+
+Features:
+
+- Relabeling for items, options, descriptions and notes via relabel #247. Allows for arbitrary question text adjustment #138 #55
+- Tracking reports #232
+- Recontact reports #232
+- Now get a warning when you attempt to make a codebook from a weighted dataset #226
+- Major updates to vignettes for tracking/recontacts #218
+- Option to show only the first appearance of an alias in a tracking report as a single categorical #241
+- Added ability to generate a codebook from a generic dataset using generated metadata #227
+- Added ability to generate codebooks from large arrow datasets #227
+- Automatically align variables, by adding "-" where category has no responses #245, #243
+
+Fixes:
+
+- Fix for absolutelynopagebreak duplication on wrapping tex that is a character vector instead of simple string #246
+- Fix bogus warnings for format_label_column_exceptions #245
+- Fix missing images from vignettes #242
+- Added linting #228
+- Removing legacy features from the repository #225
+
 ## crunchtabs 1.3.1
 
 - Allows variable pass through in tracking reports such that questions that appear in one or more waves (but less than all waves) are displayed appropriately and in the order specified. 

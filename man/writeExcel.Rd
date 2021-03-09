@@ -48,7 +48,8 @@ user to continue editing? Defaults to \code{TRUE}.}
 }
 \value{
 If \code{save_workbook} is set to \code{FALSE}, the openxlsx Workbook object is returned
-allowing the user to continue editing it before saving. Otherwise the data is returned as it was provided.
+allowing the user to continue editing it before saving. Otherwise the data is returned as it was
+provided.
 }
 \description{
 \code{writeExcel} produces publication-quality Excel reports:
@@ -57,10 +58,10 @@ Toplines (one-way frequency tables) or Banners (cross tabulations)
 \examples{
 \dontrun{
 # toplines report
-toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-writeExcel(toplines_summary, 'filename')
+toplines_summary <- crosstabs(crunch_dataset, weight = "weight")
+writeExcel(toplines_summary, "filename")
 # crosstabs report
 crosstabs_summary <- crosstabs(crunch_dataset, banner = banner_object)
-writeExcel(crosstabs_summary, 'filename')
+writeExcel(crosstabs_summary, "filename")
 }
 }

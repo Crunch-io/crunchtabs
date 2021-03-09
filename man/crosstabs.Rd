@@ -43,24 +43,31 @@ and the contents of the list component are a character vector of aliases to
 which that weight should apply. Defaults to current weight variable. For
 unweighted, set to \code{NULL}}
 
-\item{banner}{An optional object of class \code{Banner} that should be used to generate
-a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary is produced and returned.}
+\item{banner}{An optional object of class \code{Banner} that should be used
+to generate a Crosstabs summary. Defaults to \code{NULL} - a Toplines summary
+is produced and returned.}
 
-\item{codebook}{If \code{TRUE}, codebook data summaries are prepared. Defaults to \code{FALSE}.}
+\item{codebook}{If \code{TRUE}, codebook data summaries are prepared. Defaults
+to \code{FALSE}.}
 
-\item{include_numeric}{Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.}
+\item{include_numeric}{Logical. Should we include numeric questions? Defaults
+to FALSE. Implemented for Toplines only.}
 
-\item{include_datetime}{Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.}
+\item{include_datetime}{Logical. Should we include date time questions? Defaults
+to FALSE. Implemented for Toplines only.}
 
-\item{include_verbatims}{Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.}
+\item{include_verbatims}{Logical. Should we include a sample text varaibles?
+Defaults to FALSE. Implemented for Toplines only.}
 
-\item{num_verbatims}{An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.}
+\item{num_verbatims}{An integer identifying the number of examples to extract
+from a text variable. Defaults to 10. Implemented for Toplines only.}
 
-\item{include_original_weighted}{Logical. When providing list of weights to apply, should we include the default weighted vars? Defaults to TRUE.}
+\item{include_original_weighted}{Logical. When providing list of weights to apply,
+should we include the default weighted vars? Defaults to TRUE.}
 }
 \value{
-A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
-summary of the input dataset.
+A Toplines (when no banner is provided) or Crosstabs (when a banner
+is provided) summary of the input dataset.
 }
 \description{
 \code{crosstabs} produces Toplines (one-way frequency tables) or Crosstabs (cross tabulations)
@@ -73,8 +80,10 @@ summaries of a Cruch dataset.
 
 \examples{
 \dontrun{
-toplines_summary <- crosstabs(crunch_dataset, weight = 'weight')
-crosstabs_summary <- crosstabs(crunch_dataset, vars = c('alias1', 'alias2'),
- weight = 'weight', banner = banner_object)
+toplines_summary <- crosstabs(crunch_dataset, weight = "weight")
+crosstabs_summary <- crosstabs(crunch_dataset,
+  vars = c("alias1", "alias2"),
+  weight = "weight", banner = banner_object
+)
 }
 }

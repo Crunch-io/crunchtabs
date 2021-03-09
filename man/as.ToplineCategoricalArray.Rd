@@ -11,7 +11,7 @@ as.ToplineCategoricalArray(questions, question_alias = NULL, labels)
 provided in time or
 wave 3, ..., wave n)}
 
-\item{question_alias}{The name of the question alias across all results 
+\item{question_alias}{The name of the question alias across all results
 sets. It must be the same in all datasets.}
 
 \item{labels}{A character vector of labels that will be displayed in the

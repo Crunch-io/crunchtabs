@@ -7,7 +7,7 @@ test_that("reflowQuestion Numbers", {
     y$number <- s[x]
     y
   })
-  
+
   expect_false(
     all(unlist(lapply(x, function(x) x[["number"]])) == 1:50)
   )

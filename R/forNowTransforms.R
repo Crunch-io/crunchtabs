@@ -16,7 +16,7 @@ calcTabInsertions <- function(vec, elements, var_cats) {
   vec_out <- do.call(rbind, lapply(elements, function(element) {
     # if element is a category, simply return the value
     if (inherits(element, "Category")) {
-      return(vec[name(element),])
+      return(vec[name(element), ])
     }
 
     # if element is a heading return NA (since there is no value to be
@@ -31,11 +31,14 @@ calcTabInsertions <- function(vec, elements, var_cats) {
       # grab category combinations, and then sum those categories.
       combos <- element$categories
       which.cats <- names(var_cats)[crunch::ids(var_cats) %in% combos]
-      if (any(is.na(var_cats)[crunch::ids(var_cats) %in% combos])) return(NA)
-      if (dim(vec)[2] == 1) return(sum(vec[which.cats, ]))
+      if (any(is.na(var_cats)[crunch::ids(var_cats) %in% combos])) {
+        return(NA) # nocov
+      }
+      if (dim(vec)[2] == 1) {
+        return(sum(vec[which.cats, ]))
+      }
       return(colSums(vec[which.cats, , drop = FALSE]))
     }
-
   }))
 
   colnames(vec_out) <- colnames(vec)
@@ -59,16 +62,21 @@ calcTabInsertions <- function(vec, elements, var_cats) {
 applyInsert <- function(vec, var_cats, a_func) {
   if (length(dim(vec)) == 3) {
     dt <- do.call(cbind, sapply(dimnames(vec)[[3]], function(xi) {
-      apply(vec[ , , xi, drop = FALSE], 2, a_func,
-            na.omit(var_cats))
+      apply(
+        vec[, , xi, drop = FALSE], 2, a_func,
+        na.omit(var_cats)
+      )
     }, simplify = FALSE))
     dimnames(dt) <- dimnames(vec)[2:length(dim(vec))]
   } else {
     dt <- matrix(
       apply(vec, 2, a_func, na.omit(var_cats)),
       nrow = 1, dimnames =
-        setNames(list("",
-                      dimnames(vec)[[2]]), names(dimnames(vec))))
+        setNames(list(
+          "",
+          dimnames(vec)[[2]]
+        ), names(dimnames(vec)))
+    )
   }
   return(dt)
 }
@@ -98,7 +106,9 @@ calcTabMeanInsert <- function(vec, var_cats) {
 #' @importFrom crunch values
 calcTabMedianInsert <- function(vec, var_cats) {
   ok <- !is.na(vec) & vec != 0 & !is.na(crunch::values(var_cats))
-  if (all(!ok)) return(NA)
+  if (all(!ok)) {
+    return(NA) # nocov
+  }
   num_values <- crunch::values(var_cats[ok])
   counts <- vec[ok]
 
@@ -106,16 +116,15 @@ calcTabMedianInsert <- function(vec, var_cats) {
   o <- order(num_values)
   num_values <- num_values[o]
   counts <- counts[o]
-  perc <- cumsum(counts)/sum(counts)
+  perc <- cumsum(counts) / sum(counts)
 
   # if any of the bins are 0.5, return the mean of that and the one above it.
   if (any(as.character(perc) %in% as.character(0.5))) {
     n <- which(perc == 0.5)
-    return((num_values[n] + num_values[n + 1])/2)
+    return((num_values[n] + num_values[n + 1]) / 2)
   }
 
   # otherwise return the first bin that is more than 50%
   over0.5 <- which(perc > 0.5)
   return(num_values[min(over0.5)])
 }
-

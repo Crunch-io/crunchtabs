@@ -91,7 +91,7 @@ While recontact reports are designed for questions asked in the same dataset, we
     ds2 <- loadDataset("My DS Wave 2")
     ds3 <- loadDataset("My DS Wave 3")
     
-    ct <- tracking_report(
+    ct <- trackingReport(
       dataset_list = list(ds1, ds2, ds3), 
       vars = c("question_alias1", "question_alias2", "question_alias3"),
       wave_labels = NULL

@@ -3,6 +3,7 @@
 \name{codeBookSummary}
 \alias{codeBookSummary}
 \alias{codeBookSummary.default}
+\alias{codeBookSummary.factor}
 \alias{codeBookSummary.CategoricalVariable}
 \alias{codeBookSummary.MultipleResponseVariable}
 \alias{codeBookSummary.CategoricalArrayVariable}
@@ -11,24 +12,28 @@
 \alias{codeBookSummary.DatetimeVariable}
 \title{Summarize crunch variables for codeBooks}
 \usage{
-codeBookSummary(x, ...)
+codeBookSummary(x, meta, ...)
 
-\method{codeBookSummary}{default}(x, ...)
+\method{codeBookSummary}{default}(x, meta, ...)
 
-\method{codeBookSummary}{CategoricalVariable}(x, multiple = FALSE, ...)
+\method{codeBookSummary}{factor}(x, meta, ...)
 
-\method{codeBookSummary}{MultipleResponseVariable}(x, ...)
+\method{codeBookSummary}{CategoricalVariable}(x, multiple = FALSE, meta = NULL, ...)
 
-\method{codeBookSummary}{CategoricalArrayVariable}(x, ...)
+\method{codeBookSummary}{MultipleResponseVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{NumericVariable}(x, ...)
+\method{codeBookSummary}{CategoricalArrayVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{TextVariable}(x, ...)
+\method{codeBookSummary}{NumericVariable}(x, meta = NULL, ...)
 
-\method{codeBookSummary}{DatetimeVariable}(x, ...)
+\method{codeBookSummary}{TextVariable}(x, meta = NULL, ...)
+
+\method{codeBookSummary}{DatetimeVariable}(x, meta = NULL, ...)
 }
 \arguments{
 \item{x}{A single variable from a crunch dataset}
+
+\item{meta}{A list containning question meta data}
 
 \item{...}{Additional arguments, unused.}
 
@@ -40,16 +45,18 @@ into either a kable or manually glued into a latex.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: The default, throws out anything that does not 
+\item \code{default}: The default, throws out anything that does not
 match expected crunch variable classes
 
-\item \code{CategoricalVariable}: Prepares a codeBookSummary data.frame for a 
+\item \code{factor}: Prepares a codeBookSummary data.frame for a factor
+
+\item \code{CategoricalVariable}: Prepares a codeBookSummary data.frame for a
 CategoricalVariable
 
-\item \code{MultipleResponseVariable}: Prepares a codeBookSummary data.frame for a 
+\item \code{MultipleResponseVariable}: Prepares a codeBookSummary data.frame for a
 MultipleResponseVariable
 
-\item \code{CategoricalArrayVariable}: Prepares a codeBookSummary data.frame for a 
+\item \code{CategoricalArrayVariable}: Prepares a codeBookSummary data.frame for a
 CategoricalArrayVariable
 
 \item \code{NumericVariable}: Prepares a codeBookSummary data.frame for a NumericVariable
