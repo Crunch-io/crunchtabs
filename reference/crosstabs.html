@@ -82,7 +82,7 @@ summaries of a Cruch dataset." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -203,39 +203,46 @@ unweighted, set to <code>NULL</code></p></td>
     </tr>
     <tr>
       <th>banner</th>
-      <td><p>An optional object of class <code>Banner</code> that should be used to generate
-a Crosstabs summary. Defaults to <code>NULL</code> - a Toplines summary is produced and returned.</p></td>
+      <td><p>An optional object of class <code>Banner</code> that should be used
+to generate a Crosstabs summary. Defaults to <code>NULL</code> - a Toplines summary
+is produced and returned.</p></td>
     </tr>
     <tr>
       <th>codebook</th>
-      <td><p>If <code>TRUE</code>, codebook data summaries are prepared. Defaults to <code>FALSE</code>.</p></td>
+      <td><p>If <code>TRUE</code>, codebook data summaries are prepared. Defaults
+to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>include_numeric</th>
-      <td><p>Logical. Should we include numeric questions? Defaults to FALSE. Implemented for Toplines only.</p></td>
+      <td><p>Logical. Should we include numeric questions? Defaults
+to FALSE. Implemented for Toplines only.</p></td>
     </tr>
     <tr>
       <th>include_datetime</th>
-      <td><p>Logical. Should we include date time questions? Defaults to FALSE. Implemented for Toplines only.</p></td>
+      <td><p>Logical. Should we include date time questions? Defaults
+to FALSE. Implemented for Toplines only.</p></td>
     </tr>
     <tr>
       <th>include_verbatims</th>
-      <td><p>Logical. Should we include a sample text varaibles? Defaults to FALSE. Implemented for Toplines only.</p></td>
+      <td><p>Logical. Should we include a sample text varaibles?
+Defaults to FALSE. Implemented for Toplines only.</p></td>
     </tr>
     <tr>
       <th>num_verbatims</th>
-      <td><p>An integer identifying the number of examples to extract from a text variable. Defaults to 10. Implemented for Toplines only.</p></td>
+      <td><p>An integer identifying the number of examples to extract
+from a text variable. Defaults to 10. Implemented for Toplines only.</p></td>
     </tr>
     <tr>
       <th>include_original_weighted</th>
-      <td><p>Logical. When providing list of weights to apply, should we include the default weighted vars? Defaults to TRUE.</p></td>
+      <td><p>Logical. When providing list of weights to apply,
+should we include the default weighted vars? Defaults to TRUE.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A Toplines (when no banner is provided) or Crosstabs (when a banner is provided)
-summary of the input dataset.</p>
+    <p>A Toplines (when no banner is provided) or Crosstabs (when a banner
+is provided) summary of the input dataset.</p>
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
     
@@ -245,9 +252,11 @@ summary of the input dataset.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>toplines_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>, weight <span class='op'>=</span> <span class='st'>'weight'</span><span class='op'>)</span>
-<span class='va'>crosstabs_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>, vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'alias1'</span>, <span class='st'>'alias2'</span><span class='op'>)</span>,
- weight <span class='op'>=</span> <span class='st'>'weight'</span>, banner <span class='op'>=</span> <span class='va'>banner_object</span><span class='op'>)</span>
+<span class='va'>toplines_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>, weight <span class='op'>=</span> <span class='st'>"weight"</span><span class='op'>)</span>
+<span class='va'>crosstabs_summary</span> <span class='op'>&lt;-</span> <span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>crunch_dataset</span>,
+  vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"alias1"</span>, <span class='st'>"alias2"</span><span class='op'>)</span>,
+  weight <span class='op'>=</span> <span class='st'>"weight"</span>, banner <span class='op'>=</span> <span class='va'>banner_object</span>
+<span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
