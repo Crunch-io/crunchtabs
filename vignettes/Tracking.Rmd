@@ -202,7 +202,7 @@ ct <- trackingReport(
 )
 ```
 
-### Relabeling or Repositioning Categories or Responses
+### Relabeling Categories or Responses
 
 There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, we  offer the ability to relabel your responses or to reposition them. 
 
@@ -221,24 +221,3 @@ ct <- recontact_toplines(
 )
 ```
 
-#### Repositioning
-
-Specify a list of variables that you either specify as "above" or "below" your frequency table. "above", places the column labels above the frequency table but below the question text (the crunch description) in a letter denominated bulleted list (A, B, C, ...) by default the column labels are equivalent to the letters. If you specify `col_labels` it will use this labels instead of letters. "below", places the listing below the frequency table.  
-
-```{r, eval = FALSE}
-# Relabel
-
-ct <- recontact_toplines(
-  ...,
-  reposition = list(
-    alias_name = list(
-      postiion="above", 
-      col_labels=c(...)),
-    other_alias = list(
-      position="below",
-      col_labels = c(...)
-    )
-  )
-)
-
-```
