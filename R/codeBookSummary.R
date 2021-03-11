@@ -36,25 +36,23 @@ codeBookSummary.default <- function(x, meta, ...) {
 #' @param meta A list containning question meta data
 #' @export
 codeBookSummary.factor <- function(x, meta, ...) {
-  # Should return
-  # id, name, n
 
-  labs = na.omit(
-    eval(
-      parse(
-        text = as.character(
-          meta$recode
+  if(!is.na(meta$recode)) {
+    labs = na.omit(
+      eval(
+        parse(
+          text = as.character(
+            meta$recode
+          )
         )
       )
     )
-  )
 
-  labs <- labs[!is.na(labs)]
-  labs[labs == " " & !is.na(labs)] <- NA
-  # x <- as.character(x)
-  # x[x == " " & !is.na(x)] <- NA
-  #
-  # fac <- factor(x, levels = labs, labels = labs)
+    labs <- labs[!is.na(labs)]
+    labs[labs == " " & !is.na(labs)] <- NA
+  } else {
+    labs <- levels(x)
+  }
 
   smry <- table(x, useNA = "ifany")
 

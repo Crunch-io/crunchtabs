@@ -1,0 +1,152 @@
+\documentclass{article}
+\usepackage[pdftex]{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{sfmath}
+\usepackage{comment}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex=true, pdftoolbar=true, pdfmenubar=true, pdfauthor = {}, pdfcreator = {PDFLaTeX}, pdftitle = {}, colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, implicit=true, hypertexnames=false]{hyperref}
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage{booktabs}
+\usepackage{tabu}
+\usepackage{longtable}
+\usepackage{siunitx}
+\sisetup{
+  round-mode          = places, % Rounds numbers
+  round-precision     = 2, % to 2 places
+  table-format        = 3
+}
+\usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}
+\usepackage{array}
+\usepackage[english]{babel}
+\newcolumntype{B}[2]{>{#1\hspace{0pt}\arraybackslash}b{#2}}
+\setlength{\parindent}{0pt}
+\usepackage[dvipsnames]{color}
+\definecolor{gray}{gray}{0.85}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcolumntype{d}{S}
+\newcolumntype{J}{S[table-format=1]}
+\newcolumntype{K}{S[table-format=2]}
+\newcolumntype{M}{S[table-format=4]}
+\newcolumntype{N}{S[table-format=5]}
+\newcolumntype{O}{S[table-format=6]}
+% default is 3 so it's not included above
+\usepackage{float}
+\usepackage{marginnote}
+\setlength\extrarowheight{2pt}
+\newlength\mywidth
+\setlength\mywidth{3.5in}
+\usepackage{caption}
+\captionsetup[table]{labelformat=empty}
+\renewcommand*{\marginfont}{\scriptsize\itshape}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+\let\PBS=\PreserveBackslash
+\newcommand{\longtablesep}{\endfirsthead \multicolumn{2}{c}{\textit{}} \\ \endhead \multicolumn{2}{c}{\textit{}} \\ \endfoot \endlastfoot}
+\usepackage[titles]{tocloft}
+\newcommand{\cftchapfont}{12}
+\newcommand{\formatvardescription}[1]{#1}
+\newcommand{\formatvarname}[1]{#1}
+\newcommand{\formatvaralias}[1]{#1}
+\newcommand{\formatvarfiltertext}[1]{\fontsize{8}{12}\textit{#1}}
+\newcommand{\formatvarsubname}[1]{#1}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{inconsolata}
+
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+\fancyhead{}
+\fancyhead[L]{{\fontsize{16}{24}\textbf{Your Title Here}}\fontsize{12}{18}\textbf{ \\ Your Subtitle Here}}
+
+
+\begin{document}
+\setlength{\tabcolsep}{1em}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{\fill}
+\setlength{\LTcapwidth}{\textwidth}
+\vspace{.25in}
+
+\begin{longtable}[l]{ll}
+Sample  &  US Voting Adults \\ 
+Conducted  &  Feb 2021 - Mar 2021 \\ 
+\end{longtable}
+You can enter arbitrary \textbf{\emph{tex}} in the preamble, but it must be double escaped. 
+
+
+\renewcommand{\listtablename}{Table of Contents}
+
+
+\begin{absolutelynopagebreak}
+\begin{absolutelynopagebreak}
+\textbf{All pets owned}\hfill\textbf{\ttfamily{allpets}}
+
+{\small Multiple Response}
+
+\vskip 0.10in
+Do you have any of these animals as pets? Please select all that apply.
+\addcontentsline{lot}{table}{\parbox{1.8in}{\ttfamily{allpets}} All pets owned}
+\vskip 0.10in
+\emph{This is a note, usually describing a sub-sample}
+\vskip 0.10in\end{absolutelynopagebreak} 
+\begin{longtable}[l]{>{}ll}
+\toprule
+\multicolumn{2}{c}{Rows} \\
+\cmidrule(l{3pt}r{3pt}){1-2}
+{Variable} & {Label}\\
+\midrule
+\ttfamily{allpets\_1} & Cat\\
+ 
+\ttfamily{allpets\_2} & Dog\\
+ 
+\ttfamily{allpets\_3} & Bird\\
+\bottomrule
+\end{longtable}\end{absolutelynopagebreak}
+\begin{absolutelynopagebreak}
+
+\begin{longtable}[l]{Jl}
+\toprule
+\multicolumn{2}{c}{Columns} \\
+\cmidrule(l{3pt}r{3pt}){1-2}
+{Code} & {Label}\\
+\midrule
+1 & selected\\
+ 
+2 & not selected\\
+ 
+8 & skipped\\
+ 
+9 & not asked\\
+\bottomrule
+\end{longtable}\end{absolutelynopagebreak}
+\begin{absolutelynopagebreak}
+
+\begin{longtable}[l]{lJJJJ}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{4}{c}{Counts} \\
+\cmidrule(l{3pt}r{3pt}){2-5}
+{Variable} & {1} & {2} & {8} & {9}\\
+\midrule
+\ttfamily{allpets\_1} & 1 & 2 & 3 & 4\\
+ 
+\ttfamily{allpets\_2} & 4 & 1 & 3 & 2\\
+ 
+\ttfamily{allpets\_3} & 4 & 4 & 1 & 1\\
+\bottomrule
+\end{longtable}\end{absolutelynopagebreak}
+
+\clearpage
+
+
+
+
+\end{document}
