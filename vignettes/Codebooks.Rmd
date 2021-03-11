@@ -18,7 +18,7 @@ A codebook is used as a reference to document the contents of a survey by displa
 
 ### Generating Codebooks
 
-Creating a codebook from a crunch dataset is easy! In the examples below we will work with the example dataset. 
+Creating a codebook from a crunch dataset is easy. In the examples below we will work with the "Example dataset" built into crunch that you can . 
 
 ```{r, eval = FALSE}
 library(crunchtabs)
@@ -44,7 +44,7 @@ writeCodeBookLatex(ds, url = "https://api.crunch.io/datasets/<dataset-id>")
 
 ## Options
 
-There are a number of optional settings that you can control such as: displaying a table of contents, a sample descriptions, changing the title or subtitle, or adding a logo. In this section, we will present each of these. 
+There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo. In this section, we will present each of these. 
 
 ### Table of Contents
 
@@ -52,10 +52,6 @@ A table of contents can be added by using the `table_of_contents` parameter. Pro
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, table_of_contents = TRUE)
-```
-
-```{r, echo = FALSE}
-knitr::include_graphics("codebook-toc-example-002.png")
 ```
 
 ![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-toc-example-002.png)
@@ -74,12 +70,12 @@ Currently you can change the title and subtitle as well as provide descriptives 
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(
-  ds, 
-  title = "An Amazing Title", 
-  subtitle = "A Breathtaking Subtitle", 
-  field_period = "To infinity... and beyond!",
+  ds[1], 
+  title = "Your Title Here", 
+  subtitle = "Your Subtitle Here", 
+  field_period = "Feb 2021 - Mar 2021",
   sample_desc = "US Voting Adults",
-  preamble = "e^{ \\pm i\\theta } = \\cos \\theta \\pm i\\sin \\theta"
+  preamble = "You can enter arbitrary \\textbf{\\emph{tex}} in the preamble, but it must be double escaped. "
 )
 ```
 
@@ -96,9 +92,9 @@ writeCodeBookLatex(ds, logo = "yougov")
 
 ![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-logos-example-004.png)
 
-### Suppress Zeroes
+### Suppressing Zeroes
 
-Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through information that is useless to them. 
+Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can supress zeroes using the following:  
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, suppress_zero_counts = TRUE)
@@ -112,4 +108,68 @@ The table alignment on the page can be adjusted to one of:  "l" for left (the de
 writeCodeBookLatex(ds, position = "c")
 ```
 
-![Table of contents](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png)
+![Centered codebook](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png)
+
+## Generating Codebooks from Generic Data
+
+You can also create a codebook from a generic dataset but you are required to create the meta data yourself. Below, we will discuss the format of the meta data and what you need to do to put it together. 
+
+Your meta data should include the following: 
+
+- alias: The short code for the name of the column
+- descrption: A long description of the contents of the variables. If this is survey data, your question text would go here. 
+- name: This is a short name for the variable that is designed to provide flavor for the alias but no detail as in the description.
+- notes: This is descriptive text that identifies a subset. 
+- recode: Required column but optional fill. Used in other processes where raw data requires additional manipulation or recoding. 
+
+> Important: We parse the meta data file to create the codebook, we don't parse the data other than for summarization, columns/variables not specified in the meta data are ignored.
+
+```{r, eval = FALSE}
+library(crunchtabs)
+ds <- datasets::iris
+meta <- data.frame(
+  alias = c(
+    "Sepal.Length", 
+    "Sepal.Width",
+    "Petal.Length",
+    "Petal.Width",
+    "Species"
+    ),
+  name = c(
+    "Sepal Length",
+    "Sepal Width",
+    "Petal Length",
+    "Petal Width",
+    "Iris Species"
+  ),
+  description = c(
+    "The length of the flower's sepal",
+    "The width of the flower's sepal",
+    "The length of the flower's petals",
+    "The width of the flower's petals",
+    "The iris species"
+  ),
+  notes = rep("", 5),
+  recode = rep(NA, 5),
+  stringsAsFactors = FALSE
+)
+
+writeCodeBookLatexGeneric(
+  ds[c(1,5)], 
+  meta = meta[c(1,5),],
+  title = "Edgar Anderson's Iris Data", 
+  subtitle = "The data were collected by Anderson, Edgar", 
+  field_period = "1935",
+  sample_desc = "The irises of the Gaspe Peninsula",
+  preamble = "This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.",
+  table_of_contents = TRUE,
+)
+```
+
+![Codebook generic example 001](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-generic-example-001.png)
+
+![Codebook generic example 001](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-generic-example-002.png)
+
+## Known Limitations
+
+- This software only supports latin characters. English, French, Spanish, and Portuguese will work out of the box. Other languages with significant special character or RTL are not supported.
