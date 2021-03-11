@@ -83,7 +83,7 @@
 #' \item{border_left}{In Excel, an optional logical. Should there be a border on the left of the relevant cells? }
 #' \item{border_right}{In Excel, an optional logical. Should there be a border on the right of the relevant cells? }
 #' \item{border_style}{In Excel, an optional character. The style of the border of the relevant
-#' \cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
+#' \item{border_style}{In Excel, an optional character. The style of the border of the relevant cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
 #' \item{border_top}{In Excel, an optional logical. Should there be a border on the top of the relevant cells? }
 #' \item{decoration}{An optional character vector. Text decorations to be applied to relevant cells. Valid options are: "bold", "italic", "strikeout", "underline", and "underline2".}
 #' \item{font}{An optional character. The font to be used.}
