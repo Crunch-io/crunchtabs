@@ -111,7 +111,7 @@
 
     
     
-<p>Author: Brandon Bertelsen<br> Last updated: 2021-03-09</p>
+<p>Author: Brandon Bertelsen<br> Last updated: 2021-03-11</p>
 <div id="codebooks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#codebooks" class="anchor"></a>Codebooks!</h2>
@@ -119,7 +119,7 @@
 <div id="generating-codebooks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generating-codebooks" class="anchor"></a>Generating Codebooks</h3>
-<p>Creating a codebook from a crunch dataset is easy! In the examples below we will work with the example dataset.</p>
+<p>Creating a codebook from a crunch dataset is easy. In the examples below we will work with the “Example dataset” built into crunch that you can .</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
 <span class="fu">login</span><span class="op">(</span><span class="op">)</span>
@@ -143,14 +143,13 @@
 <div id="options" class="section level2">
 <h2 class="hasAnchor">
 <a href="#options" class="anchor"></a>Options</h2>
-<p>There are a number of optional settings that you can control such as: displaying a table of contents, a sample descriptions, changing the title or subtitle, or adding a logo. In this section, we will present each of these.</p>
+<p>There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo. In this section, we will present each of these.</p>
 <div id="table-of-contents" class="section level3">
 <h3 class="hasAnchor">
 <a href="#table-of-contents" class="anchor"></a>Table of Contents</h3>
 <p>A table of contents can be added by using the <code>table_of_contents</code> parameter. Providing a table of contents that shows the variable alias (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::alias</a></code>) followed by a short description of the variable that is derived from the crunch name (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::name</a></code>) and, of course, the page number where the related codebook item(s) can be found.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, table_of_contents <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="codebook-toc-example-002.png"><!-- --></p>
 <div class="figure">
 <img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-toc-example-002.png" alt=""><p class="caption">Table of contents</p>
 </div>
@@ -168,12 +167,12 @@
 <p>Currently you can change the title and subtitle as well as provide descriptives like sample description and field window.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span>
-  <span class="va">ds</span>, 
-  title <span class="op">=</span> <span class="st">"An Amazing Title"</span>, 
-  subtitle <span class="op">=</span> <span class="st">"A Breathtaking Subtitle"</span>, 
-  field_period <span class="op">=</span> <span class="st">"To infinity... and beyond!"</span>,
+  <span class="va">ds</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, 
+  title <span class="op">=</span> <span class="st">"Your Title Here"</span>, 
+  subtitle <span class="op">=</span> <span class="st">"Your Subtitle Here"</span>, 
+  field_period <span class="op">=</span> <span class="st">"Feb 2021 - Mar 2021"</span>,
   sample_desc <span class="op">=</span> <span class="st">"US Voting Adults"</span>,
-  preamble <span class="op">=</span> <span class="st">"e^{ \\pm i\\theta } = \\cos \\theta \\pm i\\sin \\theta"</span>
+  preamble <span class="op">=</span> <span class="st">"You can enter arbitrary \\textbf{\\emph{tex}} in the preamble, but it must be double escaped. "</span>
 <span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-options-example-003.png" alt=""><p class="caption">Table of contents</p>
@@ -190,10 +189,10 @@
 <img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-logos-example-004.png" alt=""><p class="caption">Table of contents</p>
 </div>
 </div>
-<div id="suppress-zeroes" class="section level3">
+<div id="suppressing-zeroes" class="section level3">
 <h3 class="hasAnchor">
-<a href="#suppress-zeroes" class="anchor"></a>Suppress Zeroes</h3>
-<p>Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through information that is useless to them.</p>
+<a href="#suppressing-zeroes" class="anchor"></a>Suppressing Zeroes</h3>
+<p>Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can supress zeroes using the following:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, suppress_zero_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
@@ -204,9 +203,78 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, position <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png" alt=""><p class="caption">Table of contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-centered-example-005.png" alt=""><p class="caption">Centered codebook</p>
 </div>
 </div>
+</div>
+<div id="generating-codebooks-from-generic-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#generating-codebooks-from-generic-data" class="anchor"></a>Generating Codebooks from Generic Data</h2>
+<p>You can also create a codebook from a generic dataset but you are required to create the meta data yourself. Below, we will discuss the format of the meta data and what you need to do to put it together.</p>
+<p>Your meta data should include the following:</p>
+<ul>
+<li>alias: The short code for the name of the column</li>
+<li>descrption: A long description of the contents of the variables. If this is survey data, your question text would go here.</li>
+<li>name: This is a short name for the variable that is designed to provide flavor for the alias but no detail as in the description.</li>
+<li>notes: This is descriptive text that identifies a subset.</li>
+<li>recode: Required column but optional fill. Used in other processes where raw data requires additional manipulation or recoding.</li>
+</ul>
+<blockquote>
+<p>Important: We parse the meta data file to create the codebook, we don’t parse the data other than for summarization, columns/variables not specified in the meta data are ignored.</p>
+</blockquote>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
+<span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">datasets</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/datasets/iris.html">iris</a></span>
+<span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  alias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    <span class="st">"Sepal.Length"</span>, 
+    <span class="st">"Sepal.Width"</span>,
+    <span class="st">"Petal.Length"</span>,
+    <span class="st">"Petal.Width"</span>,
+    <span class="st">"Species"</span>
+    <span class="op">)</span>,
+  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    <span class="st">"Sepal Length"</span>,
+    <span class="st">"Sepal Width"</span>,
+    <span class="st">"Petal Length"</span>,
+    <span class="st">"Petal Width"</span>,
+    <span class="st">"Iris Species"</span>
+  <span class="op">)</span>,
+  description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    <span class="st">"The length of the flower's sepal"</span>,
+    <span class="st">"The width of the flower's sepal"</span>,
+    <span class="st">"The length of the flower's petals"</span>,
+    <span class="st">"The width of the flower's petals"</span>,
+    <span class="st">"The iris species"</span>
+  <span class="op">)</span>,
+  notes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">""</span>, <span class="fl">5</span><span class="op">)</span>,
+  recode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">5</span><span class="op">)</span>,
+  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span>
+
+<span class="fu"><a href="../reference/writeCodeBookLatexGeneric.html">writeCodeBookLatexGeneric</a></span><span class="op">(</span>
+  <span class="va">ds</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">]</span>, 
+  meta <span class="op">=</span> <span class="va">meta</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span>,<span class="op">]</span>,
+  title <span class="op">=</span> <span class="st">"Edgar Anderson's Iris Data"</span>, 
+  subtitle <span class="op">=</span> <span class="st">"The data were collected by Anderson, Edgar"</span>, 
+  field_period <span class="op">=</span> <span class="st">"1935"</span>,
+  sample_desc <span class="op">=</span> <span class="st">"The irises of the Gaspe Peninsula"</span>,
+  preamble <span class="op">=</span> <span class="st">"This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica."</span>,
+  table_of_contents <span class="op">=</span> <span class="cn">TRUE</span>,
+<span class="op">)</span></code></pre></div>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-generic-example-001.png" alt=""><p class="caption">Codebook generic example 001</p>
+</div>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/codebook-generic-example-002.png" alt=""><p class="caption">Codebook generic example 001</p>
+</div>
+</div>
+<div id="known-limitations" class="section level2">
+<h2 class="hasAnchor">
+<a href="#known-limitations" class="anchor"></a>Known Limitations</h2>
+<ul>
+<li>This software only supports latin characters. English, French, Spanish, and Portuguese will work out of the box. Other languages with significant special character or RTL are not supported.</li>
+</ul>
 </div>
   </div>
 
