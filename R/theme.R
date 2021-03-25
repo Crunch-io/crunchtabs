@@ -3,7 +3,6 @@
 #' `themeNew` produces themes for `writeExcel` or `writeLatex`.
 #'
 #' @section Theme Arguments:
-# nolint start
 #' \describe{
 #' \item{digits}{A numeric. How many digits should the data be rounded to? (In Excel, this is excel styling.) Defaults to 0.}
 #' \item{digits_numeric}{A numeric. How many digits should continuous variable data be rounded to? (In Latex, , this is Latex styling.) Defaults to 2.}
@@ -82,7 +81,6 @@
 #' \item{border_color}{In Excel, an optional color. The border color of the relevant cells.}
 #' \item{border_left}{In Excel, an optional logical. Should there be a border on the left of the relevant cells? }
 #' \item{border_right}{In Excel, an optional logical. Should there be a border on the right of the relevant cells? }
-#' \item{border_style}{In Excel, an optional character. The style of the border of the relevant
 #' \item{border_style}{In Excel, an optional character. The style of the border of the relevant cells. Valid options are: "dashDot", "dashDotDot", "dashed", "dotted", "double", "hair", "medium", "mediumDashDot", "mediumDashDotDot", "mediumDashed", "none", "slantDashDot", "thick", and "thin".}
 #' \item{border_top}{In Excel, an optional logical. Should there be a border on the top of the relevant cells? }
 #' \item{decoration}{An optional character vector. Text decorations to be applied to relevant cells. Valid options are: "bold", "italic", "strikeout", "underline", and "underline2".}
@@ -152,8 +150,6 @@ themeNew <- function(..., default_theme = themeDefaultExcel()) {
       }
     }
   }
-
-  # nolint end
 
   theme <- modifyList(default_theme, dots, keep.null = TRUE)
   theme <- theme[union(names(dots), names(default_theme))]
