@@ -31,7 +31,8 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
   rebuilt_results <- list()
   class(rebuilt_results) <- c("Toplines", "CrunchTabs")
   rebuilt_results$results <- lapply(vars, function(x) NULL)
-  rebuilt_results$metadata <- tabs[[1]]$metadata
+  has_meta <- which(!unlist(lapply(lapply(tabs, function(x) x$metadata), is.null)))[1]
+  rebuilt_results$metadata <- tabs[[has_meta]]$metadata
   names(rebuilt_results$results) <- vars
   rebuilt_results$banner <- NULL
 
@@ -62,12 +63,11 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
 
 
     # For each alias, we set an attribute that identifies it's availability
-    # across all the datasets: "all", "partial", and "single"
-    # - "all" means it is available in every dataset
-    # - "partial" means it is available in only some datasets
+    # across all the datasets: "general", and "single"
+    # - "general" means it is available in only some datasets
     # - "single" means it is available in exactly one dataset
 
-    # Because we use subsetting at the list level, "all" and "partial"
+    # Because we use subsetting at the list level, "general" and "single"
     # would follow a typical path that labeling was adjusted appropriately
     # for presentation in the resulting pdf "single" should act as a simple
     # passthrough where no additional formatting or manipulation takes place

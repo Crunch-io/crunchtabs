@@ -81,7 +81,14 @@ catArrayToCategoricals <- function(questions, question_alias, labels) {
     labels <- paste0("Wave ", seq_along(questions))
   }
 
-  nms <- paste0(question_alias, seq_along(statements))
+  # Collisions can occur so we randomize names because people version aliases sometimes
+  # votefactors with sub vars + votefactors2 :/
+  randNames <- function(n) {
+    a <- do.call(paste0, replicate(5, sample(LETTERS, n, TRUE), FALSE))
+    paste0(a, sprintf("%04d", sample(9999, n, TRUE)), sample(LETTERS, n, TRUE))
+  }
+
+  nms <- paste0(question_alias, randNames(length(statements)))
 
   # Create list of objects to fill in, one for each sub statement of the
   # multiple response group
