@@ -76,6 +76,13 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
     # The single case
     if (length(results_available) == 1) {
       rebuilt_results$results[[v]]$availability <- "single"
+      if(rebuilt_results$results[[v]]$notes == "") {
+        rebuilt_results$results[[v]]$notes <- paste0("Asked in ", labels[results_available])
+      } else {
+        rebuilt_results$results[[v]]$notes <- paste0(
+          rebuilt_results$results[[v]]$notes,
+          " (Asked in ", labels[results_available], ")")
+      }
     } else {
       rebuilt_results$results[[v]]$availability <- "general"
     }
