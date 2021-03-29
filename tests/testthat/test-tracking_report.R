@@ -34,9 +34,9 @@ test_that("tracking report with cat arrays", {
   # mockery::stub(trackingReport, "trackingReport_tabs", questions)
   res <- suppressWarnings(trackingReport(dataset_list, vars = "petloc"))
 
-  expect_named(res$results, c("petloc1", "petloc2"))
+  expect_named(res$results, c("petloc_1", "petloc_2"))
   expect_equal(
-    res$results$petloc1$crosstabs$Results$`___total___`$proportions,
+    res$results$petloc_1$crosstabs$Results$`___total___`$proportions,
     structure(c(
       0.421875000002028, 0.484374999997521, 0.0937500000004507,
       0.5, 0.333333333333333, 0.166666666666667, 0.321428571427136,

@@ -5,7 +5,7 @@ test_that("Binds categorical arrays appropriately", {
   res <- catArrayToCategoricals(questions, "petloc", labels = NULL)
 
   expect_equal(
-    res$petloc1$crosstabs$Results$`___total___`$proportions,
+    res$petloc_1$crosstabs$Results$`___total___`$proportions,
     structure(c(
       0.421875000002028, 0.484374999997521, 0.0937500000004507,
       0.5, 0.333333333333333, 0.166666666666667, 0.321428571427136,
