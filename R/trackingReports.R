@@ -60,32 +60,10 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
     }
 
     rebuilt_results$results[[v]]$available_at <- results_available
+    rebuilt_results <- trackingDeclareAvailability(
+      rebuilt_results, results_available, var = v, labels
+    )
 
-
-    # For each alias, we set an attribute that identifies it's availability
-    # across all the datasets: "general", and "single"
-    # - "general" means it is available in only some datasets
-    # - "single" means it is available in exactly one dataset
-
-    # Because we use subsetting at the list level, "general" and "single"
-    # would follow a typical path that labeling was adjusted appropriately
-    # for presentation in the resulting pdf "single" should act as a simple
-    # passthrough where no additional formatting or manipulation takes place
-    # on the result.
-
-    # The single case
-    if (length(results_available) == 1) {
-      rebuilt_results$results[[v]]$availability <- "single"
-      if(rebuilt_results$results[[v]]$notes == "") {
-        rebuilt_results$results[[v]]$notes <- paste0("Asked in ", labels[results_available])
-      } else {
-        rebuilt_results$results[[v]]$notes <- paste0(
-          rebuilt_results$results[[v]]$notes,
-          " (Asked in ", labels[results_available], ")")
-      }
-    } else {
-      rebuilt_results$results[[v]]$availability <- "general"
-    }
   }
 
   # Now that we have an attribute that identifies availability we can use it as
@@ -139,7 +117,39 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
   rebuilt_results
 }
 
+#' Specify question availability in a tracking report
 #'
+#' For each alias, we set an attribute that identifies it's availability
+#' across all the datasets: "general", and "single"
+#' - "general" means it is available in only some datasets
+#' - "single" means it is available in exactly one dataset
+#' Because we use subsetting at the list level, "general" and "single"
+#' would follow a typical path that labeling was adjusted appropriately
+#' for presentation in the resulting pdf "single" should act as a simple
+#' passthrough where no additional formatting or manipulation takes place
+#' on the result.
+#' @md
+#' @param rebuilt_results A list of result objects from crunch
+#' @param results_available A vector identifying in which list elements
+#' @param var The name of the alias that we are declaring its availability
+#' @param labels The wave labels
+trackingDeclareAvailability <- function(rebuilt_results, results_available, var, labels) {
+  if (length(results_available) == 1) {
+    rebuilt_results$results[[var]]$availability <- "single"
+    if(rebuilt_results$results[[var]]$notes == "") {
+      rebuilt_results$results[[var]]$notes <- paste0("Asked in ", labels[results_available])
+    } else {
+      rebuilt_results$results[[var]]$notes <- paste0(
+        rebuilt_results$results[[var]]$notes,
+        " (Asked in ", labels[results_available], ")")
+    }
+  } else {
+    rebuilt_results$results[[var]]$availability <- "general"
+  }
+  return(rebuilt_results)
+}
+
+
 trackingReport_tabs <- function(datasets, vars, weight = NULL) {
   lapply(
     datasets,
