@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>newcommand tex — newcommand • crunchtabs</title>
+<title>Merge two data.frames by rownames — cbindFill • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,10 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="newcommand tex — newcommand" />
-<meta property="og:description" content="Creates a newcommand tex string" />
+<meta property="og:title" content="Merge two data.frames by rownames — cbindFill" />
+<meta property="og:description" content="This function is designed to cbind via rownames where
+the rownames may not match and then fix the result so that
+it can be further merged to another data.frame." />
 
 
 
@@ -144,31 +146,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>newcommand tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>newcommand.Rd</code></div>
+    <h1>Merge two data.frames by rownames</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/asToplineCategoricalArray.R'><code>R/asToplineCategoricalArray.R</code></a></small>
+    <div class="hidden name"><code>cbindFill.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a newcommand tex string</p>
+    <p>This function is designed to cbind via rownames where
+the rownames may not match and then fix the result so that
+it can be further merged to another data.frame.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>newcommand</span><span class='op'>(</span><span class='va'>command</span>, <span class='va'>...</span>, args <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>cbindFill</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>command</th>
-      <td><p>Numeric value in first brackets.</p></td>
+      <th>x</th>
+      <td><p>A data.frame</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Numeric value in second brackets.</p></td>
-    </tr>
-    <tr>
-      <th>args</th>
-      <td><p>Numeric value in square brackets.</p></td>
+      <th>y</th>
+      <td><p>A data.frame</p></td>
     </tr>
     </table>
 

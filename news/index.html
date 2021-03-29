@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -147,6 +147,22 @@
       <small>Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="crunchtabs-141" class="section level2">
+<h2 class="hasAnchor">
+<a href="#crunchtabs-141" class="anchor"></a>crunchtabs 1.4.1</h2>
+<ul>
+<li>Multiple adjustments for tracking report edge cases</li>
+<li>In a tracking report, if an alias appears only once we now specify that by appending the wave label to the question’s note.</li>
+<li>In a tracking report, we now have the option to show a variable only once even if it appears in multiple datasets.</li>
+</ul>
+<p>Fixes:</p>
+<ul>
+<li>In some cases there are duplicated row names in different positions when we use cbindFill, we did not account for this possibility.</li>
+<li>When creating a tracking report for a multiple response question, it’s possible that one or more of the responses is not included in one or more of the waves, we have added a tryCatch to accomodate this possibility.</li>
+<li>themeNew documentation was missing a closing } that silently broke the display of documentation via ?themeNew.</li>
+<li>When converting MR variables we rename subVars using numbers. If a researcher included an alias with the same number they would collide. Now we assign random strings instead of sequential numbers to the subVars.</li>
+</ul>
+</div>
     <div id="crunchtabs-140" class="section level2">
 <h2 class="hasAnchor">
 <a href="#crunchtabs-140" class="anchor"></a>crunchtabs 1.4.0</h2>

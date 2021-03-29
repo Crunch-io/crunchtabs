@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>newcommand tex — newcommand • crunchtabs</title>
+<title>Column Bind Unequal Matrices — categoryFill • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,9 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="newcommand tex — newcommand" />
-<meta property="og:description" content="Creates a newcommand tex string" />
+<meta property="og:title" content="Column Bind Unequal Matrices — categoryFill" />
+<meta property="og:description" content="This function takes a list of matrices and binds them together into
+a single frame. Accounts for missing or unequal rows, by rowname." />
 
 
 
@@ -144,31 +145,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>newcommand tex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/tex.R'><code>R/tex.R</code></a></small>
-    <div class="hidden name"><code>newcommand.Rd</code></div>
+    <h1>Column Bind Unequal Matrices</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/asToplineCategoricalArray.R'><code>R/asToplineCategoricalArray.R</code></a></small>
+    <div class="hidden name"><code>categoryFill.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a newcommand tex string</p>
+    <p>This function takes a list of matrices and binds them together into
+a single frame. Accounts for missing or unequal rows, by rowname.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>newcommand</span><span class='op'>(</span><span class='va'>command</span>, <span class='va'>...</span>, args <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>categoryFill</span><span class='op'>(</span><span class='va'>clist</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>command</th>
-      <td><p>Numeric value in first brackets.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Numeric value in second brackets.</p></td>
-    </tr>
-    <tr>
-      <th>args</th>
-      <td><p>Numeric value in square brackets.</p></td>
+      <th>clist</th>
+      <td><p>A list of matrices with rownames</p></td>
     </tr>
     </table>
 
