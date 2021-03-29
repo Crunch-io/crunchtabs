@@ -2,7 +2,7 @@
 
 Crunchtabs allow for the automatic generation of toplines, crosstabulation and codebooks directly from a crunch dataset.
 
-![CI](https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=master) [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/master/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs)
+![CI](https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=main) [![codecov](https://codecov.io/gh/Crunch-io/crunchtabs/branch/main/graph/badge.svg)](https://codecov.io/gh/Crunch-io/crunchtabs)
 
 ## Quick Start
 
