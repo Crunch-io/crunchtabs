@@ -7,8 +7,8 @@
 \title{crunchtabs: Custom Report Generation for Crunch Datasets}
 \description{
 In order to generate custom survey reports, this package provides
-    functions for computing 'toplines' (one-way frequency summaries) and
-    'banners' (cross-tabulations) of datasets in the Crunch
+    functions for computing 'toplines' (one-way frequency summaries), 
+    'banners' (cross-tabulations) and codebooks of datasets in the Crunch
     (<https://crunch.io/>) web service. Reports can be written in 'PDF' format
     using 'LaTeX' or in Microsoft Excel '.xlsx' files.
 

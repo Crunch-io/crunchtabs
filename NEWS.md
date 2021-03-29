@@ -1,3 +1,17 @@
+## crunchtabs 1.4.1
+
+- Multiple adjustments for tracking report edge cases
+- In a tracking report, if an alias appears only once we now specify that by appending the wave label to the question's note.
+- In a tracking report, we now have the option to show a variable only once even if it appears in multiple datasets.
+
+Fixes:
+
+- In some cases there are duplicated row names in different positions when we use cbindFill, we did not account for this possibility.
+- When creating a tracking report for a multiple response question, it's possible that one or more of the responses is not included in one or more of the waves, we have added a tryCatch to accomodate this possibility.
+- themeNew documentation was missing a closing } that silently broke the display of documentation via ?themeNew.
+- When converting MR variables we rename subVars using numbers. If a researcher included an alias with the same number they would collide. Now we assign random strings instead of sequential numbers to the subVars.
+
+
 ## crunchtabs 1.4.0
 
 Features:
