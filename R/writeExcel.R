@@ -37,7 +37,7 @@ writeExcel <- function(
   title = getName(data_summary), subtitle = NULL, table_of_contents = FALSE,
   n_or_percent = c("percents", "counts"), hypothesis_test = FALSE,
   logging = FALSE, save_workbook = TRUE) {
-  if (is.null(filename) && !save_workbook) {
+  if (is.null(filename) && save_workbook) {
     stop("No filename provided. If save_workbook is true, a filename must be provided.")
   }
 
