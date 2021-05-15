@@ -119,7 +119,7 @@ writeCodeBookLatexGeneric <- function(
     body <- codeBookItemBody(x, meta = meta[meta$alias == nm,], ...) # A kable
 
     if (appendix & !is.list(body)) {
-      if (grepl("longtabu", body)) {
+      if (length(capture.output(body)) > 20) {
         appendices[[nm]] <- list()
 
         description <- codeBookItemTxtDescriptionGeneral(x, nm, meta)
