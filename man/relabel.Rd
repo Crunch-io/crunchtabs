@@ -7,10 +7,10 @@
 relabel(ct, ...)
 }
 \arguments{
-\item{ct}{An object from \link{\code{crosstabs}}, \link{\code{recontact_report}},
-or \link{\code{trackingReport}}}
+\item{ct}{An object from \link{crosstabs}, \link{recontact_toplines},
+or \link{trackingReport}}
 
-\item{...}{One or more relabel objects. See \link{\code{relabelApply}}}
+\item{...}{One or more relabel objects. See \link{relabelSet}}
 }
 \description{
 This function is a passthrough that allows you to relabel question items, options, question
@@ -21,10 +21,10 @@ questionnaire order. As it is received by crunch, so should it be set by your re
 There are two important warnings to consider:
 \itemize{
 \item Relabeling should always occur before applying any kind of sorting using the
-\link{\code{sortAlias}} function to avoid situations where labels could be applied
+\link{sortAliases} function to avoid situations where labels could be applied
 inappropriately.
 \item If your results object is a tracking report or recontact it is strongly recommended that you
-set your wave labels in the \link{\code{recontact_toplines}} or \link{\code{trackingReport}}.
+set your wave labels in the \link{recontact_toplines} or \link{trackingReport}.
 However, if you must set it here options would be the categories and items would be the wave
 names. We cannot account for aliases with only partial data (n-1 waves), you must set the
 wave names in order.

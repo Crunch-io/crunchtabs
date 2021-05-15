@@ -30,6 +30,8 @@ codeBookItemBody(x, meta = NULL, ...)
 \arguments{
 \item{x}{A crunch dataset object}
 
+\item{meta}{A data.frame containing meta data. Must be provided for non-crunch datasets.}
+
 \item{...}{Further arguments, not used.}
 }
 \description{

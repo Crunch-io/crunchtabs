@@ -261,24 +261,10 @@ resultsObject <- function(x, top = NULL, weighted, body_values, body_labels, vec
 #' set on a per variable basis for json export only. To do so, specify the weight
 #' as either a list (which will be passed to `tabBookWeightSpec()`, or a data.frame
 #' that mimics the structure. See [`tabBookWeightSpec()`] for more details.
-#' @param output_format character export format: currently supported values are "json"
-#' (default) and "xlsx".
-#' @param file character local filename to write to. A default filename will be
 #' generated from the `multitable`'s name if one is not supplied and the
 #' "xlsx" format is requested. Not required for "json" format export.
 #' of \code{\link{filters}} defined in the dataset.
-#' @param use_legacy_endpoint Logical, indicating whether to use a 'legacy'
-#' endpoint for compatibility (this endpoint will be removed in the future).
-#' Defaults to `FALSE`, but can be set in the function, or with the environment
-#' variable `R_USE_LEGACY_TABBOOK_ENDPOINT` or R option
-#' `use.legacy.tabbook.endpoint`.
 #' @param append_default_wt passed to [`tabBookWeightSpec()`] if `weight` is a list
-#' @param ... Additional "options" passed to the tab book POST request.
-#' More details can be found
-#' [in the crunch API documentation](
-#' https://docs.crunch.io/endpoint-reference/endpoint-multitable.html#options)
-#' or [for the legacy endpoint](
-#' https://docs.crunch.io/endpoint-reference/endpoint-tabbook.html#options)
 #' @return If "json" format is requested, the function returns an object of
 #' class `TabBookResult`, containing a list of `MultitableResult`
 #' objects, which themselves contain `CrunchCube`s. For single weight tabbook,

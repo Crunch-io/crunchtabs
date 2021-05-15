@@ -141,11 +141,3 @@ Generating a codebook is easy!
     # Use ds = newExampleDataset() if not found!
 
     writeCodeBookLatex(ds)
-
-## For developers
-
-The repository includes a Makefile to facilitate some common tasks.
-
-### Running tests
-
-`$ make test`. Requires the [httptest](https://github.com/nealrichardson/httptest) package. You can also specify a specific test file or files to run by adding a "file=" argument, like `$ make test file=latex`. `test_package` will do a regular-expression pattern match within the file names. See its documentation in the `testthat` package.

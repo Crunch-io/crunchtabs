@@ -267,6 +267,7 @@ writeCodeBookLatexGeneric <- function(
 #' @param x An R vector
 #' @param nm The alias of the current codeBookItem
 #' @param meta A specifically formatted data.frame with meta data.
+#' @param ... Further arguments, not used.
 #'
 #' @export
 codeBookItemTxtHeaderGeneral <- function(x, nm, meta, ...) {

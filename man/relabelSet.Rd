@@ -7,7 +7,7 @@
 relabelSet(obj, labs)
 }
 \arguments{
-\item{obj}{An inner object under the results list of a \link{\code{crosstabs}} object.}
+\item{obj}{An inner object under the results list of a \link{crosstabs} object.}
 
 \item{labs}{A list including at least one of the following: description, notes, items, or options}
 }

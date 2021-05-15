@@ -12,6 +12,8 @@ codeBookItemTxtHeaderGeneral(x, nm, meta, ...)
 \item{nm}{The alias of the current codeBookItem}
 
 \item{meta}{A specifically formatted data.frame with meta data.}
+
+\item{...}{Further arguments, not used.}
 }
 \description{
 Creates a text header for a codebook item

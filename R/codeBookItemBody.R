@@ -3,6 +3,7 @@
 #' Create codebook item body.
 #'
 #' @param x A crunch dataset object
+#' @param meta A data.frame containing meta data. Must be provided for non-crunch datasets.
 #' @param ... Further arguments, not used.
 #' @export
 codeBookItemBody <- function(x, meta = NULL, ...) {

@@ -27,6 +27,7 @@ Imports:
     methods,
     openxlsx,
     rlang,
+    stringi,
     tinytex
 Suggests:
     covr,

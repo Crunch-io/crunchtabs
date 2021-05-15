@@ -9,7 +9,7 @@ relabelNotes(obj, labs)
 \arguments{
 \item{obj}{A results object for a specific alias}
 
-\item{labs}{A list of labels, typically passed to \link{\code{relabel}}}
+\item{labs}{A list of labels, typically passed to \link{relabel}}
 }
 \description{
 Given a results object, adjust the note. This will display as the text below
