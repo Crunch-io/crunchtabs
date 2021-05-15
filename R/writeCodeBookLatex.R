@@ -21,6 +21,7 @@
 #' "c", "l", or "r". Default position is left aligned tables.
 #' @param path The path to place .tex and .pdf files.
 #' @param logging Leave logs in the working directory, defaults to FALSE
+#' @param open Should the resulting PDF be opened? Defaults to FALSE
 #' @param filename A string. The desired basename of the resulting file with no extension
 #' (i.e, "mycodebook")
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
@@ -30,8 +31,8 @@ writeCodeBookLatex <- function(
                                ds, url = NULL, pdf = TRUE, title = NULL, subtitle = NULL,
                                table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
                                preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE,
-                               logo = NULL, position = NULL, path = NULL, filename = NULL,
-                               logging = FALSE, ...) {
+                               logo = NULL, position = NULL, path = NULL,
+                               logging = FALSE, open = FALSE, filename = NULL, ...) {
   if (!is.null(crunch::weight(ds))) {
     stop(paste(
       "Codebooks are designed to work with whole numbers. Your dataset is",
@@ -236,7 +237,8 @@ writeCodeBookLatex <- function(
         file.remove(file.path(getwd(), files))
       }
     }
-
-    file.open(pdfname)
+    if(open) {
+      file.open(pdfname)
+    }
   }
 }

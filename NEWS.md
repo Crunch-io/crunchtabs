@@ -1,3 +1,7 @@
+## crunchtabs 1.4.2
+
+- INNOV-326 writeCodeBookLatex should not open by default. Add function argument open = FALSE. This avoids a situation in non-interactive sessions where the process would otherwise be stuck as it attempts to open a GTK program from a bash session. 
+
 ## crunchtabs 1.4.1
 
 - Multiple adjustments for tracking report edge cases

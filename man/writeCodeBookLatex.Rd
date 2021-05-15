@@ -19,8 +19,9 @@ writeCodeBookLatex(
   logo = NULL,
   position = NULL,
   path = NULL,
-  filename = NULL,
   logging = FALSE,
+  open = FALSE,
+  filename = NULL,
   ...
 )
 }
@@ -59,10 +60,12 @@ automatically. Also accepts a path to a logo file.}
 
 \item{path}{The path to place .tex and .pdf files.}
 
+\item{logging}{Leave logs in the working directory, defaults to FALSE}
+
+\item{open}{Should the resulting PDF be opened? Defaults to FALSE}
+
 \item{filename}{A string. The desired basename of the resulting file with no extension
 (i.e, "mycodebook")}
-
-\item{logging}{Leave logs in the working directory, defaults to FALSE}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }
