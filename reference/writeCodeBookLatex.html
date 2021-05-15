@@ -168,8 +168,9 @@
   logo <span class='op'>=</span> <span class='cn'>NULL</span>,
   position <span class='op'>=</span> <span class='cn'>NULL</span>,
   path <span class='op'>=</span> <span class='cn'>NULL</span>,
-  filename <span class='op'>=</span> <span class='cn'>NULL</span>,
   logging <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  open <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  filename <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -239,13 +240,17 @@ automatically. Also accepts a path to a logo file.</p></td>
       <td><p>The path to place .tex and .pdf files.</p></td>
     </tr>
     <tr>
+      <th>logging</th>
+      <td><p>Leave logs in the working directory, defaults to FALSE</p></td>
+    </tr>
+    <tr>
+      <th>open</th>
+      <td><p>Should the resulting PDF be opened? Defaults to FALSE</p></td>
+    </tr>
+    <tr>
       <th>filename</th>
       <td><p>A string. The desired basename of the resulting file with no extension
 (i.e, "mycodebook")</p></td>
-    </tr>
-    <tr>
-      <th>logging</th>
-      <td><p>Leave logs in the working directory, defaults to FALSE</p></td>
     </tr>
     <tr>
       <th>...</th>
