@@ -76,14 +76,25 @@ codeBookItemBody.CategoricalVariable <- function(x, meta = NULL, ...) { # nolint
     midrule_strip <- function(x) gsub("\\midrule", "", x, fixed = TRUE)
 
     alignment <- c("d", "l", "d", "c", "d", "l", "d")
-    names(k) <- curlyWrap(names(k))
+    # names(k) <- curlyWrap(names(k)) # al
+    # kableExtra::kable(
+    #   k, "latex",
+    #   booktabs = TRUE, align = scolumnAlign(k, alignment),
+    #   longtable = TRUE, linesep = "", escape = FALSE
+    # ) %>%
+    #   kable_styling_defaults(full_width = TRUE, ...) %>%
+    #   kableExtra::column_spec(c(2, 6), width = "1.75in", latex_column_spec = NULL) %>%
+    #   kableExtra::row_spec(
+    #     0,
+    #     extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}" # nolint
+    #   ) %>%
+    #   midrule_strip()
+
     kableExtra::kable(
       k, "latex",
-      booktabs = TRUE, align = scolumnAlign(k, alignment),
-      longtable = TRUE, linesep = "", escape = FALSE
+      booktabs = TRUE, longtable = TRUE, align = scolumnAlign(k, alignment),
+      linesep = "", escape = FALSE
     ) %>%
-      kable_styling_defaults(full_width = TRUE, ...) %>%
-      kableExtra::column_spec(c(2, 6), width = "1.75in", latex_column_spec = NULL) %>%
       kableExtra::row_spec(
         0,
         extra_latex_after = "\\cmidrule(l){1-3}\\cmidrule(l){5-7}" # nolint
@@ -92,7 +103,8 @@ codeBookItemBody.CategoricalVariable <- function(x, meta = NULL, ...) { # nolint
   } else {
     alignment <- c("d", "l", "d")
     names(k) <- curlyWrap(names(k))
-    kab <- kableExtra::kable(
+
+  kab <- kableExtra::kable(
       k, "latex",
       booktabs = TRUE, longtable = TRUE, align = scolumnAlign(k, alignment),
       linesep = "", escape = FALSE
