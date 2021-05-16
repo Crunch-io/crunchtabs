@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project-specific themes — project-themes • crunchtabs</title>
+<title>Specify question availability in a tracking report — trackingDeclareAvailability • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,18 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Project-specific themes — project-themes" />
-<meta property="og:description" content="These are some default themes for specific projects" />
+<meta property="og:title" content="Specify question availability in a tracking report — trackingDeclareAvailability" />
+<meta property="og:description" content="For each alias, we set an attribute that identifies it's availability
+across all the datasets: &quot;general&quot;, and &quot;single&quot;
+&quot;general&quot; means it is available in only some datasets
+&quot;single&quot; means it is available in exactly one dataset
+Because we use subsetting at the list level, &quot;general&quot; and &quot;single&quot;
+would follow a typical path that labeling was adjusted appropriately
+for presentation in the resulting pdf &quot;single&quot; should act as a simple
+passthrough where no additional formatting or manipulation takes place
+on the result.
+
+" />
 
 
 
@@ -144,33 +154,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Project-specific themes</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/themes-built-in.R'><code>R/themes-built-in.R</code></a></small>
-    <div class="hidden name"><code>project-themes.Rd</code></div>
+    <h1>Specify question availability in a tracking report</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/trackingReports.R'><code>R/trackingReports.R</code></a></small>
+    <div class="hidden name"><code>trackingDeclareAvailability.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These are some default themes for specific projects</p>
+    <p>For each alias, we set an attribute that identifies it's availability
+across all the datasets: "general", and "single"</p><ul>
+<li><p>"general" means it is available in only some datasets</p></li>
+<li><p>"single" means it is available in exactly one dataset
+Because we use subsetting at the list level, "general" and "single"
+would follow a typical path that labeling was adjusted appropriately
+for presentation in the resulting pdf "single" should act as a simple
+passthrough where no additional formatting or manipulation takes place
+on the result.</p></li>
+</ul>
+
     </div>
 
-    <pre class="usage"><span class='fu'>themeUKPolitical</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='fu'>themeHuffPoToplines</span><span class='op'>(</span>logo <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='fu'>themeHuffPoCrosstabs</span><span class='op'>(</span>logo <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>trackingDeclareAvailability</span><span class='op'>(</span><span class='va'>rebuilt_results</span>, <span class='va'>results_available</span>, <span class='va'>var</span>, <span class='va'>labels</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>logo</th>
-      <td><p>an image of the logo to use (default: `NULL`)</p></td>
+      <th>rebuilt_results</th>
+      <td><p>A list of result objects from crunch</p></td>
+    </tr>
+    <tr>
+      <th>results_available</th>
+      <td><p>A vector identifying in which list elements</p></td>
+    </tr>
+    <tr>
+      <th>var</th>
+      <td><p>The name of the alias that we are declaring its availability</p></td>
+    </tr>
+    <tr>
+      <th>labels</th>
+      <td><p>The wave labels</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a new theme object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -152,6 +152,7 @@
 <a href="#crunchtabs-142" class="anchor"></a>crunchtabs 1.4.2</h2>
 <ul>
 <li>INNOV-326 writeCodeBookLatex should not open by default. Add function argument open = FALSE. This avoids a situation in non-interactive sessions where the process would otherwise be stuck as it attempts to open a GTK program from a bash session.</li>
+<li>Small change in how appendices are automatically identified. Previous iterations prepared long tables with the longtabu package. However, this tex package overwrote numeric presentation options from siunitx. This has been changed to longtable, which respects siunitx. Now appendix long tables are identified by the length of lines in their tex (20 or more).</li>
 </ul>
 </div>
     <div id="crunchtabs-141" class="section level2">

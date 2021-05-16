@@ -83,7 +83,7 @@ work with by subsetting the `dataset` you pass into the function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -183,40 +183,14 @@ weight variable for `dataset`, or `NULL` for unweighted results.
 Default is the currently applied [`weight`]. Additionally, weights can be
 set on a per variable basis for json export only. To do so, specify the weight
 as either a list (which will be passed to `tabBookWeightSpec()`, or a data.frame
-that mimics the structure. See [`tabBookWeightSpec()`] for more details.</p></td>
-    </tr>
-    <tr>
-      <th>append_default_wt</th>
-      <td><p>passed to [`tabBookWeightSpec()`] if `weight` is a list</p></td>
-    </tr>
-    <tr>
-      <th>output_format</th>
-      <td><p>character export format: currently supported values are "json"
-(default) and "xlsx".</p></td>
-    </tr>
-    <tr>
-      <th>file</th>
-      <td><p>character local filename to write to. A default filename will be
+that mimics the structure. See [`tabBookWeightSpec()`] for more details.
 generated from the `multitable`'s name if one is not supplied and the
 "xlsx" format is requested. Not required for "json" format export.
 of <code>filters</code> defined in the dataset.</p></td>
     </tr>
     <tr>
-      <th>use_legacy_endpoint</th>
-      <td><p>Logical, indicating whether to use a 'legacy'
-endpoint for compatibility (this endpoint will be removed in the future).
-Defaults to `FALSE`, but can be set in the function, or with the environment
-variable `R_USE_LEGACY_TABBOOK_ENDPOINT` or R option
-`use.legacy.tabbook.endpoint`.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional "options" passed to the tab book POST request.
-More details can be found
-[in the crunch API documentation](
-https://docs.crunch.io/endpoint-reference/endpoint-multitable.html#options)
-or [for the legacy endpoint](
-https://docs.crunch.io/endpoint-reference/endpoint-tabbook.html#options)</p></td>
+      <th>append_default_wt</th>
+      <td><p>passed to [`tabBookWeightSpec()`] if `weight` is a list</p></td>
     </tr>
     </table>
 

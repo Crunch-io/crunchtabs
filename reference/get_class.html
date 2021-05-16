@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project-specific themes — project-themes • crunchtabs</title>
+<title>Get class name from arrow variable — get_class • crunchtabs</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,8 +48,9 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Project-specific themes — project-themes" />
-<meta property="og:description" content="These are some default themes for specific projects" />
+<meta property="og:title" content="Get class name from arrow variable — get_class" />
+<meta property="og:description" content="Arrow does not provide a method for class on it's variables. This function prints out
+the schema and captures the appropriate output." />
 
 
 
@@ -144,33 +145,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Project-specific themes</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/themes-built-in.R'><code>R/themes-built-in.R</code></a></small>
-    <div class="hidden name"><code>project-themes.Rd</code></div>
+    <h1>Get class name from arrow variable</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Crunch-io/crunchtabs/blob/master/R/codeBookGeneric.R'><code>R/codeBookGeneric.R</code></a></small>
+    <div class="hidden name"><code>get_class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These are some default themes for specific projects</p>
+    <p>Arrow does not provide a method for class on it's variables. This function prints out
+the schema and captures the appropriate output.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>themeUKPolitical</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='fu'>themeHuffPoToplines</span><span class='op'>(</span>logo <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='fu'>themeHuffPoCrosstabs</span><span class='op'>(</span>logo <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_class</span><span class='op'>(</span><span class='va'>ds</span>, <span class='va'>variable</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>logo</th>
-      <td><p>an image of the logo to use (default: `NULL`)</p></td>
+      <th>ds</th>
+      <td><p>An arrow dataset</p></td>
+    </tr>
+    <tr>
+      <th>variable</th>
+      <td><p>A string identifying the variable</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a new theme object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

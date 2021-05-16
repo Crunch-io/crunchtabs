@@ -83,7 +83,7 @@ questionnaire order. As it is received by crunch, so should it be set by your re
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -164,12 +164,12 @@ questionnaire order. As it is received by crunch, so should it be set by your re
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ct</th>
-      <td><p>An object from <code>crosstabs</code>, <code>recontact_report</code>,
-or <code>trackingReport</code></p></td>
+      <td><p>An object from <a href='crosstabs.html'>crosstabs</a>, <a href='recontact_toplines.html'>recontact_toplines</a>,
+or <a href='trackingReport.html'>trackingReport</a></p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>One or more relabel objects. See <code>relabelApply</code></p></td>
+      <td><p>One or more relabel objects. See <a href='relabelSet.html'>relabelSet</a></p></td>
     </tr>
     </table>
 
@@ -177,10 +177,10 @@ or <code>trackingReport</code></p></td>
 
     <p>There are two important warnings to consider:</p><ul>
 <li><p>Relabeling should always occur before applying any kind of sorting using the
-<code>sortAlias</code> function to avoid situations where labels could be applied
+<a href='sortAliases.html'>sortAliases</a> function to avoid situations where labels could be applied
 inappropriately.</p></li>
 <li><p>If your results object is a tracking report or recontact it is strongly recommended that you
-set your wave labels in the <code>recontact_toplines</code> or <code>trackingReport</code>.
+set your wave labels in the <a href='recontact_toplines.html'>recontact_toplines</a> or <a href='trackingReport.html'>trackingReport</a>.
 However, if you must set it here options would be the categories and items would be the wave
 names. We cannot account for aliases with only partial data (n-1 waves), you must set the
 wave names in order.</p></li>

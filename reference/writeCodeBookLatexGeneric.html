@@ -82,7 +82,7 @@ presentation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -172,6 +172,7 @@ presentation.</p>
   path <span class='op'>=</span> <span class='cn'>NULL</span>,
   filename <span class='op'>=</span> <span class='cn'>NULL</span>,
   logging <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  open <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -257,6 +258,10 @@ automatically. Also accepts a path to a logo file.</p></td>
     <tr>
       <th>logging</th>
       <td><p>Leave logs in the working directory, defaults to FALSE</p></td>
+    </tr>
+    <tr>
+      <th>open</th>
+      <td><p>Should the resulting PDF be opened? Defaults to FALSE</p></td>
     </tr>
     <tr>
       <th>...</th>

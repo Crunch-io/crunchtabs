@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#crunchtabs" class="anchor"></a>crunchtabs</h1></div>
 <p>Crunchtabs allow for the automatic generation of toplines, crosstabulation and codebooks directly from a crunch dataset.</p>
-<p><img src="https://github.com/Crunch-io/crunchtabs/workflows/CI/badge.svg?branch=main" alt="CI"><a href="https://codecov.io/gh/Crunch-io/crunchtabs"><img src="https://codecov.io/gh/Crunch-io/crunchtabs/branch/main/graph/badge.svg" alt="codecov"></a></p>
+<p><img src="https://github.com/Crunch-io/crunchtabs/workflows/R-CMD-check/badge.svg?branch=main" alt="CI"><a href="https://codecov.io/gh/Crunch-io/crunchtabs"><img src="https://codecov.io/gh/Crunch-io/crunchtabs/branch/main/graph/badge.svg" alt="codecov"></a></p>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-start" class="anchor"></a>Quick Start</h2>
@@ -237,16 +237,6 @@
 <span id="cb10-5"><a href="#cb10-5"></a><span class="co"># Use ds = newExampleDataset() if not found!</span></span>
 <span id="cb10-6"><a href="#cb10-6"></a></span>
 <span id="cb10-7"><a href="#cb10-7"></a><span class="kw">writeCodeBookLatex</span>(ds)</span></code></pre></div>
-</div>
-<div id="for-developers" class="section level2">
-<h2 class="hasAnchor">
-<a href="#for-developers" class="anchor"></a>For developers</h2>
-<p>The repository includes a Makefile to facilitate some common tasks.</p>
-<div id="running-tests" class="section level3">
-<h3 class="hasAnchor">
-<a href="#running-tests" class="anchor"></a>Running tests</h3>
-<p><code>$ make test</code>. Requires the <a href="https://github.com/nealrichardson/httptest">httptest</a> package. You can also specify a specific test file or files to run by adding a “file=” argument, like <code>$ make test file=latex</code>. <code>test_package</code> will do a regular-expression pattern match within the file names. See its documentation in the <code>testthat</code> package.</p>
-</div>
 </div>
 </div>
   </div>
