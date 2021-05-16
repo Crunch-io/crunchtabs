@@ -121,7 +121,7 @@ test_that("End to end write to pdf", {
   )
   mockery::stub(writeCodeBookLatexGeneric, "file.open", TRUE)
   expect_true(suppressWarnings(
-    writeCodeBookLatexGeneric(ds, meta, pdf = TRUE, logo = "ygblue", position = "c")))
+    writeCodeBookLatexGeneric(ds, meta, pdf = TRUE, logo = "ygblue", open = TRUE, position = "c")))
   expect_true(file.remove(c("General-Dataset.tex")))
   expect_true(file.remove(c("General-Dataset.pdf")))
 })

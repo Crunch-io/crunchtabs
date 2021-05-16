@@ -383,6 +383,7 @@ codeBookItemTxtDescriptionGeneral <- function(x, nm, meta, ...) {
 #' @param ds An arrow dataset
 #' @param variable A string identifying the variable
 get_class <- function(ds, variable) {
+  # nocov start
   r <- utils::capture.output(ds$schema[[variable]])
   r <- r[2]
   r <- gsub(variable, "", r)
@@ -396,4 +397,5 @@ get_class <- function(ds, variable) {
     return("numeric")
   if (grepl("dictionary", r))
     return("factor")
+  # nocov end
 }
