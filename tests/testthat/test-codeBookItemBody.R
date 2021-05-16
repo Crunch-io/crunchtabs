@@ -231,7 +231,7 @@ test_that("codeBookItemBody DatetimeVariable", {
 
   mockery::stub(codeBookItemBody.DatetimeVariable, "codeBookSummary.DatetimeVariable", smry)
   res <- codeBookItemBody(ds$wave)
-
+  print(attributes(res)$kable_meta$contents)
   expect_equal(
     attributes(res)$kable_meta$contents,
     c(
