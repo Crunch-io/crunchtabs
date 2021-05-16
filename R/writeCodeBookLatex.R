@@ -238,7 +238,7 @@ writeCodeBookLatex <- function(
       }
     }
     if(open) {
-      file.open(pdfname)
+      file.open(pdfname) # nocov
     }
   }
 }

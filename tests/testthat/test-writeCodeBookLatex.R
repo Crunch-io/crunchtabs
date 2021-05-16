@@ -23,7 +23,8 @@ test_that("End to end writeCodeBookLatex", {
       subtitle = "Goodbye",
       sample_desc = "US Voting Adults",
       logo = "yougov",
-      pdf = TRUE
+      pdf = TRUE,
+      open = TRUE
     )
   )
 

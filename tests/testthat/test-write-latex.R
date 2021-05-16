@@ -84,7 +84,8 @@ with_temp_dir({
     writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
 
     theme <- themeNew(default_theme = themeDefaultLatex(), digits = 1)
-    writeLatex(cs, theme = theme, pdf = TRUE)
+    mockery::stub(writeLatex, "file.open", TRUE)
+    writeLatex(cs, theme = theme, pdf = TRUE, open = TRUE)
     theme <- themeNew(default_theme = theme, font_size = 20)
     writeLatex(cs, theme = theme, pdf = TRUE)
     theme <- themeNew(default_theme = theme,
