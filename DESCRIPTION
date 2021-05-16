@@ -20,6 +20,7 @@ Depends:
     crunch,
 Imports:
     digest,
+    dplyr,
     httr,
     jsonlite,
     kableExtra (>= 1.1.0.9000),
