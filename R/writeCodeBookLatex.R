@@ -101,7 +101,7 @@ writeCodeBookLatex <- function(
     body <- codeBookItemBody(ds[[nm]], ...) # A kable
 
     if (appendix & !is.list(body)) {
-      if (grepl("longtabu", body)) {
+      if (length(capture.output(body)) > 20) {
         appendices[[nm]] <- list()
 
         description <- codeBookItemTxtDescription(ds[[nm]])
@@ -238,7 +238,7 @@ writeCodeBookLatex <- function(
       }
     }
     if(open) {
-      file.open(pdfname)
+      file.open(pdfname) # nocov
     }
   }
 }

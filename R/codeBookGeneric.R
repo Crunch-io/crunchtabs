@@ -34,6 +34,7 @@
 #' @param logging Leave logs in the working directory, defaults to FALSE
 #' @param filename A string. The desired basename of the resulting file with no extension
 #' (i.e, "mycodebook")
+#' @param open Should the resulting PDF be opened? Defaults to FALSE
 #' @param ... Additional arguments passed to \link[kableExtra]{kable_styling} Unused.
 #' @md
 #'
@@ -42,7 +43,7 @@ writeCodeBookLatexGeneric <- function(
   table_of_contents = FALSE, sample_desc = NULL, field_period = NULL,
   preamble = NULL, suppress_zero_counts = FALSE, appendix = TRUE,
   logo = NULL, position = NULL, path = NULL, filename = NULL,
-  logging = FALSE, ...) {
+  logging = FALSE, open = FALSE, ...) {
 
   options("crunchtabs.codebook.suppress.zeros" = suppress_zero_counts)
 
@@ -118,7 +119,7 @@ writeCodeBookLatexGeneric <- function(
     body <- codeBookItemBody(x, meta = meta[meta$alias == nm,], ...) # A kable
 
     if (appendix & !is.list(body)) {
-      if (grepl("longtabu", body)) {
+      if (length(capture.output(body)) > 20) {
         appendices[[nm]] <- list()
 
         description <- codeBookItemTxtDescriptionGeneral(x, nm, meta)
@@ -266,6 +267,7 @@ writeCodeBookLatexGeneric <- function(
 #' @param x An R vector
 #' @param nm The alias of the current codeBookItem
 #' @param meta A specifically formatted data.frame with meta data.
+#' @param ... Further arguments, not used.
 #'
 #' @export
 codeBookItemTxtHeaderGeneral <- function(x, nm, meta, ...) {
@@ -371,4 +373,29 @@ codeBookItemTxtDescriptionGeneral <- function(x, nm, meta, ...) {
   }
 
   tex
+}
+
+#' Get class name from arrow variable
+#'
+#' Arrow does not provide a method for class on it's variables. This function prints out
+#' the schema and captures the appropriate output.
+#'
+#' @param ds An arrow dataset
+#' @param variable A string identifying the variable
+get_class <- function(ds, variable) {
+  # nocov start
+  r <- utils::capture.output(ds$schema[[variable]])
+  r <- r[2]
+  r <- gsub(variable, "", r)
+  r <- gsub(": ", "", r)
+
+  if (r %in% c("string"))
+    return("character")
+  if (r %in% c("int32"))
+    return("integer")
+  if (r %in% c("float", "double"))
+    return("numeric")
+  if (grepl("dictionary", r))
+    return("factor")
+  # nocov end
 }

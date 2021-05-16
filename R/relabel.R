@@ -7,10 +7,10 @@
 #' There are two important warnings to consider:
 #'
 #' * Relabeling should always occur before applying any kind of sorting using the
-#' \link{\code{sortAlias}} function to avoid situations where labels could be applied
+#' \link{sortAliases} function to avoid situations where labels could be applied
 #' inappropriately.
 #' * If your results object is a tracking report or recontact it is strongly recommended that you
-#' set your wave labels in the \link{\code{recontact_toplines}} or \link{\code{trackingReport}}.
+#' set your wave labels in the \link{recontact_toplines} or \link{trackingReport}.
 #' However, if you must set it here options would be the categories and items would be the wave
 #' names. We cannot account for aliases with only partial data (n-1 waves), you must set the
 #' wave names in order.
@@ -36,9 +36,9 @@
 #' }
 #'
 #' @md
-#' @param ct An object from \link{\code{crosstabs}}, \link{\code{recontact_report}},
-#' or \link{\code{trackingReport}}
-#' @param ... One or more relabel objects. See \link{\code{relabelApply}}
+#' @param ct An object from \link{crosstabs}, \link{recontact_toplines},
+#' or \link{trackingReport}
+#' @param ... One or more relabel objects. See \link{relabelSet}
 #' @export
 relabel <- function(ct, ...) {
   message("Relabeling should always occur before sorting")
@@ -68,7 +68,7 @@ relabelApply <- function(results, labs) {
 #' Given a results object, adjust the question description. This will display as the question
 #' text in crunchtabs.
 #' @param obj A results object for a specific alias
-#' @param labs A list of labels, typically passed to \link{\code{relabel}}
+#' @param labs A list of labels, typically passed to \link{relabel}
 relabelDescription <- function(obj, labs) {
   if(length(labs$description) > 0) {
     obj$description <- labs$description
@@ -81,7 +81,7 @@ relabelDescription <- function(obj, labs) {
 #' Given a results object, adjust the note. This will display as the text below
 #' the question text in crunchtabs.
 #' @param obj A results object for a specific alias
-#' @param labs A list of labels, typically passed to \link{\code{relabel}}
+#' @param labs A list of labels, typically passed to \link{relabel}
 relabelNotes <- function(obj, labs) {
   if(length(labs$notes) > 0) {
     obj$notes <- labs$notes
@@ -93,7 +93,7 @@ relabelNotes <- function(obj, labs) {
 #' Set relabels
 #'
 #' An S3 method for applying updated text values to a result object in crunchtabs
-#' @param obj An inner object under the results list of a \link{\code{crosstabs}} object.
+#' @param obj An inner object under the results list of a \link{crosstabs} object.
 #' @param labs A list including at least one of the following: description, notes, items, or options
 relabelSet <- function(obj, labs) {
   UseMethod("relabelSet", obj)
@@ -104,7 +104,7 @@ relabelSet <- function(obj, labs) {
 #'
 #' Relabel a ToplineVar result object.
 #' @param obj A results object for a specific alias
-#' @param labs A list of labels, typically passed to \link{\code{relabel}}
+#' @param labs A list of labels, typically passed to \link{relabel}
 relabelSet.ToplineVar <- function(obj, labs) {
   current_options <- dimnames(obj$crosstabs$Results$`___total___`$base)[[1]]
   if(length(labs$options) > 0) {
@@ -128,7 +128,7 @@ relabelSet.ToplineVar <- function(obj, labs) {
 #'
 #' Relabel a ToplineCategoricalArray result object.
 #' @param obj A results object for a specific alias
-#' @param labs A list of labels, typically passed to \link{\code{relabel}}
+#' @param labs A list of labels, typically passed to \link{relabel}
 relabelSet.ToplineCategoricalArray <- function(obj, labs) { # nolint
 
   if(length(labs$options) > 0) {
@@ -180,7 +180,6 @@ setResultObj <- function(results, alias, obj) {
 #'
 #' @param results A list of results
 #' @param alias A character identifying the alias
-#' @param obj A result object
 getResultObj <- function(results, alias) {
   stopifnot(alias %in% names(results))
   results[[alias]]

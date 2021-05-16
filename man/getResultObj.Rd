@@ -10,8 +10,6 @@ getResultObj(results, alias)
 \item{results}{A list of results}
 
 \item{alias}{A character identifying the alias}
-
-\item{obj}{A result object}
 }
 \description{
 Get a result object based on alias

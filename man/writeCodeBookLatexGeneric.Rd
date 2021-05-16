@@ -21,6 +21,7 @@ writeCodeBookLatexGeneric(
   path = NULL,
   filename = NULL,
   logging = FALSE,
+  open = FALSE,
   ...
 )
 }
@@ -73,6 +74,8 @@ automatically. Also accepts a path to a logo file.}
 (i.e, "mycodebook")}
 
 \item{logging}{Leave logs in the working directory, defaults to FALSE}
+
+\item{open}{Should the resulting PDF be opened? Defaults to FALSE}
 
 \item{...}{Additional arguments passed to \link[kableExtra]{kable_styling} Unused.}
 }

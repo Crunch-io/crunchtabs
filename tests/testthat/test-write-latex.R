@@ -20,6 +20,9 @@ test_that("Does not delete log/aux/out files if logging = TRUE", {
   system("echo 'This is a log file' >> text.log")
   system("echo 'This is an aux file' >> text.aux")
   writeLatex(cs, logging = TRUE, pdf = TRUE)
+  print(getwd())
+  print(file.exists("text.out"))
+  print(readLines("text.out"))
   expect_true(file.exists("text.out"))
   expect_true(file.exists("text.log"))
   expect_true(file.exists("text.aux"))
@@ -81,7 +84,8 @@ with_temp_dir({
     writeLatex(cs, moe = 0.2, field_period = "2018-01-01 to 2018-01-02", pdf = TRUE)
 
     theme <- themeNew(default_theme = themeDefaultLatex(), digits = 1)
-    writeLatex(cs, theme = theme, pdf = TRUE)
+    mockery::stub(writeLatex, "file.open", TRUE)
+    writeLatex(cs, theme = theme, pdf = TRUE, open = TRUE)
     theme <- themeNew(default_theme = theme, font_size = 20)
     writeLatex(cs, theme = theme, pdf = TRUE)
     theme <- themeNew(default_theme = theme,

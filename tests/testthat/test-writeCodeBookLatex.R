@@ -23,13 +23,14 @@ test_that("End to end writeCodeBookLatex", {
       subtitle = "Goodbye",
       sample_desc = "US Voting Adults",
       logo = "yougov",
-      pdf = TRUE
+      pdf = TRUE,
+      open = TRUE
     )
   )
 
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
-  expect_equal(length(tex), 149)
+  expect_equal(length(tex), 152)
   expect_true(file.size("Example-dataset.pdf") > 61200)
   # Test title
   expect_true(
