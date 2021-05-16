@@ -231,13 +231,10 @@ test_that("codeBookItemBody DatetimeVariable", {
 
   mockery::stub(codeBookItemBody.DatetimeVariable, "codeBookSummary.DatetimeVariable", smry)
   res <- codeBookItemBody(ds$wave)
-  print(attributes(res)$kable_meta$contents)
+  expect_true(grepl("\\[2014-12-01, 2015-01-01\\]", attributes(res)$kable_meta$contents[2], fixed = T))
   expect_equal(
-    attributes(res)$kable_meta$contents,
-    c(
-      "Filled & Missing & Range",
-      "20 & 0 & \\[2014-12-01, 2015-01-01\\]"
-    )
+    attributes(res)$kable_meta$contents[1],
+      "Filled & Missing & Range"
   )
 
   expect_equal(
