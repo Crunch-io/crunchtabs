@@ -19,7 +19,7 @@ jobs:
         Rscript -e 'covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")'
 
     - name: Save artifacts
-    - uses: actions/upload-artifact@v2
-    with:
-      name: RCheckLog
-      path: ‘/__w/crunchtabs/crunchtabs/crunchtabs.Rcheck/00check.log’
+      uses: actions/upload-artifact@v2
+      with:
+        name: RCheckLog
+        path: ‘/__w/crunchtabs/crunchtabs/crunchtabs.Rcheck/00check.log’
