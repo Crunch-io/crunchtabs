@@ -14,11 +14,13 @@ Last updated: `r Sys.Date()`
 
 ## Codebooks!
 
-A codebook is used as a reference to document the contents of a survey by displaying unweighted counts and other types of survey metadata that may be important to someone using those data outside of the context of the crunch web application or other toplines/crosstabs prepared by crunchtabs
+A codebook is used as a reference to document the contents of a survey by displaying unweighted counts and other types of survey metadata that may be important to someone using those data outside of the context of the crunch web application or other toplines/crosstabs prepared by crunchtabs.
 
 ### Generating Codebooks
 
-Creating a codebook from a crunch dataset is easy. In the examples below we will work with the "Example dataset" built into crunch that you can . 
+You must be an editor of a dataset to make a codebook from a crunch dataset. In addition, the dataset must be unweighted. If your dataset is being actively used by clients it is recommended that you create a fork. 
+
+Creating a codebook from a crunch dataset is easy. In the examples below a codebook is created using the example dataset built into crunch.
 
 ```{r, eval = FALSE}
 library(crunchtabs)
@@ -44,11 +46,11 @@ writeCodeBookLatex(ds, url = "https://api.crunch.io/datasets/<dataset-id>")
 
 ## Options
 
-There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo. In this section, we will present each of these. 
+There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo.
 
 ### Table of Contents
 
-A table of contents can be added by using the `table_of_contents` parameter. Providing a table of contents that shows the variable alias (`crunch::alias`) followed by a short description of the variable that is derived from the crunch name (`crunch::name`) and, of course, the page number where the related codebook item(s) can be found.
+A table of contents can be added by using the `table_of_contents` argument. Setting this argument to TRUE, provides a table of contents that shows the variable alias (`crunch::alias`) followed by a short description of the variable that is derived from the crunch name (`crunch::name`) as well as the page number where the related codebook summary can be found.
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, table_of_contents = TRUE)
@@ -58,7 +60,7 @@ writeCodeBookLatex(ds, table_of_contents = TRUE)
 
 ### Appendices
 
-By default, an appendix will be created for any categorical question that has more than 20 categories. This is done with the intent to avoid useless scrolling by the user. However, should you not care for an appendix you can use the parameter `appendix = FALSE`. If you choose to not use an appendix, it may also be desirable to set `suppress_zero_counts=TRUE` to avoid long presentations of empty categories in dataset order.
+By default, an appendix will be created for any categorical question that has more than 20 categories. This is done with the intent to avoid useless scrolling by the user. However, should you not care for an appendix you can use the argument `appendix = FALSE`. If you choose to not use an appendix, it may also be desirable to set `suppress_zero_counts=TRUE` to avoid long presentations of empty categories in dataset order.
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, appendix = FALSE)
@@ -66,7 +68,7 @@ writeCodeBookLatex(ds, appendix = FALSE)
 
 ### Titles, Sub-headings and other Descriptives
 
-Currently you can change the title and subtitle as well as provide descriptives like sample description and field window. 
+Currently you can change the title, subtitle and provide descriptives for the elements: sample description and field window. 
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(
@@ -83,7 +85,7 @@ writeCodeBookLatex(
 
 ### Logos
 
-Default logos for YouGov and YouGov Blue have been included in the package for easy reference. If neither have suit your purposes you can also specify a path to a PNG formatted image. We recommend an image size of 50 pixels in height and 250-350 pixels in width. If you would like your sub-brand logo added to the package please submit an issue on github (https://github.com/Crunch-io/crunchtabs/issues) 
+Default logos for YouGov and YouGov Blue have been included in the package for easy reference. If neither suit your purposes you can also specify a path to a PNG formatted image. The recommendation is  an image size of 50 pixels in height and 250-350 pixels in width. If you would like your sub-brand logo added to the package please submit an issue on github (https://github.com/Crunch-io/crunchtabs/issues) 
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, logo = "yougov")
@@ -94,7 +96,7 @@ writeCodeBookLatex(ds, logo = "yougov")
 
 ### Suppressing Zeroes
 
-Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can supress zeroes using the following:  
+Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can suppress zeroes using the following:  
 
 ```{r, eval = FALSE}
 writeCodeBookLatex(ds, suppress_zero_counts = TRUE)
@@ -173,3 +175,4 @@ writeCodeBookLatexGeneric(
 ## Known Limitations
 
 - This software only supports latin characters. English, French, Spanish, and Portuguese will work out of the box. Other languages with significant special character or RTL are not supported.
+

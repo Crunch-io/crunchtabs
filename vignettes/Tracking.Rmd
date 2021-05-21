@@ -15,16 +15,16 @@ Last updated: `r Sys.Date()`
 
 ## Reporting Over Time
 
-`crunchtabs` supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where we ask about voter intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require individual weighting.
+`crunchtabs` supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require independent weighting.
 
 By default, both of these functions will allow you to present variables that you have included in your specification that do not exist across datasets.
 
 ### Generating a Recontact Report
 
-In the code below, we use the crunch example dataset to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function: 
+In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function: 
 
-1. Your "pre" and "post" waves questions should both have the same categories. 
-2. Your "pre" and "post" waves question names should be equal, with different suffixes, such as: question_pre and question_post.
+1. Your "pre" and "post" wave's questions should both have the same categories. 
+2. Your "pre" and "post" wave's question names should be equal, with different suffixes, such as: question_pre and question_post.
 
 ```{r, eval = FALSE}
 library(crunchtabs)
@@ -68,7 +68,7 @@ writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
 
 ### Flipping Grids
 
-Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides optiosn for "flipping grids". That is to say, there are options you can provide to transpose the presentation so that the wave labels are columns, and the category labels are rows.
+Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for "flipping grids". You can transpose the presentation so that the wave labels are columns, and the category labels are rows.
 
 To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 
@@ -76,10 +76,11 @@ To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 theme <- themeNew(..., latex_flip_grids = TRUE)
 ```
 
-![Recontact Example with flipped grid](Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
+![Recontact Example with flipped grid](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
 
 
-In addition to global transposition of grids, we can also do so conditionally.
+
+In addition to global transposition of grids, you can also do so conditionally:
 
 ```{r, eval = FALSE}
 theme <- themeNew(..., latex_flip_specific_grids = c("q1"))
@@ -87,9 +88,9 @@ theme <- themeNew(..., latex_flip_specific_grids = c("q1"))
 
 ### Tracking Reports
 
-While recontact reports are designed for questions asked in the same dataset, we also have the ability to present questions asked in multiple datasets in a similar fashion.
+While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion.
 
-In the code block below, we illustrate data setup and an example call to `trackingReports`. While our example is not prepresentative of a real-life situation, the manner in which you would need to manage data are the same.
+In the code block below, we illustrate data setup and an example call to `trackingReports`. While our example is not representative of a real-life situation, the manner in which you would need to manage data are the same.
 
 ```{r, eval = FALSE}
 # Create example datasets as waves 1,2 and 3.
@@ -136,7 +137,7 @@ There are a number of important elements here:
 
 2.  The default `wave_labels` will be presented as Wave 1 through Wave N, where N is the length of the `dataset_list`
 
-3.  It is strongly recommended that you weight each dataset with the same variable. The `weight` parameter accepts a character string that should reference a weighting variable in your datasets by its alias. Should you not specify a weight, the system will use the current weighting of each dataset. This can be useful if you have differently named weights across the datasets. But caution should be taken here as there is no way for the system to verify that your desired weight has been applied. As you saw in the example, it's recommended to assign your weight deliberately.
+3.  It is strongly recommended that you weight each dataset with the same variable. The `weight` parameter accepts a character string that should reference a weighting variable in your datasets by its alias. Should you not specify a weight, the system will use the current weighting of each dataset (You can check what this is with `weight(ds)`). This can be useful if you have differently named weights across the datasets. But caution should be taken here as there is no way for the system to verify that your desired weight has been applied. As you saw in the example, it is recommended to assign your weight deliberately.
 
 4.  Many defaults are extracted from the first dataset in the `dataset_list`.
 
@@ -145,9 +146,9 @@ There are a number of important elements here:
 
 ### Tracking Reports for Other Stacking Data
 
-As intimated in the previous section, tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called "tracking reports" they support any situation where the same questions are found in a list of datasets.
+Tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called "tracking reports" they support any situation where the same questions are found in a list of datasets.
 
-In the example below, we show a political survey question that was asked in different cities across the United States of America regarding no-knock warrants.
+In the example below, a political survey question is shown that was asked in different cities across the United States of America regarding no-knock warrants.
 
 ![Generic stacking data](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/ex017.png)
 
@@ -204,11 +205,11 @@ ct <- trackingReport(
 
 ### Relabeling Categories or Responses
 
-There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, we  offer the ability to relabel your responses or to reposition them. 
+There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, crunchtabs offers the ability to relabel your responses or to reposition them. 
 
 #### Relabeling
 
-This renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It's important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.  
+Renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It's important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.  
 
 In the example below, "x" and "a" are the labels you wish to rename and "y" and "b" are the resulting labels. 
 

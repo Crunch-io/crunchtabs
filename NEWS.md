@@ -1,5 +1,6 @@
 ## crunchtabs 1.4.2
 
+- Updates to vignettes
 - INNOV-326 writeCodeBookLatex should not open by default. Add function argument open = FALSE. This avoids a situation in non-interactive sessions where the process would otherwise be stuck as it attempts to open a GTK program from a bash session. 
 - Small change in how appendices are automatically identified. Previous iterations prepared long tables with the longtabu package. However, this tex package overwrote numeric presentation options from siunitx. This has been changed to longtable, which respects siunitx. Now appendix long tables are identified by the length of lines in their tex (20 or more).
 
