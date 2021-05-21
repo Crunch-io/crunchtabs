@@ -115,24 +115,27 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <code>crunchtabs</code> package automates reporting for <a href="https://github.com/Crunch-io/rcrunch">crunch</a> datasets. It is designed to create toplines, cross tabulations and codebooks (not yet implemented) as tex, pdf or xlsx. The goal of this document is to provide you with enough information to go from nothing, to a client ready report, as fast as you can type. For all of the examples included in this vignette we will work with <code>crunch</code>’s built in pet dataset. Let’s first install the packages that you need:</p>
+<p>The <code>crunchtabs</code> package automates reporting for <a href="https://github.com/Crunch-io/rcrunch">crunch</a> datasets. It is designed to create toplines, cross tabulations and codebooks as tex (LaTeX), PDF or XLSX. The goal of this document is to provide you with enough information to go from nothing, to a client ready report, as fast as you can type. The examples included in this vignette use <code>crunch</code>’s built in pet dataset.</p>
+<div id="installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Crunch-io/rcrunch"</span><span class="op">)</span> <span class="co"># If not already installed</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"Crunch-io/crunchtabs"</span><span class="op">)</span></code></pre></div>
-<p>Next, let’s create a personal copy of the example data set for use with this vignette. This will ensure that you have the example dataset available to your account. A rudimentary understanding of the <code>crunch</code> R package is expected from readers of this document. Anyone with a <code>crunch</code> login should be able to follow along with the examples included here. If you are not familiar with <code>crunch</code>, we recommend the <a href="https://crunch.io/r/crunch/articles/crunch.html">getting started</a> vignette.</p>
+<p>Next, create a personal copy of the example data set for use with this vignette. This will ensure that you have the example dataset available to your account. A rudimentary understanding of the <code>crunch</code> R package is expected from readers of this document. Anyone with a <code>crunch</code> login should be able to follow along with the examples included here. If you are not familiar with <code>crunch</code>, the vignette is a good place to start <a href="https://crunch.io/r/crunch/articles/crunch.html">getting started</a> vignette.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
 <span class="fu">login</span><span class="op">(</span><span class="op">)</span>
 <span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">newExampledataset</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
+</div>
 <div id="pdf-reports" class="section level2">
 <h2 class="hasAnchor">
 <a href="#pdf-reports" class="anchor"></a>PDF Reports</h2>
-<p><code>crunchtabs</code> generates PDF reports by writing generated LaTeX to a file, then compiling that file. A significant amount of thought has gone into the default settings and we recommend that you stick with them. However, there is a bounty of structural and thematic options that can be adjusted or manipulated to your requirements.</p>
+<p><code>crunchtabs</code> generates PDF reports by writing generated LaTeX to a file, then compiling that file. A significant amount of thought has gone into the default settings and it is recommended that you stick with them. However, there is a bounty of structural and thematic options that can be adjusted or manipulated to your requirements (see the Theme Arguments section of <code><a href="../reference/themeNew.html">?themeNew</a></code> for more information).</p>
 <div id="create-a-topline" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-a-topline" class="anchor"></a>Create a Topline</h3>
-<p>Generating a topline report is quick and easy!</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># library(crunchtabs)</span>
 <span class="co"># login()</span>
@@ -146,13 +149,13 @@
 <p>NOTE: Although called <code>crosstabs</code> this function serves both purposes by creating summary data for toplines and cross tabulation reports. There is no function called <code>toplines</code>.</p>
 </blockquote>
 <div class="figure">
-<img src="example-001-topline.png" alt=""><p class="caption">Topline Example from the Example Dataset</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-001-topline.png" alt=""><p class="caption">Topline Example from the Example Dataset</p>
 </div>
 </div>
 <div id="create-a-cross-tabulation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-a-cross-tabulation" class="anchor"></a>Create a Cross Tabulation</h3>
-<p>The only additional step required for a cross tab report is to create a <code>banner</code> object. Then, setting it as the <code>banner</code> argument for the <code>crosstabs</code> function. Below, we create a cross tabulation report that shows the type of pet(s) respondents own to our survey for every question in the survey. Once you have run the code, we encourage you to open the resulting <code>output.pdf</code> file. Inside of the report you will find a cross tabulation of all questions by pet ownership.</p>
+<p>The only additional step required for a cross tab report is to create a <code>banner</code> object. Then, setting it as the <code>banner</code> argument for the <code>crosstabs</code> function. The code block below creates a cross tabulation report that shows the type of pet(s) respondents own, for every question in the survey. Once you have run the code, open the resulting <code>output.pdf</code> file. Inside of the report you will find a cross tabulation of all questions by pet ownership.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># library(crunchtabs)</span>
 <span class="co"># login()</span>
@@ -164,14 +167,14 @@
 <span class="va">ct_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">ds</span>, banner <span class="op">=</span> <span class="va">ct_banner</span><span class="op">)</span> <span class="co"># banner parameter set here</span>
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct_summary</span>, filename <span class="op">=</span> <span class="st">"output"</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># output.pdf will be written </span></code></pre></div>
 <div class="figure">
-<img src="example-002-crosstabs.png" alt=""><p class="caption">Cross Tabulation Example from the Example Dataset</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-002-crosstabs.png" alt=""><p class="caption">Cross Tabulation Example from the Example Dataset</p>
 </div>
 </div>
 </div>
 <div id="excel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#excel" class="anchor"></a>Excel</h2>
-<p>To create documents in excel, the process is the same as that for creating PDF reports. However, in the last line of our example scripts we use <code>writeExcel</code> instead of <code>writeLatex</code> while also removing the <code>pdf = TRUE</code> argument. As with PDF reports, there are a large amount of options that can be set to adjust the look and feel of the resulting Excel spreadsheets.</p>
+<p>To create documents in excel, the process is the same as that for creating PDF reports. However, in the last line of the example code block use <code>writeExcel</code> instead of <code>writeLatex</code> while also removing the <code>pdf = TRUE</code> argument. As with PDF reports, there are a large amount of options that can be set to adjust the look and feel of the resulting Excel spreadsheets (see the Theme Arguments section of <code><a href="../reference/themeNew.html">?themeNew</a></code> for more information).</p>
 <blockquote>
 <p>Unfortunately, toplines reports are not currently supported for Excel. However, this is a planned feature.</p>
 </blockquote>
@@ -182,14 +185,14 @@
 <span class="co"># ... topline, not yet implemented</span>
 <span class="co"># writeExcel(toplines_summary, filename = "output") # output.xlsx will be written </span></code></pre></div>
 <div class="figure">
-<img src="example-003-excel-ct.png" alt=""><p class="caption">Cross Tabulation Excel Example from the Example Dataset</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-003-excel-ct.png" alt=""><p class="caption">Cross Tabulation Excel Example from the Example Dataset</p>
 </div>
-<p>This package was designed to allow for some elements of style and structure to pass between the two formats. However, it should not be assumed that if something works in one format it will work in another.</p>
+<p>This package was designed to allow for some elements of style and structure to pass between the two formats. However, it should not be assumed that if something works in one format (Excel vs. PDF) it will work in another.</p>
 </div>
 <div id="structural-elements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#structural-elements" class="anchor"></a>Structural Elements</h2>
-<p>The default result is immediately useful for a researcher. However, there are other elements that we may wish to add or adjust before sharing with a client or internal stakeholders, such as:</p>
+<p>The default result is immediately useful for a researcher. However, there are other elements that require additions or adjustments before sharing with a client or internal stakeholders, such as:</p>
 <ul>
 <li>Including or excluding questions</li>
 <li>Weighting our data</li>
@@ -200,11 +203,11 @@
 <li>Specifying a field window (PDF Only)</li>
 <li>Appending additional information (PDF Only)</li>
 </ul>
-<p>While some of these may be firmly within the realm of “theme” items, we separate concerns based on which functions within <code>crunchtabs</code> adjust them. For this reason <em>structural elements</em> are those elements that are parameterized by the <code>writeLatex</code> or <code>writeExcel</code> function directly. There are many more theme elements available in the <code>themeNew</code> function but it is outside of the scope of this document.</p>
+<p>While some of these may be firmly within the realm of “theme” items, the package separates concerns based on which functions within <code>crunchtabs</code> adjust them. For this reason <em>structural elements</em> are typically arguments to the <code>writeLatex</code> or <code>writeExcel</code> function directly. There are many more theme elements available in the <code>themeNew</code> function.</p>
 <div id="including-or-excluding-questions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#including-or-excluding-questions" class="anchor"></a>Including or Excluding Questions</h3>
-<p>By default, the <code>crosstabs</code> function attempts to create a topline or cross tab for all of the aliases that are visible to it in the dataset (<code><a href="https://rdrr.io/r/base/names.html">names(dataset)</a></code>). Creating a subset is as easy as creating a character vector with the aliases that you are interested in including in the report.</p>
+<p>By default, the <code>crosstabs</code> function attempts to create a topline or crosstab for all of the aliases that are visible to it in the dataset (<code><a href="https://rdrr.io/r/base/names.html">names(dataset)</a></code>). Creating a subset requires nothing more than a character vector with the aliases that you are interested in including in the report.</p>
 <blockquote>
 <p>An <em>alias</em> is a name used to reference a question asked in a survey. For example, <code>q1</code> references the question “What is your favorite pet?”. For more information see <a href="https://crunch.io/r/crunch/articles/variables.html#a-rose-by-any-other-moniker-names-and-aliases">aliases in crunch</a></p>
 </blockquote>
@@ -238,7 +241,7 @@
 <div id="recoding-and-relabelling-banners" class="section level3">
 <h3 class="hasAnchor">
 <a href="#recoding-and-relabelling-banners" class="anchor"></a>Recoding and Relabelling Banners</h3>
-<p>Sometimes the names presented in the banner of a crosstab are not desirable, too long, or lacking context. The <code>crosstabs</code> function has the built-in ability to recode the text labels. In the case below, we change the names of the pets from Cat, Dog, or Bird, to their Spanish equivalents.</p>
+<p>Sometimes the names presented in the banner of a crosstab are not desirable, too long, or lacking context. The <code>crosstabs</code> function has the built-in ability to recode the text labels. In the following example, the names of the pets are changed from Cat, Dog, or Bird, to their Spanish equivalents.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># library(crunchtabs)</span>
 <span class="co"># login()</span>
@@ -254,9 +257,9 @@
 <span class="va">ct_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">ds</span>, banner <span class="op">=</span> <span class="va">ct_banner</span><span class="op">)</span> <span class="co"># banner parameter set here</span>
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct_summary</span>, filename <span class="op">=</span> <span class="st">"output"</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># output.pdf will be written </span></code></pre></div>
 <div class="figure">
-<img src="example-004-ct-recode.png" alt=""><p class="caption">Cross Tabulation Recode</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-004-ct-recode.png" alt=""><p class="caption">Cross Tabulation Recode</p>
 </div>
-<p>Notice that we still have “All pets owned”. Let’s change that as well. When we want to change the column headings, we use the recode argument. When we want to change the group header we use the labels argument.</p>
+<p>Notice that there is still “All pets owned”. To change the column headings, use the recode argument. To change the group header use the labels argument.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># library(crunchtabs)</span>
 <span class="co"># login()</span>
@@ -271,16 +274,16 @@
   recodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"allpets"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Cat <span class="op">=</span> <span class="st">'Gato'</span>, Dog <span class="op">=</span> <span class="st">'Perro'</span>, Bird <span class="op">=</span> <span class="st">'Pájaro'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">ct_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crosstabs.html">crosstabs</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">ds</span>, banner <span class="op">=</span> <span class="va">ct_banner</span><span class="op">)</span> 
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct_summary</span>, filename <span class="op">=</span> <span class="st">"output"</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># output.pdf will be written </span></code></pre></div>
-<p>Now we see that our header has been re-labelled as “Todas las mascotas”.</p>
+<p>Now, our header has been re-labeled as “Todas las mascotas”.</p>
 <div class="figure">
-<img src="example-005-ct-relabel.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-005-ct-relabel.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
 </div>
 </div>
 <div id="weighting-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#weighting-data" class="anchor"></a>Weighting Data</h3>
-<p>Most research work flows include a need to apply some kind of weighting scheme. Weighting is not applied automatically by default when running the <code>crosstabs</code> function. If your dataset has already been weighted earlier in your script, you do not need to specify a weighting variable. (you can check this with: <code>weight(ds)</code>). In our example, the dataset does not have an existing weighting scheme so we must create one. Most datasets in the wild will already have one or more weighting variables available. You can check the aliases of these weighting variables by using <code>weightingVariables(ds)</code>.</p>
-<p>For this example, we are going to weight our data so it is 75% cat lovers, 15% dog lovers and 10% bird lovers, with the <em>extremely plausible</em> assumption that almost everyone is a cat lover at heart.</p>
+<p>Most research work flows include a need to apply some kind of weighting scheme. Weighting is not applied automatically by default when running the <code>crosstabs</code> function. If your dataset has already been weighted earlier in your script, you do not need to specify a weighting variable. (you can check this with: <code>weight(ds)</code>). In the example below, the dataset does not have an existing weighting scheme so we must create one. Most datasets in the wild will already have one or more weighting variables available. You can check the aliases of these weighting variables by using <code>weightingVariables(ds)</code>.</p>
+<p>These data will be weighted so that they are is 75% cat lovers, 15% dog lovers and 10% bird lovers, with the <em>extremely plausible</em> assumption that almost everyone is a cat lover at heart.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># library(crunchtabs)</span>
 <span class="co"># login()</span>
@@ -306,7 +309,7 @@
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct_summary</span>, filename <span class="op">=</span> <span class="st">"output"</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </code></pre></div>
 <p>After running <code>modifyWeight</code> our dataset now has a weighting variable assigned. You can verify this with <code>weightVariables(ds)</code>.</p>
 <div class="figure">
-<img src="example-006-ct-weight.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-006-ct-weight.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
 </div>
 <blockquote>
 <p>NOTE: In Crunch, a “viewer” of a dataset does not have access to the individuals rows and cannot weight data or calculate margin of error using the R crunch package.</p>
@@ -315,8 +318,8 @@
 <div id="calculating-and-displaying-margin-of-error" class="section level3">
 <h3 class="hasAnchor">
 <a href="#calculating-and-displaying-margin-of-error" class="anchor"></a>Calculating and Displaying Margin of Error</h3>
-<p>Communicating the margin of error for your dataset is a typical requirement faced by all researchers. In the following example, we show you an example of how to calculate margin of error based off of the weighting variable calculated in the previous section (Weighting Data). There are a variety of ways for calculating margin of error depending on your survey. Here we present a very simple abstraction using your weight variable and the weighted base.</p>
-<p>If you are inheriting a project from someone you will likely see some variation of the function below included in the scripts they currently use to create a cross tab.</p>
+<p>Communicating the margin of error for your dataset is a typical requirement faced by all researchers. In the example below, margin of error is calculated using the weighting variable in the previous section (Weighting Data). There are a variety of ways for calculating margin of error depending on your survey. A very simple abstraction using your weight variable and the weighted base is provided as an example, below.</p>
+<p>If you are inheriting a project from someone you will likely see some variation of the function below included in the scripts they currently use to create a crosstab.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Margin of Error function</span>
 <span class="va">moe</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">weightvar</span><span class="op">)</span> <span class="op">{</span>
@@ -341,18 +344,15 @@
   pdf <span class="op">=</span> <span class="cn">TRUE</span>,
   moe <span class="op">=</span> <span class="va">include_moe</span>
 <span class="op">)</span> </code></pre></div>
-<p>In the example we see the margin of error has been placed near the top of the page just below the title. A margin of error of 43.9% is a less than desirable outcome for a survey. Thankfully, this is just an example.</p>
+<p>In the example above the margin of error has been placed near the top of the page just below the title. A margin of error of 43.9% is not a desirable outcome for a survey. Thankfully, this is just an example.</p>
 <div class="figure">
-<img src="example-007-ct-moe.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-007-ct-moe.png" alt=""><p class="caption">Cross Tabulation Relabel</p>
 </div>
-<blockquote>
-<p>NOTE: In Crunch, a “viewer” of a dataset does not have access to the individuals rows and cannot weight data or calculate margin of error using the R crunch package.</p>
-</blockquote>
 </div>
 <div id="adding-titles" class="section level3">
 <h3 class="hasAnchor">
 <a href="#adding-titles" class="anchor"></a>Adding Titles</h3>
-<p>The default title behavior assigns the dataset name as the title on each page of the report. Often the internal reference used to denote a data set is not well aligned or appropriate for other stakeholders. Below we will show you how to customize this output by using a title and a subtitle.</p>
+<p>The default title behavior assigns the dataset name as the title on each page of the report. Often the internal reference used to denote a data set is not well aligned or appropriate for other stakeholders. You can customize this output by providing a title and a subtitle as in the example below.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span>
   <span class="va">ct_summary</span>, 
@@ -363,13 +363,13 @@
   moe <span class="op">=</span> <span class="va">include_moe</span>
 <span class="op">)</span> </code></pre></div>
 <div class="figure">
-<img src="example-008-ct-titles.png" alt=""><p class="caption">Including Margin of Error</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-008-ct-titles.png" alt=""><p class="caption">Including Margin of Error</p>
 </div>
 </div>
 <div id="including-a-table-of-contents" class="section level3">
 <h3 class="hasAnchor">
 <a href="#including-a-table-of-contents" class="anchor"></a>Including a Table of Contents</h3>
-<p>A small change to our call to <code>writeLatex</code> or <code>writeExcel</code> allows for the inclusion of a table of contents. In both document types this creates a “linked” table of contents that navigates to the table of interest on-click.</p>
+<p>A small change to our call to <code>writeLatex</code> or <code>writeExcel</code> allows for the inclusion of a table of contents. In both document types this creates a “linked” table of contents that allows for navigation to the table of interest when the table of contents item is clicked.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span>
   <span class="va">ct_summary</span>, 
@@ -384,19 +384,19 @@
   table_of_contents <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="example-011-pdf-toc.png" alt=""><p class="caption">PDF: Table of Contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-011-pdf-toc.png" alt=""><p class="caption">PDF: Table of Contents</p>
 </div>
 <div class="figure">
-<img src="example-011-xlsx-toc.png" alt=""><p class="caption">Excel: Table of Contents</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-011-xlsx-toc.png" alt=""><p class="caption">Excel: Table of Contents</p>
 </div>
 </div>
 <div id="customizing-theme" class="section level3">
 <h3 class="hasAnchor">
 <a href="#customizing-theme" class="anchor"></a>Customizing Theme</h3>
-<p>There are a large amount of theme options available for both PDF and Excel reports. Here we only provide a cursory example. We recommend reviewing <code><a href="../reference/themeNew.html">?themeNew</a></code> for more specific details about all of the elements that can be changed. We provide a few common examples below.</p>
+<p>There are a large amount of theme options available for both PDF and Excel reports. Below is a cursory example. It is recommended that you review <code><a href="../reference/themeNew.html">?themeNew</a></code> for more specific details about all of the elements that can be changed.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myTheme</span> <span class="op">=</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
-  
+  <span class="va">...</span>
 <span class="op">)</span>
 
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span>
@@ -419,7 +419,7 @@
   field_period <span class="op">=</span> <span class="st">"2020-02-04 - 2020-03-04"</span>
 <span class="op">)</span> </code></pre></div>
 <div class="figure">
-<img src="example-008a-ct-field-date.png" alt=""><p class="caption">Including a Field Period</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-008a-ct-field-date.png" alt=""><p class="caption">Including a Field Period</p>
 </div>
 </div>
 <div id="appending-text-pdf-only" class="section level3">
@@ -432,7 +432,7 @@
   append_text <span class="op">=</span> <span class="st">"Field Window: 2020-02-04 - 2020-03-04"</span>
 <span class="op">)</span> </code></pre></div>
 <div class="figure">
-<img src="example-009-ct-append.png" alt=""><p class="caption">Appending Basic Text</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-009-ct-append.png" alt=""><p class="caption">Appending Basic Text</p>
 </div>
 <p>You can also append much larger chunks of text like a disclosure, analysis, or other marketing copy that is required for all of your documents. A typical workflow here is to create a .tex fragment file or an R string object that includes your copy. Tex makes significant use of the <code>\</code> character. In R, you must <em>escape</em> the backslash with an additional backslash. In the example below you see <code>\begin</code> becomes <code>\\begin</code> and a new line <code>\\</code> becomes <code>\\\\</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -458,7 +458,7 @@
   append_text <span class="op">=</span> <span class="va">myAppend</span>
 <span class="op">)</span> </code></pre></div>
 <div class="figure">
-<img src="example-010-ct-append.png" alt=""><p class="caption">Appending Arbitrary Tex</p>
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-010-ct-append.png" alt=""><p class="caption">Appending Arbitrary Tex</p>
 </div>
 </div>
 </div>

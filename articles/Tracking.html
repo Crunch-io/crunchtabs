@@ -111,19 +111,19 @@
 
     
     
-<p>Author: Brandon Bertelsen<br> Last updated: 2021-05-16</p>
+<p>Author: Brandon Bertelsen<br> Last updated: 2021-05-21</p>
 <div id="reporting-over-time" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reporting-over-time" class="anchor"></a>Reporting Over Time</h2>
-<p><code>crunchtabs</code> supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where we ask about voter intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require individual weighting.</p>
+<p><code>crunchtabs</code> supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require independent weighting.</p>
 <p>By default, both of these functions will allow you to present variables that you have included in your specification that do not exist across datasets.</p>
 <div id="generating-a-recontact-report" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generating-a-recontact-report" class="anchor"></a>Generating a Recontact Report</h3>
-<p>In the code below, we use the crunch example dataset to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function:</p>
+<p>In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function:</p>
 <ol style="list-style-type: decimal">
-<li>Your “pre” and “post” waves questions should both have the same categories.</li>
-<li>Your “pre” and “post” waves question names should be equal, with different suffixes, such as: question_pre and question_post.</li>
+<li>Your “pre” and “post” wave’s questions should both have the same categories.</li>
+<li>Your “pre” and “post” wave’s question names should be equal, with different suffixes, such as: question_pre and question_post.</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
@@ -167,20 +167,22 @@
 <div id="flipping-grids" class="section level3">
 <h3 class="hasAnchor">
 <a href="#flipping-grids" class="anchor"></a>Flipping Grids</h3>
-<p>Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides optiosn for “flipping grids”. That is to say, there are options you can provide to transpose the presentation so that the wave labels are columns, and the category labels are rows.</p>
+<p>Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for “flipping grids”. You can transpose the presentation so that the wave labels are columns, and the category labels are rows.</p>
 <p>To do so globally, we set the <code>latex_flip_gris</code> theme option to <code>TRUE</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, latex_flip_grids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>[Recontact Example with flipped grid](Recontact Example](<a href="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png" class="uri">https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png</a>)</p>
-<p>In addition to global transposition of grids, we can also do so conditionally.</p>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png" alt=""><p class="caption">Recontact Example with flipped grid</p>
+</div>
+<p>In addition to global transposition of grids, you can also do so conditionally:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, latex_flip_specific_grids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="tracking-reports" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tracking-reports" class="anchor"></a>Tracking Reports</h3>
-<p>While recontact reports are designed for questions asked in the same dataset, we also have the ability to present questions asked in multiple datasets in a similar fashion.</p>
-<p>In the code block below, we illustrate data setup and an example call to <code>trackingReports</code>. While our example is not prepresentative of a real-life situation, the manner in which you would need to manage data are the same.</p>
+<p>While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion.</p>
+<p>In the code block below, we illustrate data setup and an example call to <code>trackingReports</code>. While our example is not representative of a real-life situation, the manner in which you would need to manage data are the same.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Create example datasets as waves 1,2 and 3.</span>
 <span class="va">ds1</span> <span class="op">&lt;-</span> <span class="fu">newExampleDataset</span><span class="op">(</span><span class="op">)</span>
@@ -221,7 +223,7 @@
 <ol style="list-style-type: decimal">
 <li><p>The order of <code>dataset_list</code> will be the same as their presentation in the resulting PDF. There are no checks to verify their order. Order your dataset from oldest to youngest. Or, if your data are bound by some other element that is not time (like the same survey ran in different localities) consider listing the datasets in alphabetical order.</p></li>
 <li><p>The default <code>wave_labels</code> will be presented as Wave 1 through Wave N, where N is the length of the <code>dataset_list</code></p></li>
-<li><p>It is strongly recommended that you weight each dataset with the same variable. The <code>weight</code> parameter accepts a character string that should reference a weighting variable in your datasets by its alias. Should you not specify a weight, the system will use the current weighting of each dataset. This can be useful if you have differently named weights across the datasets. But caution should be taken here as there is no way for the system to verify that your desired weight has been applied. As you saw in the example, it’s recommended to assign your weight deliberately.</p></li>
+<li><p>It is strongly recommended that you weight each dataset with the same variable. The <code>weight</code> parameter accepts a character string that should reference a weighting variable in your datasets by its alias. Should you not specify a weight, the system will use the current weighting of each dataset (You can check what this is with <code>weight(ds)</code>). This can be useful if you have differently named weights across the datasets. But caution should be taken here as there is no way for the system to verify that your desired weight has been applied. As you saw in the example, it is recommended to assign your weight deliberately.</p></li>
 <li><p>Many defaults are extracted from the first dataset in the <code>dataset_list</code>.</p></li>
 </ol>
 <div class="figure">
@@ -231,8 +233,8 @@
 <div id="tracking-reports-for-other-stacking-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tracking-reports-for-other-stacking-data" class="anchor"></a>Tracking Reports for Other Stacking Data</h3>
-<p>As intimated in the previous section, tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called “tracking reports” they support any situation where the same questions are found in a list of datasets.</p>
-<p>In the example below, we show a political survey question that was asked in different cities across the United States of America regarding no-knock warrants.</p>
+<p>Tracking reports accept any list of datasets. This means they can be used for a variety of situations where one needs to present a number of datasets in a stacked manner. Although called “tracking reports” they support any situation where the same questions are found in a list of datasets.</p>
+<p>In the example below, a political survey question is shown that was asked in different cities across the United States of America regarding no-knock warrants.</p>
 <div class="figure">
 <img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/ex017.png" alt=""><p class="caption">Generic stacking data</p>
 </div>
@@ -286,11 +288,11 @@
 <div id="relabeling-categories-or-responses" class="section level3">
 <h3 class="hasAnchor">
 <a href="#relabeling-categories-or-responses" class="anchor"></a>Relabeling Categories or Responses</h3>
-<p>There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, we offer the ability to relabel your responses or to reposition them.</p>
+<p>There are a number of situations where your category names in a multiple response or categorical array question may be too long for reasonable presentation. Flipping grids is a good option, however, this may not be desirable or possible due to the number of waves or datasets that you are working with. For these cases, crunchtabs offers the ability to relabel your responses or to reposition them.</p>
 <div id="relabeling" class="section level4">
 <h4 class="hasAnchor">
 <a href="#relabeling" class="anchor"></a>Relabeling</h4>
-<p>This renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It’s important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.</p>
+<p>Renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It’s important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.</p>
 <p>In the example below, “x” and “a” are the labels you wish to rename and “y” and “b” are the resulting labels.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recontact_toplines.html">recontact_toplines</a></span><span class="op">(</span>

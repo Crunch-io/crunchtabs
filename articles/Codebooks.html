@@ -111,15 +111,16 @@
 
     
     
-<p>Author: Brandon Bertelsen<br> Last updated: 2021-05-16</p>
+<p>Author: Brandon Bertelsen<br> Last updated: 2021-05-21</p>
 <div id="codebooks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#codebooks" class="anchor"></a>Codebooks!</h2>
-<p>A codebook is used as a reference to document the contents of a survey by displaying unweighted counts and other types of survey metadata that may be important to someone using those data outside of the context of the crunch web application or other toplines/crosstabs prepared by crunchtabs</p>
+<p>A codebook is used as a reference to document the contents of a survey by displaying unweighted counts and other types of survey metadata that may be important to someone using those data outside of the context of the crunch web application or other toplines/crosstabs prepared by crunchtabs.</p>
 <div id="generating-codebooks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generating-codebooks" class="anchor"></a>Generating Codebooks</h3>
-<p>Creating a codebook from a crunch dataset is easy. In the examples below we will work with the “Example dataset” built into crunch that you can .</p>
+<p>You must be an editor of a dataset to make a codebook from a crunch dataset. In addition, the dataset must be unweighted. If your dataset is being actively used by clients it is recommended that you create a fork.</p>
+<p>Creating a codebook from a crunch dataset is easy. In the examples below a codebook is created using the example dataset built into crunch.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
 <span class="fu">login</span><span class="op">(</span><span class="op">)</span>
@@ -143,11 +144,11 @@
 <div id="options" class="section level2">
 <h2 class="hasAnchor">
 <a href="#options" class="anchor"></a>Options</h2>
-<p>There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo. In this section, we will present each of these.</p>
+<p>There are a number of optional settings that you can control such as: displaying a table of contents, a sample description, changing the title or subtitle, or adding a logo.</p>
 <div id="table-of-contents" class="section level3">
 <h3 class="hasAnchor">
 <a href="#table-of-contents" class="anchor"></a>Table of Contents</h3>
-<p>A table of contents can be added by using the <code>table_of_contents</code> parameter. Providing a table of contents that shows the variable alias (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::alias</a></code>) followed by a short description of the variable that is derived from the crunch name (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::name</a></code>) and, of course, the page number where the related codebook item(s) can be found.</p>
+<p>A table of contents can be added by using the <code>table_of_contents</code> argument. Setting this argument to TRUE, provides a table of contents that shows the variable alias (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::alias</a></code>) followed by a short description of the variable that is derived from the crunch name (<code><a href="http://crunch.io/r/crunch//reference/describe-entity.html">crunch::name</a></code>) as well as the page number where the related codebook summary can be found.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, table_of_contents <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="figure">
@@ -157,14 +158,14 @@
 <div id="appendices" class="section level3">
 <h3 class="hasAnchor">
 <a href="#appendices" class="anchor"></a>Appendices</h3>
-<p>By default, an appendix will be created for any categorical question that has more than 20 categories. This is done with the intent to avoid useless scrolling by the user. However, should you not care for an appendix you can use the parameter <code>appendix = FALSE</code>. If you choose to not use an appendix, it may also be desirable to set <code>suppress_zero_counts=TRUE</code> to avoid long presentations of empty categories in dataset order.</p>
+<p>By default, an appendix will be created for any categorical question that has more than 20 categories. This is done with the intent to avoid useless scrolling by the user. However, should you not care for an appendix you can use the argument <code>appendix = FALSE</code>. If you choose to not use an appendix, it may also be desirable to set <code>suppress_zero_counts=TRUE</code> to avoid long presentations of empty categories in dataset order.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, appendix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="titles-sub-headings-and-other-descriptives" class="section level3">
 <h3 class="hasAnchor">
 <a href="#titles-sub-headings-and-other-descriptives" class="anchor"></a>Titles, Sub-headings and other Descriptives</h3>
-<p>Currently you can change the title and subtitle as well as provide descriptives like sample description and field window.</p>
+<p>Currently you can change the title, subtitle and provide descriptives for the elements: sample description and field window.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span>
   <span class="va">ds</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, 
@@ -181,7 +182,7 @@
 <div id="logos" class="section level3">
 <h3 class="hasAnchor">
 <a href="#logos" class="anchor"></a>Logos</h3>
-<p>Default logos for YouGov and YouGov Blue have been included in the package for easy reference. If neither have suit your purposes you can also specify a path to a PNG formatted image. We recommend an image size of 50 pixels in height and 250-350 pixels in width. If you would like your sub-brand logo added to the package please submit an issue on github (<a href="https://github.com/Crunch-io/crunchtabs/issues" class="uri">https://github.com/Crunch-io/crunchtabs/issues</a>)</p>
+<p>Default logos for YouGov and YouGov Blue have been included in the package for easy reference. If neither suit your purposes you can also specify a path to a PNG formatted image. The recommendation is an image size of 50 pixels in height and 250-350 pixels in width. If you would like your sub-brand logo added to the package please submit an issue on github (<a href="https://github.com/Crunch-io/crunchtabs/issues" class="uri">https://github.com/Crunch-io/crunchtabs/issues</a>)</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, logo <span class="op">=</span> <span class="st">"yougov"</span><span class="op">)</span>
 <span class="co"># writeCodeBookLatex(ds, logo = "ygblue")</span></code></pre></div>
@@ -192,7 +193,7 @@
 <div id="suppressing-zeroes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#suppressing-zeroes" class="anchor"></a>Suppressing Zeroes</h3>
-<p>Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can supress zeroes using the following:</p>
+<p>Although not recommended, there are some questions that have a significant amount of zero-filled categories (country of residence for example). This can lead to the end-user of the codebook scrolling through pages and pages of zero filled categories. You can suppress zeroes using the following:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/writeCodeBookLatex.html">writeCodeBookLatex</a></span><span class="op">(</span><span class="va">ds</span>, suppress_zero_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
