@@ -1,7 +1,5 @@
 ---
 title: "Frequently Asked Questions"
-author: "Brandon Bertelsen"
-date: "Last updated: `r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
