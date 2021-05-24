@@ -15,6 +15,7 @@ test_that("End to end writeCodeBookLatex", {
   )
 
   mockery::stub(writeCodeBookLatex, "file.open", NULL)
+  mockery::stub(writeCodeBookLatex, "tinytext::pdflatex", TRUE)
 
   res <- suppressWarnings(
     writeCodeBookLatex(
@@ -31,7 +32,7 @@ test_that("End to end writeCodeBookLatex", {
   tex <- readLines("Example-dataset.tex")
   expect_equal(res, NULL)
   expect_equal(length(tex), 152)
-  expect_true(file.size("Example-dataset.pdf") > 61200)
+  # expect_true(file.size("Example-dataset.pdf") > 61200)
   # Test title
   expect_true(
     any(grepl("fancyhead*.*Hello", tex))
@@ -54,9 +55,9 @@ test_that("End to end writeCodeBookLatex", {
     any(grepl(allpets, tex, fixed = TRUE))
   )
   expect_true(file.exists("Example-dataset.tex"))
-  expect_true(file.exists("Example-dataset.pdf"))
+  #expect_true(file.exists("Example-dataset.pdf"))
   expect_true(file.remove("Example-dataset.tex"))
-  expect_true(file.remove("Example-dataset.pdf"))
+  #expect_true(file.remove("Example-dataset.pdf"))
 })
 
 test_that("Dataset name as title if title not specified", {
