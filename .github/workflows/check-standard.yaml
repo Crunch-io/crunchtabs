@@ -78,12 +78,12 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--no-build-vignettes", "--no-tests"), build_args = c("--no-build-vignettes", "--ignore-vignettes", "--no-manual"), error_on = "error", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual"), build_args = c("--no-build-vignettes", "--ignore-vignettes", "--no-manual"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
-      - name: Coverage
-        run: |
-          Rscript -e 'covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")'
+      #- name: Coverage
+      #  run: |
+      #    Rscript -e 'covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")'
 
       - name: Upload check results
         if: failure()
