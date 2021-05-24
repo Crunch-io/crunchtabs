@@ -15,7 +15,7 @@ test_that("End to end writeCodeBookLatex", {
   )
 
   mockery::stub(writeCodeBookLatex, "file.open", NULL)
-  mockery::stub(writeCodeBookLatex, "tinytext::pdflatex", TRUE)
+  mockery::stub(writeCodeBookLatex, "tinytex::pdflatex", TRUE)
 
   res <- suppressWarnings(
     writeCodeBookLatex(
