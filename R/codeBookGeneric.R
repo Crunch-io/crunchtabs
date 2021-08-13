@@ -255,8 +255,9 @@ writeCodeBookLatexGeneric <- function(
         file.remove(file.path(getwd(), files))
       }
     }
-
-    file.open(pdfname)
+    if(open) {
+      file.open(pdfname) # nocov
+    }    
   }
 }
 
