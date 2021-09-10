@@ -35,7 +35,7 @@ test_that("End to end! Defaults + ygblue logo", {
   writeCodeBookLatexGeneric(ds, meta, pdf = FALSE, logo = "ygblue", position = "c")
   res <- readLines("General-Dataset.tex")
   expect_true(any(grepl("\\begin{longtable}[c]", res, fixed = TRUE)))
-  expect_equal(res[1], "\\documentclass{article}")
+  expect_equal(res[1], "\\PassOptionsToPackage{usenames, dvipsnames}{color}")
   expect_true(any(grepl("YouGovBlue_small", res)))
   expect_equal(res[length(res)], "\\end{document}")
   expect_true(any(grepl("Lorem ipsum dolor sit amet a\\_numeric}", res, fixed = TRUE)))
@@ -81,7 +81,9 @@ test_that("End to end for subtitle and n > 21 category with appendix, factor, yo
   writeCodeBookLatexGeneric(ds, meta, pdf = FALSE, logo = "yougov",
                             subtitle = "This is an amazing subtitle", appendix = TRUE, path = ".")
   res <- readLines("General-Dataset.tex")
-  expect_equal(res[1], "\\documentclass{article}")
+  expect_equal(res[1], "\\PassOptionsToPackage{usenames, dvipsnames}{color}")
+  expect_equal(res[2], "\\documentclass{article}")
+
   expect_true(any(grepl("This is an amazing subtitle", res)))
   expect_true(any(grepl("Appendix", res)))
   expect_true(any(grepl("YouGov", res)))
