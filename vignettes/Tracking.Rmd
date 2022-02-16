@@ -76,7 +76,7 @@ To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
 theme <- themeNew(..., latex_flip_grids = TRUE)
 ```
 
-![Recontact Example with flipped grid](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
+![Recontact Example with flipped grid](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-013-recontact-flipped-grid.png)
 
 
 
