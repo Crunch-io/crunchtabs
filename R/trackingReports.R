@@ -91,14 +91,27 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
 
 
     if (rebuilt_results$results[[v]]$type == "categorical_array") {
-      rebuilt_results$results <- c(
+      start <- which(names(rebuilt_results$results) == v)
+      next_one <- start + 1
+      last_one <- length(names(rebuilt_results$results))
+
+      results_holder <- c(
+        rebuilt_results$results[1:start],
         catArrayToCategoricals(
           result_list[available_at],
           question_alias = v,
           labels = labels[available_at]
-        ),
-        rebuilt_results$results
+        )
       )
+
+      if(last_one >= next_one) {
+        results_holder <- c(
+          results_holder,
+          rebuilt_results$results[next_one:last_one]
+        )
+      }
+
+      rebuilt_results$results <- results_holder
       rebuilt_results$results[[v]] <- NULL
 
       # We must fake the class of the object
