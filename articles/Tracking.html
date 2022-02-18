@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crunchtabs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -111,77 +111,50 @@
 
     
     
-<p>Author: Brandon Bertelsen<br> Last updated: 2022-02-16</p>
+<p>Author: Brandon Bertelsen<br> Last updated: 2022-02-18</p>
 <div id="reporting-over-time" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reporting-over-time" class="anchor"></a>Reporting Over Time</h2>
-<p><code>crunchtabs</code> supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require independent weighting.</p>
-<p>By default, both of these functions will allow you to present variables that you have included in your specification that do not exist across datasets.</p>
-<div id="generating-a-recontact-report" class="section level3">
-<h3 class="hasAnchor">
-<a href="#generating-a-recontact-report" class="anchor"></a>Generating a Recontact Report</h3>
-<p>In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function:</p>
+<p><code>crunchtabs</code> supports two distinct forms of tracking reports. A tracking report where the same questions have been asked in the different datasets over time, and a recontact report where questions have been asked in the same survey requiring individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The function to create tracking reports is much more flexible and is the recommended approach for creating reports of this nature where stacking datasets is of interest. It is not only limited to stacking data over time, it can also be used to stack datasets in different geographies from, for example, a global study, or any kind of split dataset.</p>
+<p>Not all “recontact surveys” are formatted appropriately for use with the <code>recontact_report</code> function. It is often easier to get the desired result with <code>trackingReport</code>, by following these steps:</p>
 <ol style="list-style-type: decimal">
-<li>Your “pre” and “post” wave’s questions should both have the same categories.</li>
-<li>Your “pre” and “post” wave’s question names should be equal, with different suffixes, such as: question_pre and question_post.</li>
+<li>Split your dataset by wave.</li>
+<li>Recalculate weights, ensuring the same variable name is used in all datasets.</li>
+<li>Align variable names so that they are the same in both datasets where they exist.</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
-<span class="fu">login</span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># Create an example dataset</span>
-<span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">newExampleDataset</span><span class="op">(</span><span class="op">)</span>
-<span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">loadDataset</span><span class="op">(</span><span class="st">"Example dataset"</span><span class="op">)</span>
-
-<span class="co"># Generate weights</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">weight1</span> <span class="op">&lt;-</span> <span class="fu">makeWeight</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>,<span class="fl">0</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'weight1'</span><span class="op">)</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">weight2</span> <span class="op">&lt;-</span> <span class="fu">makeWeight</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'weight2'</span><span class="op">)</span>
-
-<span class="co"># Oddity of crunch, you can't use a weight in a tabBook that</span>
-<span class="co"># has never been applied to the dataset. </span>
-<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight1</span>
-<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight2</span>
-<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight1</span>
-
-<span class="co"># Fake pre and post questions</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">q1_pre</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Pet name pre"</span><span class="op">)</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">q1_post</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Pet name post"</span><span class="op">)</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">country_pre</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">country</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Country pre"</span><span class="op">)</span>
-<span class="va">ds</span><span class="op">$</span><span class="va">country_post</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">country</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Country post"</span><span class="op">)</span>
-
-<span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recontact_toplines.html">recontact_toplines</a></span><span class="op">(</span>
-  <span class="va">ds</span>,
-  questions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span>, <span class="st">"country"</span><span class="op">)</span>,
-  suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"_pre"</span>, <span class="st">"_post"</span><span class="op">)</span>,
-  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Pre"</span>, <span class="st">"Post"</span><span class="op">)</span>,
-  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"weight1"</span>, <span class="st">"weight2"</span><span class="op">)</span>
-<span class="op">)</span>
-
-
-<span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>default_theme <span class="op">=</span> <span class="fu"><a href="../reference/themeDefaultLatex.html">themeDefaultLatex</a></span><span class="op">(</span><span class="op">)</span>, one_per_sheet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span>, open <span class="op">=</span> <span class="cn">TRUE</span>, theme <span class="op">=</span> <span class="va">theme</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png" alt=""><p class="caption">Recontact Example</p>
-</div>
-</div>
+<p>Missingness is dealt with gracefully. If there are missing data where a question was asked in one wave but not the other, the proportions are replaced with “-”.</p>
 <div id="flipping-grids" class="section level3">
 <h3 class="hasAnchor">
 <a href="#flipping-grids" class="anchor"></a>Flipping Grids</h3>
 <p>Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for “flipping grids”. You can transpose the presentation so that the wave labels are columns, and the category labels are rows.</p>
-<p>To do so globally, we set the <code>latex_flip_gris</code> theme option to <code>TRUE</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<blockquote>
+<p>NOTE: Many references are made to “wave” here, but it could be any kind of split. Geography, gender, and so on.</p>
+</blockquote>
+<p>To do so globally, we set the <code>latex_flip_grids</code> theme option to <code>TRUE</code>:</p>
+<blockquote>
+<p>NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use <code>latex_flip_specific_grids</code>. An example is provided further below.</p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, latex_flip_grids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-013-recontact-flipped-grid.png" alt=""><p class="caption">Recontact Example with flipped grid</p>
 </div>
-<p>In addition to global transposition of grids, you can also do so conditionally:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>In addition to global transposition of grids, you can also do so conditionally using the <code>latex_flip_specific_grids</code> theme option:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, latex_flip_specific_grids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>The above will only flip <code>q1</code>. When you have many variables and only a few that you do not want to be flipped, it can be useful to use <code><a href="https://rdrr.io/r/base/sets.html">setdiff()</a></code> to opt out specific variables. This is especially desirable if your data include categorical arrays that were only asked in one wave, as these are often much wider than</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"cat1_all"</span>, <span class="st">"cat2_wave1"</span>, <span class="st">"catarray1_all"</span>, <span class="st">"catarray1_wave1"</span><span class="op">)</span>
+
+<span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>
+  <span class="va">...</span>, 
+  latext_flip_specific_grids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">vars</span>, <span class="st">"catarray1_wave1"</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="tracking-reports" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tracking-reports" class="anchor"></a>Tracking Reports</h3>
-<p>While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion.</p>
+<p>While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion. Even if you have a single dataset it can often be useful to split, align the variable names and recalculate the weights to take advantage of <code>trackingReport</code>’s flexibility.</p>
 <p>In the code block below, we illustrate data setup and an example call to <code>trackingReports</code>. While our example is not representative of a real-life situation, the manner in which you would need to manage data are the same.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Create example datasets as waves 1,2 and 3.</span>
@@ -214,7 +187,7 @@
 <span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trackingReport.html">trackingReport</a></span><span class="op">(</span>
   dataset_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">ds1</span>, <span class="va">ds2</span>, <span class="va">ds3</span><span class="op">)</span>, 
   vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"allpets"</span>, <span class="st">"q1"</span>, <span class="st">"petloc"</span><span class="op">)</span>,
-  wave_labels <span class="op">=</span> <span class="cn">NULL</span>
+  wave_labels <span class="op">=</span> <span class="cn">NULL</span> <span class="co"># automatically Wave 1, 2, 3</span>
 <span class="op">)</span>
 
 <span class="co"># Write to latex and convert to pdf</span>
@@ -259,32 +232,6 @@
 <span class="co"># Write to latex</span>
 <span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="including-one-off-questions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#including-one-off-questions" class="anchor"></a>Including One-off Questions</h3>
-<p>While the default behavior of <code>trackingReport</code> and <code>recontact_report</code> is to only include those questions that have been asked more than once, it is often desirable to show questions that have only been asked in a certain wave of your survey or during one phase of your recontact. In both cases, we provide a <code>vars</code> argument, that when provided will identify all of the questions to be presented in the output. Importantly, the order of this <code>vars</code> argument will also match that of the output PDF.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># For recontact_toplines</span>
-
-<span class="co"># The resulting report would show q1 recontact, other alias single, and country recontact</span>
-<span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recontact_toplines.html">recontact_toplines</a></span><span class="op">(</span>
-  <span class="va">ds</span>,
-  questions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span>, <span class="st">"country"</span><span class="op">)</span>,
-  suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"_pre"</span>, <span class="st">"_post"</span><span class="op">)</span>,
-  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Pre"</span>, <span class="st">"Post"</span><span class="op">)</span>,
-  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"weight1"</span>, <span class="st">"weight2"</span><span class="op">)</span>,
-  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span>, <span class="st">"other_alias"</span>,<span class="st">"country"</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># For trackingReport</span>
-
-<span class="co"># The resulting report would show allpets tracking, q1 tracking, petloc tracking and alias_available_in_ds3_only</span>
-<span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trackingReport.html">trackingReport</a></span><span class="op">(</span>
-  dataset_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">ds1</span>, <span class="va">ds2</span>, <span class="va">ds3</span><span class="op">)</span>, 
-  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"allpets"</span>, <span class="st">"q1"</span>, <span class="st">"petloc"</span>, <span class="st">"alias_available_in_ds3_only"</span><span class="op">)</span>,
-  wave_labels <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
-</div>
 <div id="relabeling-categories-or-responses" class="section level3">
 <h3 class="hasAnchor">
 <a href="#relabeling-categories-or-responses" class="anchor"></a>Relabeling Categories or Responses</h3>
@@ -293,14 +240,71 @@
 <h4 class="hasAnchor">
 <a href="#relabeling" class="anchor"></a>Relabeling</h4>
 <p>Renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It’s important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.</p>
-<p>In the example below, “x” and “a” are the labels you wish to rename and “y” and “b” are the resulting labels.</p>
+<p>You can generally relabel any element of the specified alias. The question options (categories), items (statements in an array), the notes (typically the subtext of a question), or the description (question text).</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># `ct` is an object created by crosstabs or trackingReport</span>
+
+<span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/relabel.html">relabel</a></span><span class="op">(</span>
+    <span class="va">ct</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      alias <span class="op">=</span> <span class="st">"petloc"</span>,
+      options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Amazing Cat"</span>, <span class="st">"Smelly Dog"</span>, <span class="st">"Annoying Bird"</span><span class="op">)</span>,
+      notes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"This is a new note"</span><span class="op">)</span>,
+      description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"This is a new description"</span><span class="op">)</span>
+    <span class="op">)</span>
+  <span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div id="generating-a-recontact-report" class="section level3">
+<h3 class="hasAnchor">
+<a href="#generating-a-recontact-report" class="anchor"></a>Generating a Recontact Report</h3>
+<p>A recontact report is a special case and has limited flexibility.</p>
+<ol style="list-style-type: decimal">
+<li>Variables must have a suffix identifying the pre and post waves.</li>
+<li>Two separate weighting variables</li>
+</ol>
+<p>In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function:</p>
+<ol style="list-style-type: decimal">
+<li>Your “pre” and “post” wave’s questions should both have the same categories.</li>
+<li>Your “pre” and “post” wave’s question names should be equal, with different suffixes, such as: question_pre and question_post.</li>
+</ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recontact_toplines.html">recontact_toplines</a></span><span class="op">(</span>
-  <span class="va">...</span>,
-  relabel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    alias_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">=</span><span class="st">"y"</span>, <span class="va">...</span><span class="op">)</span>, 
-    other_alias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span><span class="op">=</span><span class="st">"b"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Crunch-io/crunchtabs">crunchtabs</a></span><span class="op">)</span>
+<span class="fu">login</span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># Create an example dataset</span>
+<span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">newExampleDataset</span><span class="op">(</span><span class="op">)</span>
+<span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu">loadDataset</span><span class="op">(</span><span class="st">"Example dataset"</span><span class="op">)</span>
+
+<span class="co"># Generate weights</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">weight1</span> <span class="op">&lt;-</span> <span class="fu">makeWeight</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>,<span class="fl">0</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'weight1'</span><span class="op">)</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">weight2</span> <span class="op">&lt;-</span> <span class="fu">makeWeight</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'weight2'</span><span class="op">)</span>
+
+<span class="co"># Oddity of crunch, you can't use a weight in a tabBook that</span>
+<span class="co"># has never been applied to the dataset. </span>
+<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight1</span>
+<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight2</span>
+<span class="fu">weight</span><span class="op">(</span><span class="va">ds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">weight1</span>
+
+<span class="co"># Fake pre and post questions</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">q1_pre</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Pet name pre"</span><span class="op">)</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">q1_post</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">q1</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Pet name post"</span><span class="op">)</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">country_pre</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">country</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Country pre"</span><span class="op">)</span>
+<span class="va">ds</span><span class="op">$</span><span class="va">country_post</span> <span class="op">&lt;-</span> <span class="fu">copyVariable</span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">country</span>, deep <span class="op">=</span> <span class="cn">TRUE</span>, name <span class="op">=</span> <span class="st">"Country post"</span><span class="op">)</span>
+
+<span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recontact_toplines.html">recontact_toplines</a></span><span class="op">(</span>
+  <span class="va">ds</span>,
+  questions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q1"</span>, <span class="st">"country"</span><span class="op">)</span>,
+  suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"_pre"</span>, <span class="st">"_post"</span><span class="op">)</span>,
+  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Pre"</span>, <span class="st">"Post"</span><span class="op">)</span>,
+  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"weight1"</span>, <span class="st">"weight2"</span><span class="op">)</span>
+<span class="op">)</span>
+
+
+<span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span>default_theme <span class="op">=</span> <span class="fu"><a href="../reference/themeDefaultLatex.html">themeDefaultLatex</a></span><span class="op">(</span><span class="op">)</span>, one_per_sheet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="../reference/writeLatex.html">writeLatex</a></span><span class="op">(</span><span class="va">ct</span>, pdf <span class="op">=</span> <span class="cn">TRUE</span>, open <span class="op">=</span> <span class="cn">TRUE</span>, theme <span class="op">=</span> <span class="va">theme</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png" alt=""><p class="caption">Recontact Example</p>
 </div>
 </div>
 </div>
