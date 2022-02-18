@@ -91,6 +91,7 @@ trackingReport <- function(dataset_list, vars, labels = NULL, weight = NULL, sho
 
 
     if (rebuilt_results$results[[v]]$type == "categorical_array") {
+     
       start <- which(names(rebuilt_results$results) == v)
       next_one <- start + 1
       last_one <- length(names(rebuilt_results$results))
