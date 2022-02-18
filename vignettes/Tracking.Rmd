@@ -29,11 +29,9 @@ Missingness is dealt with gracefully. If there are missing data where a question
 
 Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for "flipping grids". You can transpose the presentation so that the wave labels are columns, and the category labels are rows.
 
-> NOTE: Many references are made to "wave" here, but it could be any kind of split. Geography, gender, and so on.
-
 To do so globally, we set the `latex_flip_grids` theme option to `TRUE`:
 
-> NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use `latex_flip_specific_grids`. An example is provided further below. 
+_NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use `latex_flip_specific_grids`. An example is provided further below._ 
 
 ```{r, eval = FALSE}
 theme <- themeNew(..., latex_flip_grids = TRUE)
