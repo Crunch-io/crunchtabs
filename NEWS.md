@@ -1,3 +1,7 @@
+## crunchtabs 1.4.4
+
+- Fixes a regression where absolutelynopagebreak was duplicated in some situations. (pagebreak_in_banner=TRUE and one_per_page=FALSE)
+
 ## crunchtabs 1.4.3
 
 - categorical_arrays were previously spliced into the first position at every question iteration, leading to questions being presented out of vector order in the resulting pdf output. This update patches the results list back together when splicing the array questions in-place. Now, the order of variables is the same as the order presented in the output pdf. (INNOV-498)

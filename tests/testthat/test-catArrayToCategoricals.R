@@ -2,7 +2,10 @@ context("catArrayToCategoricals")
 
 test_that("Binds categorical arrays appropriately", {
   questions <- readRDS(test_path("fixtures/catArrayToCategorical_questions.rds"))
-  res <- catArrayToCategoricals(questions, "petloc", labels = NULL)
+  res <- expect_warning(
+    catArrayToCategoricals(questions, "petloc", labels = NULL),
+    "New variables derived from a"
+  )
 
   expect_equal(
     res$petloc_1$crosstabs$Results$`___total___`$proportions,
