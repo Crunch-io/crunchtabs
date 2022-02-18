@@ -15,62 +15,25 @@ Last updated: `r Sys.Date()`
 
 ## Reporting Over Time
 
-`crunchtabs` supports two distinct forms of tracking reports. A recontact report, where the same questions have been asked in the same dataset over time and require individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The second, is a tracking report, where the same questions have been asked in different datasets and require independent weighting.
+`crunchtabs` supports two distinct forms of tracking reports. A tracking report where the same questions have been asked in the different datasets over time, and a recontact report where questions have been asked in the same survey requiring individual weighting. An example of this would be a political survey, where voters have been asked about their vote intention before and after a debate. The function to create tracking reports is much more flexible and is the recommended approach for creating reports of this nature where stacking datasets is of interest. It is not only limited to stacking data over time, it can also be used to stack datasets in different geographies from, for example, a global study, or any kind of split dataset.
 
-By default, both of these functions will allow you to present variables that you have included in your specification that do not exist across datasets.
+Not all "recontact surveys" are formatted appropriately for use with the `recontact_report` function. It is often easier to get the desired result with `trackingReport`, by following these steps: 
 
-### Generating a Recontact Report
+1. Split your dataset by wave. 
+2. Recalculate weights, ensuring the same variable name is used in all datasets.
+3. Align variable names so that they are the same in both datasets where they exist. 
 
-In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function: 
-
-1. Your "pre" and "post" wave's questions should both have the same categories. 
-2. Your "pre" and "post" wave's question names should be equal, with different suffixes, such as: question_pre and question_post.
-
-```{r, eval = FALSE}
-library(crunchtabs)
-login()
-
-# Create an example dataset
-ds <- newExampleDataset()
-ds <- loadDataset("Example dataset")
-
-# Generate weights
-ds$weight1 <- makeWeight(ds$q1 ~ c(0.3,0.3,0.4,0), name = 'weight1')
-ds$weight2 <- makeWeight(ds$q1 ~ c(0.4,0.4,0.1,0.1), name = 'weight2')
-
-# Oddity of crunch, you can't use a weight in a tabBook that
-# has never been applied to the dataset. 
-weight(ds) <- ds$weight1
-weight(ds) <- ds$weight2
-weight(ds) <- ds$weight1
-
-# Fake pre and post questions
-ds$q1_pre <- copyVariable(ds$q1, deep = TRUE, name = "Pet name pre")
-ds$q1_post <- copyVariable(ds$q1, deep = TRUE, name = "Pet name post")
-ds$country_pre <- copyVariable(ds$country, deep = TRUE, name = "Country pre")
-ds$country_post <- copyVariable(ds$country, deep = TRUE, name = "Country post")
-
-ct <- recontact_toplines(
-  ds,
-  questions = c("q1", "country"),
-  suffixes = c("_pre", "_post"),
-  labels = c("Pre", "Post"),
-  weights = c("weight1", "weight2")
-)
-
-
-theme <- themeNew(default_theme = themeDefaultLatex(), one_per_sheet = FALSE)
-writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
-```
-
-![Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
-
+Missingness is dealt with gracefully. If there are missing data where a question was asked in one wave but not the other, the proportions are replaced with "-".
 
 ### Flipping Grids
 
 Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for "flipping grids". You can transpose the presentation so that the wave labels are columns, and the category labels are rows.
 
-To do so globally, we set the `latex_flip_gris` theme option to `TRUE`:
+> NOTE: Many references are made to "wave" here, but it could be any kind of split. Geography, gender, and so on.
+
+To do so globally, we set the `latex_flip_grids` theme option to `TRUE`:
+
+> NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use `latex_flip_specific_grids`. An example is provided further below. 
 
 ```{r, eval = FALSE}
 theme <- themeNew(..., latex_flip_grids = TRUE)
@@ -78,17 +41,26 @@ theme <- themeNew(..., latex_flip_grids = TRUE)
 
 ![Recontact Example with flipped grid](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-013-recontact-flipped-grid.png)
 
-
-
-In addition to global transposition of grids, you can also do so conditionally:
+In addition to global transposition of grids, you can also do so conditionally using the `latex_flip_specific_grids` theme option:
 
 ```{r, eval = FALSE}
 theme <- themeNew(..., latex_flip_specific_grids = c("q1"))
 ```
 
+The above will only flip `q1`. When you have many variables and only a few that you do not want to be flipped, it can be useful to use `setdiff()` to opt out specific variables. This is especially desirable if your data include categorical arrays that were only asked in one wave, as these are often much wider than 
+
+```{r, eval=FALSE}
+vars <- c("cat1_all", "cat2_wave1", "catarray1_all", "catarray1_wave1")
+
+theme <- themeNew(
+  ..., 
+  latext_flip_specific_grids = setdiff(vars, "catarray1_wave1")
+)
+```
+
 ### Tracking Reports
 
-While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion.
+While recontact reports are designed for questions asked in the same dataset, there is also the ability to present questions asked in multiple datasets in a similar fashion. Even if you have a single dataset it can often be useful to split, align the variable names and recalculate the weights to take advantage of `trackingReport`'s flexibility.
 
 In the code block below, we illustrate data setup and an example call to `trackingReports`. While our example is not representative of a real-life situation, the manner in which you would need to manage data are the same.
 
@@ -123,7 +95,7 @@ theme <- themeNew(
 ct <- trackingReport(
   dataset_list = list(ds1, ds2, ds3), 
   vars = c("allpets", "q1", "petloc"),
-  wave_labels = NULL
+  wave_labels = NULL # automatically Wave 1, 2, 3
 )
 
 # Write to latex and convert to pdf
@@ -176,32 +148,6 @@ ct <- trackingReport(
 writeLatex(ct, pdf = TRUE)
 ```
 
-### Including One-off Questions
-
-While the default behavior of `trackingReport` and `recontact_report` is to only include those questions that have been asked more than once, it is often desirable to show questions that have only been asked in a certain wave of your survey or during one phase of your recontact. In both cases, we provide a `vars` argument, that when provided will identify all of the questions to be presented in the output. Importantly, the order of this `vars` argument will also match that of the output PDF.
-
-```{r, eval = FALSE}
-# For recontact_toplines
-
-# The resulting report would show q1 recontact, other alias single, and country recontact
-ct <- recontact_toplines(
-  ds,
-  questions = c("q1", "country"),
-  suffixes = c("_pre", "_post"),
-  labels = c("Pre", "Post"),
-  weights = c("weight1", "weight2"),
-  vars = c("q1", "other_alias","country")
-)
-
-# For trackingReport
-
-# The resulting report would show allpets tracking, q1 tracking, petloc tracking and alias_available_in_ds3_only
-ct <- trackingReport(
-  dataset_list = list(ds1, ds2, ds3), 
-  vars = c("allpets", "q1", "petloc", "alias_available_in_ds3_only"),
-  wave_labels = NULL
-)
-```
 
 ### Relabeling Categories or Responses
 
@@ -211,14 +157,73 @@ There are a number of situations where your category names in a multiple respons
 
 Renaming happens just before printing to latex, that means you can create customizations for other defaults using this command. It's important to recognize that this will overwrite both labels and subvariable names. If you define it appropriately, it will rename it. This includes wave names, category labels or multiple response statements.  
 
-In the example below, "x" and "a" are the labels you wish to rename and "y" and "b" are the resulting labels. 
+You can generally relabel any element of the specified alias. The question options (categories), items (statements in an array), the notes (typically the subtext of a question), or the description (question text). 
 
 ```{r, eval = FALSE}
-ct <- recontact_toplines(
-  ...,
-  relabel = list(
-    alias_name = c("x"="y", ...), 
-    other_alias = c("a"="b"))
-)
+
+# `ct` is an object created by crosstabs or trackingReport
+
+ct <- relabel(
+    ct,
+    list(
+      alias = "petloc",
+      options = c("Amazing Cat", "Smelly Dog", "Annoying Bird"),
+      notes = c("This is a new note"),
+      description = c("This is a new description")
+    )
+  )
 ```
 
+
+
+
+### Generating a Recontact Report
+
+A recontact report is a special case and has limited flexibility. 
+
+1. Variables must have a suffix identifying the pre and post waves.
+2. Two separate weighting variables
+
+In the code below, the crunch example dataset is used to illustrate the setup required for recontact style reporting. There are a few important assumptions about the naming and setup of your data that are critical to the success of this function: 
+
+1. Your "pre" and "post" wave's questions should both have the same categories. 
+2. Your "pre" and "post" wave's question names should be equal, with different suffixes, such as: question_pre and question_post.
+
+```{r, eval = FALSE}
+library(crunchtabs)
+login()
+
+# Create an example dataset
+ds <- newExampleDataset()
+ds <- loadDataset("Example dataset")
+
+# Generate weights
+ds$weight1 <- makeWeight(ds$q1 ~ c(0.3,0.3,0.4,0), name = 'weight1')
+ds$weight2 <- makeWeight(ds$q1 ~ c(0.4,0.4,0.1,0.1), name = 'weight2')
+
+# Oddity of crunch, you can't use a weight in a tabBook that
+# has never been applied to the dataset. 
+weight(ds) <- ds$weight1
+weight(ds) <- ds$weight2
+weight(ds) <- ds$weight1
+
+# Fake pre and post questions
+ds$q1_pre <- copyVariable(ds$q1, deep = TRUE, name = "Pet name pre")
+ds$q1_post <- copyVariable(ds$q1, deep = TRUE, name = "Pet name post")
+ds$country_pre <- copyVariable(ds$country, deep = TRUE, name = "Country pre")
+ds$country_post <- copyVariable(ds$country, deep = TRUE, name = "Country post")
+
+ct <- recontact_toplines(
+  ds,
+  questions = c("q1", "country"),
+  suffixes = c("_pre", "_post"),
+  labels = c("Pre", "Post"),
+  weights = c("weight1", "weight2")
+)
+
+
+theme <- themeNew(default_theme = themeDefaultLatex(), one_per_sheet = FALSE)
+writeLatex(ct, pdf = TRUE, open = TRUE, theme = theme)
+```
+
+![Recontact Example](https://raw.githubusercontent.com/Crunch-io/crunchtabs/main/vignettes/example-014-recontact_topline.png)
