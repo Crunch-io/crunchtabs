@@ -90,6 +90,12 @@ catArrayToCategoricals <- function(questions, question_alias, labels) {
 
   nms <- paste0(question_alias, "_", seq_along(statements))
 
+  warning(
+    "New variables derived from a `categorical_array`. If you need flipped grids",
+    " add the following to latex_flip_specific_grids: ",
+    paste0(nms, collapse = ", ")
+  )
+
   # Create list of objects to fill in, one for each sub statement of the
   # multiple response group
   l <- lapply(statements, function(x) obj)

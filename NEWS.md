@@ -1,3 +1,9 @@
+## crunchtabs 1.4.3
+
+- categorical_arrays were previously spliced into the first position at every question iteration, leading to questions being presented out of vector order in the resulting pdf output. This update patches the results list back together when splicing the array questions in-place. Now, the order of variables is the same as the order presented in the output pdf. (INNOV-498)
+- When a categorical_array is flattened into categoricals inside of a trackingReport, the names of the subvariables are regenerated. If the user is using latex_flip_specific_grids the question name will not be the original categorical array's name. A warning is now shown that provides the user with instructions on the explicit names to use in latex_flip_specific_grids. (INNOV-498)
+- The vignette for tracking reports has been: reorganized for clarity, updated with more recommendations, and clarifies some finer points related to relabelling, and restructuring data for use with tracking reports. (INNOV-498)
+
 ## crunchtabs 1.4.2
 
 - Updates to vignettes
