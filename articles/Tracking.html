@@ -127,13 +127,8 @@
 <h3 class="hasAnchor">
 <a href="#flipping-grids" class="anchor"></a>Flipping Grids</h3>
 <p>Often the case may be that your category labels are long, and your wave descriptors are very short. In this case, crunchtabs provides options for “flipping grids”. You can transpose the presentation so that the wave labels are columns, and the category labels are rows.</p>
-<blockquote>
-<p>NOTE: Many references are made to “wave” here, but it could be any kind of split. Geography, gender, and so on.</p>
-</blockquote>
 <p>To do so globally, we set the <code>latex_flip_grids</code> theme option to <code>TRUE</code>:</p>
-<blockquote>
-<p>NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use <code>latex_flip_specific_grids</code>. An example is provided further below.</p>
-</blockquote>
+<p><em>NOTE: If your dataset contains categorical_arrays that are present in only one wave, it is better to use <code>latex_flip_specific_grids</code>. An example is provided further below.</em></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/themeNew.html">themeNew</a></span><span class="op">(</span><span class="va">...</span>, latex_flip_grids <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="figure">
