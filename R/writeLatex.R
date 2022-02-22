@@ -222,12 +222,12 @@ latexReportTables <- function(results, banner, theme) {
     # bottomrule gets wiped out by nopagebreak environment
     # adding one manually
     if (!theme$pagebreak_in_banner) {
-      table = gsub(
+      table <- gsub(
         "\\end{longtable}",
-        "\\bottomrule\\end{longtable}\n\\end{absolutelynopagebreak}",
+        "\\bottomrule\\end{longtable}\n", # \\end{absolutelynopagebreak}",
         table, fixed = TRUE)
-      # table <- noBreaks(table)
     }
+
 
     table_bodies[[i]] <- table
   }

@@ -201,9 +201,9 @@ test_that("Adds nonTabBookSummary as expected", {
 
   res <- latexReportTables(results, NULL, tema)
 
-  # Expect absolutelynopagebreak wraps on all
+  # Expect absolutelynopagebreak wraps on none!
   expect_true(
-    all(grepl("absolutelynopagebreak", res))
+    all(!grepl("absolutelynopagebreak", res))
   )
 
   # Clear page not appended to results

@@ -195,7 +195,11 @@ latexTableBody <- function(df, theme, question_alias = NULL) {
       rows <- apply(cbind(rownames(dt), dt), 1, paste, collapse = " & ")
     }
     # Add a newline to each row, then join in a single string
-    return(paste(rows, newline, collapse = "\n"))
+    if(!theme$pagebreak_in_banner) {
+      return(paste(rows, "\\\\*", collapse = "\n"))
+    } else {
+      return(paste(rows, newline, collapse = "\n"))
+    }
   })
 
   # Assemble the components of the table, based on "data_order"
@@ -275,9 +279,9 @@ tableHeader.CrossTabVar <- function(var, theme) {
   }
 
   nopagebreak <- NULL
-  if (!theme$pagebreak_in_banner) {
-    nopagebreak <- "\\begin{absolutelynopagebreak}"
-  }
+  # if (!theme$pagebreak_in_banner) {
+  #   nopagebreak <- "\\begin{absolutelynopagebreak}"
+  # }
 
   header <- paste(
     nopagebreak,
