@@ -1,6 +1,6 @@
 ## crunchtabs 1.4.4
 
-- Fixes a regression where absolutelynopagebreak was duplicated in some situations. (pagebreak_in_banner=TRUE and one_per_page=FALSE)
+- Fixes a regression where absolutelynopagebreak was duplicated or not functional in some situations. (pagebreak_in_banner=TRUE and one_per_page=FALSE)
 
 ## crunchtabs 1.4.3
 
