@@ -337,7 +337,7 @@ test_that("Numeric sorts with banner", {
   )
 
   expect_equal(
-    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions)[1:3, ],
+    ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions$Total,
     c(0.625, 0.5, 0.454545454545455)
   )
 })
@@ -353,7 +353,7 @@ test_that("Numeric sorts with banner", {
   )
 
   expect_equal(
-    as.vector(ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions)[1:3, ],
+    ct$results$allpets$crosstabs$`banner 1`$`___total___`$proportions$Total,
     rev(c(0.625, 0.5, 0.454545454545455))
   )
 })
