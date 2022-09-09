@@ -98,6 +98,9 @@ writeCodeBookLatexGeneric <- function(
         x <- ds %>% filter(cd_number == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
       } else {
         x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+        if (cls == "integer") {
+          x <- as.integer(as.numeric(x))
+        }
       }
 
     } else {
