@@ -95,7 +95,7 @@ writeCodeBookLatexGeneric <- function(
     if (any(class(ds) %in% c("ArrowObject", "arrow_dplyr_query"))) {
       cls <- get_class(ds, nm)
       if(cls == "character") {
-        x <- ds %>% filter(cd == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+        x <- ds %>% filter(cd_number == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
       } else {
         x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
       }
