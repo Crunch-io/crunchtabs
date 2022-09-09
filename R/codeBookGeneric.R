@@ -101,6 +101,9 @@ writeCodeBookLatexGeneric <- function(
         if (cls == "integer") {
           x <- as.integer(as.numeric(x))
         }
+        if (cls == "factor") {
+          x <- factor(levels(x)[as.integer(x)], levels = levels(x))
+        }
       }
 
     } else {
