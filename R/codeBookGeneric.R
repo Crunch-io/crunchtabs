@@ -98,8 +98,8 @@ writeCodeBookLatexGeneric <- function(
         x <- ds %>% filter(cd_number == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
       } else {
         x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
-        if (cls == "integer") {
-          x <- as.integer(as.numeric(x))
+        if (cls %in% c("integer", "numeric")) {
+          x <- unlist(as.vector(x, mode = "list"))
         }
         if (cls == "factor") {
           x <- factor(levels(x)[as.integer(x)], levels = levels(x))
