@@ -28,7 +28,6 @@ Imports:
     methods,
     openxlsx,
     rlang,
-    stringi,
     tinytex
 Suggests:
     arrow,
@@ -36,7 +35,8 @@ Suggests:
     knitr,
     mockery, 
     rmarkdown,
+    stringi,
     testthat (>= 2.1.0)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Encoding: UTF-8
