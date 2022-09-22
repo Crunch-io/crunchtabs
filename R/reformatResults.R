@@ -205,6 +205,13 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
     should_round <- ifelse(var$alias %in% theme$latex_round_percentages_exception,
       !should_round, should_round
     )
+
+    # Calculate tabInsertions before rounding!
+    if (var$type %in% c("categorical", "categorical_array") && dt %in% "body" &&
+        any(var$inserts %in% c("Heading", "Subtotal"))) {
+      data <- as.matrix(calcTabInsertions(data, var$inserts_obj, var$categories))
+    }
+
     if (should_round & dt != "weighted_n") {
       data[] <- apply(data, 2, roundPropCategorical, theme$digits)
     } else if (!is.null(rdig) && !is.infinite(rdig)) {
@@ -231,10 +238,6 @@ reformatVar <- function(var, banner_name, theme, proportions, banner_info, latex
         nrow = 1, ncol = ncol(data),
         dimnames = list(c(theme$format_totals_row$name), colnames(data))
       )
-    }
-    if (var$type %in% c("categorical", "categorical_array") && dt %in% "body" &&
-      any(var$inserts %in% c("Heading", "Subtotal"))) {
-      data <- as.matrix(calcTabInsertions(data, var$inserts_obj, var$categories))
     }
 
     if (weight_v && nrow(data) > 1) {
