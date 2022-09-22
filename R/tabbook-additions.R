@@ -321,20 +321,24 @@ tabBookSingle_crunchtabs <- function(multitable, dataset, weight) {
   )
 
   out <- download_result(result)
-  return(crunch:::TabBookResult(out))
+  TabBookResult <- utils::getFromNamespace("TabBookResult", "crunch")
+  return(TabBookResult(out))
 }
 
 
 varFilter <- function(dataset) {
-  crunch:::variablesFilter(dataset)
+  variablesFilter <- utils::getFromNamespace("variablesFilter", "crunch")
+  variablesFilter(dataset)
 }
 
 download_result <- function(result) {
-  crunch:::retry(crunch::crGET(result), wait = 0.5) # For mocks
+  retry <- utils::getFromNamespace("retry", "crunch")
+  retry(crunch::crGET(result), wait = 0.5) # For mocks
 }
 
 tabBookResult <- function(...) {
-  crunch:::TabBookResult(...) # For mocks
+  TabBookResult <- utils::getFromNamespace("TabBookResult", "crunch")
+  TabBookResult(...) # For mocks
 }
 
 #' @importFrom stats ave
@@ -485,7 +489,8 @@ tabBookWeightSpec <- function(dataset, weights, append_default_wt = TRUE) {
 
 
 getCatalog <- function(dataset) {
-  crunch:::ShojiCatalog(crGET(self(allVariables(dataset)), query = list(relative = "on")))
+  ShojiCatalog <- utils::getFromNamespace("ShojiCatalog", "crunch")
+  ShojiCatalog(crGET(self(allVariables(dataset)), query = list(relative = "on")))
 }
 
 
