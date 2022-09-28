@@ -28,16 +28,34 @@ calcTabInsertions <- function(vec, elements, var_cats) {
     # if element is a subtotal, sum the things it corresponds to which are
     # found with arguments()
     if (crunch::is.Subtotal(element)) {
-      # grab category combinations, and then sum those categories.
-      combos <- element$categories
-      which.cats <- names(var_cats)[crunch::ids(var_cats) %in% combos]
-      if (any(is.na(var_cats)[crunch::ids(var_cats) %in% combos])) {
-        return(NA) # nocov
+      # Check if subtotal is strictly a sum of variables or a sum/difference
+      if (is.null(element$negative) || length(element$negative) == 0) {
+        # grab category combinations, and then sum those categories.
+        combos <- element$categories
+        which.cats <- names(var_cats)[crunch::ids(var_cats) %in% combos]
+        if (any(is.na(var_cats)[crunch::ids(var_cats) %in% combos])) {
+          return(NA) # nocov
+        }
+        if (dim(vec)[2] == 1) {
+          return(sum(vec[which.cats, ]))
+        }
+        return(colSums(vec[which.cats, , drop = FALSE]))
+      } else {
+        # if element has a "negative" item, these need to be subtracted from
+        # the other categories
+        # grab category combinations, and then sum those categories.
+        combos <- element$categories
+        combos_negative <- as.integer(unlist(element$negative))
+        which.cats <- names(var_cats)[crunch::ids(var_cats) %in% combos]
+        which.cats_negative <- names(var_cats)[crunch::ids(var_cats) %in% combos_negative]
+        if (any(is.na(var_cats)[crunch::ids(var_cats) %in% c(combos, combos_negative)])) {
+          return(NA) # nocov
+        }
+        if (dim(vec)[2] == 1) {
+          return(sum(vec[which.cats, ]) - sum(vec[which.cats_negative, ]))
+        }
+        return(colSums(vec[which.cats, , drop = FALSE]) - colSums(vec[which.cats_negative, , drop = FALSE]))
       }
-      if (dim(vec)[2] == 1) {
-        return(sum(vec[which.cats, ]))
-      }
-      return(colSums(vec[which.cats, , drop = FALSE]))
     }
   }))
 
