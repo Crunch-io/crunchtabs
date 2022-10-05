@@ -95,9 +95,15 @@ writeCodeBookLatexGeneric <- function(
     if (any(class(ds) %in% c("ArrowObject", "arrow_dplyr_query"))) {
       cls <- get_class(ds, nm)
       if(cls == "character") {
-        x <- ds %>% filter(cd == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+        x <- ds %>% filter(.data$cd_number == 1) %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
       } else {
         x <- ds %>% dplyr::select(nm) %>% dplyr::collect() %>% dplyr::pull(nm)
+        if (cls %in% c("integer", "numeric")) {
+          x <- unlist(as.vector(x, mode = "list"))
+        }
+        if (cls == "factor") {
+          x <- factor(levels(x)[as.integer(x)], levels = levels(x))
+        }
       }
 
     } else {

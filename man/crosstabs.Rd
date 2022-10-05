@@ -75,9 +75,9 @@ summaries of a Cruch dataset.
 }
 \section{Functions}{
 \itemize{
-\item \code{toplines}: An alias for \code{crosstabs}
-}}
+\item \code{toplines()}: An alias for \code{crosstabs}
 
+}}
 \examples{
 \dontrun{
 toplines_summary <- crosstabs(crunch_dataset, weight = "weight")

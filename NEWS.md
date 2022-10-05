@@ -1,3 +1,10 @@
+## crunchtabs 2.0.0
+
+- Rounding in variables summaries changed to match Crunch method of rounding, rounding half to up rather than rounding half to even. This ensures summaries shown in reports match Crunch variable summaries.
+- Rounding calculated after variable subtotals to address Crunch discrepancies
+- Fixes issue with calculation of variable subtotals to allow for differences as well as sums to be reported
+- writeCodebookLatexGeneric ensures large vectors to be summarized are stored in memory by R in such a way as to drastically improve compute times. Integer, numeric, and factor variables read from arrow datasets using dplyr::pull were inefficiently being stored as int, numeric, and factor, rather than Large Integer, Large Numeric, and Large Factor, making them harder for summaries to be calculated quickly for very large vectors.
+
 ## crunchtabs 1.4.4
 
 - Fixes a regression where absolutelynopagebreak was duplicated or not functional in some situations. (pagebreak_in_banner=TRUE and one_per_page=FALSE)

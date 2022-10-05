@@ -45,24 +45,24 @@ into either a kable or manually glued into a latex.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: The default, throws out anything that does not
+\item \code{codeBookSummary(default)}: The default, throws out anything that does not
 match expected crunch variable classes
 
-\item \code{factor}: Prepares a codeBookSummary data.frame for a factor
+\item \code{codeBookSummary(factor)}: Prepares a codeBookSummary data.frame for a factor
 
-\item \code{CategoricalVariable}: Prepares a codeBookSummary data.frame for a
+\item \code{codeBookSummary(CategoricalVariable)}: Prepares a codeBookSummary data.frame for a
 CategoricalVariable
 
-\item \code{MultipleResponseVariable}: Prepares a codeBookSummary data.frame for a
+\item \code{codeBookSummary(MultipleResponseVariable)}: Prepares a codeBookSummary data.frame for a
 MultipleResponseVariable
 
-\item \code{CategoricalArrayVariable}: Prepares a codeBookSummary data.frame for a
+\item \code{codeBookSummary(CategoricalArrayVariable)}: Prepares a codeBookSummary data.frame for a
 CategoricalArrayVariable
 
-\item \code{NumericVariable}: Prepares a codeBookSummary data.frame for a NumericVariable
+\item \code{codeBookSummary(NumericVariable)}: Prepares a codeBookSummary data.frame for a NumericVariable
 
-\item \code{TextVariable}: Prepares a codeBookSummary data.frame for a TextVariable
+\item \code{codeBookSummary(TextVariable)}: Prepares a codeBookSummary data.frame for a TextVariable
 
-\item \code{DatetimeVariable}: Prepares a codeBookSummary data.frame for a DatetimeVaraible
+\item \code{codeBookSummary(DatetimeVariable)}: Prepares a codeBookSummary data.frame for a DatetimeVaraible
+
 }}
-

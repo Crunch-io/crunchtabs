@@ -39,18 +39,18 @@ Create codebook item body.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default codeBookItemBody.
+\item \code{codeBookItemBody(default)}: Default codeBookItemBody.
 
-\item \code{CategoricalVariable}: Creates item body for CategoricalVariable
+\item \code{codeBookItemBody(CategoricalVariable)}: Creates item body for CategoricalVariable
 
-\item \code{CategoricalArrayVariable}: Creates item body for CategoricalArrayVariable
+\item \code{codeBookItemBody(CategoricalArrayVariable)}: Creates item body for CategoricalArrayVariable
 
-\item \code{MultipleResponseVariable}: Creates item body for MultipleResponseVariable
+\item \code{codeBookItemBody(MultipleResponseVariable)}: Creates item body for MultipleResponseVariable
 
-\item \code{DatetimeVariable}: Creates item body for DatetimeVariable
+\item \code{codeBookItemBody(DatetimeVariable)}: Creates item body for DatetimeVariable
 
-\item \code{NumericVariable}: Creates item body for NumericVariable
+\item \code{codeBookItemBody(NumericVariable)}: Creates item body for NumericVariable
 
-\item \code{TextVariable}: Creates item body for TextVariable
+\item \code{codeBookItemBody(TextVariable)}: Creates item body for TextVariable
+
 }}
-
