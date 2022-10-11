@@ -210,7 +210,7 @@ scolumnAlign <- function(k, alignment) {
       if (maxnchar > 6) {
         alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
-        alignment[i] <- c("J", "K", "d", "M", "N", "O", "L", "M", "N")[maxnchar]
+        alignment[i] <- c("J", "K", "d", "M", "N", "O", "L", "P", "Q")[maxnchar]
       }
     }
   }
