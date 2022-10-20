@@ -8,8 +8,10 @@
 #' @export
 codeBookItemTxtHeader <- function(x, ...) {
   txt <- list()
-  txt$name <- crunch::name(x)
-  txt$alias <- crunch::alias(x)
+  txt$name <- adjustCrunchName(crunch::name(x))
+  txt$alias <- adjustCrunchAlias(crunch::alias(x))
+
+
 
   tex <- "\\textbf{%s}\\hfill\\textbf{\\ttfamily{%s}}\n\n{\\small %s}\n\n"
 
@@ -65,9 +67,9 @@ codeBookItemTxtHeader <- function(x, ...) {
 #' @export
 codeBookItemTxtDescription <- function(x, ...) {
   txt <- list()
-  txt$description <- crunch::description(x)
+  txt$description <- adjustCrunchDescription(crunch::name(x), crunch::alias(x), crunch::description(x))
   txt$notes <- crunch::notes(x)
-  txt$alias <- crunch::alias(x)
+  txt$alias <- adjustCrunchAlias(crunch::alias(x))
   txt$alias_toc <- ifelse(
     nchar(txt$alias) > 20,
     paste0(substr(txt$alias, 1, 22), "..."),
@@ -210,7 +212,7 @@ scolumnAlign <- function(k, alignment) {
       if (maxnchar > 6) {
         alignment[i] <- sprintf("S[table-format=%s]", maxnchar)
       } else {
-        alignment[i] <- c("J", "K", "d", "M", "N", "O", "L", "M", "N")[maxnchar]
+        alignment[i] <- c("J", "K", "d", "M", "N", "O", "L", "P", "Q")[maxnchar]
       }
     }
   }

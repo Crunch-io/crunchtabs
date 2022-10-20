@@ -125,14 +125,15 @@ codeBookItemBody.CategoricalVariable <- function(x, meta = NULL, ...) { # nolint
 }
 
 #' @describeIn codeBookItemBody Creates item body for CategoricalArrayVariable
+#' @importFrom stringr str_extract
 #' @export
 codeBookItemBody.CategoricalArrayVariable <- function(x, meta = NULL, ...) { # nolint
   k <- codeBookSummary(x)
   k[, 1] <- texEscape(k[, 1])
   k[, 2] <- texEscape(k[, 2])
 
-  code_labels <- texEscape(gsub("[0-9]+ ", "", names(k))[-c(1, 2)])
-  code_numbers <- trimws(sub("\\D*(\\d+).*", "\\1", names(k)))[-c(1, 2)]
+  code_labels <- texEscape(gsub("^-?[0-9]+ ", "", names(k))[-c(1, 2)])
+  code_numbers <- trimws(stringr::str_extract(names(k), "^-?[0-9]*"))[-c(1, 2)]
 
   rownames(k) <- NULL
 
