@@ -34,7 +34,7 @@ test_that("codeBookItemTxtDescription NumericVariable", {
 
   expect_equal(
     res,
-    "\\vskip 0.10in\n\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{ndogs}} Number of dogs}\n\\vskip 0.10in" # nolint
+    "\\vskip 0.10in\n(ndogs)\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{ndogs}} Number of dogs}\n\\vskip 0.10in" # nolint
   )
 })
 
@@ -43,7 +43,7 @@ test_that("codeBookItemTxtDescription DatetimeVariable", {
 
   expect_equal(
     res,
-    "\\vskip 0.10in\n\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{wave}} Wave}\n\\vskip 0.10in" # nolint
+    "\\vskip 0.10in\n(wave)\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{wave}} Wave}\n\\vskip 0.10in" # nolint
   )
 })
 
