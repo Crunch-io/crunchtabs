@@ -1,3 +1,9 @@
+## crunchtabs 2.0.1
+
+- Adjustments for siunitx latex package updates
+- Adding code for codebook adjustments where identifiers (crunch alias, crunch name) are long
+- Fix negative signs on table labels for categorical array and multiple response variables
+
 ## crunchtabs 2.0.0
 
 - Rounding in variables summaries changed to match Crunch method of rounding, rounding half to up rather than rounding half to even. This ensures summaries shown in reports match Crunch variable summaries.
