@@ -28,6 +28,7 @@ Imports:
     methods,
     openxlsx,
     rlang,
+    stringr,
     tinytex
 Suggests:
     arrow,
