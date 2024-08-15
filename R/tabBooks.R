@@ -11,9 +11,12 @@
 #' @param weight A weighting variable passed to \link[crunch]{tabBook}
 #' @param topline Logical identifying if this is a topline only
 #' @param include_original_weighted Logical, if you have specified complex weights
+#' @param filter A list of `CrunchExpression`s, `CrunchFilter`s, or string names
+#' of filters to be combined with the filter applied to dataset passed into the
+#' `dataset` argument.
 #' should the original weighted variable be included or only the custom weighted version?
 tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE,
-                     include_original_weighted = TRUE) {
+                     include_original_weighted = TRUE, filter = NULL) {
   banner_flatten <- unique(unlist(banner, recursive = FALSE))
   names(banner_flatten) <- sapply(banner_flatten, function(v) v$alias)
   banner_use <- banner
@@ -42,7 +45,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE,
         multitable,
         dataset = dataset[unique(c(vars, unique(tab_frame$weight)))],
         weight = weight,
-        append_default_wt = include_original_weighted
+        append_default_wt = include_original_weighted,
+        filter = filter
       )
     )
   } else {
@@ -52,7 +56,8 @@ tabBooks <- function(dataset, vars, banner, weight = NULL, topline = FALSE,
       tabBook_crunchtabs(
         multitable,
         dataset = dataset[vars],
-        weight = weight
+        weight = weight,
+        filter = filter
       )
     )
   }

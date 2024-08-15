@@ -26,6 +26,9 @@
 #' should we include the default weighted vars? Defaults to TRUE.
 #' @param num_verbatims An integer identifying the number of examples to extract
 #' from a text variable. Defaults to 10. Implemented for Toplines only.
+#' @param filter A list of `CrunchExpression`s, `CrunchFilter`s, or string names
+#' of filters to be combined with the filter applied to dataset passed into the
+#' `dataset` argument.
 #' @return A Toplines (when no banner is provided) or Crosstabs (when a banner
 #' is provided) summary of the input dataset.
 #' @examples
@@ -44,7 +47,8 @@ crosstabs <- function(
                       dataset, vars = names(dataset), weight = crunch::weight(dataset),
                       banner = NULL, codebook = FALSE, include_numeric = FALSE,
                       include_datetime = FALSE, include_verbatims = FALSE,
-                      num_verbatims = 10, include_original_weighted = TRUE) {
+                      num_verbatims = 10, include_original_weighted = TRUE,
+                      filter = NULL) {
   wrong_class_error(dataset, "CrunchDataset", "dataset")
   # nolint start
   all_types <- crunch::types(crunch::allVariables(dataset))
@@ -121,6 +125,7 @@ crosstabs <- function(
     vars = vars_out,
     banner = banner_use,
     weight = weight_var,
+    filter = filter,
     topline = is.null(banner),
     include_original_weighted = include_original_weighted
   )
