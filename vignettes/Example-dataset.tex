@@ -19,7 +19,7 @@
 }
 \usepackage[top=0.6in, bottom=0.6in, left=1in, right=1in, includeheadfoot]{geometry}
 \usepackage{array}
-\usepackage[english]{babel}
+\usepackage{babel}
 \newcolumntype{B}[2]{>{#1\hspace{0pt}\arraybackslash}b{#2}}
 \setlength{\parindent}{0pt}
 \usepackage[dvipsnames]{color}
@@ -77,10 +77,10 @@
 \vspace{.25in}
 
 \begin{longtable}[l]{ll}
-Sample  &  US Voting Adults \\ 
-Conducted  &  Feb 2021 - Mar 2021 \\ 
+Sample  &  US Voting Adults \\
+Conducted  &  Feb 2021 - Mar 2021 \\
 \end{longtable}
-You can enter arbitrary \textbf{\emph{tex}} in the preamble, but it must be double escaped. 
+You can enter arbitrary \textbf{\emph{tex}} in the preamble, but it must be double escaped.
 
 
 \renewcommand{\listtablename}{Table of Contents}
@@ -97,7 +97,7 @@ Do you have any of these animals as pets? Please select all that apply.
 \addcontentsline{lot}{table}{\parbox{1.8in}{\ttfamily{allpets}} All pets owned}
 \vskip 0.10in
 \emph{This is a note, usually describing a sub-sample}
-\vskip 0.10in\end{absolutelynopagebreak} 
+\vskip 0.10in\end{absolutelynopagebreak}
 \begin{longtable}[l]{>{}ll}
 \toprule
 \multicolumn{2}{c}{Rows} \\
@@ -105,9 +105,9 @@ Do you have any of these animals as pets? Please select all that apply.
 {Variable} & {Label}\\
 \midrule
 \ttfamily{allpets\_1} & Cat\\
- 
+
 \ttfamily{allpets\_2} & Dog\\
- 
+
 \ttfamily{allpets\_3} & Bird\\
 \bottomrule
 \end{longtable}\end{absolutelynopagebreak}
@@ -120,11 +120,11 @@ Do you have any of these animals as pets? Please select all that apply.
 {Code} & {Label}\\
 \midrule
 1 & selected\\
- 
+
 2 & not selected\\
- 
+
 8 & skipped\\
- 
+
 9 & not asked\\
 \bottomrule
 \end{longtable}\end{absolutelynopagebreak}
@@ -137,9 +137,9 @@ Do you have any of these animals as pets? Please select all that apply.
 {Variable} & {1} & {2} & {8} & {9}\\
 \midrule
 \ttfamily{allpets\_1} & 1 & 2 & 3 & 4\\
- 
+
 \ttfamily{allpets\_2} & 4 & 1 & 3 & 2\\
- 
+
 \ttfamily{allpets\_3} & 4 & 4 & 1 & 1\\
 \bottomrule
 \end{longtable}\end{absolutelynopagebreak}

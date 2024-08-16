@@ -315,7 +315,7 @@ latexDocHead <- function(theme, title, subtitle, banner = NULL) {
       "includeheadfoot"
     ),
     usepackage("array"),
-    usepackage("babel", "english"),
+    usepackage("babel"), # , "english"
     "\\newcolumntype{B}[2]{>{#1\\hspace{0pt}\\arraybackslash}b{#2}}",
     "\\setlength{\\parindent}{0pt}",
     usepackage("color", "dvipsnames"),
