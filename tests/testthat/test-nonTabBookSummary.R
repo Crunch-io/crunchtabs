@@ -34,7 +34,7 @@ test_that("Creates result object appropriately for a TextVariable", {
         ), class = c(
           "POSIXct",
           "POSIXt"
-        ))), .Names = NA_character_, class = "data.frame", row.names = c(
+        ), tzone = "UTC")), .Names = NA_character_, class = "data.frame", row.names = c(
           "Minimum",
           "1st Quartile", "Median", "3rd Quartile", "Maximum"
         )),

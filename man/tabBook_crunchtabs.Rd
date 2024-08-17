@@ -8,7 +8,8 @@ tabBook_crunchtabs(
   multitable,
   dataset,
   weight = crunch::weight(dataset),
-  append_default_wt = TRUE
+  append_default_wt = TRUE,
+  filter = NULL
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ generated from the `multitable`'s name if one is not supplied and the
 of \code{\link{filters}} defined in the dataset.}
 
 \item{append_default_wt}{passed to [`tabBookWeightSpec()`] if `weight` is a list}
+
+\item{filter}{A list of `CrunchExpression`s, `CrunchFilter`s, or string names
+of filters to be combined with the filter applied to dataset passed into the
+`dataset` argument.}
 }
 \value{
 If "json" format is requested, the function returns an object of

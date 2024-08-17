@@ -15,7 +15,8 @@ crosstabs(
   include_datetime = FALSE,
   include_verbatims = FALSE,
   num_verbatims = 10,
-  include_original_weighted = TRUE
+  include_original_weighted = TRUE,
+  filter = NULL
 )
 
 toplines(
@@ -28,7 +29,8 @@ toplines(
   include_datetime = FALSE,
   include_verbatims = FALSE,
   num_verbatims = 10,
-  include_original_weighted = TRUE
+  include_original_weighted = TRUE,
+  filter = NULL
 )
 }
 \arguments{
@@ -64,6 +66,10 @@ from a text variable. Defaults to 10. Implemented for Toplines only.}
 
 \item{include_original_weighted}{Logical. When providing list of weights to apply,
 should we include the default weighted vars? Defaults to TRUE.}
+
+\item{filter}{A list of `CrunchExpression`s, `CrunchFilter`s, or string names
+of filters to be combined with the filter applied to dataset passed into the
+`dataset` argument.}
 }
 \value{
 A Toplines (when no banner is provided) or Crosstabs (when a banner

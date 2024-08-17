@@ -10,7 +10,8 @@ tabBooks(
   banner,
   weight = NULL,
   topline = FALSE,
-  include_original_weighted = TRUE
+  include_original_weighted = TRUE,
+  filter = NULL
 )
 }
 \arguments{
@@ -24,7 +25,11 @@ tabBooks(
 
 \item{topline}{Logical identifying if this is a topline only}
 
-\item{include_original_weighted}{Logical, if you have specified complex weights
+\item{include_original_weighted}{Logical, if you have specified complex weights}
+
+\item{filter}{A list of `CrunchExpression`s, `CrunchFilter`s, or string names
+of filters to be combined with the filter applied to dataset passed into the
+`dataset` argument.
 should the original weighted variable be included or only the custom weighted version?}
 }
 \description{

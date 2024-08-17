@@ -193,6 +193,7 @@ test_that("tabBookSingle_crunchtabs", {
   mockery::stub(tabBookSingle_crunchtabs, "crunch::shojiURL", "shoji_url")
   mockery::stub(tabBookSingle_crunchtabs, "download_result", "downloaded_result")
   mockery::stub(tabBookSingle_crunchtabs, "varFilter", "Doesn't matter!")
+  mockery::stub(tabBookSingle_crunchtabs, "standardizeTabbookFilter", "Doesn't matter!")
   mockery::stub(tabBookSingle_crunchtabs, "tabBookResult", function(x) x)
   mockery::stub(tabBookSingle_crunchtabs, "crunch::crPOST", function(x, ...) x)
   res <- tabBookSingle_crunchtabs("mt", "dataset", weight = NULL)
