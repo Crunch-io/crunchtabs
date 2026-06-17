@@ -48,8 +48,8 @@ test_that("codeBookItemTxtDescription DatetimeVariable", {
 })
 
 test_that("codebookItemTxtDescription notes", {
-  res <- with_mock(
-    codeBookItemTxtDescription(ds$q1), "crunch::notes" = function(x) "This is a note!")
+  mockery::stub(codeBookItemTxtDescription, "crunch::notes", function(x) "This is a note!")
+  res <- codeBookItemTxtDescription(ds$q1)
   expect_equal(
     res,
     "\\vskip 0.10in\nWhat is your favorite pet?\n\\addcontentsline{lot}{table}{\\parbox{1.8in}{\\ttfamily{q1}} Pet}\n\\vskip 0.10in\n\\emph{This is a note!}\n\\vskip 0.10in" # nolint

@@ -18,29 +18,23 @@ test_that("If default_weight not null", {
 context("valiases_tabbook_extract")
 
 test_that("if is_crosstabs_array", {
-  r <- with_mock(
-    valiases_tabbook_extract(TRUE, "cube", "cube_var", "question_name"),
-    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
-    `crunch::aliases` = function(...) "from_crunchaliases"
-  )
+  mockery::stub(valiases_tabbook_extract, "getSubAliases", function(...) "from_getSubAliases")
+  mockery::stub(valiases_tabbook_extract, "crunch::aliases", function(...) "from_crunchaliases")
+  r <- valiases_tabbook_extract(TRUE, "cube", "cube_var", "question_name")
   expect_equal(r, "from_getSubAliases")
 })
 
 test_that("if not is_crosstabs_array", {
-  r <- with_mock(
-    valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name"),
-    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
-    `crunch::aliases` = function(...) "from_crunchaliases"
-  )
+  mockery::stub(valiases_tabbook_extract, "getSubAliases", function(...) "from_getSubAliases")
+  mockery::stub(valiases_tabbook_extract, "crunch::aliases", function(...) "from_crunchaliases")
+  r <- valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name")
   expect_equal(r, "from_crunchaliases")
 })
 
 test_that("if not is_crosstabs_array but total", {
-  r <- with_mock(
-    valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name"),
-    `crunchtabs::getSubAliases` = function(...) "from_getSubAliases",
-    `crunch::aliases` = function(...) "total"
-  )
+  mockery::stub(valiases_tabbook_extract, "getSubAliases", function(...) "from_getSubAliases")
+  mockery::stub(valiases_tabbook_extract, "crunch::aliases", function(...) "total")
+  r <- valiases_tabbook_extract(FALSE, "cube", "cube_var", "question_name")
   expect_equal(r, "question_name")
 })
 

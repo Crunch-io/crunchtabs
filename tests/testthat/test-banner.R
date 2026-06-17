@@ -96,8 +96,8 @@ test_that("Error handling - banner", {
 
 test_that("Single banner with single variable", {
   ds <- readRDS("fixtures/banner_ds.rds")
-  banner_data <- with_mock(categories = categories_over,
-                           banner(ds, vars = list(Results = c("age5"))))
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5")))
   expect_s3_class(banner_data, "Banner")
   expect_length(banner_data, 1)
   expect_named(banner_data, "Results")
@@ -123,8 +123,9 @@ test_that("Single banner with single variable", {
 
 
 test_that("Single banner with two variables", {
-  banner_data <- with_mock(subvariables = subvariables_over, categories = categories_over,
-                           banner(ds, vars = list(Results = c("age5", "art3"))))
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5", "art3")))
   expect_s3_class(banner_data, "Banner")
   expect_length(banner_data, 1)
   expect_named(banner_data, "Results")
@@ -158,9 +159,10 @@ test_that("Single banner with two variables", {
 })
 
 test_that("Double banner, one variable in each subbanner", {
-  banner_data <- with_mock(subvariables = subvariables_over, categories = categories_over,
-                           banner_data <- banner(
-                             ds, vars = list(Results1 = c("age5"), Results2 = c("art3"))))
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(
+    ds, vars = list(Results1 = c("age5"), Results2 = c("art3")))
   expect_s3_class(banner_data, "Banner")
   expect_length(banner_data, 2)
   expect_named(banner_data, c("Results1", "Results2"))
@@ -172,10 +174,11 @@ test_that("Double banner, one variable in each subbanner", {
 
 
 test_that("Single banner with one variable, recodes - categories rename", {
-  banner_data <- with_mock(subvariables = subvariables_over, categories = categories_over,
-                           banner(ds, vars = list(Results = c("age5")),
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5")),
     recodes = list(age5 = list("16 to 24" = "Under 25", "55+" = "Over 54"))
-  ))
+  )
   expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]],
                    c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
   expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]],
@@ -186,11 +189,11 @@ test_that("Single banner with one variable, recodes - categories rename", {
 
 
 test_that("Single banner with one variable, recodes - categories rename, hiding", {
-  banner_data <- with_mock(
-    subvariables = subvariables_over, categories = categories_over,
-    banner(ds, vars = list(Results = c("age5")),
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5")),
     recodes = list(age5 = list("16 to 24" = "Under 25", "45 to 54" = NA, "55+" = NA))
-  ))
+  )
   expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]],
                    c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
   expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]],
@@ -200,18 +203,18 @@ test_that("Single banner with one variable, recodes - categories rename, hiding"
 })
 
 test_that("Single banner with one variable, label change", {
-  banner_data <- with_mock(
-    subvariables = subvariables_over, categories = categories_over,
-    banner(ds, vars = list(Results = c("age5")), labels = c(age5 = "Age (5 categories)")))
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5")), labels = c(age5 = "Age (5 categories)"))
   expect_identical(banner_data[["Results"]][["age5"]][["name"]], "Age (5 categories)")
 })
 
 test_that("Single banner with one variable, recodes - categories rename, else", {
-  banner_data <- with_mock(
-    subvariables = subvariables_over, categories = categories_over,
-    banner(ds, vars = list(Results = c("age5")),
+  mockery::stub(banner, "subvariables", subvariables_over)
+  mockery::stub(banner, "categories", categories_over)
+  banner_data <- banner(ds, vars = list(Results = c("age5")),
     recodes = list(age5 = list("16 to 24" = "Under 25", "55+" = "Over 54", .default = NA))
-  ))
+  )
   expect_identical(banner_data[["Results"]][["age5"]][["old_categories"]],
                    c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"))
   expect_identical(banner_data[["Results"]][["age5"]][["categories_out"]],

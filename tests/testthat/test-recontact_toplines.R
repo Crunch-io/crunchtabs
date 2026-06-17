@@ -15,16 +15,14 @@ test_that("Stops if not a dataset", {
 })
 
 test_that("Stops if questions not character", {
+  mockery::stub(recontact_toplines, "is.dataset", function(...) TRUE)
   expect_error(
-    with_mock(
-      recontact_toplines(
-        "mocked",
-        questions = 1L, # not character
-        suffixes = c("_pre", "_post"),
-        labels = c("Before", "After"),
-        weights = NULL
-      ),
-      `crunch::is.dataset` = function(...) TRUE,
+    recontact_toplines(
+      "mocked",
+      questions = 1L, # not character
+      suffixes = c("_pre", "_post"),
+      labels = c("Before", "After"),
+      weights = NULL
     ),
     "is.character(questions) is not TRUE",
     fixed = TRUE
@@ -32,16 +30,14 @@ test_that("Stops if questions not character", {
 })
 
 test_that("Stops if suffixes not character", {
+  mockery::stub(recontact_toplines, "is.dataset", function(...) TRUE)
   expect_error(
-    with_mock(
-      recontact_toplines(
-        "mocked",
-        questions = "character",
-        suffixes = 1L, # not character
-        labels = c("Before", "After"),
-        weights = NULL
-      ),
-      `crunch::is.dataset` = function(...) TRUE
+    recontact_toplines(
+      "mocked",
+      questions = "character",
+      suffixes = 1L, # not character
+      labels = c("Before", "After"),
+      weights = NULL
     ),
     "is.character(suffixes) is not TRUE",
     fixed = TRUE
@@ -49,16 +45,14 @@ test_that("Stops if suffixes not character", {
 })
 
 test_that("Stops if labels not character", {
+  mockery::stub(recontact_toplines, "is.dataset", function(...) TRUE)
   expect_error(
-    with_mock(
-      recontact_toplines(
-        "String is not a dataset",
-        questions = "text to pass check",
-        suffixes = "text to pass check",
-        labels = 1L,
-        weights = NULL
-      ),
-      `crunch::is.dataset` = function(...) TRUE
+    recontact_toplines(
+      "String is not a dataset",
+      questions = "text to pass check",
+      suffixes = "text to pass check",
+      labels = 1L,
+      weights = NULL
     ),
     "is.character(labels) is not TRUE",
     fixed = TRUE

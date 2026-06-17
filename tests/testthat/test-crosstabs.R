@@ -20,8 +20,9 @@ test_that("Error handling", {
     crosstabs(ds, weight = "a_weight"),
     "`weight`, if provided, must be a valid variable in `dataset`. 'a_weight' is not found."
   )
+  mockery::stub(crosstabs, "weightVariables", function(x) "weight")
   expect_error(
-    with_mock(weightVariables = function(x) "weight", crosstabs(ds, weight = "age")),
+    crosstabs(ds, weight = "age"),
     "`weight`, if provided, must be a valid weight variable in `dataset`. 'age' is not a weight variable." # nolint
   )
 })
